@@ -395,6 +395,10 @@ public class MotorEncoderController {
         double deltaR = Rodom().getCurrentPosition() - lastRodom;
         double deltaB = Bodom().getCurrentPosition() - lastBodom;
 
+        deltaL /= 1678;
+        deltaR /= 1678;
+        deltaB /= 1678;
+
         double deltaAngle = (deltaL - deltaR)/LATERAL_DISTANCE;
         double forwardDisp = (deltaL + deltaR)/2;
         double sideDisp = deltaB - (FORWARD_OFFSET*deltaAngle);

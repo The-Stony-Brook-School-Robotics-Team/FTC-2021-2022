@@ -2,10 +2,17 @@ package org.firstinspires.ftc.teamcode.Sandboxes.Marc;
 
 
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.canvas.Canvas;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.BearsUtil.MotorEncoderController;
+import org.firstinspires.ftc.teamcode.util.DashboardUtil;
+
 @TeleOp
 
 public class MotorCtrlTestTeleOp extends OpMode {
@@ -24,11 +31,13 @@ public class MotorCtrlTestTeleOp extends OpMode {
     public static final double TICKS_TO_INCHES = TICKS_PER_REV*WHEEL_DIAMETER*Math.PI;
     public static final double DISTANCE_PER_PULSE = Math.PI * WHEEL_DIAMETER / TICKS_PER_REV;
 
+    FtcDashboard dashboard;
+
     @Override
     public void init() {
         motorCtrls = new MotorEncoderController(hardwareMap,telemetry);
-        //dashboard = FtcDashboard.getInstance();
-        //telemetry = new MultipleTelemetry(telemetry);
+        dashboard = FtcDashboard.getInstance();
+        telemetry = new MultipleTelemetry(telemetry);
 
 
     }
@@ -46,6 +55,11 @@ public class MotorCtrlTestTeleOp extends OpMode {
         telemetry.addData("TO Travel",30000);
 
         telemetry.update();
+        TelemetryPacket packet = new TelemetryPacket();
+        Pose2d currentPos = motorCtrls.getPosition();
+        Canvas field = packet.fieldOverlay();
+        DashboardUtil.drawRobot(field,new com.acmerobotics.roadrunner.geometry.Pose2d(currentPos.getX(),currentPos.getY(),currentPos.getHeading()));
+        dashboard.sendTelemetryPacket(packet);
 
 
         /*if (gamepad1.a && !qA) {
