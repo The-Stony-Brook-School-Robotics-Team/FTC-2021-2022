@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.BearsUtil;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -19,6 +20,8 @@ public class MotorEncoderController {
     DcMotor[] motors = new DcMotor[4];
     DcMotor[] odoms = new DcMotor[3];
     DcMotor[] motorEncoders = new DcMotor[4];
+
+    Pose2d robotPos;
 
     double[] odomValsSoft = new double[3];
     double[] odomDiffs = new double[3];
@@ -40,6 +43,7 @@ public class MotorEncoderController {
 
     public MotorEncoderController(HardwareMap hwMap, Telemetry telemetry) {
        this.telemetry = telemetry;
+       robotPos = new Pose2d();
         for (int i = 0; i < 4; i++) {
             motors[i] = (hwMap.get(DcMotor.class, motorNames[i]));
             motors[i].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
