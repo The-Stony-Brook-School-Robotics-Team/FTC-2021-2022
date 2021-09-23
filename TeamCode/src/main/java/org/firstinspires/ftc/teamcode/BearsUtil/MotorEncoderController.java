@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.BearsUtil;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.arcrobotics.ftclib.geometry.Pose2d;
+import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -19,6 +21,15 @@ public class MotorEncoderController {
     DcMotor[] motors = new DcMotor[4];
     DcMotor[] odoms = new DcMotor[3];
     DcMotor[] motorEncoders = new DcMotor[4];
+
+    Pose2d robotPos;
+
+    public static final double LATERAL_DISTANCE = 12;
+    public static final double FORWARD_OFFSET = -8.7;
+
+    double lastRodom, lastLodom, lastBodom;
+
+
 
     double[] odomValsSoft = new double[3];
     double[] odomDiffs = new double[3];
@@ -39,7 +50,8 @@ public class MotorEncoderController {
     static final double CENTER_WHEEL_OFFSET = 2.4;
 
     public MotorEncoderController(HardwareMap hwMap, Telemetry telemetry) {
-       this.telemetry = telemetry;
+        this.telemetry = telemetry;
+       robotPos = new Pose2d();
         for (int i = 0; i < 4; i++) {
             motors[i] = (hwMap.get(DcMotor.class, motorNames[i]));
             motors[i].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -72,6 +84,9 @@ public class MotorEncoderController {
         }
         encoderValsSoft[3] = 0;
         encoderDiffs[3] = motorEncoders[3].getCurrentPosition() - encoderValsSoft[3];
+        lastBodom = Bodom().getCurrentPosition();
+        lastRodom = Rodom().getCurrentPosition();
+        lastLodom = Lodom().getCurrentPosition();
 
     }
     public DcMotor[] getMotors() {
@@ -371,6 +386,29 @@ public class MotorEncoderController {
             strafeRightPower(power);
         }
         stopRobot();
+    }
+
+
+
+    public Pose2d getPosition() {
+        double deltaL = Lodom().getCurrentPosition() - lastLodom;
+        double deltaR = Rodom().getCurrentPosition() - lastRodom;
+        double deltaB = Bodom().getCurrentPosition() - lastBodom;
+
+        double deltaAngle = (deltaL - deltaR)/LATERAL_DISTANCE;
+        double forwardDisp = (deltaL + deltaR)/2;
+        double sideDisp = deltaB - (FORWARD_OFFSET*deltaAngle);
+
+        double heading0 = robotPos.getHeading();
+        double newX = forwardDisp*Math.cos(heading0) - sideDisp*Math.sin(heading0) + robotPos.getX();
+        double newY = forwardDisp*Math.sin(heading0) + sideDisp*Math.cos(heading0) + robotPos.getY();
+        double newH = heading0+robotPos.getHeading();
+        robotPos = new Pose2d(newX,newY,new Rotation2d(newH));
+
+        lastBodom = Bodom().getCurrentPosition();
+        lastRodom = Rodom().getCurrentPosition();
+        lastLodom = Lodom().getCurrentPosition();
+        return robotPos;
     }
 
 
