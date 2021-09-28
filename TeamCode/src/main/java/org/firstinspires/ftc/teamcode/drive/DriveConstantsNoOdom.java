@@ -4,11 +4,11 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 @Config
-public class DriveConstants {
+public class DriveConstantsNoOdom {
     public static final double TICKS_PER_REV = 145.6; // added
     public static final double MAX_RPM = 847; // was 1100
 
-    public static final boolean RUN_USING_ENCODER = false;
+    public static final boolean RUN_USING_ENCODER = true;
     public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(0, 0, 0,
             getMotorVelocityF(MAX_RPM / 60 * TICKS_PER_REV));
 
@@ -20,8 +20,8 @@ public class DriveConstants {
     public static double kA = 0.0055; // Previous was 0.012
     public static double kStatic = 0.01;
 
-    public static double MAX_VEL = 60; // 80
-    public static double MAX_ACCEL = 20;
+    public static double MAX_VEL = 80; // 80
+    public static double MAX_ACCEL = 40;
     public static double MAX_ANG_VEL = 50; // measured with max ang velo tuner.
     public static double MAX_ANG_ACCEL = Math.toRadians(60);
 
