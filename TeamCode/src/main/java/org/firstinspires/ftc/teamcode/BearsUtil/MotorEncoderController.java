@@ -395,9 +395,10 @@ public class MotorEncoderController {
         double deltaR = Rodom().getCurrentPosition() - lastRodom;
         double deltaB = Bodom().getCurrentPosition() - lastBodom;
 
-        deltaL /= 1678;
-        deltaR /= 1678;
-        deltaB /= 1678;
+        deltaL = convertOdomTickToRobotInches(deltaL);
+        deltaR = convertOdomTickToRobotInches(deltaR);
+        deltaB = convertOdomTickToRobotInches(deltaB);
+
 
         double deltaAngle = (deltaL - deltaR)/LATERAL_DISTANCE;
         double forwardDisp = (deltaL + deltaR)/2;
@@ -405,10 +406,20 @@ public class MotorEncoderController {
 
         double heading0 = robotPos.getHeading();
         double newX = forwardDisp*Math.cos(heading0) - sideDisp*Math.sin(heading0) + robotPos.getX();
-        double newY = forwardDisp*Math.sin(heading0) + sideDisp*Math.cos(heading0) + robotPos.getY();
-        double newH = heading0+robotPos.getHeading();
+        double newY = -forwardDisp*Math.sin(heading0) - sideDisp*Math.cos(heading0) + robotPos.getY();
+        double newH = heading0-deltaAngle;
         robotPos = new Pose2d(newX,newY,new Rotation2d(newH));
 
+        lastBodom = Bodom().getCurrentPosition();
+        lastRodom = Rodom().getCurrentPosition();
+        lastLodom = Lodom().getCurrentPosition();
+        return robotPos;
+    }
+    public Pose2d resetPosition() {
+        return this.resetPosition(new Pose2d());
+    }
+    public Pose2d resetPosition(Pose2d newPos) {
+        robotPos = newPos;
         lastBodom = Bodom().getCurrentPosition();
         lastRodom = Rodom().getCurrentPosition();
         lastLodom = Lodom().getCurrentPosition();
