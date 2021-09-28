@@ -86,43 +86,18 @@ public class MotorCtrlTestTeleOp extends OpMode {
         }*/
         if (gamepad1.a && !qA) {
             qA = true;
-            System.out.println("start" + System.nanoTime());
-            motorCtrls.goForwardDistPID(72);
-            System.out.println("start" + System.nanoTime());
+            motorCtrls.resetPosition();
         }
         else if (!gamepad1.a && qA) {
             qA = false;
         }
-        if (gamepad1.b && !qB) {
-            qB = true;
-            motorCtrls.resetSoftOdom();
-            motorCtrls.resetSoftMotorEncoders();
-            motorCtrls.resetPosition();
-        }
-        else if (!gamepad1.b && qB) {
-            qB = false;
-        }
-        if (gamepad1.x && !qX) {
-            qX = true;
-            motorCtrls.strafeLeftDist(2);
-        }
-        else if (!gamepad1.x && qX) {
-            qX = false;
-        }
-        if (gamepad1.y && !qY) {
-            qY = true;
-            motorCtrls.strafeRightDist(2);
-        }
-        else if (!gamepad1.y && qY) {
-            qY = false;
-        }
 
 
 
-        motorCtrls.LF().setPower(0.6*(gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
-        motorCtrls.RF().setPower(0.6*(gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
-        motorCtrls.LB().setPower(0.6*(gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
-        motorCtrls.RB().setPower(0.6*(gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
+        motorCtrls.LF().setPower(0.6*(gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
+        motorCtrls.RF().setPower(0.6*(gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
+        motorCtrls.LB().setPower(0.6*(gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
+        motorCtrls.RB().setPower(0.6*(gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
 
     }
 }
