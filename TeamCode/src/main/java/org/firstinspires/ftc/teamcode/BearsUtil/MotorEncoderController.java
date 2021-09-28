@@ -405,8 +405,8 @@ public class MotorEncoderController {
         double sideDisp = deltaB - (FORWARD_OFFSET*deltaAngle);
 
         double heading0 = robotPos.getHeading();
-        double newX = forwardDisp*Math.cos(heading0) - sideDisp*Math.sin(heading0) + robotPos.getX();
-        double newY = -forwardDisp*Math.sin(heading0) - sideDisp*Math.cos(heading0) + robotPos.getY();
+        double newX = forwardDisp*Math.sin(heading0) + sideDisp*Math.cos(heading0) + robotPos.getX();
+        double newY = forwardDisp*Math.cos(heading0) - sideDisp*Math.sin(heading0) + robotPos.getY();
         double newH = heading0-deltaAngle;
         robotPos = new Pose2d(newX,newY,new Rotation2d(newH));
 
