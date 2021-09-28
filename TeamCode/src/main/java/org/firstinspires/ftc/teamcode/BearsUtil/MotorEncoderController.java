@@ -192,10 +192,10 @@ public class MotorEncoderController {
 
 
     public static double convertOdomTickToRobotInches(double ticks) {
-        return 4*ticks/(8192)*(odomRadius*2*Math.PI); // tested experimentally with all 3 odoms on 9/16/2021
+        return 4*ticks/(8192)*(odomRadius*2*Math.PI)/.2517; // tested experimentally with all 3 odoms on 9/16/2021
     }
     public static double convertRobotInchesToTicks(double inches) {
-        return inches*(8192)/(odomRadius*2*Math.PI*4);
+        return inches*(8192)/(odomRadius*2*Math.PI*4)*.2517;
     }
 
 

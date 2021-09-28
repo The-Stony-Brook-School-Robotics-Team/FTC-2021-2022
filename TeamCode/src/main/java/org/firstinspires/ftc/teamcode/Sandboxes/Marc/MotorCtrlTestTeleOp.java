@@ -74,6 +74,10 @@ public class MotorCtrlTestTeleOp extends OpMode {
         packet.put("powerRatio",motorCtrls.LF().getPower()/motorCtrls.RF().getPower());
         packet.put("odomDiff",motorCtrls.getROdomValSoft() - motorCtrls.getLOdomValSoft());
         packet.put("TO Travel",30000);
+        packet.put("xpos",motorCtrls.getPosition().getX());
+        packet.put("ypos",motorCtrls.getPosition().getY());
+        packet.put("hpos",motorCtrls.getPosition().getHeading());
+
         dashboard.sendTelemetryPacket(packet);
 
 
