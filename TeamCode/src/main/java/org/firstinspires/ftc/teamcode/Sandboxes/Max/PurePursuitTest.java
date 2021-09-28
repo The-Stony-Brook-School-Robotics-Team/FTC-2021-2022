@@ -10,10 +10,11 @@ import com.arcrobotics.ftclib.purepursuit.waypoints.GeneralWaypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.InterruptWaypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.StartWaypoint;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import java.util.function.DoubleSupplier;
 
-
+@TeleOp
 public class PurePursuitTest extends LinearOpMode {
     private Motor.Encoder LeftEncoder;
     private Motor.Encoder RightEncoder;
