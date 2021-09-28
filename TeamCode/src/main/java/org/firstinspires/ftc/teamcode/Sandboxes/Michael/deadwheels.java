@@ -8,6 +8,7 @@ import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
 import com.arcrobotics.ftclib.purepursuit.Path;
 import com.arcrobotics.ftclib.purepursuit.Waypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.EndWaypoint;
+import com.arcrobotics.ftclib.purepursuit.waypoints.GeneralWaypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.StartWaypoint;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -46,6 +47,7 @@ public class deadwheels extends LinearOpMode {
     private MecanumDrive driveTrain;
     private Motor intakeLeft, intakeRight, liftLeft, liftRight;
     private Encoder leftOdometer, rightOdometer, centerOdometer;
+    private MotorEx leftO, rightO, centerO;
     private HolonomicOdometry odometry;
 
     private Waypoint p1;
@@ -66,9 +68,14 @@ public class deadwheels extends LinearOpMode {
         //liftRight = new Motor(hardwareMap, "lift_right");
         // Here we set the distance per pulse of the odometers.
         // This is to keep the units consistent for the odometry.
-        leftOdometer = rf.encoder.setDistancePerPulse(DISTANCE_PER_PULSE);
-        rightOdometer = rb.encoder.setDistancePerPulse(DISTANCE_PER_PULSE);
-        centerOdometer = lb.encoder.setDistancePerPulse(DISTANCE_PER_PULSE);
+
+        //leftOdometer = rf.encoder.setDistancePerPulse(DISTANCE_PER_PULSE);
+        //rightOdometer = rb.encoder.setDistancePerPulse(DISTANCE_PER_PULSE);
+        //centerOdometer = lb.encoder.setDistancePerPulse(DISTANCE_PER_PULSE);
+
+        //leftO = rf.encoder.setDistancePerPulse(DISTANCE_PER_PULSE);
+        //rightOdometer = rb.encoder.setDistancePerPulse(DISTANCE_PER_PULSE);
+        //centerOdometer = lb.encoder.setDistancePerPulse(DISTANCE_PER_PULSE);
 
         DoubleSupplier leftValue, rightValue, horizontalValue;
 
@@ -83,10 +90,7 @@ public class deadwheels extends LinearOpMode {
                 //TRACKWIDTH, CENTER_WHEEL_OFFSET
         //);
         odometry = new HolonomicOdometry(
-                leftValue,
-                rightValue,
-                horizontalValue,
-                TRACKWIDTH, CENTER_WHEEL_OFFSET
+                leftValue, rightValue, horizontalValue, TRACKWIDTH, CENTER_WHEEL_OFFSET
         );
 
         odometry.update(0, 0, 0);
@@ -96,6 +100,7 @@ public class deadwheels extends LinearOpMode {
 
 
         Waypoint start = new StartWaypoint(0, 0);
+        Waypoint p1 = new GeneralWaypoint(0, 0);
         Waypoint end = new EndWaypoint(20, 20, 0, 0.7,
                 0.5, 30, 0.8, 1);
 
@@ -107,7 +112,7 @@ public class deadwheels extends LinearOpMode {
 
         waitForStart();
 
-        path1.followPath(driveTrain, odometry);
+        //path1.followPath(driveTrain, odometry);
         telemetry.addData("currPoss", odometry.getPose());
         telemetry.update();
 
