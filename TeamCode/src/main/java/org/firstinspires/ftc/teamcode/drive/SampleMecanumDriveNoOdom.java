@@ -1,20 +1,15 @@
 package org.firstinspires.ftc.teamcode.drive;
 
-
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ACCEL;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_ACCEL;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_VEL;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_VEL;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MOTOR_VELO_PID;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.TRACK_WIDTH;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.encoderTicksToInches;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kA;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kStatic;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
-
-
-import android.graphics.Bitmap;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsNoOdom.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsNoOdom.MAX_ANG_ACCEL;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsNoOdom.MAX_ANG_VEL;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsNoOdom.MAX_VEL;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsNoOdom.MOTOR_VELO_PID;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsNoOdom.TRACK_WIDTH;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsNoOdom.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsNoOdom.kA;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsNoOdom.kStatic;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsNoOdom.kV;
 
 import androidx.annotation.NonNull;
 
@@ -50,20 +45,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-
-
-import org.firstinspires.ftc.robotcore.external.function.Consumer;
-import org.firstinspires.ftc.robotcore.external.function.Continuation;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
-import org.firstinspires.ftc.teamcode.util.AxesSigns;
-import org.firstinspires.ftc.teamcode.util.BNO055IMUUtil;
-
-import org.firstinspires.ftc.robotcore.external.function.Consumer;
-import org.firstinspires.ftc.robotcore.external.function.Continuation;
-import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
-import org.firstinspires.ftc.teamcode.util.DashboardUtil;
-import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
+import org.firstinspires.ftc.teamcode.util.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,11 +56,11 @@ import java.util.List;
  * Simple mecanum drive hardware implementation for REV hardware.
  */
 @Config
-public class SampleMecanumDrive extends MecanumDrive {
+public class SampleMecanumDriveNoOdom extends MecanumDrive {
 
 
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(40, 0.05, 0.5); // changed
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(5/*changed from 10*/, 0.1/*was 0.5*/, 1); // changed
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(20, 0.0, 0.7); // changed
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(7/*changed from 10*/, 0.1/*was 0.5*/, 1.2); // changed
 
     public static double LATERAL_MULTIPLIER = 1.42; // changed
 
@@ -121,22 +103,22 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     private Pose2d lastPoseOnTurn;
 
-    public SampleMecanumDrive(HardwareMap hardwareMap) {
-        this(hardwareMap, false);
+    public SampleMecanumDriveNoOdom(HardwareMap hardwareMap)
+    {
+        this(hardwareMap,false);
     }
-
-    public SampleMecanumDrive(HardwareMap hardwareMap, boolean qAdj) {
+    public SampleMecanumDriveNoOdom(HardwareMap hardwareMap, boolean qAdj) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         dashboard = FtcDashboard.getInstance();
         dashboard.setTelemetryTransmissionInterval(25);
 
-        dashboard.startCameraStream(new CameraStreamSource() {
+        /*dashboard.startCameraStream(new CameraStreamSource() {
             @Override
             public void getFrameBitmap(Continuation<? extends Consumer<Bitmap>> continuation) {
 
             }
-        }, 30);
+        },30);*/
 
         clock = NanoClock.system();
 
@@ -172,6 +154,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         imu.initialize(parameters);
 
 
+
         // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
         // upward (normal to the floor) using a command like the following:
         /////BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
@@ -181,9 +164,9 @@ public class SampleMecanumDrive extends MecanumDrive {
 
 
         leftFront = hardwareMap.get(DcMotorEx.class, "lf");
-        leftRear = hardwareMap.get(DcMotorEx.class, "backodom");
-        rightRear = hardwareMap.get(DcMotorEx.class, "rightodom");
-        rightFront = hardwareMap.get(DcMotorEx.class, "leftodom");
+        leftRear = hardwareMap.get(DcMotorEx.class, "lb");
+        rightRear = hardwareMap.get(DcMotorEx.class, "rb");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rf");
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -195,30 +178,25 @@ public class SampleMecanumDrive extends MecanumDrive {
 
 // TODO: reverse any motors using DcMotor.setDirection()  <-- DONE
         //
-        rightRear.setDirection(DcMotor.Direction.REVERSE);
+        rightFront.setDirection(DcMotor.Direction.REVERSE);
         //leftFront.setDirection(DcMotor.Direction.REVERSE);
-        leftFront.setDirection(DcMotor.Direction.REVERSE);
-        //rightRear.setDirection(DcMotor.Direction.REVERSE); 
+        leftRear.setDirection(DcMotor.Direction.REVERSE); // TODO just changed, need to TEST!!!!
+        //rightRear.setDirection(DcMotor.Direction.REVERSE); // TODO just changed, need to TEST!!!!
 
-        if (RUN_USING_ENCODER) {
-            setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
+        setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
+        if (MOTOR_VELO_PID != null) {
             setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
-
         // TODO: reverse any motors using DcMotor.setDirection()
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
 
         //setLocalizer(new StandardTrackingWheelLocalizerIMU(hardwareMap, imu, qAdj));
-        setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap, false));
-        //setLocalizer(new StandardTrackingWheelLocalizerIMU(hardwareMap, imu, qAdj));
-        //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap, qAdj));
+        setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap, qAdj));
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
@@ -276,10 +254,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         throw new AssertionError();
     }
 
-    public void update() {
-        update(null);
-    }
-
+    public void update(){update(null);}
     public void update(Object[][] suppPacketInfo) {
 
         /*
@@ -310,8 +285,8 @@ public class SampleMecanumDrive extends MecanumDrive {
         packet.put("yError", lastError.getY());
         packet.put("headingError (deg)", Math.toDegrees(lastError.getHeading()));
 
-        if (suppPacketInfo != null) {
-            packet.put("SUPP INFO", 42);
+        if(suppPacketInfo != null) {
+            packet.put("SUPP INFO",42);
             for (Object[] suppPacket : suppPacketInfo) {
                 String label = (String) suppPacket[0];
                 Object info = suppPacket[1];
@@ -493,5 +468,6 @@ public class SampleMecanumDrive extends MecanumDrive {
         return (double) imu.getAngularVelocity().zRotationRate;
 
     }
+
 
 }
