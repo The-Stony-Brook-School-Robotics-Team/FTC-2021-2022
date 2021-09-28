@@ -63,20 +63,20 @@ public class MotorCtrlTestTeleOp extends OpMode {
         Pose2d currentPos = motorCtrls.getPosition();
         Canvas field = packet.fieldOverlay();
         DashboardUtil.drawRobot(field,new com.acmerobotics.roadrunner.geometry.Pose2d(currentPos.getX(),currentPos.getY(),currentPos.getHeading()));
-        packet.put("L ODOM",motorCtrls.getLOdomValSoft());
-        packet.put("R ODOM",motorCtrls.getROdomValSoft());
-        packet.put("B ODOM",motorCtrls.getBOdomValSoft());
-        packet.put("L ODOM inch",MotorEncoderController.convertOdomTickToRobotInches(motorCtrls.getLOdomValSoft()));
-        packet.put("R ODOM inch",MotorEncoderController.convertOdomTickToRobotInches(motorCtrls.getROdomValSoft()));
-        packet.put("B ODOM inch",MotorEncoderController.convertOdomTickToRobotInches(motorCtrls.getBOdomValSoft()));
-        packet.put("Lpow",motorCtrls.LF().getPower());
-        packet.put("Rpow",motorCtrls.RF().getPower());
-        packet.put("powerRatio",motorCtrls.LF().getPower()/motorCtrls.RF().getPower());
-        packet.put("odomDiff",motorCtrls.getROdomValSoft() - motorCtrls.getLOdomValSoft());
-        packet.put("TO Travel",30000);
+        //packet.put("L ODOM",motorCtrls.getLOdomValSoft());
+        //packet.put("R ODOM",motorCtrls.getROdomValSoft());
+        //packet.put("B ODOM",motorCtrls.getBOdomValSoft());
+        //packet.put("L ODOM inch",MotorEncoderController.convertOdomTickToRobotInches(motorCtrls.getLOdomValSoft()));
+       // packet.put("R ODOM inch",MotorEncoderController.convertOdomTickToRobotInches(motorCtrls.getROdomValSoft()));
+        //packet.put("B ODOM inch",MotorEncoderController.convertOdomTickToRobotInches(motorCtrls.getBOdomValSoft()));
+       // packet.put("Lpow",motorCtrls.LF().getPower());
+       // packet.put("Rpow",motorCtrls.RF().getPower());
+        //packet.put("powerRatio",motorCtrls.LF().getPower()/motorCtrls.RF().getPower());
+       // packet.put("odomDiff",motorCtrls.getROdomValSoft() - motorCtrls.getLOdomValSoft());
+       // packet.put("TO Travel",30000);
         packet.put("xpos",motorCtrls.getPosition().getX());
         packet.put("ypos",motorCtrls.getPosition().getY());
-        packet.put("hpos",motorCtrls.getPosition().getHeading());
+        packet.put("hpos",Math.toDegrees(motorCtrls.getPosition().getHeading()));
 
         dashboard.sendTelemetryPacket(packet);
 
@@ -98,10 +98,10 @@ public class MotorCtrlTestTeleOp extends OpMode {
 
 
 
-        motorCtrls.LF().setPower(0.6*(gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
-        motorCtrls.RF().setPower(0.6*(gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
-        motorCtrls.LB().setPower(0.6*(gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
-        motorCtrls.RB().setPower(0.6*(gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
+        motorCtrls.LF().setPower(0.6*(-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
+        motorCtrls.RF().setPower(0.6*(-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
+        motorCtrls.LB().setPower(0.6*(-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
+        motorCtrls.RB().setPower(0.6*(-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
 
     }
 }
