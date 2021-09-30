@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.BearsUtil;
 
+import android.opengl.Matrix;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
@@ -7,6 +9,19 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.apache.commons.math3.exception.DimensionMismatchException;
+import org.apache.commons.math3.exception.NoDataException;
+import org.apache.commons.math3.exception.NotPositiveException;
+import org.apache.commons.math3.exception.NotStrictlyPositiveException;
+import org.apache.commons.math3.exception.NullArgumentException;
+import org.apache.commons.math3.exception.NumberIsTooSmallException;
+import org.apache.commons.math3.exception.OutOfRangeException;
+import org.apache.commons.math3.linear.MatrixDimensionMismatchException;
+import org.apache.commons.math3.linear.NonSquareMatrixException;
+import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealMatrixChangingVisitor;
+import org.apache.commons.math3.linear.RealMatrixPreservingVisitor;
+import org.apache.commons.math3.linear.RealVector;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /**
@@ -26,7 +41,7 @@ public class MotorEncoderController {
 
     public static  double LATERAL_DISTANCE = 8.45;
     public static  double FORWARD_OFFSET = -9.75;
-    public static  double CONSTANT = 0.9;
+    public static  double CONSTANT = 1;
 
     double lastRodom, lastLodom, lastBodom;
 
@@ -405,16 +420,21 @@ public class MotorEncoderController {
         //System.out.println(deltaAngle);
         double forwardDisp = (deltaL + deltaR)/2;
 
-        double sideDisp = deltaB + (FORWARD_OFFSET*deltaAngle);
+        double sideDisp = deltaB - (FORWARD_OFFSET*deltaAngle);
 
         double heading0 = robotPos.getHeading();
-        double newH = heading0-deltaAngle*CONSTANT;
+        double dH = -deltaAngle*CONSTANT;
         //double newY = -(forwardDisp*Math.sin(heading0) + sideDisp*Math.cos(heading0))*1.2517 + robotPos.getY();
         //double newX = (forwardDisp*Math.cos(heading0) - sideDisp*Math.sin(heading0))*1.2517 + robotPos.getX()
-        double newX = (forwardDisp*Math.cos(newH) - sideDisp*Math.sin(newH)) + robotPos.getX();
-        double newY = (forwardDisp*Math.sin(newH) + sideDisp*Math.cos(newH)) + robotPos.getY();
+        double dX = (forwardDisp*Math.cos(dH) - sideDisp*Math.sin(dH));
+        double dY = (forwardDisp*Math.sin(dH) + sideDisp*Math.cos(dH));
 
-        robotPos = new Pose2d(newX,newY,new Rotation2d(newH));
+
+        double adjX = dX*Math.sin(dH)/dH+(Math.cos(dH)-1)/dH*dY;
+        double adjY = dX * (1 - Math.cos(dH))/dH  + dY * Math.sin(dH)/dH;
+        double adjH = dH;
+
+        robotPos = new Pose2d(adjX + robotPos.getX(),adjY + robotPos.getY(),new Rotation2d(adjH));
 
         lastBodom = Bodom().getCurrentPosition();
         lastRodom = Rodom().getCurrentPosition();
