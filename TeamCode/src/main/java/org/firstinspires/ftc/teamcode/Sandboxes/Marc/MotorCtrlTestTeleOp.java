@@ -97,6 +97,14 @@ public class MotorCtrlTestTeleOp extends OpMode {
         }
 
 
+        if (gamepad1.b && !qB) {
+            qB = true;
+            motorCtrls.resetSoftOdom();
+        }
+        else if (!gamepad1.b && qB) {
+            qB = false;
+        }
+
 
         motorCtrls.LF().setPower(0.6*(-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
         motorCtrls.RF().setPower(0.6*(-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));

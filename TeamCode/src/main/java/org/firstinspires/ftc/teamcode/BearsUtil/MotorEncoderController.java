@@ -24,8 +24,9 @@ public class MotorEncoderController {
 
     Pose2d robotPos;
 
-    public static final double LATERAL_DISTANCE = 12;
-    public static final double FORWARD_OFFSET = -9.75;
+    public static  double LATERAL_DISTANCE = 8.45;
+    public static  double FORWARD_OFFSET = -9.75;
+    public static  double CONSTANT = 0.9;
 
     double lastRodom, lastLodom, lastBodom;
 
@@ -398,19 +399,18 @@ public class MotorEncoderController {
         deltaR = convertOdomTickToRobotInches(deltaR);
         deltaB = convertOdomTickToRobotInches(deltaB);
 
-
         double deltaAngle = (deltaL - deltaR)/LATERAL_DISTANCE;
-        System.out.println("\n\n");
-        System.out.println(deltaAngle*LATERAL_DISTANCE);
-        System.out.println(deltaAngle);
+        //System.out.println("\n\n");
+        //System.out.println(deltaAngle*LATERAL_DISTANCE);
+        //System.out.println(deltaAngle);
         double forwardDisp = (deltaL + deltaR)/2;
 
-        double sideDisp = deltaB - (FORWARD_OFFSET*deltaAngle);
+        double sideDisp = deltaB + (FORWARD_OFFSET*deltaAngle);
 
         double heading0 = robotPos.getHeading();
-        double newH = heading0-deltaAngle;
+        double newH = heading0-deltaAngle*CONSTANT;
         //double newY = -(forwardDisp*Math.sin(heading0) + sideDisp*Math.cos(heading0))*1.2517 + robotPos.getY();
-        //double newX = (forwardDisp*Math.cos(heading0) - sideDisp*Math.sin(heading0))*1.2517 + robotPos.getX();
+        //double newX = (forwardDisp*Math.cos(heading0) - sideDisp*Math.sin(heading0))*1.2517 + robotPos.getX()
         double newX = (forwardDisp*Math.cos(newH) - sideDisp*Math.sin(newH)) + robotPos.getX();
         double newY = (forwardDisp*Math.sin(newH) + sideDisp*Math.cos(newH)) + robotPos.getY();
 
