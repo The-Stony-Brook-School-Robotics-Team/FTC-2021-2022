@@ -68,7 +68,11 @@ public class PurePursuitTesting extends LinearOpMode {
 
         while (opModeIsActive() && !isStopRequested())
         {
-
+            telemetry.addData("Left Encoder Position", encoderLeft.getCurrentPosition() * TICKS_TO_INCHES);
+            telemetry.addData("Right Encoder Position", encoderRight.getCurrentPosition() * TICKS_TO_INCHES);
+            telemetry.addData("Back Encoder Position", encoderPerp.getCurrentPosition() * TICKS_TO_INCHES);
+            telemetry.addData("Estimated Pose X", odometry.getPose().getX());
+            telemetry.addData("Estimated Pose Y", odometry.getPose().getY());
         }
 
 
