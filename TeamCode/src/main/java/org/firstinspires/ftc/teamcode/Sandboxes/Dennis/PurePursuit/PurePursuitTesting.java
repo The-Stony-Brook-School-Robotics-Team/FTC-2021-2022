@@ -29,7 +29,7 @@ public class PurePursuitTesting extends LinearOpMode {
     private MecanumDrive robotDrive;
 
     boolean pressingA = false;
-
+    boolean pressingB = false;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -67,7 +67,6 @@ public class PurePursuitTesting extends LinearOpMode {
                         0.5, 30, 0.8, 1
                 )
         );
-        //ppCommand.schedule();
 
         while (opModeIsActive() && !isStopRequested())
         {
@@ -77,6 +76,14 @@ public class PurePursuitTesting extends LinearOpMode {
                 encoderLeft.resetEncoder();
                 encoderRight.resetEncoder();
                 encoderPerp.resetEncoder();
+                pressingA = false;
+            }
+
+            if(gamepad1.b != pressingB) {
+                pressingB = true;
+            } else if(!gamepad1.b && pressingB) {
+                ppCommand.schedule();
+                pressingB = false;
             }
 
 
@@ -85,6 +92,7 @@ public class PurePursuitTesting extends LinearOpMode {
             telemetry.addData("Back Encoder Position", encoderPerp.getCurrentPosition() * TICKS_TO_INCHES);
             telemetry.addData("Estimated Pose X", odometry.getPose().getX());
             telemetry.addData("Estimated Pose Y", odometry.getPose().getY());
+            telemetry.update();
         }
 
 
