@@ -1,4 +1,8 @@
 package org.firstinspires.ftc.teamcode.Sandboxes.Dennis.PurePursuit;
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.canvas.Canvas;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.OdometrySubsystem;
 import com.arcrobotics.ftclib.command.PurePursuitCommand;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
@@ -9,6 +13,8 @@ import com.arcrobotics.ftclib.purepursuit.waypoints.GeneralWaypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.StartWaypoint;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 @TeleOp(name="PurePursuit Testing", group="drive")
 public class PurePursuitTesting extends LinearOpMode {
@@ -31,6 +37,7 @@ public class PurePursuitTesting extends LinearOpMode {
     boolean pressingA = false;
     boolean pressingB = false;
 
+    FtcDashboard dashboard;
     @Override
     public void runOpMode() throws InterruptedException {
         lf = new MotorEx(hardwareMap, "lf");
@@ -47,10 +54,11 @@ public class PurePursuitTesting extends LinearOpMode {
         encoderPerp.setDistancePerPulse(TICKS_TO_INCHES);
 
         robotDrive = new MecanumDrive(lf, rf, lb, rb);
+        dashboard = FtcDashboard.getInstance();
 
         HolonomicOdometry holOdom = new HolonomicOdometry(
                 () -> encoderLeft.getCurrentPosition() * TICKS_TO_INCHES,
-                () -> encoderRight.getCurrentPosition() * TICKS_TO_INCHES,
+                () -> -(encoderRight.getCurrentPosition() * TICKS_TO_INCHES),
                 () -> encoderPerp.getCurrentPosition() * TICKS_TO_INCHES,
                 TRACKWIDTH, CENTER_WHEEL_OFFSET
         );
@@ -75,9 +83,9 @@ public class PurePursuitTesting extends LinearOpMode {
             if(gamepad1.a != pressingA) {
                 pressingA = true;
             } else if(!gamepad1.a && pressingA) {
-                encoderLeft.resetEncoder();
-                encoderRight.resetEncoder();
-                encoderPerp.resetEncoder();
+                encoderLeft.set(0);
+                encoderRight.set(0);
+                encoderPerp.set(0);
                 pressingA = false;
             }
 
@@ -88,12 +96,18 @@ public class PurePursuitTesting extends LinearOpMode {
                 pressingB = false;
             }
 
+            TelemetryPacket telemPacket = new TelemetryPacket();
+            Canvas ftcField = telemPacket.fieldOverlay();
+            DashboardUtil.drawRobot(ftcField, new Pose2d(odometry.getPose().getX(), odometry.getPose().getY(), odometry.getPose().getHeading()));
+
+            telemPacket.put("Estimated Pose X", odometry.getPose().getX());
+            telemPacket.put("Estimated Pose Y", odometry.getPose().getY());
+            
+            dashboard.sendTelemetryPacket(telemPacket);
 
             telemetry.addData("Left Encoder Position", encoderLeft.getCurrentPosition() * TICKS_TO_INCHES);
             telemetry.addData("Right Encoder Position", encoderRight.getCurrentPosition() * TICKS_TO_INCHES);
             telemetry.addData("Back Encoder Position", encoderPerp.getCurrentPosition() * TICKS_TO_INCHES);
-            telemetry.addData("Estimated Pose X", odometry.getPose().getX());
-            telemetry.addData("Estimated Pose Y", odometry.getPose().getY());
             telemetry.update();
         }
 
