@@ -42,9 +42,9 @@ public class PurePursuitTest extends LinearOpMode {
         LeftEncoder = rf.encoder.setDistancePerPulse(DistancePerPulse);
         RightEncoder = rb.encoder.setDistancePerPulse(DistancePerPulse);
         CentralEncoder = lb.encoder.setDistancePerPulse(DistancePerPulse);
-        LeftEncoder.reset();
-        RightEncoder.reset();
-        CentralEncoder.reset();
+        LeftEncoder.set(0);
+        RightEncoder.set(0);
+        CentralEncoder.set(0);
         DoubleSupplier LP,RP,CP;
         double TicksPerInch = 8192*4*Math.PI;
         LP = () -> LeftEncoder.getPosition()/(TicksPerInch);
