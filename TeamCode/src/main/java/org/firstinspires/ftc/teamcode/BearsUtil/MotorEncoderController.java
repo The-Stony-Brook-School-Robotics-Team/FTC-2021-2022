@@ -423,17 +423,24 @@ public class MotorEncoderController {
         double sideDisp = deltaB - (FORWARD_OFFSET*deltaAngle);
 
         double heading0 = robotPos.getHeading();
-        double dH = -deltaAngle*CONSTANT;
+        double dH = -deltaAngle;
         //double newY = -(forwardDisp*Math.sin(heading0) + sideDisp*Math.cos(heading0))*1.2517 + robotPos.getY();
         //double newX = (forwardDisp*Math.cos(heading0) - sideDisp*Math.sin(heading0))*1.2517 + robotPos.getX()
-        double dX = (forwardDisp*Math.cos(dH) - sideDisp*Math.sin(dH));
-        double dY = (forwardDisp*Math.sin(dH) + sideDisp*Math.cos(dH));
+        double dX = (forwardDisp*Math.cos(heading0) - sideDisp*Math.sin(heading0));
+        double dY = (forwardDisp*Math.sin(heading0) + sideDisp*Math.cos(heading0));
 
+        print("forward Disp: " + forwardDisp);
+        print("sideDisp: " + sideDisp);
+        print("dH: " + dH);
+        print("dX: " + dX);
+        print("dY: " + dY);
 
-        double adjX = dX*Math.sin(dH)/dH+(Math.cos(dH)-1)/dH*dY;
-        double adjY = dX * (1 - Math.cos(dH))/dH  + dY * Math.sin(dH)/dH;
+        double adjX = dH == 0 ? dX : dX*Math.sin(dH)/dH+(Math.cos(dH)-1)/dH*dY;
+        double adjY = dH == 0 ? dY : dX * (1 - Math.cos(dH))/dH  + dY * Math.sin(dH)/dH;
         double adjH = dH;
-
+        print("adjX: " + adjX);
+        print("adjY: " + adjY);
+        print("adjH: " + adjH);
         robotPos = new Pose2d(adjX + robotPos.getX(),adjY + robotPos.getY(),new Rotation2d(adjH));
 
         lastBodom = Bodom().getCurrentPosition();
@@ -452,6 +459,8 @@ public class MotorEncoderController {
         return robotPos;
     }
 
-
+    public void print(String s) {
+        System.out.println(s);
+    }
 
 }

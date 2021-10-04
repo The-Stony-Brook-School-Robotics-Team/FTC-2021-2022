@@ -56,29 +56,39 @@ public class MotorCtrlTestTeleOp extends OpMode {
         telemetry.addData("Rpow",motorCtrls.RF().getPower());
         telemetry.addData("powerRatio",motorCtrls.LF().getPower()/motorCtrls.RF().getPower());
         telemetry.addData("odomDiff",motorCtrls.getROdomValSoft() - motorCtrls.getLOdomValSoft());
-        telemetry.addData("TO Travel",30000);
-
+        //telemetry.addData("xpos",motorCtrls.getPosition().getX());
+        //telemetry.addData("ypos",motorCtrls.getPosition().getY());
+       // telemetry.addData("hpos",Math.toDegrees(motorCtrls.getPosition().getHeading()));
         telemetry.update();
-        TelemetryPacket packet = new TelemetryPacket();
-        Pose2d currentPos = motorCtrls.getPosition();
-        Canvas field = packet.fieldOverlay();
-        DashboardUtil.drawRobot(field,new com.acmerobotics.roadrunner.geometry.Pose2d(currentPos.getX(),currentPos.getY(),currentPos.getHeading()));
-        //packet.put("L ODOM",motorCtrls.getLOdomValSoft());
-        //packet.put("R ODOM",motorCtrls.getROdomValSoft());
-        //packet.put("B ODOM",motorCtrls.getBOdomValSoft());
-        //packet.put("L ODOM inch",MotorEncoderController.convertOdomTickToRobotInches(motorCtrls.getLOdomValSoft()));
-       // packet.put("R ODOM inch",MotorEncoderController.convertOdomTickToRobotInches(motorCtrls.getROdomValSoft()));
-        //packet.put("B ODOM inch",MotorEncoderController.convertOdomTickToRobotInches(motorCtrls.getBOdomValSoft()));
-       // packet.put("Lpow",motorCtrls.LF().getPower());
-       // packet.put("Rpow",motorCtrls.RF().getPower());
-        //packet.put("powerRatio",motorCtrls.LF().getPower()/motorCtrls.RF().getPower());
-       // packet.put("odomDiff",motorCtrls.getROdomValSoft() - motorCtrls.getLOdomValSoft());
-       // packet.put("TO Travel",30000);
-        packet.put("xpos",motorCtrls.getPosition().getX());
-        packet.put("ypos",motorCtrls.getPosition().getY());
-        packet.put("hpos",Math.toDegrees(motorCtrls.getPosition().getHeading()));
 
-        dashboard.sendTelemetryPacket(packet);
+        if (gamepad1.x && !qX) {
+            qX = true;
+            TelemetryPacket packet = new TelemetryPacket();
+            Pose2d currentPos = motorCtrls.getPosition();
+            Canvas field = packet.fieldOverlay();
+            DashboardUtil.drawRobot(field,new com.acmerobotics.roadrunner.geometry.Pose2d(currentPos.getX(),currentPos.getY(),currentPos.getHeading()));
+            //packet.put("L ODOM",motorCtrls.getLOdomValSoft());
+            //packet.put("R ODOM",motorCtrls.getROdomValSoft());
+            //packet.put("B ODOM",motorCtrls.getBOdomValSoft());
+            //packet.put("L ODOM inch",MotorEncoderController.convertOdomTickToRobotInches(motorCtrls.getLOdomValSoft()));
+            // packet.put("R ODOM inch",MotorEncoderController.convertOdomTickToRobotInches(motorCtrls.getROdomValSoft()));
+            //packet.put("B ODOM inch",MotorEncoderController.convertOdomTickToRobotInches(motorCtrls.getBOdomValSoft()));
+            // packet.put("Lpow",motorCtrls.LF().getPower());
+            // packet.put("Rpow",motorCtrls.RF().getPower());
+            //packet.put("powerRatio",motorCtrls.LF().getPower()/motorCtrls.RF().getPower());
+            // packet.put("odomDiff",motorCtrls.getROdomValSoft() - motorCtrls.getLOdomValSoft());
+            // packet.put("TO Travel",30000);
+            packet.put("xpos",motorCtrls.getPosition().getX());
+            packet.put("ypos",motorCtrls.getPosition().getY());
+            packet.put("hpos",Math.toDegrees(motorCtrls.getPosition().getHeading()));
+
+            dashboard.sendTelemetryPacket(packet);
+        }
+        else if (!gamepad1.x && qX) {
+            qX = false;
+        }
+
+
 
 
         /*if (gamepad1.a && !qA) {
