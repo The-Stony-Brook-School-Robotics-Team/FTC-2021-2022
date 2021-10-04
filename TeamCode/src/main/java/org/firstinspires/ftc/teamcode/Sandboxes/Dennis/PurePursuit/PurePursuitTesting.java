@@ -55,7 +55,7 @@ public class PurePursuitTesting extends LinearOpMode {
 
         robotDrive = new MecanumDrive(lf, rf, lb, rb);
         dashboard = FtcDashboard.getInstance();
-
+        
         HolonomicOdometry holOdom = new HolonomicOdometry(
                 () -> encoderLeft.getCurrentPosition() * TICKS_TO_INCHES,
                 () -> -(encoderRight.getCurrentPosition() * TICKS_TO_INCHES),
@@ -99,12 +99,12 @@ public class PurePursuitTesting extends LinearOpMode {
             TelemetryPacket telemPacket = new TelemetryPacket();
             Canvas ftcField = telemPacket.fieldOverlay();
             DashboardUtil.drawRobot(ftcField, new Pose2d(odometry.getPose().getX(), odometry.getPose().getY(), odometry.getPose().getHeading()));
-
+            
             telemPacket.put("Estimated Pose X", odometry.getPose().getX());
             telemPacket.put("Estimated Pose Y", odometry.getPose().getY());
             
             dashboard.sendTelemetryPacket(telemPacket);
-
+            
             telemetry.addData("Left Encoder Position", encoderLeft.getCurrentPosition() * TICKS_TO_INCHES);
             telemetry.addData("Right Encoder Position", encoderRight.getCurrentPosition() * TICKS_TO_INCHES);
             telemetry.addData("Back Encoder Position", encoderPerp.getCurrentPosition() * TICKS_TO_INCHES);
