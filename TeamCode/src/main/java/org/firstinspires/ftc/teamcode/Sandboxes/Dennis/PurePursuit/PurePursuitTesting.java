@@ -70,6 +70,8 @@ public class PurePursuitTesting extends LinearOpMode {
 
         while (opModeIsActive() && !isStopRequested())
         {
+            odometry.update();
+
             if(gamepad1.a != pressingA) {
                 pressingA = true;
             } else if(!gamepad1.a && pressingA) {
