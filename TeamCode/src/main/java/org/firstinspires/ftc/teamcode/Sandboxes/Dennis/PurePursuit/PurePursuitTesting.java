@@ -28,6 +28,9 @@ public class PurePursuitTesting extends LinearOpMode {
     private PurePursuitCommand ppCommand;
     private MecanumDrive robotDrive;
 
+    boolean pressingA = false;
+
+
     @Override
     public void runOpMode() throws InterruptedException {
         lf = new MotorEx(hardwareMap, "lf");
@@ -64,10 +67,19 @@ public class PurePursuitTesting extends LinearOpMode {
                         0.5, 30, 0.8, 1
                 )
         );
-        ppCommand.schedule();
+        //ppCommand.schedule();
 
         while (opModeIsActive() && !isStopRequested())
         {
+            if(gamepad1.a != pressingA) {
+                pressingA = true;
+            } else if(!gamepad1.a && pressingA) {
+                encoderLeft.resetEncoder();
+                encoderRight.resetEncoder();
+                encoderPerp.resetEncoder();
+            }
+
+
             telemetry.addData("Left Encoder Position", encoderLeft.getCurrentPosition() * TICKS_TO_INCHES);
             telemetry.addData("Right Encoder Position", encoderRight.getCurrentPosition() * TICKS_TO_INCHES);
             telemetry.addData("Back Encoder Position", encoderPerp.getCurrentPosition() * TICKS_TO_INCHES);
