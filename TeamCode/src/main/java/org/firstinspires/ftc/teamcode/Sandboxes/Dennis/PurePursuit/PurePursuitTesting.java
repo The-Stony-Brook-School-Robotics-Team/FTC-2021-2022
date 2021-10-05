@@ -77,12 +77,12 @@ public class PurePursuitTesting extends LinearOpMode {
 
         waitForStart();
 
-        //StartWaypoint p1 = new StartWaypoint(0, 0);
-        //GeneralWaypoint p2 = new GeneralWaypoint(10, 0);
-        //EndWaypoint p3 = new EndWaypoint();
+        StartWaypoint p1 = new StartWaypoint(0, 0);
+        GeneralWaypoint p2 = new GeneralWaypoint(10, 0);
+        EndWaypoint p3 = new EndWaypoint();
 
-        //Path m_path = new Path(p1, p2, p3);
-        //m_path.init();
+        Path m_path = new Path(p1, p2, p3);
+        m_path.init();
 
         while (opModeIsActive() && !isStopRequested())
         {
