@@ -6,13 +6,17 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.OdometrySubsystem;
 import com.arcrobotics.ftclib.command.PurePursuitCommand;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
+import com.arcrobotics.ftclib.purepursuit.Path;
+import com.arcrobotics.ftclib.purepursuit.Waypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.EndWaypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.GeneralWaypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.StartWaypoint;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
@@ -31,13 +35,16 @@ public class PurePursuitTesting extends LinearOpMode {
     private OdometrySubsystem odometry;
     private MotorEx encoderLeft, encoderRight, encoderPerp;
 
-    private PurePursuitCommand ppCommand;
     private MecanumDrive robotDrive;
 
-    boolean pressingA = false;
-    boolean pressingB = false;
+    private boolean pressingA = false;
+    private boolean pressingB = false;
+
+    private int ButtonACounter = 0;
+    private int ButtonBCounter = 0;
 
     FtcDashboard dashboard;
+
     @Override
     public void runOpMode() throws InterruptedException {
         lf = new MotorEx(hardwareMap, "lf");
@@ -53,6 +60,10 @@ public class PurePursuitTesting extends LinearOpMode {
         encoderRight.setDistancePerPulse(TICKS_TO_INCHES);
         encoderPerp.setDistancePerPulse(TICKS_TO_INCHES);
 
+        encoderLeft.resetEncoder();
+        encoderRight.resetEncoder();
+        encoderPerp.resetEncoder();
+
         robotDrive = new MecanumDrive(lf, rf, lb, rb);
         dashboard = FtcDashboard.getInstance();
         
@@ -66,45 +77,54 @@ public class PurePursuitTesting extends LinearOpMode {
 
         waitForStart();
 
-        ppCommand = new PurePursuitCommand(
-                robotDrive, odometry,
-                new StartWaypoint(0,0),
-                new GeneralWaypoint(200,0,0.8,0.8,30),
-                new EndWaypoint(
-                        400, 0, 0, 0.5,
-                        0.5, 30, 0.8, 1
-                )
-        );
+        StartWaypoint p1 = new StartWaypoint(0, 0);
+        GeneralWaypoint p2 = new GeneralWaypoint(0, 0, 0.8, 0.8, 30);
+        EndWaypoint p3 = new EndWaypoint(400, 0, 0, 0.5, 0.5, 30, 0.8, 1);
+
+        Path m_path = new Path(p1, p2, p3);
+        m_path.init();
 
         while (opModeIsActive() && !isStopRequested())
         {
             odometry.update();
 
-            if(gamepad1.a != pressingA) {
+            if(gamepad1.a && !pressingA) {
                 pressingA = true;
             } else if(!gamepad1.a && pressingA) {
-                encoderLeft.set(0);
-                encoderRight.set(0);
-                encoderPerp.set(0);
+                encoderLeft.resetEncoder();
+                encoderRight.resetEncoder();
+                encoderPerp.resetEncoder();
+                ButtonACounter++;
                 pressingA = false;
             }
 
-            if(gamepad1.b != pressingB) {
+            if(gamepad1.b && !pressingB) {
                 pressingB = true;
             } else if(!gamepad1.b && pressingB) {
-                ppCommand.schedule();
+                m_path.followPath(robotDrive, holOdom);
+                ButtonBCounter++;
                 pressingB = false;
             }
 
+            lf.set(0.6 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
+            rf.set(0.6 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
+            lb.set(0.6 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
+            rb.set(0.6 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
+
+
             TelemetryPacket telemPacket = new TelemetryPacket();
             Canvas ftcField = telemPacket.fieldOverlay();
-            DashboardUtil.drawRobot(ftcField, new Pose2d(odometry.getPose().getX(), odometry.getPose().getY(), -(odometry.getPose().getHeading())));
-            
+            DashboardUtil.drawRobot(ftcField, new Pose2d(odometry.getPose().getX(), -(odometry.getPose().getY()), -(odometry.getPose().getHeading())));
+
+            telemPacket.put("Robot Test", 1);
             telemPacket.put("Estimated Pose X", odometry.getPose().getX());
             telemPacket.put("Estimated Pose Y", odometry.getPose().getY());
-            
+            telemPacket.put("Estimated Pose Heading", Math.toDegrees(odometry.getPose().getHeading()));
+
             dashboard.sendTelemetryPacket(telemPacket);
 
+            telemetry.addData("A Counter", ButtonACounter);
+            telemetry.addData("B Counter", ButtonBCounter);
             telemetry.addData("Left Encoder Position", encoderLeft.getCurrentPosition() * TICKS_TO_INCHES);
             telemetry.addData("Right Encoder Position", encoderRight.getCurrentPosition() * TICKS_TO_INCHES);
             telemetry.addData("Back Encoder Position", encoderPerp.getCurrentPosition() * TICKS_TO_INCHES);
