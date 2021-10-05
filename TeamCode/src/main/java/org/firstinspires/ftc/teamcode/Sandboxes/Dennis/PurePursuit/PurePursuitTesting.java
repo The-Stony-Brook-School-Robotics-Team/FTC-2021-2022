@@ -118,7 +118,7 @@ public class PurePursuitTesting extends LinearOpMode {
             
             telemPacket.put("Estimated Pose X", odometry.getPose().getX());
             telemPacket.put("Estimated Pose Y", odometry.getPose().getY());
-            telemPacket.put("Estimated Pose Heading", odometry.getPose().getHeading());
+            telemPacket.put("Estimated Pose Heading", Math.toDegrees(odometry.getPose().getHeading()));
 
             dashboard.sendTelemetryPacket(telemPacket);
 
