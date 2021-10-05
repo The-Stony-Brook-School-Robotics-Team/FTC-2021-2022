@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.OdometrySubsystem;
 import com.arcrobotics.ftclib.command.PurePursuitCommand;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
 import com.arcrobotics.ftclib.purepursuit.waypoints.EndWaypoint;
@@ -13,6 +14,7 @@ import com.arcrobotics.ftclib.purepursuit.waypoints.GeneralWaypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.StartWaypoint;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
@@ -53,6 +55,10 @@ public class PurePursuitTesting extends LinearOpMode {
         encoderRight.setDistancePerPulse(TICKS_TO_INCHES);
         encoderPerp.setDistancePerPulse(TICKS_TO_INCHES);
 
+        encoderLeft.resetEncoder();
+        encoderRight.resetEncoder();
+        encoderPerp.resetEncoder();
+
         robotDrive = new MecanumDrive(lf, rf, lb, rb);
         dashboard = FtcDashboard.getInstance();
         
@@ -83,9 +89,9 @@ public class PurePursuitTesting extends LinearOpMode {
             if(gamepad1.a != pressingA) {
                 pressingA = true;
             } else if(!gamepad1.a && pressingA) {
-                encoderLeft.set(0);
-                encoderRight.set(0);
-                encoderPerp.set(0);
+                encoderLeft.resetEncoder();
+                encoderRight.resetEncoder();
+                encoderPerp.resetEncoder();
                 pressingA = false;
             }
 
