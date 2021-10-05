@@ -36,8 +36,11 @@ public class PurePursuitTesting extends LinearOpMode {
     private PurePursuitCommand ppCommand;
     private MecanumDrive robotDrive;
 
-    boolean pressingA = false;
-    boolean pressingB = false;
+    private boolean pressingA = false;
+    private boolean pressingB = false;
+
+    private int ButtonACounter = 0;
+    private int ButtonBCounter = 0;
 
     FtcDashboard dashboard;
     @Override
@@ -86,19 +89,21 @@ public class PurePursuitTesting extends LinearOpMode {
         {
             odometry.update();
 
-            if(gamepad1.a != pressingA) {
+            if(gamepad1.a && !pressingA) {
                 pressingA = true;
             } else if(!gamepad1.a && pressingA) {
                 encoderLeft.resetEncoder();
                 encoderRight.resetEncoder();
                 encoderPerp.resetEncoder();
+                ButtonACounter++;
                 pressingA = false;
             }
 
-            if(gamepad1.b != pressingB) {
+            if(gamepad1.b && !pressingB) {
                 pressingB = true;
             } else if(!gamepad1.b && pressingB) {
                 ppCommand.schedule();
+                ButtonBCounter++;
                 pressingB = false;
             }
 
@@ -111,6 +116,8 @@ public class PurePursuitTesting extends LinearOpMode {
             
             dashboard.sendTelemetryPacket(telemPacket);
 
+            telemetry.addData("A Counter", ButtonACounter);
+            telemetry.addData("B Counter", ButtonBCounter);
             telemetry.addData("Left Encoder Position", encoderLeft.getCurrentPosition() * TICKS_TO_INCHES);
             telemetry.addData("Right Encoder Position", encoderRight.getCurrentPosition() * TICKS_TO_INCHES);
             telemetry.addData("Back Encoder Position", encoderPerp.getCurrentPosition() * TICKS_TO_INCHES);
