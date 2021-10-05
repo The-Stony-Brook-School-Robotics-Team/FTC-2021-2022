@@ -50,6 +50,10 @@ public class PurePursuitTest extends LinearOpMode {
          lb = new MotorEx(hardwareMap, "backodom");
          rb = new MotorEx(hardwareMap, "rightodom");
 
+        LeftEncoder = new MotorEx(hardwareMap, "leftodom");
+        CentralEncoder = new MotorEx(hardwareMap, "backodom");
+        RightEncoder = new MotorEx(hardwareMap, "rightodom");
+
         Drivers = new MecanumDrive(lf, rf, lb, rb);
         //Drivers;
         LeftEncoder.setDistancePerPulse(DistancePerPulse);
@@ -64,7 +68,7 @@ public class PurePursuitTest extends LinearOpMode {
         DoubleSupplier LP,RP,CP;
         double TicksPerInch = 8192*4*Math.PI;
         LP = () -> LeftEncoder.getCurrentPosition()/(TicksPerInch);
-        RP = () -> RightEncoder.getCurrentPosition()/(TicksPerInch);
+        RP = () -> -(RightEncoder.getCurrentPosition()/(TicksPerInch));
         CP = () -> CentralEncoder.getCurrentPosition()/(TicksPerInch);
 
         FtcDashboard.getInstance();
