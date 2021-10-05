@@ -77,12 +77,12 @@ public class PurePursuitTesting extends LinearOpMode {
 
         waitForStart();
 
-        Waypoint p1 = new StartWaypoint(0, 0);
-        Waypoint p2 = new GeneralWaypoint(10, 0);
-        Waypoint p3 = new EndWaypoint();
+        //StartWaypoint p1 = new StartWaypoint(0, 0);
+        //GeneralWaypoint p2 = new GeneralWaypoint(10, 0);
+        //EndWaypoint p3 = new EndWaypoint();
 
-        Path m_path = new Path(p1, p2, p3);
-        m_path.init();
+        //Path m_path = new Path(p1, p2, p3);
+        //m_path.init();
 
         while (opModeIsActive() && !isStopRequested())
         {
@@ -101,7 +101,7 @@ public class PurePursuitTesting extends LinearOpMode {
             if(gamepad1.b && !pressingB) {
                 pressingB = true;
             } else if(!gamepad1.b && pressingB) {
-                m_path.followPath(robotDrive, holOdom);
+                //m_path.followPath(robotDrive, holOdom);
                 ButtonBCounter++;
                 pressingB = false;
             }
