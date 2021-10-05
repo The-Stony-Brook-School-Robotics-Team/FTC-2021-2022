@@ -109,11 +109,12 @@ public class PurePursuitTesting extends LinearOpMode {
 
             TelemetryPacket telemPacket = new TelemetryPacket();
             Canvas ftcField = telemPacket.fieldOverlay();
-            DashboardUtil.drawRobot(ftcField, new Pose2d(odometry.getPose().getX(), odometry.getPose().getY(), -(odometry.getPose().getHeading())));
+            DashboardUtil.drawRobot(ftcField, new Pose2d(odometry.getPose().getX(), -(odometry.getPose().getY()), -(odometry.getPose().getHeading())));
             
             telemPacket.put("Estimated Pose X", odometry.getPose().getX());
             telemPacket.put("Estimated Pose Y", odometry.getPose().getY());
-            
+            telemPacket.put("Estimated Pose Heading", odometry.getPose().getHeading());
+
             dashboard.sendTelemetryPacket(telemPacket);
 
             telemetry.addData("A Counter", ButtonACounter);
