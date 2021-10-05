@@ -83,7 +83,7 @@ public class MovementTesting extends LinearOpMode {
 
         StartWaypoint p1 = new StartWaypoint(0, 0);
         GeneralWaypoint p2 = new GeneralWaypoint(0, 0, 0.8, 0.8, 30);
-        EndWaypoint p3 = new EndWaypoint(400, 0, 0, 0.5, 0.5, 30, 0.8, 1);
+        EndWaypoint p3 = new EndWaypoint(10, 10, 0, 0.5, 0.5, 30, 0.8, 1);
 
         Path m_path = new Path(p1, p2, p3);
         m_path.init();
