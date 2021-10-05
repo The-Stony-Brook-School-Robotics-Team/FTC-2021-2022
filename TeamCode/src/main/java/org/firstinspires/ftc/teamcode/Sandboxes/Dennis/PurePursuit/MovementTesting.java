@@ -1,4 +1,9 @@
 package org.firstinspires.ftc.teamcode.Sandboxes.Dennis.PurePursuit;
+import static org.firstinspires.ftc.teamcode.Sandboxes.Dennis.PurePursuit.MovementConfig.TRACKWIDTH;
+import static org.firstinspires.ftc.teamcode.Sandboxes.Dennis.PurePursuit.MovementConfig.WHEEL_DIAMETER;
+import static org.firstinspires.ftc.teamcode.Sandboxes.Dennis.PurePursuit.MovementConfig.TICKS_PER_REV;
+import static org.firstinspires.ftc.teamcode.Sandboxes.Dennis.PurePursuit.MovementConfig.CENTER_WHEEL_OFFSET;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -20,14 +25,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
-@TeleOp(name="PurePursuit Testing", group="drive")
-public class PurePursuitTesting extends LinearOpMode {
+@TeleOp(name="A - Movement Testing", group="drive")
+public class MovementTesting extends LinearOpMode {
 
 
-    private static final double TRACKWIDTH = 12.75;
-    private static final double CENTER_WHEEL_OFFSET = -8.7;
-    private static final double WHEEL_DIAMETER = 2.0;
-    private static final double TICKS_PER_REV = 8192;
+
     private static final double TICKS_TO_INCHES = Math.PI * WHEEL_DIAMETER / TICKS_PER_REV;
 
     private MotorEx lf, rf, lb, rb;
@@ -44,6 +46,8 @@ public class PurePursuitTesting extends LinearOpMode {
     private int ButtonBCounter = 0;
 
     FtcDashboard dashboard;
+
+
 
     @Override
     public void runOpMode() throws InterruptedException {
