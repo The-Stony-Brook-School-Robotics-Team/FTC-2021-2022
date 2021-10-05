@@ -78,9 +78,9 @@ public class PurePursuitTesting extends LinearOpMode {
         ppCommand = new PurePursuitCommand(
                 robotDrive, odometry,
                 new StartWaypoint(0,0),
-                new GeneralWaypoint(200,0,0.8,0.8,30),
+                new GeneralWaypoint(10,10,0.8,0.8,30),
                 new EndWaypoint(
-                        400, 0, 0, 0.5,
+                        10, 0, 0, 0.5,
                         0.5, 30, 0.8, 1
                 )
         );
@@ -106,6 +106,12 @@ public class PurePursuitTesting extends LinearOpMode {
                 ButtonBCounter++;
                 pressingB = false;
             }
+            
+            lf.set(0.6*(-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
+            rf.set(0.6*(-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
+            lb.set(0.6*(-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
+            rb.set(0.6*(-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
+
 
             TelemetryPacket telemPacket = new TelemetryPacket();
             Canvas ftcField = telemPacket.fieldOverlay();
