@@ -101,7 +101,7 @@ public class PurePursuitTesting extends LinearOpMode {
             if(gamepad1.b && !pressingB) {
                 pressingB = true;
             } else if(!gamepad1.b && pressingB) {
-                //m_path.followPath(robotDrive, holOdom);
+                m_path.followPath(robotDrive, holOdom);
                 ButtonBCounter++;
                 pressingB = false;
             }
@@ -115,7 +115,8 @@ public class PurePursuitTesting extends LinearOpMode {
             TelemetryPacket telemPacket = new TelemetryPacket();
             Canvas ftcField = telemPacket.fieldOverlay();
             DashboardUtil.drawRobot(ftcField, new Pose2d(odometry.getPose().getX(), -(odometry.getPose().getY()), -(odometry.getPose().getHeading())));
-            
+
+            telemPacket.put("Robot Test", 1);
             telemPacket.put("Estimated Pose X", odometry.getPose().getX());
             telemPacket.put("Estimated Pose Y", odometry.getPose().getY());
             telemPacket.put("Estimated Pose Heading", Math.toDegrees(odometry.getPose().getHeading()));
