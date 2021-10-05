@@ -28,7 +28,7 @@ public class PurePursuitTest extends LinearOpMode {
 //    private Motor.Encoder LeftEncoder;
 //    private Motor.Encoder RightEncoder;
 //    private Motor.Encoder CentralEncoder;
-    private HolonomicOdometry odometry;
+    private HolonomicOdometry HolonomicOdometry;
     private OdometrySubsystem OdometrySubSystem;
 
     private MotorEx LeftEncoder;
@@ -71,12 +71,13 @@ public class PurePursuitTest extends LinearOpMode {
         RP = () -> -(RightEncoder.getCurrentPosition()/(TicksPerInch));
         CP = () -> CentralEncoder.getCurrentPosition()/(TicksPerInch);
 
-        FtcDashboard.getInstance();
-        odometry = new HolonomicOdometry(LP,RP,CP,12.75, -8.7);
+
+        HolonomicOdometry = new HolonomicOdometry(LP,RP,CP,12.75, -8.7);
+        OdometrySubSystem = new OdometrySubsystem(HolonomicOdometry);
         OdometrySubSystem.update();
 
 
-
+        FtcDashboard.getInstance();
         TelemetryPacket TelemetryPacket = new TelemetryPacket();
         Graph.sendTelemetryPacket(TelemetryPacket);
         telemetry.addData("X: ",OdometrySubSystem.getPose().getX());
@@ -108,7 +109,8 @@ public class PurePursuitTest extends LinearOpMode {
         Waypoint endW = new EndWaypoint(8192*11, 8192*11, Math.PI*2, 50, 50, 2*Math.PI*2, 2*Math.PI*2, 2*Math.PI*2);
         Path testP = new Path(startW, intermediateW, endW);
         testP.init();
-        testP.followPath(Drivers, odometry);
+        testP.followPath(Drivers, HolonomicOdometry);
+        testP.setWaypointTimeouts(10000);
 
     }
 }
