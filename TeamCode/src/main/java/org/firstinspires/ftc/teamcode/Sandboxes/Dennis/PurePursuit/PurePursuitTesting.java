@@ -9,6 +9,8 @@ import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
+import com.arcrobotics.ftclib.purepursuit.Path;
+import com.arcrobotics.ftclib.purepursuit.Waypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.EndWaypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.GeneralWaypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.StartWaypoint;
@@ -33,7 +35,6 @@ public class PurePursuitTesting extends LinearOpMode {
     private OdometrySubsystem odometry;
     private MotorEx encoderLeft, encoderRight, encoderPerp;
 
-    private PurePursuitCommand ppCommand;
     private MecanumDrive robotDrive;
 
     private boolean pressingA = false;
@@ -43,6 +44,7 @@ public class PurePursuitTesting extends LinearOpMode {
     private int ButtonBCounter = 0;
 
     FtcDashboard dashboard;
+
     @Override
     public void runOpMode() throws InterruptedException {
         lf = new MotorEx(hardwareMap, "lf");
@@ -75,15 +77,12 @@ public class PurePursuitTesting extends LinearOpMode {
 
         waitForStart();
 
-        ppCommand = new PurePursuitCommand(
-                robotDrive, odometry,
-                new StartWaypoint(0,0),
-                new GeneralWaypoint(200,0,0.8,0.8,30),
-                new EndWaypoint(
-                        400, 0, 0, 0.5,
-                        0.5, 30, 0.8, 1
-                )
-        );
+        StartWaypoint p1 = new StartWaypoint(0, 0);
+        GeneralWaypoint p2 = new GeneralWaypoint(0, 0, 0.8, 0.8, 30);
+        EndWaypoint p3 = new EndWaypoint(400, 0, 0, 0.5, 0.5, 30, 0.8, 1);
+
+        Path m_path = new Path(p1, p2, p3);
+        m_path.init();
 
         while (opModeIsActive() && !isStopRequested())
         {
@@ -102,18 +101,25 @@ public class PurePursuitTesting extends LinearOpMode {
             if(gamepad1.b && !pressingB) {
                 pressingB = true;
             } else if(!gamepad1.b && pressingB) {
-                ppCommand.schedule();
+                m_path.followPath(robotDrive, holOdom);
                 ButtonBCounter++;
                 pressingB = false;
             }
 
+            lf.set(0.6 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
+            rf.set(0.6 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
+            lb.set(0.6 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
+            rb.set(0.6 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
+
+
             TelemetryPacket telemPacket = new TelemetryPacket();
             Canvas ftcField = telemPacket.fieldOverlay();
             DashboardUtil.drawRobot(ftcField, new Pose2d(odometry.getPose().getX(), -(odometry.getPose().getY()), -(odometry.getPose().getHeading())));
-            
+
+            telemPacket.put("Robot Test", 1);
             telemPacket.put("Estimated Pose X", odometry.getPose().getX());
             telemPacket.put("Estimated Pose Y", odometry.getPose().getY());
-            telemPacket.put("Estimated Pose Heading", odometry.getPose().getHeading());
+            telemPacket.put("Estimated Pose Heading", Math.toDegrees(odometry.getPose().getHeading()));
 
             dashboard.sendTelemetryPacket(telemPacket);
 
