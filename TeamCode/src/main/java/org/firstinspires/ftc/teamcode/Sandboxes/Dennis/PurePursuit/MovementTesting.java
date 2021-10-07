@@ -9,19 +9,15 @@ import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.OdometrySubsystem;
-import com.arcrobotics.ftclib.command.PurePursuitCommand;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
 import com.arcrobotics.ftclib.purepursuit.Path;
-import com.arcrobotics.ftclib.purepursuit.Waypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.EndWaypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.GeneralWaypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.StartWaypoint;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
@@ -34,7 +30,7 @@ public class MovementTesting extends LinearOpMode {
 
     private MotorEx lf, rf, lb, rb;
     private MecanumDrive drive;
-    private OdometrySubsystem odometry;
+    private OdometrySubsystem odometrey;
     private MotorEx encoderLeft, encoderRight, encoderPerp;
 
     private MecanumDrive robotDrive;
@@ -77,7 +73,7 @@ public class MovementTesting extends LinearOpMode {
                 () -> (encoderPerp.getCurrentPosition() * TICKS_TO_INCHES),
                 TRACKWIDTH, CENTER_WHEEL_OFFSET
         );
-        odometry = new OdometrySubsystem(holOdom);
+        odometrey = new OdometrySubsystem(holOdom);
 
         waitForStart();
 
@@ -90,7 +86,7 @@ public class MovementTesting extends LinearOpMode {
 
         while (opModeIsActive() && !isStopRequested())
         {
-            odometry.update();
+            odometrey.update();
 
             if(gamepad1.a && !pressingA) {
                 pressingA = true;
@@ -118,12 +114,12 @@ public class MovementTesting extends LinearOpMode {
 
             TelemetryPacket telemPacket = new TelemetryPacket();
             Canvas ftcField = telemPacket.fieldOverlay();
-            DashboardUtil.drawRobot(ftcField, new Pose2d(odometry.getPose().getX(), -(odometry.getPose().getY()), -(odometry.getPose().getHeading())));
+            DashboardUtil.drawRobot(ftcField, new Pose2d(odometrey.getPose().getX(), -(odometrey.getPose().getY()), -(odometrey.getPose().getHeading())));
 
             telemPacket.put("Robot Test", 1);
-            telemPacket.put("Estimated Pose X", odometry.getPose().getX());
-            telemPacket.put("Estimated Pose Y", odometry.getPose().getY());
-            telemPacket.put("Estimated Pose Heading", Math.toDegrees(odometry.getPose().getHeading()));
+            telemPacket.put("Estimated Pose X", odometrey.getPose().getX());
+            telemPacket.put("Estimated Pose Y", odometrey.getPose().getY());
+            telemPacket.put("Estimated Pose Heading", Math.toDegrees(odometrey.getPose().getHeading()));
 
             dashboard.sendTelemetryPacket(telemPacket);
 
