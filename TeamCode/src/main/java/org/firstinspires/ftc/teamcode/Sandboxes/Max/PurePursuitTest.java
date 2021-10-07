@@ -74,47 +74,49 @@ public class PurePursuitTest extends LinearOpMode {
 
         HolonomicOdometry = new HolonomicOdometry(LP,RP,CP,12.75, -8.7);
         OdometrySubSystem = new OdometrySubsystem(this.HolonomicOdometry);
-        OdometrySubSystem.update();
 
 
         FtcDashboard dashboard = FtcDashboard.getInstance();
         TelemetryPacket TelemetryPacket = new TelemetryPacket();
         Canvas Field = new TelemetryPacket().fieldOverlay();
         com.acmerobotics.roadrunner.geometry.Pose2d Pose2dField= new com.acmerobotics.roadrunner.geometry.Pose2d(OdometrySubSystem.getPose().getX(), OdometrySubSystem.getPose().getY(),OdometrySubSystem.getPose().getHeading());
-        DashboardUtil.drawRobot(Field, Pose2dField);
-        TelemetryPacket.put("Pure Pursuit Position Indicator", 0);
-        TelemetryPacket.put("X: ", OdometrySubSystem.getPose().getX());
-        TelemetryPacket.put("Y: ", OdometrySubSystem.getPose().getY());
-        TelemetryPacket.put("H: ", OdometrySubSystem.getPose().getHeading());
-        dashboard.sendTelemetryPacket(TelemetryPacket);
-        telemetry.addData("X: ",OdometrySubSystem.getPose().getX());
-        telemetry.addData("Y: ",OdometrySubSystem.getPose().getY());
-        telemetry.addData("H: ",OdometrySubSystem.getPose().getHeading());
-        telemetry.update();
 
-        if(!gamepad1.a){
-        LeftEncoder.set(0);
-        RightEncoder.set(0);
-        CentralEncoder.set(0);
+        while(true) {
+
+            DashboardUtil.drawRobot(Field, Pose2dField);
+            OdometrySubSystem.update();
+            TelemetryPacket.put("Pure Pursuit Position Indicator", 0);
+            TelemetryPacket.put("X: ", OdometrySubSystem.getPose().getX());
+            TelemetryPacket.put("Y: ", OdometrySubSystem.getPose().getY());
+            TelemetryPacket.put("H: ", OdometrySubSystem.getPose().getHeading());
+            dashboard.sendTelemetryPacket(TelemetryPacket);
+            telemetry.addData("X: ", OdometrySubSystem.getPose().getX());
+            telemetry.addData("Y: ", OdometrySubSystem.getPose().getY());
+            telemetry.addData("H: ", -OdometrySubSystem.getPose().getHeading());
+            telemetry.update();
+
+            if (!gamepad1.a) {
+                LeftEncoder.set(0);
+                RightEncoder.set(0);
+                CentralEncoder.set(0);
+            }
+
+            if (!gamepad1.x) {
+
+                /*The Code Below Is Pure Pursuit Road Tracking*/
+
+                Waypoint startW = new StartWaypoint(LeftEncoder.getCurrentPosition(), RightEncoder.getCurrentPosition());
+                //Waypoint premW = new InterruptWaypoint(8192*2, 8192*2, odometry.updatePose()); //Learning "Position Buffer"
+                Waypoint intermediateW = new GeneralWaypoint(8192 * 10, 8192 * 10, Math.PI * 2, 50, 50, 2 * Math.PI);
+                Waypoint postW = new InterruptWaypoint();
+                Waypoint endW = new EndWaypoint(8192 * 11, 8192 * 11, Math.PI * 2, 50, 50, 2 * Math.PI * 2, 2 * Math.PI * 2, 2 * Math.PI * 2);
+                Path testP = new Path(startW, intermediateW, endW);
+                testP.init();
+                testP.followPath(Drivers, HolonomicOdometry);
+                testP.setWaypointTimeouts(10000);
+
+            }
         }
-
-
-
-
-
-
-
-        /*The Code Below Is Pure Pursuit Road Tracking*/
-
-        Waypoint startW = new StartWaypoint(LeftEncoder.getCurrentPosition(),RightEncoder.getCurrentPosition());
-        //Waypoint premW = new InterruptWaypoint(8192*2, 8192*2, odometry.updatePose()); //Learning "Position Buffer"
-        Waypoint intermediateW= new GeneralWaypoint(8192*10, 8192*10, Math.PI*2, 50,50, 2*Math.PI);
-        Waypoint postW = new InterruptWaypoint();
-        Waypoint endW = new EndWaypoint(8192*11, 8192*11, Math.PI*2, 50, 50, 2*Math.PI*2, 2*Math.PI*2, 2*Math.PI*2);
-        Path testP = new Path(startW, intermediateW, endW);
-        testP.init();
-        testP.followPath(Drivers, HolonomicOdometry);
-        testP.setWaypointTimeouts(10000);
-
     }
+
 }
