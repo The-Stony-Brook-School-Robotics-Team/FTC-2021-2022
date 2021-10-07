@@ -78,14 +78,6 @@ public class MovementTesting extends LinearOpMode {
 
         waitForStart();
 
-        StartWaypoint p1 = new StartWaypoint(0, 0);
-        GeneralWaypoint p2 = new GeneralWaypoint(0, 0, 0.8, 0.8, 30);
-        EndWaypoint p3 = new EndWaypoint(10, 10, 0, 0.5, 0.5, 30, 0.8, 1);
-
-        Path m_path = new Path(p1, p2, p3);
-        m_path.init();
-        m_path.setWaypointTimeouts(3);
-
         while (opModeIsActive() && !isStopRequested())
         {
             odometry.update();
@@ -104,6 +96,15 @@ public class MovementTesting extends LinearOpMode {
             if(gamepad1.b && !pressingB) {
                 pressingB = true;
             } else if(!gamepad1.b && pressingB) {
+                Pose2d currentPos = new Pose2d(odometry.getPose().getX(), odometry.getPose().getY());
+                StartWaypoint p1 = new StartWaypoint(currentPos.getX(), currentPos.getY());
+                GeneralWaypoint p2 = new GeneralWaypoint(currentPos.getX() + 10, currentPos.getY() + 10, 0.8, 0.8, 30);
+                EndWaypoint p3 = new EndWaypoint(currentPos.getX() + 10, currentPos.getY() + 10, 0, 0.5, 0.5, 30, 0.8, 1);
+
+                Path m_path = new Path(p1, p2, p3);
+                m_path.init();
+                m_path.setWaypointTimeouts(3000);
+
                 m_path.followPath(robotDrive, holOdom);
                 ButtonBCounter++;
                 pressingB = false;
