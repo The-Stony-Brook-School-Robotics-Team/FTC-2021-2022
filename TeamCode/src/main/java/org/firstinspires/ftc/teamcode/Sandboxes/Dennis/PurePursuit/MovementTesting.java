@@ -7,13 +7,13 @@ import static org.firstinspires.ftc.teamcode.Sandboxes.Dennis.PurePursuit.Moveme
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.OdometrySubsystem;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
-import com.arcrobotics.ftclib.geometry.Translation2d;
+import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
 import com.arcrobotics.ftclib.purepursuit.Path;
+import com.arcrobotics.ftclib.purepursuit.Waypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.EndWaypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.GeneralWaypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.StartWaypoint;
@@ -78,14 +78,6 @@ public class MovementTesting extends LinearOpMode {
 
         waitForStart();
 
-        StartWaypoint p1 = new StartWaypoint(0, 0);
-        GeneralWaypoint p2 = new GeneralWaypoint(0, 0, 0.8, 0.8, 30);
-        EndWaypoint p3 = new EndWaypoint(10, 10, 0, 0.5, 0.5, 30, 0.8, 1);
-
-        Path m_path = new Path(p1, p2, p3);
-        m_path.init();
-        m_path.setWaypointTimeouts(3);
-
         while (opModeIsActive() && !isStopRequested())
         {
             odometry.update();
@@ -104,7 +96,36 @@ public class MovementTesting extends LinearOpMode {
             if(gamepad1.b && !pressingB) {
                 pressingB = true;
             } else if(!gamepad1.b && pressingB) {
-                m_path.followPath(robotDrive, holOdom);
+                Pose2d currentPose = new Pose2d(odometry.getPose().getX(), odometry.getPose().getY(), odometry.getPose().getRotation());
+                Waypoint p1 = new StartWaypoint(currentPose);
+                Waypoint p2 = new GeneralWaypoint(
+                        currentPose.getX() + 10,
+                        currentPose.getY() + 10,
+                        1,
+                        1,
+                        5
+                );
+                Waypoint p3 = new GeneralWaypoint(
+                        currentPose.getX() + 20,
+                        currentPose.getY() + 20,
+                        1,
+                        1,
+                        5
+                );
+                Pose2d endPose = new Pose2d(currentPose.getX() + 10, currentPose.getY(), currentPose.getRotation());
+                Waypoint p4 = new EndWaypoint(
+                        endPose,
+                        1,
+                        1,
+                        5,
+                        0.4,
+                        0.4
+                );
+
+                Path path = new Path(p1, p2, p3, p4);
+                path.init();
+                path.followPath(robotDrive, holOdom);
+
                 ButtonBCounter++;
                 pressingB = false;
             }
@@ -117,7 +138,7 @@ public class MovementTesting extends LinearOpMode {
 
             TelemetryPacket telemPacket = new TelemetryPacket();
             Canvas ftcField = telemPacket.fieldOverlay();
-            DashboardUtil.drawRobot(ftcField, new Pose2d(odometry.getPose().getX(), -(odometry.getPose().getY()), -(odometry.getPose().getHeading())));
+            //DashboardUtil.drawRobot(ftcField, new Pose2DRR(odometry.getPose().getX(), -(odometry.getPose().getY()), odometry.getPose().getRotation().getDegrees()));
 
             telemPacket.put("Robot Test", 1);
             telemPacket.put("Estimated Pose X", odometry.getPose().getX());
@@ -133,8 +154,6 @@ public class MovementTesting extends LinearOpMode {
             telemetry.addData("Back Encoder Position", encoderPerp.getCurrentPosition() * TICKS_TO_INCHES);
             telemetry.update();
         }
-
-
     }
 
 

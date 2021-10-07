@@ -22,7 +22,7 @@ import static org.firstinspires.ftc.teamcode.Sandboxes.Dennis.PurePursuit.Moveme
 import static org.firstinspires.ftc.teamcode.Sandboxes.Dennis.PurePursuit.MovementConfig.TRACKWIDTH;
 import static org.firstinspires.ftc.teamcode.Sandboxes.Dennis.PurePursuit.MovementConfig.WHEEL_DIAMETER;
 
-@TeleOp(name="A - Movement Testing", group="drive")
+@TeleOp(name="A -  Movement Testing", group="drive")
 public class MovementTesting extends LinearOpMode {
 
 

@@ -8,6 +8,9 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class OpenCVEngine  extends OpenCvPipeline {
     static final int STREAM_WIDTH = 640;
     static final int STREAM_HEIGHT = 480;
@@ -81,13 +84,29 @@ public class OpenCVEngine  extends OpenCvPipeline {
     Mat RectA_Cb;
     Mat RectB_Cb;
     Mat RectC_Cb;
+    Mat RectA_Cr;
+    Mat RectB_Cr;
+    Mat RectC_Cr;
+    Mat RectA_Y;
+    Mat RectB_Y;
+    Mat RectC_Y;
+
     //Mat regionGoal_Cr;
     Mat YCrCb = new Mat();
+    Mat Y = new Mat();
+    Mat Cr = new Mat();
     Mat Cb = new Mat();
     ///Mat Cr = new Mat();
     int avgA;
     int avgB;
     int avgC;
+
+    int avgACr;
+    int avgBCr;
+    int avgCCr;
+    int avgAY;
+    int avgBY;
+    int avgCY;
     //int avgGoalCr;
 
     // Volatile since accessed by OpMode thread w/o synchronization
@@ -101,7 +120,12 @@ public class OpenCVEngine  extends OpenCvPipeline {
     {
         Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
 //            Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2HSV);
-        Core.extractChannel(YCrCb, Cb, 1);
+        ArrayList<Mat> yCrCbChannels = new ArrayList<Mat>(3);
+        Core.split(YCrCb, yCrCbChannels);
+        //Core.extractChannel(YCrCb, Cb, 1);
+        Y = yCrCbChannels.get(0);
+        Cr = yCrCbChannels.get(1);
+        Cb = yCrCbChannels.get(2);
     }
 
     @Override
@@ -112,6 +136,15 @@ public class OpenCVEngine  extends OpenCvPipeline {
         RectA_Cb = Cb.submat(new Rect(RectATLCorner, RectABRCorner));
         RectB_Cb = Cb.submat(new Rect(RectBTLCorner, RectBBRCorner));
         RectC_Cb = Cb.submat(new Rect(RectCTLCorner, RectCBRCorner));
+
+        RectA_Cr = Cr.submat(new Rect(RectATLCorner, RectABRCorner));
+        RectB_Cr = Cr.submat(new Rect(RectBTLCorner, RectBBRCorner));
+        RectC_Cr = Cr.submat(new Rect(RectCTLCorner, RectCBRCorner));
+
+        RectA_Y = Y.submat(new Rect(RectATLCorner, RectABRCorner));
+        RectB_Y = Y.submat(new Rect(RectBTLCorner, RectBBRCorner));
+        RectC_Y = Y.submat(new Rect(RectCTLCorner, RectCBRCorner));
+
         /////regionGoal_Cr = Cr.submat(new Rect(region1_pointA_goal, region1_pointB_goal));
     }
 
@@ -123,6 +156,14 @@ public class OpenCVEngine  extends OpenCvPipeline {
         avgA = (int) Core.mean(RectA_Cb).val[0];
         avgB = (int) Core.mean(RectB_Cb).val[0];
         avgC = (int) Core.mean(RectC_Cb).val[0];
+
+        avgACr = (int) Core.mean(RectA_Cr).val[0];
+        avgBCr = (int) Core.mean(RectB_Cr).val[0];
+        avgCCr= (int) Core.mean(RectC_Cr).val[0];
+
+        avgAY = (int) Core.mean(RectA_Y).val[0];
+        avgBY = (int) Core.mean(RectB_Y).val[0];
+        avgCY = (int) Core.mean(RectC_Y).val[0];
         //avgGoalCr = (int) Core.mean(regionGoal_Cr).val[0]; // need to fix val[0]
 
 
@@ -177,4 +218,29 @@ public class OpenCVEngine  extends OpenCvPipeline {
     {
         return avgC;
     }
+    public int getACranalysis()
+    {
+        return avgACr;
+    }
+    public int getBCranalysis()
+    {
+        return avgBCr;
+    }
+    public int getCCranalysis()
+    {
+        return avgCCr;
+    }
+    public int getAYanalysis()
+    {
+        return avgAY;
+    }
+    public int getBYanalysis()
+    {
+        return avgBY;
+    }
+    public int getCYanalysis()
+    {
+        return avgCY;
+    }
+
 }
