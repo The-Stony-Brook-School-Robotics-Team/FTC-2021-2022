@@ -10,6 +10,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.OdometrySubsystem;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
+import com.arcrobotics.ftclib.geometry.Translation2d;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
 import com.arcrobotics.ftclib.purepursuit.Path;
@@ -30,7 +31,7 @@ public class MovementTesting extends LinearOpMode {
 
     private MotorEx lf, rf, lb, rb;
     private MecanumDrive drive;
-    private OdometrySubsystem odometrey;
+    private OdometrySubsystem odometry;
     private MotorEx encoderLeft, encoderRight, encoderPerp;
 
     private MecanumDrive robotDrive;
@@ -73,7 +74,7 @@ public class MovementTesting extends LinearOpMode {
                 () -> (encoderPerp.getCurrentPosition() * TICKS_TO_INCHES),
                 TRACKWIDTH, CENTER_WHEEL_OFFSET
         );
-        odometrey = new OdometrySubsystem(holOdom);
+        odometry = new OdometrySubsystem(holOdom);
 
         waitForStart();
 
@@ -83,10 +84,12 @@ public class MovementTesting extends LinearOpMode {
 
         Path m_path = new Path(p1, p2, p3);
         m_path.init();
+        m_path.setWaypointTimeouts(3);
 
         while (opModeIsActive() && !isStopRequested())
         {
-            odometrey.update();
+            odometry.update();
+
 
             if(gamepad1.a && !pressingA) {
                 pressingA = true;
@@ -114,12 +117,12 @@ public class MovementTesting extends LinearOpMode {
 
             TelemetryPacket telemPacket = new TelemetryPacket();
             Canvas ftcField = telemPacket.fieldOverlay();
-            DashboardUtil.drawRobot(ftcField, new Pose2d(odometrey.getPose().getX(), -(odometrey.getPose().getY()), -(odometrey.getPose().getHeading())));
+            DashboardUtil.drawRobot(ftcField, new Pose2d(odometry.getPose().getX(), -(odometry.getPose().getY()), -(odometry.getPose().getHeading())));
 
             telemPacket.put("Robot Test", 1);
-            telemPacket.put("Estimated Pose X", odometrey.getPose().getX());
-            telemPacket.put("Estimated Pose Y", odometrey.getPose().getY());
-            telemPacket.put("Estimated Pose Heading", Math.toDegrees(odometrey.getPose().getHeading()));
+            telemPacket.put("Estimated Pose X", odometry.getPose().getX());
+            telemPacket.put("Estimated Pose Y", odometry.getPose().getY());
+            telemPacket.put("Estimated Pose Heading", Math.toDegrees(odometry.getPose().getHeading()));
 
             dashboard.sendTelemetryPacket(telemPacket);
 
