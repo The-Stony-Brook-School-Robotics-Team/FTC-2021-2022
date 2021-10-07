@@ -73,7 +73,7 @@ public class PurePursuitTest extends LinearOpMode {
 
 
         HolonomicOdometry = new HolonomicOdometry(LP,RP,CP,12.75, -8.7);
-        OdometrySubSystem = new OdometrySubsystem(HolonomicOdometry);
+        OdometrySubSystem = new OdometrySubsystem(this.HolonomicOdometry);
         OdometrySubSystem.update();
 
 
