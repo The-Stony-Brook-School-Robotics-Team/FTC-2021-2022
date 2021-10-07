@@ -78,10 +78,10 @@ public class PurePursuitTest extends LinearOpMode {
 
 
         FtcDashboard.getInstance();
+        TelemetryPacket TelemetryPacket = new TelemetryPacket();
         Canvas Field = new TelemetryPacket().fieldOverlay();
         com.acmerobotics.roadrunner.geometry.Pose2d Pose2dField= new com.acmerobotics.roadrunner.geometry.Pose2d(OdometrySubSystem.getPose().getX(), OdometrySubSystem.getPose().getY(),OdometrySubSystem.getPose().getHeading());
         DashboardUtil.drawRobot(Field, Pose2dField);
-        TelemetryPacket TelemetryPacket = new TelemetryPacket();
         TelemetryPacket.put("Pure Pursuit Position Indicator", 0);
         TelemetryPacket.put("X: ", OdometrySubSystem.getPose().getX());
         TelemetryPacket.put("Y: ", OdometrySubSystem.getPose().getY());
@@ -92,7 +92,7 @@ public class PurePursuitTest extends LinearOpMode {
         telemetry.addData("H: ",OdometrySubSystem.getPose().getHeading());
         telemetry.update();
 
-        if(gamepad1.a){
+        if(!gamepad1.a){
         LeftEncoder.set(0);
         RightEncoder.set(0);
         CentralEncoder.set(0);
