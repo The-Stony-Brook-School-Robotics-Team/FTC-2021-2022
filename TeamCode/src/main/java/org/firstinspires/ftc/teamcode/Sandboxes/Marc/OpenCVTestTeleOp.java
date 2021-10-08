@@ -81,7 +81,7 @@ public class OpenCVTestTeleOp extends OpMode {
                  */
             }
         });
-        dash.startCameraStream(vuforia,0);
+        dash.startCameraStream(vuforia,1);
         vuforia.setFrameQueueCapacity(0);
 
 
@@ -127,12 +127,12 @@ public class OpenCVTestTeleOp extends OpMode {
         telemetry.addData("Rect BY: ",pipeline.getBYanalysis());
         telemetry.addData("Rect CY: ",pipeline.getCYanalysis());
         telemetry.update();
-        Mat processed = new Mat();
+
         try {
-             processed = pipeline.processFrame(getMatVuforia());
+            Mat processed = pipeline.processFrame(getMatVuforia());
             Bitmap bmp = Bitmap.createBitmap(processed.width(),processed.height(), Bitmap.Config.RGB_565);
             Utils.matToBitmap(processed,bmp);
-            dash.sendImage(bmp);
+            dash.sendImage(bmp); // send image to dashboard view
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
