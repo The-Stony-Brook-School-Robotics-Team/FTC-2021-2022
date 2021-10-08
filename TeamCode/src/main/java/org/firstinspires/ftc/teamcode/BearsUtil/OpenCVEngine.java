@@ -258,8 +258,8 @@ public class OpenCVEngine  extends OpenCvPipeline {
         avgBY = (int) Core.mean(RectB_Y).val[0];
         avgCY = (int) Core.mean(RectC_Y).val[0];
         //avgGoalCr = (int) Core.mean(regionGoal_Cr).val[0]; // need to fix val[0]
-        avgACYMK = new int[]{}; // TODO finish this
-        avgBCYMK = new int[]{};
+        avgACYMK = new int[]{(int) Core.mean(RectA_Cymk).val[0],(int) Core.mean(RectA_cYmk).val[0],(int) Core.mean(RectA_cyMk).val[0],(int) Core.mean(RectA_cymK).val[0]};
+        avgBCYMK = new int[]{(int) Core.mean(RectB_Cymk).val[0],(int) Core.mean(RectB_cYmk).val[0],(int) Core.mean(RectB_cyMk).val[0],(int) Core.mean(RectB_cymK).val[0]};
         avgCCYMK = new int[]{(int) Core.mean(RectC_Cymk).val[0],(int) Core.mean(RectC_cYmk).val[0],(int) Core.mean(RectC_cyMk).val[0],(int) Core.mean(RectC_cymK).val[0]};
 
 
@@ -339,17 +339,17 @@ public class OpenCVEngine  extends OpenCvPipeline {
         return avgCY;
     }
 
-    public int getACYMKanalysis()
+    public int[] getACYMKanalysis()
     {
-        return avgA;
+        return avgACYMK;
     }
-    public int getBCYMKanalysis()
+    public int[] getBCYMKanalysis()
     {
-        return avgB;
+        return avgBCYMK;
     }
-    public int getCCYMKanalysis()
+    public int[] getCCYMKanalysis()
     {
-        return avgC;
+        return avgCCYMK;
     }
 
 }
