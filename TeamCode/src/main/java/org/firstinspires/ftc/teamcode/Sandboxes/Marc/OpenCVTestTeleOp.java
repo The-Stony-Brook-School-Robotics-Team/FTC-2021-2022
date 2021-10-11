@@ -127,21 +127,12 @@ public class OpenCVTestTeleOp extends OpMode {
         telemetry.addData("Rect BY: ",pipeline.getBYanalysis());
         telemetry.addData("Rect CY: ",pipeline.getCYanalysis());
         telemetry.update();
-<<<<<<< HEAD
-        Mat processed = new Mat();
-        try {
-             processed = pipeline.processFrame(getMatVuforia());
-            Bitmap bmp = Bitmap.createBitmap(processed.width(),processed.height(), Bitmap.Config.RGB_565);
-            Utils.matToBitmap(processed,bmp);
-            dash.sendImage(bmp);
-=======
 
         try {
             Mat processed = pipeline.processFrame(getMatVuforia());
             Bitmap bmp = Bitmap.createBitmap(processed.width(),processed.height(), Bitmap.Config.RGB_565);
             Utils.matToBitmap(processed,bmp);
             dash.sendImage(bmp); // send image to dashboard view
->>>>>>> parent of 853793b (Finished adding CYMK.)
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

@@ -18,8 +18,7 @@ public class OpenCVEngine  extends OpenCvPipeline {
     /*
      * An enum to define the ring amount
      */
-    public enum ItemBarcodePlacement
-    {
+    public enum ItemBarcodePlacement {
         A,
         B,
         C,
@@ -31,14 +30,14 @@ public class OpenCVEngine  extends OpenCvPipeline {
      */
     static final Scalar BLUE = new Scalar(0, 0, 255);
     static final Scalar GREEN = new Scalar(0, 255, 0);
-    static final Scalar RED = new Scalar(255,0,0);
+    static final Scalar RED = new Scalar(255, 0, 0);
 
     /*
      * The core values which define the location and size of the sample regions
      */
     static final int WidthRectA = 130; // for ini rings window
     static final int HeightRectA = 110; // for ini rings window
-    static final Point RectATopLeftAnchor = new Point((STREAM_WIDTH - WidthRectA) / 2+250, ((STREAM_HEIGHT - HeightRectA) / 2) - 100);
+    static final Point RectATopLeftAnchor = new Point((STREAM_WIDTH - WidthRectA) / 2 + 300, ((STREAM_HEIGHT - HeightRectA) / 2) - 100);
 
     static final int WidthRectB = 130; // for goal alignment window
     static final int HeightRectB = 110; // for goal alignment window
@@ -46,7 +45,7 @@ public class OpenCVEngine  extends OpenCvPipeline {
 
     static final int WidthRectC = 130; // for goal alignment window
     static final int HeightRectC = 110; // for goal alignment window
-    static final Point RectCTopLeftAnchor = new Point((STREAM_WIDTH - WidthRectB) / 2 +150, ((STREAM_HEIGHT - HeightRectA) / 2) - 100);
+    static final Point RectCTopLeftAnchor = new Point((STREAM_WIDTH - WidthRectB) / 2 + 100, ((STREAM_HEIGHT - HeightRectA) / 2) - 100);
 
 
     final int PresentThreshold = 127;
@@ -71,11 +70,6 @@ public class OpenCVEngine  extends OpenCvPipeline {
     Point RectCBRCorner = new Point(
             RectCTopLeftAnchor.x + WidthRectC,
             RectCTopLeftAnchor.y + HeightRectC);
-
-
-
-
-
 
 
     /*
@@ -116,8 +110,7 @@ public class OpenCVEngine  extends OpenCvPipeline {
      * This function takes the RGB frame, converts to YCrCb,
      * and extracts the Cb channel to the 'Cb' variable
      */
-    void inputToCb(Mat input)
-    {
+    void inputToCb(Mat input) {
         Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
 //            Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2HSV);
         ArrayList<Mat> yCrCbChannels = new ArrayList<Mat>(3);
@@ -129,8 +122,7 @@ public class OpenCVEngine  extends OpenCvPipeline {
     }
 
     @Override
-    public void init(Mat firstFrame)
-    {
+    public void init(Mat firstFrame) {
         inputToCb(firstFrame);
 
         RectA_Cb = Cb.submat(new Rect(RectATLCorner, RectABRCorner));
@@ -149,8 +141,7 @@ public class OpenCVEngine  extends OpenCvPipeline {
     }
 
     @Override
-    public Mat processFrame(Mat input)
-    {
+    public Mat processFrame(Mat input) {
         inputToCb(input);
 
         avgA = (int) Core.mean(RectA_Cb).val[0];
@@ -159,29 +150,22 @@ public class OpenCVEngine  extends OpenCvPipeline {
 
         avgACr = (int) Core.mean(RectA_Cr).val[0];
         avgBCr = (int) Core.mean(RectB_Cr).val[0];
-        avgCCr= (int) Core.mean(RectC_Cr).val[0];
+        avgCCr = (int) Core.mean(RectC_Cr).val[0];
 
         avgAY = (int) Core.mean(RectA_Y).val[0];
         avgBY = (int) Core.mean(RectB_Y).val[0];
         avgCY = (int) Core.mean(RectC_Y).val[0];
         //avgGoalCr = (int) Core.mean(regionGoal_Cr).val[0]; // need to fix val[0]
-<<<<<<< HEAD
-=======
-        avgACYMK = new int[]{}; // TODO finish this
-        avgBCYMK = new int[]{};
-        avgCCYMK = new int[]{(int) Core.mean(RectC_Cymk).val[0],(int) Core.mean(RectC_cYmk).val[0],(int) Core.mean(RectC_cyMk).val[0],(int) Core.mean(RectC_cymK).val[0]};
->>>>>>> parent of 853793b (Finished adding CYMK.)
-
 
 
         position = ItemBarcodePlacement.NONE; // Record our analysis
         if (avgA >= PresentThreshold) {
             position = ItemBarcodePlacement.A;
-        } else  if (avgB >= PresentThreshold) {
+        } else if (avgB >= PresentThreshold) {
             position = ItemBarcodePlacement.B;
-        } else  {
-             position = ItemBarcodePlacement.C;
-         }
+        } else {
+            position = ItemBarcodePlacement.C;
+        }
 
         Imgproc.rectangle( // rings
                 input, // Buffer to draw on
@@ -204,65 +188,47 @@ public class OpenCVEngine  extends OpenCvPipeline {
                 2); // Thickness of the rectangle lines
 
 
-
         return input;
     }
 
-    public ItemBarcodePlacement getWhichBarcode()
-    {
+    public ItemBarcodePlacement getWhichBarcode() {
         return position;
     }
-    public int getAanalysis()
-    {
+
+    public int getAanalysis() {
         return avgA;
     }
-    public int getBanalysis()
-    {
+
+    public int getBanalysis() {
         return avgB;
     }
-    public int getCanalysis()
-    {
+
+    public int getCanalysis() {
         return avgC;
     }
-    public int getACranalysis()
-    {
+
+    public int getACranalysis() {
         return avgACr;
     }
-    public int getBCranalysis()
-    {
+
+    public int getBCranalysis() {
         return avgBCr;
     }
-    public int getCCranalysis()
-    {
+
+    public int getCCranalysis() {
         return avgCCr;
     }
-    public int getAYanalysis()
-    {
+
+    public int getAYanalysis() {
         return avgAY;
     }
-    public int getBYanalysis()
-    {
+
+    public int getBYanalysis() {
         return avgBY;
     }
-    public int getCYanalysis()
-    {
+
+    public int getCYanalysis() {
         return avgCY;
     }
 
-<<<<<<< HEAD
-=======
-    public int getACYMKanalysis()
-    {
-        return avgA;
-    }
-    public int getBCYMKanalysis()
-    {
-        return avgB;
-    }
-    public int getCCYMKanalysis()
-    {
-        return avgC;
-    }
-
->>>>>>> parent of 853793b (Finished adding CYMK.)
 }
