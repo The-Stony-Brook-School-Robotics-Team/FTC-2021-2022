@@ -40,6 +40,7 @@ public class PurePursuitTest extends LinearOpMode {
     private MotorEx lb;
     private MotorEx rb;
     private MecanumDrive Drivers;
+    private Boolean ButtonY = false;
     FtcDashboard Graph;
 
     private final double DistancePerPulse = Math.PI*2.0/8192;
@@ -76,7 +77,7 @@ public class PurePursuitTest extends LinearOpMode {
         OdometrySubSystem = new OdometrySubsystem(this.HolonomicOdometry);
 
 
-        FtcDashboard Dashboard = FtcDashboard.getInstance();
+        Graph = FtcDashboard.getInstance();
         TelemetryPacket TelemetryPacket = new TelemetryPacket();
         Canvas Field = new TelemetryPacket().fieldOverlay();
         com.acmerobotics.roadrunner.geometry.Pose2d Pose2dField= new com.acmerobotics.roadrunner.geometry.Pose2d(OdometrySubSystem.getPose().getX(), OdometrySubSystem.getPose().getY(),OdometrySubSystem.getPose().getHeading());
@@ -98,13 +99,13 @@ public class PurePursuitTest extends LinearOpMode {
             TelemetryPacket.put("X: ", OdometrySubSystem.getPose().getX());
             TelemetryPacket.put("Y: ", OdometrySubSystem.getPose().getY());
             TelemetryPacket.put("H: ", OdometrySubSystem.getPose().getHeading());
-            Dashboard.sendTelemetryPacket(TelemetryPacket);
+            Graph.sendTelemetryPacket(TelemetryPacket);
             telemetry.addData("X: ", LeftEncoder.getCurrentPosition());
             telemetry.addData("Y: ", RightEncoder.getCurrentPosition());
             telemetry.addData("H: ", CentralEncoder.getCurrentPosition());
             telemetry.update();
 
-            if (!gamepad1.a) {
+            if (gamepad1.a) {
                 LeftEncoder.set(0);
                 RightEncoder.set(0);
                 CentralEncoder.set(0);
@@ -112,7 +113,6 @@ public class PurePursuitTest extends LinearOpMode {
 
 
             if (gamepad1.y) {
-                wait(100);
                 /*The Code Below Is Related to The Pure Pursuit Road Tracking Codes Above*/
                 testP.followPath(Drivers, HolonomicOdometry);
             }
