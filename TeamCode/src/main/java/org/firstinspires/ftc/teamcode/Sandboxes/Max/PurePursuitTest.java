@@ -114,8 +114,8 @@ public class PurePursuitTest extends LinearOpMode {
             if (gamepad1.y) {
                 wait(100);
                 /*The Code Below Is Related to The Pure Pursuit Road Tracking Codes Above*/
-                 testP.followPath(Drivers, HolonomicOdometry);
-            
+                testP.followPath(Drivers, HolonomicOdometry);
+            }
 
             lf.set((-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
             rf.set((-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
