@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.Sandboxes.Marc;
 import android.graphics.Bitmap;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -34,10 +33,6 @@ public class OpenCVTestTeleOp extends OpMode {
     VuforiaLocalizer vuforia;
     OpenCvCamera vuforiaPassthroughCam;
     OpenCVEngine pipeline;
-
-    static int counter = 0;
-    private boolean qA = false;
-
 
     @Override
     public void init() {
@@ -86,7 +81,7 @@ public class OpenCVTestTeleOp extends OpMode {
                  */
             }
         });
-        dash.startCameraStream(vuforia,1);
+        dash.startCameraStream(vuforia,0);
         vuforia.setFrameQueueCapacity(0);
 
 
@@ -122,48 +117,26 @@ public class OpenCVTestTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        if(gamepad1.a  && !qA) {
-            qA = true;
-            //counter++;
-            int[] AYCrCbAnalysis = new int[]{pipeline.getAYanalysis(), pipeline.getACranalysis(), pipeline.getAanalysis()};
-            int[] BYCrCbAnalysis = new int[]{pipeline.getBYanalysis(), pipeline.getBCranalysis(), pipeline.getBanalysis()};
-            int[] CYCrCbAnalysis = new int[]{pipeline.getCYanalysis(), pipeline.getCCranalysis(), pipeline.getCanalysis()};
+        telemetry.addData("Rect A: ",pipeline.getAanalysis());
+        telemetry.addData("Rect B: ",pipeline.getBanalysis());
+        telemetry.addData("Rect C: ",pipeline.getCanalysis());
+        telemetry.addData("Rect ACr: ",pipeline.getACranalysis());
+        telemetry.addData("Rect BCr: ",pipeline.getBCranalysis());
+        telemetry.addData("Rect CCr: ",pipeline.getCCranalysis());
+        telemetry.addData("Rect AY: ",pipeline.getAYanalysis());
+        telemetry.addData("Rect BY: ",pipeline.getBYanalysis());
+        telemetry.addData("Rect CY: ",pipeline.getCYanalysis());
+        telemetry.update();
 
-            //int[] ACYMKAnalysis = pipeline.getACYMKanalysis();
-           // int[] BCYMKAnalysis = pipeline.getBCYMKanalysis();
-            //int[] CCYMKAnalysis = pipeline.getCCYMKanalysis();
-
-            telemetry.addData("Rect A YCrCb: ", AYCrCbAnalysis);
-            telemetry.addData("Rect B YCrCb: ", BYCrCbAnalysis);
-            telemetry.addData("Rect C YCrCb: ", CYCrCbAnalysis);
-            //telemetry.addData("Rect A CYMK: ", ACYMKAnalysis);
-           // telemetry.addData("Rect B CYMK: ", BCYMKAnalysis);
-            //telemetry.addData("Rect C CYMK: ", CCYMKAnalysis);
-            telemetry.update();
-
-            TelemetryPacket packet = new TelemetryPacket();
-            packet.put("Rect A YCrCb: ", AYCrCbAnalysis);
-            packet.put("Rect B YCrCb: ", BYCrCbAnalysis);
-            packet.put("Rect C YCrCb: ", CYCrCbAnalysis);
-          //  packet.put("Rect A CYMK: ", ACYMKAnalysis);
-           // packet.put("Rect B CYMK: ", BCYMKAnalysis);
-           // packet.put("Rect C CYMK: ", CCYMKAnalysis);
-
-
-             // only one in 20 frames will be sent, may want to make this bigger or disappear altogether.
-                try {
-                    Mat processed = pipeline.processFrame(getMatVuforia());
-                    Bitmap bmp = Bitmap.createBitmap(processed.width(), processed.height(), Bitmap.Config.RGB_565);
-                    Utils.matToBitmap(processed, bmp);
-                    dash.sendImage(bmp); // send image to dashboard view
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    packet.put("Camera Status: ", "image failed to send");
-                }
-
-            dash.sendTelemetryPacket(packet);
+        try {
+            Mat processed = pipeline.processFrame(getMatVuforia());
+            Bitmap bmp = Bitmap.createBitmap(processed.width(),processed.height(), Bitmap.Config.RGB_565);
+            Utils.matToBitmap(processed,bmp);
+            dash.sendImage(bmp); // send image to dashboard view
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-        if(qA && !gamepad1.a) {qA = false;}
+
 
     }
     public Mat getMatVuforia() throws InterruptedException {
