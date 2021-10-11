@@ -1,0 +1,94 @@
+package org.firstinspires.ftc.teamcode.Sandboxes.Marc;
+
+import android.graphics.Bitmap;
+
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.vuforia.Image;
+import com.vuforia.PIXEL_FORMAT;
+import com.vuforia.Vuforia;
+
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.teamcode.BearsUtil.OpenCVEngine;
+import org.opencv.android.Utils;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvWebcam;
+
+@TeleOp
+public class OpenCVTestTeleOpNoVuforia extends OpMode {
+    static final int STREAM_WIDTH = 640;
+    static final int STREAM_HEIGHT = 480;
+    OpenCvWebcam webcam;
+    FtcDashboard dash;
+    //VuforiaLocalizer vuforia;
+    //OpenCvCamera vuforiaPassthroughCam;
+    OpenCVEngine pipeline;
+
+    @Override
+    public void init() {
+        dash = FtcDashboard.getInstance();
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        int[] viewportContainerIds = OpenCvCameraFactory.getInstance().splitLayoutForMultipleViewports(cameraMonitorViewId, 2, OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY);
+
+
+        WebcamName webcamName = null;
+            webcamName = hardwareMap.get(WebcamName.class, "WebcamMain");
+           webcam = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
+           pipeline = new OpenCVEngine();
+           webcam.setPipeline(pipeline);
+
+            // We set the viewport policy to optimized view so the preview doesn't appear 90 deg
+            // out when the RC activity is in portrait. We do our actual image processing assuming
+            // landscape orientation, though.
+//        webcam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
+
+            webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+            {
+                @Override
+                public void onOpened()
+                {
+                    webcam.startStreaming(STREAM_WIDTH, STREAM_HEIGHT, OpenCvCameraRotation.UPRIGHT);
+                }
+
+                @Override
+                public void onError(int errorCode) {
+                    telemetry.addData("Camera Failed","");
+                    telemetry.update();
+                }
+            });
+
+    }
+
+    @Override
+    public void loop() {
+        telemetry.addData("Rect A: ",pipeline.getAanalysis());
+        telemetry.addData("Rect B: ",pipeline.getBanalysis());
+        telemetry.addData("Rect C: ",pipeline.getCanalysis());
+        telemetry.addData("Rect ACr: ",pipeline.getACranalysis());
+        telemetry.addData("Rect BCr: ",pipeline.getBCranalysis());
+        telemetry.addData("Rect CCr: ",pipeline.getCCranalysis());
+        telemetry.addData("Rect AY: ",pipeline.getAYanalysis());
+        telemetry.addData("Rect BY: ",pipeline.getBYanalysis());
+        telemetry.addData("Rect CY: ",pipeline.getCYanalysis());
+        telemetry.update();
+        /*if(gamepad1.a){
+        try {
+            Mat processed = pipeline;
+            Bitmap bmp = Bitmap.createBitmap(processed.width(),processed.height(), Bitmap.Config.RGB_565);
+            Utils.matToBitmap(processed,bmp);
+            dash.sendImage(bmp); // send image to dashboard view
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }}*/
+
+
+    }
+
+}

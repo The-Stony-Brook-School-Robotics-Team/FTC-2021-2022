@@ -81,8 +81,8 @@ public class OpenCVTestTeleOp extends OpMode {
                  */
             }
         });
-        dash.startCameraStream(vuforia,0);
-        vuforia.setFrameQueueCapacity(0);
+        dash.startCameraStream(vuforia,1);
+        vuforia.setFrameQueueCapacity(1);
 
 
        // WebcamName webcamName = null;
@@ -127,7 +127,7 @@ public class OpenCVTestTeleOp extends OpMode {
         telemetry.addData("Rect BY: ",pipeline.getBYanalysis());
         telemetry.addData("Rect CY: ",pipeline.getCYanalysis());
         telemetry.update();
-
+        if(gamepad1.a){
         try {
             Mat processed = pipeline.processFrame(getMatVuforia());
             Bitmap bmp = Bitmap.createBitmap(processed.width(),processed.height(), Bitmap.Config.RGB_565);
@@ -135,7 +135,7 @@ public class OpenCVTestTeleOp extends OpMode {
             dash.sendImage(bmp); // send image to dashboard view
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }}
 
 
     }
