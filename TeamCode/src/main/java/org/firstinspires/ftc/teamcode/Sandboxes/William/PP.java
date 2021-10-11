@@ -31,8 +31,8 @@ public class PP extends OpMode {
     private DcMotor rb = null;
     private double xRealTimeValue;
     private double yRealTimeValue;
-    private double xTargetValue = 5;    //inches
-    private double yTargetValue = 5;    //inches
+    private double xTargetValue = 24;    //inches
+    private double yTargetValue = 24;    //inches
     private double xDistanceToTarget;   //inches; can be negative
     private double yDistanceToTarget;   //inches; can be negative
     private double totalDistance;       //inches; always positive
