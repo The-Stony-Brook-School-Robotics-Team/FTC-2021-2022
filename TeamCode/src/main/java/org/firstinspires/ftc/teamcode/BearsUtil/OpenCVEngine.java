@@ -165,6 +165,12 @@ public class OpenCVEngine  extends OpenCvPipeline {
         avgBY = (int) Core.mean(RectB_Y).val[0];
         avgCY = (int) Core.mean(RectC_Y).val[0];
         //avgGoalCr = (int) Core.mean(regionGoal_Cr).val[0]; // need to fix val[0]
+<<<<<<< HEAD
+=======
+        avgACYMK = new int[]{}; // TODO finish this
+        avgBCYMK = new int[]{};
+        avgCCYMK = new int[]{(int) Core.mean(RectC_Cymk).val[0],(int) Core.mean(RectC_cYmk).val[0],(int) Core.mean(RectC_cyMk).val[0],(int) Core.mean(RectC_cymK).val[0]};
+>>>>>>> parent of 853793b (Finished adding CYMK.)
 
 
 
@@ -243,4 +249,20 @@ public class OpenCVEngine  extends OpenCvPipeline {
         return avgCY;
     }
 
+<<<<<<< HEAD
+=======
+    public int getACYMKanalysis()
+    {
+        return avgA;
+    }
+    public int getBCYMKanalysis()
+    {
+        return avgB;
+    }
+    public int getCCYMKanalysis()
+    {
+        return avgC;
+    }
+
+>>>>>>> parent of 853793b (Finished adding CYMK.)
 }
