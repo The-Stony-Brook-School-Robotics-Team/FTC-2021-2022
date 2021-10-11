@@ -31,8 +31,8 @@ public class PP extends OpMode {
     private DcMotor rb = null;
     private double xRealTimeValue;
     private double yRealTimeValue;
-    private double xTargetValue = 24;    //inches
-    private double yTargetValue = 24;    //inches
+    private double xTargetValue = 12;    //inches
+    private double yTargetValue = 12;    //inches
     private double xDistanceToTarget;   //inches; can be negative
     private double yDistanceToTarget;   //inches; can be negative
     private double totalDistance;       //inches; always positive
@@ -45,8 +45,8 @@ public class PP extends OpMode {
 
     public void PositionTracker() {
         MotorEx leftFront, rightFront, leftBack, rightBack;
-        leftFront = new MotorEx(hardwareMap, "lf");
-        rightFront = new MotorEx(hardwareMap, "leftodom");
+        leftFront = new MotorEx(hardwareMap, "leftodom");
+        rightFront = new MotorEx(hardwareMap, "rightodom");
         leftBack = new MotorEx(hardwareMap, "backodom");
         rightBack = new MotorEx(hardwareMap, "rightodom");
 
@@ -109,6 +109,8 @@ public class PP extends OpMode {
             if (totalDistance < ACCEPTABLE_ERROR)
                 while (true) ;
             while(gamepad1.x);
+            xTargetValue+=12;
+            yTargetValue+=12;
         }
     }
 
