@@ -95,13 +95,13 @@ public class PurePursuitTest extends LinearOpMode {
             telemetry.addData("H: ", -OdometrySubSystem.getPose().getHeading());
             telemetry.update();
 
-            if (gamepad1.a) {
+            if (!gamepad1.a) {
                 LeftEncoder.set(0);
                 RightEncoder.set(0);
                 CentralEncoder.set(0);
             }
 
-            if (gamepad1.x) {
+            if (!gamepad1.x) {
 
                 /*The Code Below Is Pure Pursuit Road Tracking*/
 
