@@ -88,11 +88,11 @@ public class PurePursuitTest extends LinearOpMode {
         Waypoint intermediateW = new GeneralWaypoint(LeftEncoder.getCurrentPosition()+8192 * 5, RightEncoder.getCurrentPosition()+ 8192* 5, Math.PI * 2, 1, 50, 2 * Math.PI);
         Waypoint postW = new InterruptWaypoint();
         Waypoint endW = new EndWaypoint(LeftEncoder.getCurrentPosition()+8192 * 11, RightEncoder.getCurrentPosition()+ 8192* 11, Math.PI * 2, 1, 50, 2 * Math.PI * 2, 2 * Math.PI * 2, 2 * Math.PI * 2);
-        Path testP = new Path(startW, intermediateW, endW);
-        testP.setWaypointTimeouts(100);
+        Path testP = new Path(startW, endW);
+        //testP.setWaypointTimeouts(100);
         testP.init();
 
-        while(opModeIsActive() && !isStopRequested()) {
+        while(true) {
 
             OdometrySubSystem.update();
             TelemetryPacket.put("Pure Pursuit Position Indicator", 0);
@@ -102,13 +102,14 @@ public class PurePursuitTest extends LinearOpMode {
             Graph.sendTelemetryPacket(TelemetryPacket);
             telemetry.addData("X: ", LeftEncoder.getCurrentPosition());
             telemetry.addData("Y: ", RightEncoder.getCurrentPosition());
-            telemetry.addData("H: ", CentralEncoder.getCurrentPosition());
+            telemetry.addData("H: ", Math.toDegrees(CentralEncoder.getCurrentPosition()));
             telemetry.update();
+            DashboardUtil.drawRobot(Field, Pose2dField);
 
             if (gamepad1.a) {
-                LeftEncoder.set(0);
-                RightEncoder.set(0);
-                CentralEncoder.set(0);
+                LeftEncoder.resetEncoder();
+                RightEncoder.resetEncoder();
+                CentralEncoder.resetEncoder();
             }
 
 
@@ -118,6 +119,7 @@ public class PurePursuitTest extends LinearOpMode {
             }
             else if(!gamepad1.y && ButtonY){
                 testP.followPath(Drivers, HolonomicOdometry);
+                ButtonY = false;
             }
 
             lf.set((-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
@@ -125,7 +127,7 @@ public class PurePursuitTest extends LinearOpMode {
             lb.set((-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
             rb.set((-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
 
-            DashboardUtil.drawRobot(Field, Pose2dField);
+
         }
 
 
