@@ -22,8 +22,8 @@ public class PP extends OpMode {
     public static final double DISTANCE_PER_PULSE = Math.PI * WHEEL_DIAMETER / TICKS_PER_REV;
     public static final double TRACK_WIDTH = 12.75;
     public static final double CENTER_WHEEL_OFFSET = -8.7;
-    private static final double MINIMUM_STOP_DISTANCE = 10;  //inches
-    private static final double ACCEPTABLE_ERROR = 0.5;    //inches
+    private static final double MINIMUM_STOP_DISTANCE = 10; //In inches.
+    private static final double ACCEPTABLE_ERROR = 0.5;     //In inches.
     MotorEncoderController motorCtrls;
     FtcDashboard dashboard;
     private DcMotor lf = null;
@@ -32,12 +32,11 @@ public class PP extends OpMode {
     private DcMotor rb = null;
     private double xRealTimeValue;
     private double yRealTimeValue;
-    private double xTargetValue = 12;    //inches
-    private double yTargetValue = 12;    //inches
-    private double xDistanceToTarget;   //inches; can be negative
-    private double yDistanceToTarget;   //inches; can be negative
-    private double totalDistance;       //inches; always positive
-
+    private double xTargetValue = 12;   //In inches.
+    private double yTargetValue = 12;   //In inches.
+    private double xDistanceToTarget;   //In inches, this value can be negative.
+    private double yDistanceToTarget;   //In inches, this value can be negative.
+    private double totalDistance;       //In inches; this value is always positive.
 
     private OdometrySubsystem odometry;
     private MotorEx encoderLeft, encoderRight, encoderPerp;
@@ -86,10 +85,10 @@ public class PP extends OpMode {
 
     @Override
     public void loop() {
+        UpdatePositions();
         if (gamepad1.x) {
-            double xLeftStickValue;     //right positive; left negative
-            double yLeftStickValue;     //forward positive; back negative
-            UpdatePositions();
+            double xLeftStickValue;     //Going right is positive; going left is negative.
+            double yLeftStickValue;     //Going forward is positive; going back is negative.
             xLeftStickValue = GetXStickValue();
             yLeftStickValue = GetYStickValue();
             lf.setPower(0.5 * (yLeftStickValue + xLeftStickValue /*+ gamepad1.right_stick_x*/));
@@ -98,17 +97,38 @@ public class PP extends OpMode {
             rb.setPower(0.5 * (yLeftStickValue + xLeftStickValue /*- gamepad1.right_stick_x*/));
             totalDistance = GetTotalDistance();
             telemetry.addData("Distance to destination", totalDistance);
-            if (totalDistance < ACCEPTABLE_ERROR)
-                while (true) ;
-            while(gamepad1.x);
-            xTargetValue+=12;
-            yTargetValue+=12;
         }
-        if(gamepad1.y) {
+        if (gamepad1.y) {
             encoderLeft.resetEncoder();
             encoderRight.resetEncoder();
             encoderPerp.resetEncoder();
-            while(gamepad1.y);
+            while (gamepad1.y) ;
+        }
+        if (gamepad1.a) {           //Control the robot using the joy sticks.
+            while (gamepad1.a) ;    //Eliminate Shaking.
+
+            while (!gamepad1.a) {   //Control until press a again.
+                lf.setPower(0.6 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
+                rf.setPower(0.6 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
+                lb.setPower(0.6 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
+                rb.setPower(0.6 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
+            }
+
+            lf.setPower(0);
+            rf.setPower(0);
+            lb.setPower(0);
+            rb.setPower(0);
+        }
+        if(gamepad1.b)  //Reset all the encoders. Wait until right stick x is moved to left most or right most.
+        {
+            lf.setPower(0);
+            rf.setPower(0);
+            lb.setPower(0);
+            rb.setPower(0);
+            encoderLeft.resetEncoder();
+            encoderRight.resetEncoder();
+            encoderPerp.resetEncoder();
+            while (Math.abs(gamepad1.right_stick_x) <= 0.9);
         }
     }
 
