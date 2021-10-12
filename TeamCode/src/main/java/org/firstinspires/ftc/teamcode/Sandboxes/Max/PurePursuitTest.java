@@ -112,8 +112,11 @@ public class PurePursuitTest extends LinearOpMode {
             }
 
 
-            if (gamepad1.y) {
+            if (gamepad1.y && !ButtonY) {
                 /*The Code Below Is Related to The Pure Pursuit Road Tracking Codes Above*/
+                ButtonY = true;
+            }
+            else if(!gamepad1.y && ButtonY){
                 testP.followPath(Drivers, HolonomicOdometry);
             }
 
