@@ -77,24 +77,24 @@ public class pptUNSAFE extends LinearOpMode {
         odometry = new OdometrySubsystem(holOdom);
 
         com.arcrobotics.ftclib.geometry.Pose2d currentPose = new com.arcrobotics.ftclib.geometry.Pose2d(odometry.getPose().getX(), odometry.getPose().getY(), odometry.getPose().getRotation());
-        Waypoint p1 = new StartWaypoint(currentPose);
+        Waypoint p1 = new StartWaypoint(0.0, 0.0);
         Waypoint p2 = new GeneralWaypoint(
-                currentPose.getX() + 10,
-                currentPose.getY() + 10,
+                odometry.getPose().getX() + 10,
+                -odometry.getPose().getY() + 10,
                 1,
                 1,
                 5
         );
         Waypoint p3 = new GeneralWaypoint(
-                currentPose.getX() + 20,
-                currentPose.getY() + 20,
+                odometry.getPose().getX() + 20,
+                -odometry.getPose().getY() + 20,
                 1,
                 1,
                 5
         );
-        com.arcrobotics.ftclib.geometry.Pose2d endPose = new com.arcrobotics.ftclib.geometry.Pose2d(currentPose.getX() + 10, currentPose.getY(), currentPose.getRotation());
+        //com.arcrobotics.ftclib.geometry.Pose2d endPose = new com.arcrobotics.ftclib.geometry.Pose2d(currentPose.getX() + 10, currentPose.getY(), currentPose.getRotation());
         Waypoint p4 = new EndWaypoint(
-                endPose,
+                odometry.getPose().getX(), -odometry.getPose().getY(), -odometry.getPose().getHeading(),
                 1,
                 1,
                 5,
