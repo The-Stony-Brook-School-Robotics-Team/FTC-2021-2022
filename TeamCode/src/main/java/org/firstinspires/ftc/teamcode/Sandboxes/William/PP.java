@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Sandboxes.William;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.arcrobotics.ftclib.command.OdometrySubsystem;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -41,15 +42,7 @@ public class PP extends OpMode {
     private OdometrySubsystem odometry;
     private MotorEx encoderLeft, encoderRight, encoderPerp;
 
-    private MecanumDrive robotDrive;
-
     public void PositionTracker() {
-        MotorEx leftFront, rightFront, leftBack, rightBack;
-        leftFront = new MotorEx(hardwareMap, "leftodom");
-        rightFront = new MotorEx(hardwareMap, "rightodom");
-        leftBack = new MotorEx(hardwareMap, "backodom");
-        rightBack = new MotorEx(hardwareMap, "rightodom");
-
         encoderLeft = new MotorEx(hardwareMap, "leftodom");
         encoderRight = new MotorEx(hardwareMap, "rightodom");
         encoderPerp = new MotorEx(hardwareMap, "backodom");
@@ -62,7 +55,6 @@ public class PP extends OpMode {
         encoderRight.resetEncoder();
         encoderPerp.resetEncoder();
 
-        robotDrive = new MecanumDrive(leftFront, rightFront, leftBack, rightBack);
         dashboard = FtcDashboard.getInstance();
 
         HolonomicOdometry holOdom = new HolonomicOdometry(
@@ -87,9 +79,9 @@ public class PP extends OpMode {
     public void init() {
         motorCtrls = new MotorEncoderController(hardwareMap, telemetry);
         lf = hardwareMap.get(DcMotor.class, "lf");
-        rf = hardwareMap.get(DcMotor.class, "rf");
-        lb = hardwareMap.get(DcMotor.class, "lb");
-        rb = hardwareMap.get(DcMotor.class, "rb");
+        rf = hardwareMap.get(DcMotor.class, "leftodom");
+        lb = hardwareMap.get(DcMotor.class, "backodom");
+        rb = hardwareMap.get(DcMotor.class, "rightodom");
     }
 
     @Override
@@ -111,6 +103,12 @@ public class PP extends OpMode {
             while(gamepad1.x);
             xTargetValue+=12;
             yTargetValue+=12;
+        }
+        if(gamepad1.y) {
+            encoderLeft.resetEncoder();
+            encoderRight.resetEncoder();
+            encoderPerp.resetEncoder();
+            while(gamepad1.y);
         }
     }
 
