@@ -158,7 +158,9 @@ public class customPath extends ArrayList<Waypoint> {
         // Next, begin the loop.
         while (!isFinished()) {
             // Get the robot's current position using the odometry.
+
             Pose2d robotPosition = odometry.getPose();
+            odometry.updatePose();
             DashboardUtil.drawRobot(ftcField, new com.acmerobotics.roadrunner.geometry.Pose2d(odometry.getPose().getX(), -(odometry.getPose().getY()), -(odometry.getPose().getHeading())));
             // Call the loop function to get the motor powers.
             double[] motorPowers = loop(robotPosition.getX(), -robotPosition.getY(), -robotPosition.getHeading());
