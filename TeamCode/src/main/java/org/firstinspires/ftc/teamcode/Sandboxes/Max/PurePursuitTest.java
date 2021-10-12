@@ -95,7 +95,7 @@ public class PurePursuitTest extends LinearOpMode {
         while(true) {
 
             OdometrySubSystem.update();
-            TelemetryPacket.put("Pure Pursuit Position Indicator", 0);
+            TelemetryPacket.put("Pure Pursuit Position Indicator", 1);
             TelemetryPacket.put("X: ", OdometrySubSystem.getPose().getX());
             TelemetryPacket.put("Y: ", OdometrySubSystem.getPose().getY());
             TelemetryPacket.put("H: ", OdometrySubSystem.getPose().getHeading());
