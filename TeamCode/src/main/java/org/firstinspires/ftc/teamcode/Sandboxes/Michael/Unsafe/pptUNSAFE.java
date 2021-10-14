@@ -53,8 +53,8 @@ public class pptUNSAFE extends LinearOpMode {
         lb = new MotorEx(hardwareMap, "backodom");
         rb = new MotorEx(hardwareMap, "rightodom");
 
-        rf.setInverted(true);
-        lb.setInverted(true);
+        //rf.setInverted(true);
+        //lb.setInverted(true);
 
         encoderLeft = new MotorEx(hardwareMap, "leftodom");
         encoderRight = new MotorEx(hardwareMap, "rightodom");
