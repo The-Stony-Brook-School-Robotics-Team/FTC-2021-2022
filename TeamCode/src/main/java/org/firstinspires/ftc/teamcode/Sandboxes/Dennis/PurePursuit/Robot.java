@@ -23,8 +23,12 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 @TeleOp(name="A - Movement Testing", group="drive")
-public class MovementTesting extends LinearOpMode {
+public class Robot extends LinearOpMode {
 
+    public static Pose2d currentWorldPosition;
+    public static double MovementX;
+    public static double MovementY;
+    public static double MovementTurn;
 
 
     private static final double TICKS_TO_INCHES = Math.PI * WHEEL_DIAMETER / TICKS_PER_REV;
@@ -78,13 +82,13 @@ public class MovementTesting extends LinearOpMode {
                 TRACKWIDTH, CENTER_WHEEL_OFFSET
         );
         odometry = new OdometrySubsystem(holOdom);
-
+        currentWorldPosition = odometry.getPose();
         waitForStart();
 
         while (opModeIsActive() && !isStopRequested())
         {
             odometry.update();
-
+            currentWorldPosition = odometry.getPose();
 
             if(gamepad1.a && !pressingA) {
                 pressingA = true;
@@ -99,35 +103,7 @@ public class MovementTesting extends LinearOpMode {
             if(gamepad1.b && !pressingB) {
                 pressingB = true;
             } else if(!gamepad1.b && pressingB) {
-                Pose2d currentPose = new Pose2d(odometry.getPose().getX(), odometry.getPose().getY(), odometry.getPose().getRotation());
-                Waypoint p1 = new StartWaypoint(currentPose);
-                Waypoint p2 = new GeneralWaypoint(
-                        currentPose.getX() + 10,
-                        currentPose.getY() + 10,
-                        1,
-                        1,
-                        5
-                );
-                Waypoint p3 = new GeneralWaypoint(
-                        currentPose.getX() + 20,
-                        currentPose.getY() + 20,
-                        1,
-                        1,
-                        5
-                );
-                Pose2d endPose = new Pose2d(currentPose.getX() + 10, currentPose.getY(), currentPose.getRotation());
-                Waypoint p4 = new EndWaypoint(
-                        endPose,
-                        1,
-                        1,
-                        5,
-                        0.4,
-                        0.4
-                );
 
-                Path path = new Path(p1, p2, p3, p4);
-                path.init();
-                path.followPath(robotDrive, holOdom);
 
                 ButtonBCounter++;
                 pressingB = false;
@@ -159,5 +135,7 @@ public class MovementTesting extends LinearOpMode {
         }
     }
 
+    public void forward() {
 
+    }
 }

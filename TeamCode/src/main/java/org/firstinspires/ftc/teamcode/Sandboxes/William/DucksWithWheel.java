@@ -18,7 +18,7 @@ public class DucksWithWheel {
     private OdometrySubsystem odometry;
     MotorEncoderController MEC;
 
-    @Override
-    public void init() {
-    }
+    //@Override
+    //public void init() {
+    //}
 }
