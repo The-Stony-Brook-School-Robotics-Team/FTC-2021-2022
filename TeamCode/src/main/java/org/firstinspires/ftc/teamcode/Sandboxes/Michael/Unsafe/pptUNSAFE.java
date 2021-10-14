@@ -53,8 +53,8 @@ public class pptUNSAFE extends LinearOpMode {
         lb = new MotorEx(hardwareMap, "backodom");
         rb = new MotorEx(hardwareMap, "rightodom");
 
-        //rf.setInverted(true);
-        //lb.setInverted(true);
+        rf.setInverted(true);
+        rb.setInverted(true);
 
         encoderLeft = new MotorEx(hardwareMap, "leftodom");
         encoderRight = new MotorEx(hardwareMap, "rightodom");
@@ -84,21 +84,21 @@ public class pptUNSAFE extends LinearOpMode {
         Waypoint p1 = new StartWaypoint(0.0, 0.0);
         Waypoint p2 = new GeneralWaypoint(
                 10, 10,
-                1,
+                .3,
                 1,
                 5
         );
         Waypoint p3 = new GeneralWaypoint(
                 20, 20,
                 -odometry.getPose().getY() + 20,
-                1,
+                .3,
                 1,
                 5
         );
         //com.arcrobotics.ftclib.geometry.Pose2d endPose = new com.arcrobotics.ftclib.geometry.Pose2d(currentPose.getX() + 10, currentPose.getY(), currentPose.getRotation());
         Waypoint p4 = new EndWaypoint(
                 30, 30, 0,
-                1,
+                .3,
                 1,
                 5,
                 0.4,
