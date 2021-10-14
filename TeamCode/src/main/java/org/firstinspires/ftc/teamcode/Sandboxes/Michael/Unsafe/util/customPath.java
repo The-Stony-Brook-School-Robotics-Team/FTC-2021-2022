@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Sandboxes.Michael.Unsafe.util;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.arcrobotics.ftclib.command.OdometrySubsystem;
 import com.arcrobotics.ftclib.purepursuit.*;
 
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
@@ -16,6 +17,7 @@ import com.arcrobotics.ftclib.purepursuit.waypoints.GeneralWaypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.InterruptWaypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.PointTurnWaypoint;
 
+import org.firstinspires.ftc.teamcode.Sandboxes.Michael.Unsafe.pptUNSAFE;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 import java.util.ArrayList;
@@ -42,8 +44,7 @@ import java.util.Queue;
  */
 @SuppressWarnings("serial")
 public class customPath extends ArrayList<Waypoint> {
-    TelemetryPacket telemPacket = new TelemetryPacket();
-    Canvas ftcField = telemPacket.fieldOverlay();
+
     // The default motion profile.
     private static PathMotionProfile defaultMotionProfile = null;
 
@@ -147,7 +148,7 @@ public class customPath extends ArrayList<Waypoint> {
      * @return True if the path completed successfully, false if the path did not (timed out, lost path, etc.).
      * @throws IllegalStateException If automatic mode is disabled/not configured or the init has not been ran.
      */
-    public boolean followPath(MecanumDrive mecanumDrive, Odometry odometry) {
+    public boolean followPath(MecanumDrive mecanumDrive, OdometrySubsystem odometry) {
         // Make sure arguments are not null.
         if (mecanumDrive == null)
             throw new IllegalStateException("Path initiation failed. Drivetrain is not set.");
@@ -158,12 +159,17 @@ public class customPath extends ArrayList<Waypoint> {
         // Next, begin the loop.
         while (!isFinished()) {
             // Get the robot's current position using the odometry.
+            odometry.update();
 
-            Pose2d robotPosition = odometry.getPose();
-            odometry.updatePose();
-            DashboardUtil.drawRobot(ftcField, new com.acmerobotics.roadrunner.geometry.Pose2d(odometry.getPose().getX(), -(odometry.getPose().getY()), -(odometry.getPose().getHeading())));
+            TelemetryPacket telemPacket = new TelemetryPacket();
+            Canvas ftcField = telemPacket.fieldOverlay();
+            pptUNSAFE.dashboard.sendTelemetryPacket(telemPacket);
+
+            com.acmerobotics.roadrunner.geometry.Pose2d robotPosition = new com.acmerobotics.roadrunner.geometry.Pose2d(odometry.getPose().getX(), -(odometry.getPose().getY()), -(odometry.getPose().getHeading()));
+            DashboardUtil.drawRobot(ftcField, robotPosition);
             // Call the loop function to get the motor powers.
-            double[] motorPowers = loop(robotPosition.getX(), -robotPosition.getY(), -robotPosition.getHeading());
+            //double[] motorPowers = loop(odometry.getPose().getX(), -odometry.getPose().getY(), -robotPosition.getHeading());
+            double[] motorPowers = loop(robotPosition.getX(), robotPosition.getY(), robotPosition.getHeading());
             // Update motor speeds.
             mecanumDrive.driveRobotCentric(motorPowers[0], motorPowers[1], motorPowers[2]);
             if (!isFinished()) {
@@ -175,7 +181,7 @@ public class customPath extends ArrayList<Waypoint> {
                 if (pathAborted)
                     return false;
             }
-            odometry.updatePose();
+            odometry.update();
         }
         // After the path is completed, turn off motors and return false;
         mecanumDrive.stop();
