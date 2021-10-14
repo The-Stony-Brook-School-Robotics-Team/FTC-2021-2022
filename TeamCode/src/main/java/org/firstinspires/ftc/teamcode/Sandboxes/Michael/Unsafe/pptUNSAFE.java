@@ -91,14 +91,14 @@ public class pptUNSAFE extends LinearOpMode {
         Waypoint p3 = new GeneralWaypoint(
                 20, 20,
                 -odometry.getPose().getY() + 20,
-                .3,
+                .8,
                 1,
                 5
         );
         //com.arcrobotics.ftclib.geometry.Pose2d endPose = new com.arcrobotics.ftclib.geometry.Pose2d(currentPose.getX() + 10, currentPose.getY(), currentPose.getRotation());
         Waypoint p4 = new EndWaypoint(
                 30, 30, 0,
-                .3,
+                .8,
                 1,
                 5,
                 0.4,
@@ -107,7 +107,7 @@ public class pptUNSAFE extends LinearOpMode {
         Waypoint p5 = new EndWaypoint(
                 odometry.getPose().getX() + 10,
                 odometry.getPose().getY(),
-                0, .3, .3, 5, .4, .4
+                0, .8, .3, 5, .4, .4
         );
 
         customPath path = new customPath(p1, p2, p3, p4);
