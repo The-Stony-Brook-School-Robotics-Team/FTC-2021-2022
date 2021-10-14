@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Sandboxes.Max;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.OdometrySubsystem;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
@@ -16,11 +17,10 @@ import com.arcrobotics.ftclib.purepursuit.waypoints.InterruptWaypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.StartWaypoint;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Sandboxes.Dennis.Odometry.geometry.Pose2d;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
-
+import com.qualcomm.robotcore.hardware.DcMotor;
 import java.util.function.DoubleSupplier;
 
 @TeleOp
@@ -40,12 +40,15 @@ public class PurePursuitTest extends LinearOpMode {
     private MotorEx lb;
     private MotorEx rb;
     private MecanumDrive Drivers;
-    private Boolean ButtonY = false;
+    private SampleMecanumDrive ControlledDrives;
+    private int ButtonY = 0;
     FtcDashboard Graph;
 
     private final double DistancePerPulse = Math.PI*2.0/8192;
     @Override
     public void runOpMode() throws InterruptedException {
+        ControlledDrives = new SampleMecanumDrive(hardwareMap);
+        ControlledDrives.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
          lf = new MotorEx(hardwareMap, "lf");
          rf = new MotorEx(hardwareMap, "leftodom");
          lb = new MotorEx(hardwareMap, "backodom");
@@ -56,6 +59,7 @@ public class PurePursuitTest extends LinearOpMode {
         RightEncoder = new MotorEx(hardwareMap, "rightodom");
 
         Drivers = new MecanumDrive(lf, rf, lb, rb);
+        ControlledDrives = new SampleMecanumDrive(hardwareMap);
         //Drivers;
         LeftEncoder.setDistancePerPulse(DistancePerPulse);
         RightEncoder.setDistancePerPulse(DistancePerPulse);
@@ -77,10 +81,6 @@ public class PurePursuitTest extends LinearOpMode {
         OdometrySubSystem = new OdometrySubsystem(this.HolonomicOdometry);
 
 
-        Graph = FtcDashboard.getInstance();
-        TelemetryPacket TelemetryPacket = new TelemetryPacket();
-        Canvas Field = new TelemetryPacket().fieldOverlay();
-        com.acmerobotics.roadrunner.geometry.Pose2d Pose2dField= new com.acmerobotics.roadrunner.geometry.Pose2d(OdometrySubSystem.getPose().getX(), OdometrySubSystem.getPose().getY(),OdometrySubSystem.getPose().getHeading());
         waitForStart();
 
         Waypoint startW = new StartWaypoint(LeftEncoder.getCurrentPosition(), RightEncoder.getCurrentPosition());
@@ -94,7 +94,13 @@ public class PurePursuitTest extends LinearOpMode {
 
         while(true) {
 
+            Graph = FtcDashboard.getInstance();
+            TelemetryPacket TelemetryPacket = new TelemetryPacket();
+            Canvas Field = new TelemetryPacket().fieldOverlay();
+            Pose2d Pose2dField= new Pose2d(OdometrySubSystem.getPose().getX(), OdometrySubSystem.getPose().getY(),OdometrySubSystem.getPose().getHeading());
+
             OdometrySubSystem.update();
+
             TelemetryPacket.put("Pure Pursuit Position Indicator", 1);
             TelemetryPacket.put("X: ", OdometrySubSystem.getPose().getX());
             TelemetryPacket.put("Y: ", OdometrySubSystem.getPose().getY());
@@ -113,20 +119,22 @@ public class PurePursuitTest extends LinearOpMode {
             }
 
 
-            if (gamepad1.y && !ButtonY) {
+            if (gamepad1.y && ButtonY!=1) {
                 /*The Code Below Is Related to The Pure Pursuit Road Tracking Codes Above*/
-                ButtonY = true;
+                ButtonY = 1;
             }
-            else if(!gamepad1.y && ButtonY){
+            else if(!gamepad1.y && ButtonY == 1){
                 testP.followPath(Drivers, HolonomicOdometry);
-                ButtonY = false;
+                ButtonY = 0;
             }
 
-            lf.set((-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
-            rf.set((-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
-            lb.set((-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
-            rb.set((-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
-
+            ControlledDrives.setWeightedDrivePower(
+                    new Pose2d(
+                            -0.3*gamepad1.left_stick_y,
+                            -0.3*gamepad1.left_stick_x,
+                            -0.3*gamepad1.right_stick_x
+                    )
+            );
 
         }
 
