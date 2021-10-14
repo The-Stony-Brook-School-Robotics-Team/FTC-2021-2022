@@ -1,36 +1,38 @@
 package org.firstinspires.ftc.teamcode.Sandboxes.Michael.Unsafe;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.OdometrySubsystem;
+import com.arcrobotics.ftclib.command.PurePursuitCommand;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
 import com.arcrobotics.ftclib.purepursuit.Path;
+import com.arcrobotics.ftclib.purepursuit.Waypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.EndWaypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.GeneralWaypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.StartWaypoint;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import org.firstinspires.ftc.teamcode.Sandboxes.Michael.Unsafe.util.customPath;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
-import static org.firstinspires.ftc.teamcode.Sandboxes.Dennis.PurePursuit.MovementConfig.CENTER_WHEEL_OFFSET;
-import static org.firstinspires.ftc.teamcode.Sandboxes.Dennis.PurePursuit.MovementConfig.TICKS_PER_REV;
-import static org.firstinspires.ftc.teamcode.Sandboxes.Dennis.PurePursuit.MovementConfig.TRACKWIDTH;
-import static org.firstinspires.ftc.teamcode.Sandboxes.Dennis.PurePursuit.MovementConfig.WHEEL_DIAMETER;
-
-@TeleOp(name="A -  Movement Testing", group="drive")
-public class MovementTesting extends LinearOpMode {
+@TeleOp(name="Michael Unsafe Testing", group="drive")
+public class pptUNSAFE extends LinearOpMode {
 
 
-
+    private static final double TRACKWIDTH = 12.75;
+    private static final double CENTER_WHEEL_OFFSET = -8.7;
+    private static final double WHEEL_DIAMETER = 2.0;
+    private static final double TICKS_PER_REV = 8192;
     private static final double TICKS_TO_INCHES = Math.PI * WHEEL_DIAMETER / TICKS_PER_REV;
 
     private MotorEx lf, rf, lb, rb;
-    private MecanumDrive drive;
     private OdometrySubsystem odometry;
     private MotorEx encoderLeft, encoderRight, encoderPerp;
 
@@ -38,20 +40,21 @@ public class MovementTesting extends LinearOpMode {
 
     private boolean pressingA = false;
     private boolean pressingB = false;
+    private boolean pressingY = false;
 
     private int ButtonACounter = 0;
     private int ButtonBCounter = 0;
 
-    FtcDashboard dashboard;
-
-
-
+    public static FtcDashboard dashboard;
     @Override
     public void runOpMode() throws InterruptedException {
         lf = new MotorEx(hardwareMap, "lf");
         rf = new MotorEx(hardwareMap, "leftodom");
         lb = new MotorEx(hardwareMap, "backodom");
         rb = new MotorEx(hardwareMap, "rightodom");
+
+        rf.setInverted(true);
+        lb.setInverted(true);
 
         encoderLeft = new MotorEx(hardwareMap, "leftodom");
         encoderRight = new MotorEx(hardwareMap, "rightodom");
@@ -65,9 +68,10 @@ public class MovementTesting extends LinearOpMode {
         encoderRight.resetEncoder();
         encoderPerp.resetEncoder();
 
+
         robotDrive = new MecanumDrive(lf, rf, lb, rb);
         dashboard = FtcDashboard.getInstance();
-        
+
         HolonomicOdometry holOdom = new HolonomicOdometry(
                 () -> encoderLeft.getCurrentPosition() * TICKS_TO_INCHES,
                 () -> -(encoderRight.getCurrentPosition() * TICKS_TO_INCHES),
@@ -76,14 +80,36 @@ public class MovementTesting extends LinearOpMode {
         );
         odometry = new OdometrySubsystem(holOdom);
 
+        //com.arcrobotics.ftclib.geometry.Pose2d currentPose = new com.arcrobotics.ftclib.geometry.Pose2d(odometry.getPose().getX(), odometry.getPose().getY(), odometry.getPose().getRotation());
+        Waypoint p1 = new StartWaypoint(0.0, 0.0);
+        Waypoint p2 = new GeneralWaypoint(
+                10, 10,
+                1,
+                1,
+                5
+        );
+        Waypoint p3 = new GeneralWaypoint(
+                20, 20,
+                -odometry.getPose().getY() + 20,
+                1,
+                1,
+                5
+        );
+        //com.arcrobotics.ftclib.geometry.Pose2d endPose = new com.arcrobotics.ftclib.geometry.Pose2d(currentPose.getX() + 10, currentPose.getY(), currentPose.getRotation());
+        Waypoint p4 = new EndWaypoint(
+                30, 30, 0,
+                1,
+                1,
+                5,
+                0.4,
+                0.4
+        );
+
+        customPath path = new customPath(p1, p2, p3, p4);
+        Path vanillaPath = new Path(p1, p2, p3, p4);
+
         waitForStart();
 
-        StartWaypoint p1 = new StartWaypoint(0, 0);
-        GeneralWaypoint p2 = new GeneralWaypoint(0, 0, 0.8, 0.8, 30);
-        EndWaypoint p3 = new EndWaypoint(400, 0, 0, 0.5, 0.5, 30, 0.8, 1);
-
-        Path m_path = new Path(p1, p2, p3);
-        m_path.init();
 
         while (opModeIsActive() && !isStopRequested())
         {
@@ -98,14 +124,17 @@ public class MovementTesting extends LinearOpMode {
                 ButtonACounter++;
                 pressingA = false;
             }
-
             if(gamepad1.b && !pressingB) {
                 pressingB = true;
             } else if(!gamepad1.b && pressingB) {
-                m_path.followPath(robotDrive, holOdom);
-                ButtonBCounter++;
-                pressingB = false;
+                path.followPath(robotDrive, odometry);
             }
+            if(gamepad1.y && !pressingY) {
+                pressingY = true;
+            } else if(!gamepad1.y && pressingY) {
+                vanillaPath.followPath(robotDrive, holOdom);
+            }
+
 
             lf.set(0.6 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
             rf.set(0.6 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
@@ -130,7 +159,10 @@ public class MovementTesting extends LinearOpMode {
             telemetry.addData("Right Encoder Position", encoderRight.getCurrentPosition() * TICKS_TO_INCHES);
             telemetry.addData("Back Encoder Position", encoderPerp.getCurrentPosition() * TICKS_TO_INCHES);
             telemetry.update();
+
+
         }
+
 
 
     }

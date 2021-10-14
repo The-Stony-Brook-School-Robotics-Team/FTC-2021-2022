@@ -9,9 +9,8 @@ import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public class OpenCVEngine  extends OpenCvPipeline {
+public class OpenCVEngineCYMK extends OpenCvPipeline {
     static final int STREAM_WIDTH = 1920;
     static final int STREAM_HEIGHT = 1080;
 
@@ -85,11 +84,18 @@ public class OpenCVEngine  extends OpenCvPipeline {
     Mat RectB_Y;
     Mat RectC_Y;
 
+    Mat RectA_cYmk;
+    Mat RectB_cYmk;
+    Mat RectC_cYmk;
+
+
     //Mat regionGoal_Cr;
     Mat YCrCb = new Mat();
     Mat Y = new Mat();
     Mat Cr = new Mat();
     Mat Cb = new Mat();
+
+    Mat y = new Mat(); /// yellow for CYMK
     ///Mat Cr = new Mat();
     int avgA;
     int avgB;
@@ -101,6 +107,10 @@ public class OpenCVEngine  extends OpenCvPipeline {
     int avgAY;
     int avgBY;
     int avgCY;
+
+    int avgAy;
+    int avgBy;
+    int avgCy;
     //int avgGoalCr;
 
     // Volatile since accessed by OpMode thread w/o synchronization
@@ -117,51 +127,87 @@ public class OpenCVEngine  extends OpenCvPipeline {
         Core.split(YCrCb, yCrCbChannels);
         //Core.extractChannel(YCrCb, Cb, 1);
         Y = yCrCbChannels.get(0);
-       // Cr = yCrCbChannels.get(1);
-       // Cb = yCrCbChannels.get(2);
+        Cr = yCrCbChannels.get(1);
+        Cb = yCrCbChannels.get(2);
+
+        y = convertRGB2CYMK(input);
     }
 
     @Override
     public void init(Mat firstFrame) {
         inputToCb(firstFrame);
 
-      //  RectA_Cb = Cb.submat(new Rect(RectATLCorner, RectABRCorner));
-       // RectB_Cb = Cb.submat(new Rect(RectBTLCorner, RectBBRCorner));
-       // RectC_Cb = Cb.submat(new Rect(RectCTLCorner, RectCBRCorner));
+        RectA_Cb = Cb.submat(new Rect(RectATLCorner, RectABRCorner));
+        RectB_Cb = Cb.submat(new Rect(RectBTLCorner, RectBBRCorner));
+        RectC_Cb = Cb.submat(new Rect(RectCTLCorner, RectCBRCorner));
 
-      //  RectA_Cr = Cr.submat(new Rect(RectATLCorner, RectABRCorner));
-      //  RectB_Cr = Cr.submat(new Rect(RectBTLCorner, RectBBRCorner));
-      //  RectC_Cr = Cr.submat(new Rect(RectCTLCorner, RectCBRCorner));
+        RectA_Cr = Cr.submat(new Rect(RectATLCorner, RectABRCorner));
+        RectB_Cr = Cr.submat(new Rect(RectBTLCorner, RectBBRCorner));
+        RectC_Cr = Cr.submat(new Rect(RectCTLCorner, RectCBRCorner));
 
         RectA_Y = Y.submat(new Rect(RectATLCorner, RectABRCorner));
         RectB_Y = Y.submat(new Rect(RectBTLCorner, RectBBRCorner));
         RectC_Y = Y.submat(new Rect(RectCTLCorner, RectCBRCorner));
 
+
+        RectA_cYmk = y.submat(new Rect(RectATLCorner, RectABRCorner));
+        RectB_cYmk = y.submat(new Rect(RectBTLCorner, RectBBRCorner));
+        RectC_cYmk = y.submat(new Rect(RectCTLCorner, RectCBRCorner));
+
         /////regionGoal_Cr = Cr.submat(new Rect(region1_pointA_goal, region1_pointB_goal));
     }
+    public static Mat convertRGB2CYMK(Mat RGB) {
+        ArrayList<Mat> RGBchannels = new ArrayList<Mat>(3);
+        Core.split(RGB, RGBchannels);
+        //Core.extractChannel(YCrCb, Cb, 1);
+        Mat R = RGBchannels.get(0);
+        Mat G = RGBchannels.get(1);
+        Mat B = RGBchannels.get(2);
 
+        Mat Y = new Mat();
+        R.copyTo(Y);
+
+
+        for (int i = 0; i < RGB.height(); i++) {
+            for (int j = 0; j < RGB.cols(); j++)
+            {
+                double Rprime = R.get(i,j)[0]/255;
+                double Gprime = G.get(i,j)[0]/255;
+                double Bprime = B.get(i,j)[0]/255;
+                double Kresult = 1-Math.max(Rprime,Math.max(Gprime,Bprime));
+                double Yresult = (1 - Bprime - Kresult) / (1-Kresult);
+                Y.put(i,j,new double[]{Yresult});
+            }
+        }
+        System.out.println("converted");
+        return Y;
+    }
     @Override
     public Mat processFrame(Mat input) {
         inputToCb(input);
+        System.out.println("processing requested");
+        avgA = (int) Core.mean(RectA_Cb).val[0];
+        avgB = (int) Core.mean(RectB_Cb).val[0];
+        avgC = (int) Core.mean(RectC_Cb).val[0];
 
-      //  avgA = (int) Core.mean(RectA_Cb).val[0];
-      //  avgB = (int) Core.mean(RectB_Cb).val[0];
-   //     avgC = (int) Core.mean(RectC_Cb).val[0];
-
-      //  avgACr = (int) Core.mean(RectA_Cr).val[0];
-       // avgBCr = (int) Core.mean(RectB_Cr).val[0];
-      //  avgCCr = (int) Core.mean(RectC_Cr).val[0];
+        avgACr = (int) Core.mean(RectA_Cr).val[0];
+        avgBCr = (int) Core.mean(RectB_Cr).val[0];
+        avgCCr = (int) Core.mean(RectC_Cr).val[0];
 
         avgAY = (int) Core.mean(RectA_Y).val[0];
         avgBY = (int) Core.mean(RectB_Y).val[0];
         avgCY = (int) Core.mean(RectC_Y).val[0];
+
+        avgAy = (int) Core.mean(RectA_cYmk).val[0];
+        avgBy = (int) Core.mean(RectB_cYmk).val[0];
+        avgCy = (int) Core.mean(RectC_cYmk).val[0];
         //avgGoalCr = (int) Core.mean(regionGoal_Cr).val[0]; // need to fix val[0]
 
 
         position = ItemBarcodePlacement.NONE; // Record our analysis
-        if (avgAY >= PresentThreshold) {
+        if (avgAy >= PresentThreshold) {
             position = ItemBarcodePlacement.A;
-        } else if (avgBY >= PresentThreshold) {
+        } else if (avgBy >= PresentThreshold) {
             position = ItemBarcodePlacement.B;
         } else {
             position = ItemBarcodePlacement.C;
@@ -229,6 +275,18 @@ public class OpenCVEngine  extends OpenCvPipeline {
 
     public int getCYanalysis() {
         return avgCY;
+    }
+
+    public int getAyanalysis() {
+        return avgAy;
+    }
+
+    public int getByanalysis() {
+        return avgBy;
+    }
+
+    public int getCyanalysis() {
+        return avgCy;
     }
 
 }

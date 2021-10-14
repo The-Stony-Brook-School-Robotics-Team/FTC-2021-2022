@@ -9,21 +9,11 @@ import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public class OpenCVEngine  extends OpenCvPipeline {
+public class BasicOpenCVEngine extends OpenCvPipeline {
     static final int STREAM_WIDTH = 1920;
     static final int STREAM_HEIGHT = 1080;
 
-    /*
-     * An enum to define the ring amount
-     */
-    public enum ItemBarcodePlacement {
-        A,
-        B,
-        C,
-        NONE
-    }
 
     /*
      * Some color constants
@@ -47,7 +37,6 @@ public class OpenCVEngine  extends OpenCvPipeline {
     static final int HeightRectC = 110; // for goal alignment window
     static final Point RectCTopLeftAnchor = new Point((STREAM_WIDTH - WidthRectB) / 2 + 100, ((STREAM_HEIGHT - HeightRectA) / 2) - 100);
 
-
     final int PresentThreshold = 127;
 
     Point RectATLCorner = new Point(
@@ -56,6 +45,8 @@ public class OpenCVEngine  extends OpenCvPipeline {
     Point RectABRCorner = new Point(
             RectATopLeftAnchor.x + WidthRectA,
             RectATopLeftAnchor.y + HeightRectA);
+
+
     Point RectBTLCorner = new Point(
             RectBTopLeftAnchor.x,
             RectBTopLeftAnchor.y);
@@ -71,19 +62,13 @@ public class OpenCVEngine  extends OpenCvPipeline {
             RectCTopLeftAnchor.x + WidthRectC,
             RectCTopLeftAnchor.y + HeightRectC);
 
-
     /*
      * Working variables
      */
     Mat RectA_Cb;
-    Mat RectB_Cb;
-    Mat RectC_Cb;
     Mat RectA_Cr;
-    Mat RectB_Cr;
-    Mat RectC_Cr;
     Mat RectA_Y;
-    Mat RectB_Y;
-    Mat RectC_Y;
+
 
     //Mat regionGoal_Cr;
     Mat YCrCb = new Mat();
@@ -92,19 +77,42 @@ public class OpenCVEngine  extends OpenCvPipeline {
     Mat Cb = new Mat();
     ///Mat Cr = new Mat();
     int avgA;
+
+
+    int avgACr;
+
+    int avgAY;
+
+
+    /*
+     * Working variables
+     */
+
+    Mat RectB_Cb;
+    Mat RectC_Cb;
+
+    Mat RectB_Cr;
+    Mat RectC_Cr;
+
+    Mat RectB_Y;
+    Mat RectC_Y;
+
+    //Mat regionGoal_Cr;
+
+    ///Mat Cr = new Mat();
+
     int avgB;
     int avgC;
 
-    int avgACr;
+
     int avgBCr;
     int avgCCr;
-    int avgAY;
+
     int avgBY;
     int avgCY;
+
     //int avgGoalCr;
 
-    // Volatile since accessed by OpMode thread w/o synchronization
-    private volatile ItemBarcodePlacement position = ItemBarcodePlacement.NONE;
 
     /*
      * This function takes the RGB frame, converts to YCrCb,
@@ -117,21 +125,21 @@ public class OpenCVEngine  extends OpenCvPipeline {
         Core.split(YCrCb, yCrCbChannels);
         //Core.extractChannel(YCrCb, Cb, 1);
         Y = yCrCbChannels.get(0);
-       // Cr = yCrCbChannels.get(1);
-       // Cb = yCrCbChannels.get(2);
+        Cr = yCrCbChannels.get(1);
+        Cb = yCrCbChannels.get(2);
     }
 
     @Override
     public void init(Mat firstFrame) {
         inputToCb(firstFrame);
 
-      //  RectA_Cb = Cb.submat(new Rect(RectATLCorner, RectABRCorner));
-       // RectB_Cb = Cb.submat(new Rect(RectBTLCorner, RectBBRCorner));
-       // RectC_Cb = Cb.submat(new Rect(RectCTLCorner, RectCBRCorner));
+        RectA_Cb = Cb.submat(new Rect(RectATLCorner, RectABRCorner));
+        RectB_Cb = Cb.submat(new Rect(RectBTLCorner, RectBBRCorner));
+        RectC_Cb = Cb.submat(new Rect(RectCTLCorner, RectCBRCorner));
 
-      //  RectA_Cr = Cr.submat(new Rect(RectATLCorner, RectABRCorner));
-      //  RectB_Cr = Cr.submat(new Rect(RectBTLCorner, RectBBRCorner));
-      //  RectC_Cr = Cr.submat(new Rect(RectCTLCorner, RectCBRCorner));
+        RectA_Cr = Cr.submat(new Rect(RectATLCorner, RectABRCorner));
+        RectB_Cr = Cr.submat(new Rect(RectBTLCorner, RectBBRCorner));
+        RectC_Cr = Cr.submat(new Rect(RectCTLCorner, RectCBRCorner));
 
         RectA_Y = Y.submat(new Rect(RectATLCorner, RectABRCorner));
         RectB_Y = Y.submat(new Rect(RectBTLCorner, RectBBRCorner));
@@ -143,14 +151,13 @@ public class OpenCVEngine  extends OpenCvPipeline {
     @Override
     public Mat processFrame(Mat input) {
         inputToCb(input);
+          avgA = (int) Core.mean(RectA_Cb).val[0];
+        avgB = (int) Core.mean(RectB_Cb).val[0];
+        avgC = (int) Core.mean(RectC_Cb).val[0];
 
-      //  avgA = (int) Core.mean(RectA_Cb).val[0];
-      //  avgB = (int) Core.mean(RectB_Cb).val[0];
-   //     avgC = (int) Core.mean(RectC_Cb).val[0];
-
-      //  avgACr = (int) Core.mean(RectA_Cr).val[0];
-       // avgBCr = (int) Core.mean(RectB_Cr).val[0];
-      //  avgCCr = (int) Core.mean(RectC_Cr).val[0];
+        avgACr = (int) Core.mean(RectA_Cr).val[0];
+        avgBCr = (int) Core.mean(RectB_Cr).val[0];
+        avgCCr = (int) Core.mean(RectC_Cr).val[0];
 
         avgAY = (int) Core.mean(RectA_Y).val[0];
         avgBY = (int) Core.mean(RectB_Y).val[0];
@@ -158,14 +165,7 @@ public class OpenCVEngine  extends OpenCvPipeline {
         //avgGoalCr = (int) Core.mean(regionGoal_Cr).val[0]; // need to fix val[0]
 
 
-        position = ItemBarcodePlacement.NONE; // Record our analysis
-        if (avgAY >= PresentThreshold) {
-            position = ItemBarcodePlacement.A;
-        } else if (avgBY >= PresentThreshold) {
-            position = ItemBarcodePlacement.B;
-        } else {
-            position = ItemBarcodePlacement.C;
-        }
+
 
         Imgproc.rectangle( // rings
                 input, // Buffer to draw on
@@ -191,44 +191,23 @@ public class OpenCVEngine  extends OpenCvPipeline {
         return input;
     }
 
-    public ItemBarcodePlacement getWhichBarcode() {
-        return position;
-    }
 
     public int getAanalysis() {
         return avgA;
     }
 
-    public int getBanalysis() {
-        return avgB;
-    }
 
-    public int getCanalysis() {
-        return avgC;
-    }
 
     public int getACranalysis() {
         return avgACr;
     }
 
-    public int getBCranalysis() {
-        return avgBCr;
-    }
 
-    public int getCCranalysis() {
-        return avgCCr;
-    }
 
     public int getAYanalysis() {
         return avgAY;
     }
 
-    public int getBYanalysis() {
-        return avgBY;
-    }
 
-    public int getCYanalysis() {
-        return avgCY;
-    }
 
 }

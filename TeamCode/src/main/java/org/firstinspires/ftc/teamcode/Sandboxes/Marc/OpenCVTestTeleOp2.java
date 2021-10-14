@@ -14,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.function.Consumer;
 import org.firstinspires.ftc.robotcore.external.function.Continuation;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.teamcode.BearsUtil.BasicOpenCVEngine;
 import org.firstinspires.ftc.teamcode.BearsUtil.OpenCVEngine;
 import org.firstinspires.ftc.teamcode.BearsUtil.OpenCVEngineCYMK;
 import org.opencv.android.Utils;
@@ -25,7 +26,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @TeleOp
-public class OpenCVTestTeleOpNoVuforia extends OpMode {
+public class OpenCVTestTeleOp2 extends OpMode {
     //Continuation<? extends Consumer<Bitmap>> continuation;
 
     static final int STREAM_WIDTH = 1920;
@@ -34,61 +35,58 @@ public class OpenCVTestTeleOpNoVuforia extends OpMode {
     FtcDashboard dash;
     //VuforiaLocalizer vuforia;
     //OpenCvCamera vuforiaPassthroughCam;
-    OpenCVEngineCYMK pipeline;
+    BasicOpenCVEngine pipeline;
 
     @Override
     public void init() {
         //continuation  = new Continuation<Consumer<Bitmap>>();
         //dash = FtcDashboard.getInstance();
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-       // int[] viewportContainerIds = OpenCvCameraFactory.getInstance().splitLayoutForMultipleViewports(cameraMonitorViewId, 2, OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY);
+        // int[] viewportContainerIds = OpenCvCameraFactory.getInstance().splitLayoutForMultipleViewports(cameraMonitorViewId, 2, OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY);
 
 
         WebcamName webcamName = null;
-            webcamName = hardwareMap.get(WebcamName.class, "WebcamMain");
-           webcam = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
-           pipeline = new OpenCVEngineCYMK();
-           webcam.setPipeline(pipeline);
+        webcamName = hardwareMap.get(WebcamName.class, "WebcamMain");
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
+        pipeline = new BasicOpenCVEngine();
+        webcam.setPipeline(pipeline);
 
-            // We set the viewport policy to optimized view so the preview doesn't appear 90 deg
-            // out when the RC activity is in portrait. We do our actual image processing assuming
-            // landscape orientation, though.
+        // We set the viewport policy to optimized view so the preview doesn't appear 90 deg
+        // out when the RC activity is in portrait. We do our actual image processing assuming
+        // landscape orientation, though.
 //        webcam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
 
-            webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+            @Override
+            public void onOpened()
             {
-                @Override
-                public void onOpened()
-                {
-                    webcam.startStreaming(STREAM_WIDTH, STREAM_HEIGHT, OpenCvCameraRotation.UPRIGHT);
-                }
+                webcam.startStreaming(STREAM_WIDTH, STREAM_HEIGHT, OpenCvCameraRotation.UPRIGHT);
+            }
 
-                @Override
-                public void onError(int errorCode) {
-                    telemetry.addData("Camera Failed","");
-                    telemetry.update();
-                }
-            });
+            @Override
+            public void onError(int errorCode) {
+                telemetry.addData("Camera Failed","");
+                telemetry.update();
+            }
+        });
 
-        telemetry.addData("Rect A: ",pipeline.getAanalysis());
-        telemetry.addData("Rect B: ",pipeline.getBanalysis());
-        telemetry.addData("Rect C: ",pipeline.getCanalysis());
-        telemetry.addData("Rect ACr: ",pipeline.getACranalysis());
-        telemetry.addData("Rect BCr: ",pipeline.getBCranalysis());
-        telemetry.addData("Rect CCr: ",pipeline.getCCranalysis());
-        telemetry.addData("Rect AY: ",pipeline.getAYanalysis());
-        telemetry.addData("Rect BY: ",pipeline.getBYanalysis());
-        telemetry.addData("Rect CY: ",pipeline.getCYanalysis());
-        telemetry.addData("Rect Ay: ",pipeline.getAYanalysis());
-        telemetry.addData("Rect By: ",pipeline.getBYanalysis());
-        telemetry.addData("Rect Cy: ",pipeline.getCYanalysis());
-        telemetry.update();
+
 
     }
 
     @Override
     public void loop() {
-        telemetry.addData("","");
+
+
+        telemetry.addData("Rect A: ",pipeline.getAanalysis());
+
+        telemetry.addData("Rect ACr: ",pipeline.getACranalysis());
+
+        telemetry.addData("Rect AY: ",pipeline.getAYanalysis());
+
+        telemetry.addData("Rect Ay: ",pipeline.getAYanalysis());
+
         telemetry.update();
         //webcam.getFrameBitmap();
         /*if(gamepad1.a){
