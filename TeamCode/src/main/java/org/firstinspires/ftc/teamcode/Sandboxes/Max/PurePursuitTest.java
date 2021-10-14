@@ -87,7 +87,7 @@ public class PurePursuitTest extends LinearOpMode {
         //Waypoint premW = new InterruptWaypoint(8192*2, 8192*2, odometry.updatePose()); //Learning "Position Buffer"
         Waypoint intermediateW = new GeneralWaypoint(LeftEncoder.getCurrentPosition()+8192 * 5, RightEncoder.getCurrentPosition()+ 8192* 5, Math.PI/4, 0.5, 0.2, Math.PI);
         Waypoint postW = new InterruptWaypoint();
-        Waypoint endW = new EndWaypoint(LeftEncoder.getCurrentPosition()+8192 * 11, RightEncoder.getCurrentPosition()+ 8192* 11, Math.PI/4, 0.6, 0.2, Math.PI, 2 * Math.PI * 2, 2 * Math.PI * 2);
+        Waypoint endW = new EndWaypoint(LeftEncoder.getCurrentPosition()+8192 * 11, RightEncoder.getCurrentPosition()+ 8192* 11, Math.PI/4, 0.6, 0.2, Math.PI, Math.PI, Math.PI );
         Path testP = new Path(startW, endW);
         //testP.setWaypointTimeouts(100);
         testP.init();
