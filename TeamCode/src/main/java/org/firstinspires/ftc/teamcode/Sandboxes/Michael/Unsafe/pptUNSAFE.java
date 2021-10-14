@@ -53,8 +53,8 @@ public class pptUNSAFE extends LinearOpMode {
         lb = new MotorEx(hardwareMap, "backodom");
         rb = new MotorEx(hardwareMap, "rightodom");
 
-        rf.setInverted(true);
-        rb.setInverted(true);
+        rf.setInverted(false);
+        rb.setInverted(false);
 
         encoderLeft = new MotorEx(hardwareMap, "leftodom");
         encoderRight = new MotorEx(hardwareMap, "rightodom");
@@ -104,8 +104,14 @@ public class pptUNSAFE extends LinearOpMode {
                 0.4,
                 0.4
         );
+        Waypoint p5 = new EndWaypoint(
+                odometry.getPose().getX() + 10,
+                odometry.getPose().getY(),
+                0, .3, .3, 5, .4, .4
+        );
 
         customPath path = new customPath(p1, p2, p3, p4);
+        customPath newpath = new customPath(p1, p5);
         Path vanillaPath = new Path(p1, p2, p3, p4);
 
         waitForStart();
@@ -127,7 +133,7 @@ public class pptUNSAFE extends LinearOpMode {
             if(gamepad1.b && !pressingB) {
                 pressingB = true;
             } else if(!gamepad1.b && pressingB) {
-                path.followPath(robotDrive, odometry);
+                newpath.followPath(robotDrive, odometry);
             }
             if(gamepad1.y && !pressingY) {
                 pressingY = true;
