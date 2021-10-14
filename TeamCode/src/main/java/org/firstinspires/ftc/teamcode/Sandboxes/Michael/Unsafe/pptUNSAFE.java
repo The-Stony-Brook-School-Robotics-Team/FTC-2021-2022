@@ -17,6 +17,7 @@ import com.arcrobotics.ftclib.purepursuit.waypoints.StartWaypoint;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.Sandboxes.Michael.Unsafe.util.customPath;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
@@ -32,7 +33,6 @@ public class pptUNSAFE extends LinearOpMode {
     private static final double TICKS_TO_INCHES = Math.PI * WHEEL_DIAMETER / TICKS_PER_REV;
 
     private MotorEx lf, rf, lb, rb;
-    private MecanumDrive drive;
     private OdometrySubsystem odometry;
     private MotorEx encoderLeft, encoderRight, encoderPerp;
 
@@ -40,18 +40,21 @@ public class pptUNSAFE extends LinearOpMode {
 
     private boolean pressingA = false;
     private boolean pressingB = false;
+    private boolean pressingY = false;
 
     private int ButtonACounter = 0;
     private int ButtonBCounter = 0;
 
-    FtcDashboard dashboard;
-
+    public static FtcDashboard dashboard;
     @Override
     public void runOpMode() throws InterruptedException {
         lf = new MotorEx(hardwareMap, "lf");
         rf = new MotorEx(hardwareMap, "leftodom");
         lb = new MotorEx(hardwareMap, "backodom");
         rb = new MotorEx(hardwareMap, "rightodom");
+
+        rf.setInverted(true);
+        lb.setInverted(true);
 
         encoderLeft = new MotorEx(hardwareMap, "leftodom");
         encoderRight = new MotorEx(hardwareMap, "rightodom");
@@ -65,6 +68,7 @@ public class pptUNSAFE extends LinearOpMode {
         encoderRight.resetEncoder();
         encoderPerp.resetEncoder();
 
+
         robotDrive = new MecanumDrive(lf, rf, lb, rb);
         dashboard = FtcDashboard.getInstance();
 
@@ -76,17 +80,16 @@ public class pptUNSAFE extends LinearOpMode {
         );
         odometry = new OdometrySubsystem(holOdom);
 
-        com.arcrobotics.ftclib.geometry.Pose2d currentPose = new com.arcrobotics.ftclib.geometry.Pose2d(odometry.getPose().getX(), odometry.getPose().getY(), odometry.getPose().getRotation());
+        //com.arcrobotics.ftclib.geometry.Pose2d currentPose = new com.arcrobotics.ftclib.geometry.Pose2d(odometry.getPose().getX(), odometry.getPose().getY(), odometry.getPose().getRotation());
         Waypoint p1 = new StartWaypoint(0.0, 0.0);
         Waypoint p2 = new GeneralWaypoint(
-                odometry.getPose().getX() + 10,
-                -odometry.getPose().getY() + 10,
+                10, 10,
                 1,
                 1,
                 5
         );
         Waypoint p3 = new GeneralWaypoint(
-                odometry.getPose().getX() + 20,
+                20, 20,
                 -odometry.getPose().getY() + 20,
                 1,
                 1,
@@ -94,7 +97,7 @@ public class pptUNSAFE extends LinearOpMode {
         );
         //com.arcrobotics.ftclib.geometry.Pose2d endPose = new com.arcrobotics.ftclib.geometry.Pose2d(currentPose.getX() + 10, currentPose.getY(), currentPose.getRotation());
         Waypoint p4 = new EndWaypoint(
-                odometry.getPose().getX(), -odometry.getPose().getY(), -odometry.getPose().getHeading(),
+                30, 30, 0,
                 1,
                 1,
                 5,
@@ -103,6 +106,7 @@ public class pptUNSAFE extends LinearOpMode {
         );
 
         customPath path = new customPath(p1, p2, p3, p4);
+        Path vanillaPath = new Path(p1, p2, p3, p4);
 
         waitForStart();
 
@@ -123,7 +127,12 @@ public class pptUNSAFE extends LinearOpMode {
             if(gamepad1.b && !pressingB) {
                 pressingB = true;
             } else if(!gamepad1.b && pressingB) {
-                path.followPath(robotDrive, holOdom);
+                path.followPath(robotDrive, odometry);
+            }
+            if(gamepad1.y && !pressingY) {
+                pressingY = true;
+            } else if(!gamepad1.y && pressingY) {
+                vanillaPath.followPath(robotDrive, holOdom);
             }
 
 
@@ -153,6 +162,7 @@ public class pptUNSAFE extends LinearOpMode {
 
 
         }
+
 
 
     }
