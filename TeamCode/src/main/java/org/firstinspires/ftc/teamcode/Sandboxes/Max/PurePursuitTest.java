@@ -73,7 +73,7 @@ public class PurePursuitTest extends LinearOpMode {
         DoubleSupplier LP,RP,CP;
         double TicksPerInch = 8192*4*Math.PI;
         LP = () -> LeftEncoder.getCurrentPosition()/(TicksPerInch);
-        RP = () -> -(RightEncoder.getCurrentPosition()/(TicksPerInch));
+        RP = () -> (RightEncoder.getCurrentPosition()/(TicksPerInch));
         CP = () -> CentralEncoder.getCurrentPosition()/(TicksPerInch);
 
 
