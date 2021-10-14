@@ -53,6 +53,9 @@ public class MovementTesting extends LinearOpMode {
         lb = new MotorEx(hardwareMap, "backodom");
         rb = new MotorEx(hardwareMap, "rightodom");
 
+        rf.setInverted(true);
+        lb.setInverted(true);
+
         encoderLeft = new MotorEx(hardwareMap, "leftodom");
         encoderRight = new MotorEx(hardwareMap, "rightodom");
         encoderPerp = new MotorEx(hardwareMap, "backodom");
