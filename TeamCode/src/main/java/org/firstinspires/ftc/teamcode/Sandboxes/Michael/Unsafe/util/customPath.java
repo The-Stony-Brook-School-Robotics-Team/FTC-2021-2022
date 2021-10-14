@@ -168,8 +168,8 @@ public class customPath extends ArrayList<Waypoint> {
             com.acmerobotics.roadrunner.geometry.Pose2d robotPosition = new com.acmerobotics.roadrunner.geometry.Pose2d(odometry.getPose().getX(), -(odometry.getPose().getY()), -(odometry.getPose().getHeading()));
             DashboardUtil.drawRobot(ftcField, robotPosition);
             // Call the loop function to get the motor powers.
-            //double[] motorPowers = loop(odometry.getPose().getX(), -odometry.getPose().getY(), -robotPosition.getHeading());
-            double[] motorPowers = loop(robotPosition.getX(), -robotPosition.getY(), -robotPosition.getHeading());
+            double[] motorPowers = loop(odometry.getPose().getX(), -odometry.getPose().getY(), -odometry.getPose().getHeading());
+            //double[] motorPowers = loop(robotPosition.getX(), robotPosition.getY(), robotPosition.getHeading());
             // Update motor speeds.
             mecanumDrive.driveRobotCentric(motorPowers[0], motorPowers[1], motorPowers[2]);
             if (!isFinished()) {
