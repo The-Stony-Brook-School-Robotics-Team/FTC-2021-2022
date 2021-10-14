@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Sandboxes.Marc;
 
+import static java.lang.Thread.sleep;
+
 import android.graphics.Bitmap;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -36,6 +38,8 @@ public class OpenCVTestTeleOp2 extends OpMode {
     //VuforiaLocalizer vuforia;
     //OpenCvCamera vuforiaPassthroughCam;
     BasicOpenCVEngine pipeline;
+    boolean flag = false;
+    boolean secondFlag = false;
 
     @Override
     public void init() {
@@ -50,12 +54,6 @@ public class OpenCVTestTeleOp2 extends OpMode {
         webcam = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
         pipeline = new BasicOpenCVEngine();
         webcam.setPipeline(pipeline);
-
-        // We set the viewport policy to optimized view so the preview doesn't appear 90 deg
-        // out when the RC activity is in portrait. We do our actual image processing assuming
-        // landscape orientation, though.
-//        webcam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
-
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
             @Override
@@ -70,24 +68,61 @@ public class OpenCVTestTeleOp2 extends OpMode {
                 telemetry.update();
             }
         });
+        telemetry.addData("Rect AY: ",pipeline.getAYanalysis());
+        telemetry.addData("Rect BY: ",pipeline.getBYanalysis());
+        telemetry.addData("Rect CY: ",pipeline.getCYanalysis());
+
+        //telemetry.addData("Rect Ay: ",pipeline.getAYanalysis());
+
+        telemetry.update();
+        // We set the viewport policy to optimized view so the preview doesn't appear 90 deg
+        // out when the RC activity is in portrait. We do our actual image processing assuming
+        // landscape orientation, though.
+//        webcam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
+
+
 
 
 
     }
 
     @Override
+    public void start() {
+        super.start();
+        BasicOpenCVEngine.doAnalysis = true;
+        webcam.pauseViewport();
+    }
+
+    @Override
     public void loop() {
 
 
-        telemetry.addData("Rect A: ",pipeline.getAanalysis());
+       // telemetry.addData("Rect A: ",pipeline.getAanalysis());
 
-        telemetry.addData("Rect ACr: ",pipeline.getACranalysis());
-
+        //telemetry.addData("Rect ACr: ",pipeline.getACranalysis());
+        if(!flag) {
+        int A = pipeline.getAYanalysis();
+        if(A != 0) {flag = true;}
         telemetry.addData("Rect AY: ",pipeline.getAYanalysis());
-
-        telemetry.addData("Rect Ay: ",pipeline.getAYanalysis());
+        telemetry.addData("Rect BY: ",pipeline.getBYanalysis());
+        telemetry.addData("Rect CY: ",pipeline.getCYanalysis());
+        telemetry.addData("Position: ", pipeline.getPosition());
+        //telemetry.addData("Rect Ay: ",pipeline.getAYanalysis());
 
         telemetry.update();
+        try {
+            sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        }
+        else if(!secondFlag) {
+            BasicOpenCVEngine.doAnalysis = false;
+            webcam.pauseViewport();
+            webcam.stopStreaming();
+            secondFlag = true;
+        }
+
         //webcam.getFrameBitmap();
         /*if(gamepad1.a){
         try {

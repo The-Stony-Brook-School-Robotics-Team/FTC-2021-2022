@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.BearsUtil.MotorEncoderController;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@TeleOp(name = "Ducks with Wheel", group = "DWW")
+//@TeleOp(name = "Ducks with Wheel", group = "DWW")
 public class DucksWithWheel {
     FtcDashboard dashboard;
     private OdometrySubsystem odometry;
