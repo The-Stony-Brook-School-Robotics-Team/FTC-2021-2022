@@ -59,6 +59,7 @@ public class PurePursuitTest extends LinearOpMode {
         RightEncoder = new MotorEx(hardwareMap, "rightodom");
 
         Drivers = new MecanumDrive(lf, rf, lb, rb);
+        ControlledDrives = new SampleMecanumDrive(hardwareMap);
         //Drivers;
         LeftEncoder.setDistancePerPulse(DistancePerPulse);
         RightEncoder.setDistancePerPulse(DistancePerPulse);
