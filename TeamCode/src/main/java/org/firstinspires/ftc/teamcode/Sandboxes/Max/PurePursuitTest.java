@@ -70,30 +70,32 @@ public class PurePursuitTest extends LinearOpMode {
 
 
 
-        DoubleSupplier LP,RP,CP;
-        double TicksPerInch = 8192*4*Math.PI;
-        LP = () -> LeftEncoder.getCurrentPosition()/(TicksPerInch);
-        RP = () -> (RightEncoder.getCurrentPosition()/(TicksPerInch));
-        CP = () -> CentralEncoder.getCurrentPosition()/(TicksPerInch);
 
-
-        HolonomicOdometry = new HolonomicOdometry(LP,RP,CP,12.75, -8.7);
-        OdometrySubSystem = new OdometrySubsystem(this.HolonomicOdometry);
-
-
-        waitForStart();
-
-        Waypoint startW = new StartWaypoint(LeftEncoder.getCurrentPosition(), RightEncoder.getCurrentPosition());
-        //Waypoint premW = new InterruptWaypoint(8192*2, 8192*2, odometry.updatePose()); //Learning "Position Buffer"
-        Waypoint intermediateW = new GeneralWaypoint(LeftEncoder.getCurrentPosition()+8192 * 5, 0);
-        Waypoint postW = new InterruptWaypoint();
-        //Waypoint endW = new EndWaypoint(LeftEncoder.getCurrentPosition()+8192 * 11, 0, Math.PI/4, 0.6, 0.2, Math.PI, Math.PI, Math.PI );
-        Waypoint endW = new EndWaypoint();
-        Path testP = new Path(startW, endW);
-        //testP.setWaypointTimeouts(100);
-        testP.init();
 
         while(true) {
+
+            DoubleSupplier LP,RP,CP;
+            double TicksPerInch = 8192*4*Math.PI;
+            LP = () -> LeftEncoder.getCurrentPosition()/(TicksPerInch);
+            RP = () -> (RightEncoder.getCurrentPosition()/(TicksPerInch));
+            CP = () -> CentralEncoder.getCurrentPosition()/(TicksPerInch);
+
+
+            HolonomicOdometry = new HolonomicOdometry(LP,RP,CP,12.75, -8.7);
+            OdometrySubSystem = new OdometrySubsystem(this.HolonomicOdometry);
+
+
+            waitForStart();
+
+            Waypoint startW = new StartWaypoint(OdometrySubSystem.getPose().getX(), OdometrySubSystem.getPose().getY());
+            //Waypoint premW = new InterruptWaypoint(8192*2, 8192*2, odometry.updatePose()); //Learning "Position Buffer"
+            Waypoint intermediateW = new GeneralWaypoint(OdometrySubSystem.getPose().getX()+8192 * 5, 0);
+            Waypoint postW = new InterruptWaypoint();
+            //Waypoint endW = new EndWaypoint(LeftEncoder.getCurrentPosition()+8192 * 11, 0, Math.PI/4, 0.6, 0.2, Math.PI, Math.PI, Math.PI );
+            Waypoint endW = new EndWaypoint(OdometrySubSystem.getPose().getX(), 0, 0, 0.3, 0.3, Math.PI, Math.PI*10, Math.PI*10);
+            Path testP = new Path(startW, endW);
+            //testP.setWaypointTimeouts(100);
+
 
             Graph = FtcDashboard.getInstance();
             TelemetryPacket TelemetryPacket = new TelemetryPacket();
@@ -125,6 +127,7 @@ public class PurePursuitTest extends LinearOpMode {
                 ButtonY = 1;
             }
             else if(!gamepad1.y && ButtonY == 1){
+                testP.init();
                 testP.followPath(Drivers, HolonomicOdometry);
                 ButtonY = 0;
             }
