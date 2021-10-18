@@ -22,6 +22,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.teamcode.Sandboxes.Michael.Unsafe.util.customPath;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
+import java.util.function.DoubleSupplier;
+
 @TeleOp(name="Michael Unsafe Testing", group="drive")
 public class pptUNSAFE extends LinearOpMode {
 
@@ -46,6 +48,8 @@ public class pptUNSAFE extends LinearOpMode {
     private int ButtonBCounter = 0;
 
     public static FtcDashboard dashboard;
+
+    DoubleSupplier leftValue, rightValue, horizontalValue;
     @Override
     public void runOpMode() throws InterruptedException {
         lf = new MotorEx(hardwareMap, "lf");
@@ -74,7 +78,7 @@ public class pptUNSAFE extends LinearOpMode {
 
         HolonomicOdometry holOdom = new HolonomicOdometry(
                 () -> encoderLeft.getCurrentPosition() * TICKS_TO_INCHES,
-                () -> -(encoderRight.getCurrentPosition() * TICKS_TO_INCHES),
+                () -> (encoderRight.getCurrentPosition() * TICKS_TO_INCHES),
                 () -> (encoderPerp.getCurrentPosition() * TICKS_TO_INCHES),
                 TRACKWIDTH, CENTER_WHEEL_OFFSET
         );
@@ -90,7 +94,7 @@ public class pptUNSAFE extends LinearOpMode {
         );
         Waypoint p3 = new GeneralWaypoint(
                 20, 20,
-                -odometry.getPose().getY() + 20,
+                odometry.getPose().getY() + 20,
                 .8,
                 1,
                 5
@@ -112,7 +116,7 @@ public class pptUNSAFE extends LinearOpMode {
 
         customPath path = new customPath(p1, p2, p3, p4);
         customPath newpath = new customPath(p1, p5);
-        Path vanillaPath = new Path(p1, p2, p3, p4);
+        Path vanillaPath = new Path(p1, p5);
 
         waitForStart();
 
@@ -120,6 +124,12 @@ public class pptUNSAFE extends LinearOpMode {
         while (opModeIsActive() && !isStopRequested())
         {
             odometry.update();
+
+            leftValue = () -> TICKS_TO_INCHES * (encoderLeft.getCurrentPosition());
+            rightValue = () -> TICKS_TO_INCHES * (encoderRight.getCurrentPosition());
+            horizontalValue = () -> TICKS_TO_INCHES * (encoderPerp.getCurrentPosition());
+            holOdom.updatePose();
+
 
             if(gamepad1.a && !pressingA) {
                 pressingA = true;
@@ -150,7 +160,7 @@ public class pptUNSAFE extends LinearOpMode {
 
             TelemetryPacket telemPacket = new TelemetryPacket();
             Canvas ftcField = telemPacket.fieldOverlay();
-            DashboardUtil.drawRobot(ftcField, new Pose2d(odometry.getPose().getX(), -(odometry.getPose().getY()), -(odometry.getPose().getHeading())));
+            DashboardUtil.drawRobot(ftcField, new Pose2d(odometry.getPose().getX(), (odometry.getPose().getY()), -(odometry.getPose().getHeading())));
 
             telemPacket.put("Robot Test", 1);
             telemPacket.put("Estimated Pose X", odometry.getPose().getX());
