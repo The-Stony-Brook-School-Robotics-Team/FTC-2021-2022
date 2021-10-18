@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.spartronics4915.lib.T265Camera;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.opencv.core.Mat;
 
 
 public class T265Controller {
@@ -21,6 +22,9 @@ public class T265Controller {
     private double dY;
     private double whichH;
     private double dH;
+    Pose2d currentPos;
+    Pose2d softPos;
+
     public T265Controller(HardwareMap hwMap, Telemetry telemetry) {
         camToRobot = new Transform2d(new Translation2d(0.025,-0.08),new Rotation2d());
         intelCam = new T265Camera(camToRobot,0.1,hwMap.appContext);
@@ -42,6 +46,12 @@ public class T265Controller {
             telemetry.update();
 
         }
+        currentPos = getIntelPos();
+        softPos = new Pose2d();
+        dX = softPos.getX() - currentPos.getX();
+        dY = softPos.getY() - currentPos.getY();
+        dH = softPos.getHeading() - currentPos.getHeading();
+
     }
     public static Pose2d convert265PosToRR(com.arcrobotics.ftclib.geometry.Pose2d input)
     {
@@ -53,11 +63,14 @@ public class T265Controller {
     }
     public Pose2d getIntelPos()
     {
+        double a = 2.5;
+        double b = 8;
         com.arcrobotics.ftclib.geometry.Pose2d LastPose = intelCam.getLastReceivedCameraUpdate().pose;
-        double x = LastPose.getTranslation().getX() / 0.0254;
-        double y = LastPose.getTranslation().getY() / 0.0254;
         double h = LastPose.getHeading();
-        return new Pose2d(x,y,h);
+        double x = LastPose.getTranslation().getX() / 0.0254 + a*Math.sin(-h) - b*Math.cos(-h);
+        double y = LastPose.getTranslation().getY() / 0.0254 - a*Math.cos(-h) + b*Math.sin(-h);
+       currentPos =  new Pose2d(x,y,h);
+       return currentPos;
     }
     public void shutDown() {
         intelCam.stop();

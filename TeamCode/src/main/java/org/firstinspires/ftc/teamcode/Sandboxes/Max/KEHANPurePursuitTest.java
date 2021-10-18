@@ -53,11 +53,11 @@ public class KEHANPurePursuitTest extends LinearOpMode {
          rf = new MotorEx(hardwareMap, "leftodom");
          lb = new MotorEx(hardwareMap, "backodom");
          rb = new MotorEx(hardwareMap, "rightodom");
-
+         rb.setInverted(true);
         LeftEncoder = new MotorEx(hardwareMap, "leftodom");
         CentralEncoder = new MotorEx(hardwareMap, "backodom");
         RightEncoder = new MotorEx(hardwareMap, "rightodom");
-
+        RightEncoder.setInverted(true);
         Drivers = new MecanumDrive(lf, rf, lb, rb);
         //ControlledDrives = new SampleMecanumDrive(hardwareMap);
         //Drivers;
@@ -77,9 +77,11 @@ public class KEHANPurePursuitTest extends LinearOpMode {
         LeftEncoder.resetEncoder();
         RightEncoder.resetEncoder();
         CentralEncoder.resetEncoder();
+
         LP = () -> LeftEncoder.getCurrentPosition();///(TicksPerInch);
         RP = () -> RightEncoder.getCurrentPosition();///(TicksPerInch));
         CP = () -> CentralEncoder.getCurrentPosition();///(TicksPerInch);
+
 
 
         HolonomicOdometry = new HolonomicOdometry(LP,RP,CP,12.75, -8.7);
