@@ -136,6 +136,7 @@ public class BasicOpenCVEngine extends OpenCvPipeline {
            int dAB = Math.abs(avgAY- avgBY);
            int dAC = Math.abs(avgAY- avgCY);
            int dBC = Math.abs(avgBY- avgCY);
+
            if (dAB <= 2) {
                synchronized (semaphore) {
                    position = DuckPosition.C;
