@@ -161,6 +161,7 @@ public class pptUNSAFE extends LinearOpMode {
             TelemetryPacket telemPacket = new TelemetryPacket();
             Canvas ftcField = telemPacket.fieldOverlay();
             DashboardUtil.drawRobot(ftcField, new Pose2d(odometry.getPose().getX(), (odometry.getPose().getY()), -(odometry.getPose().getHeading())));
+            //DashboardUtil.drawRobot(ftcField, new Pose2d(holOdom.getPose().getX(), (holOdom.getPose().getY()), (holOdom.getPose().getHeading())));
 
             telemPacket.put("Robot Test", 1);
             telemPacket.put("Estimated Pose X", odometry.getPose().getX());

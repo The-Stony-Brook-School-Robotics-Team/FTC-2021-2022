@@ -40,15 +40,15 @@ public class KEHANPurePursuitTest extends LinearOpMode {
     private MotorEx lb;
     private MotorEx rb;
     private MecanumDrive Drivers;
-    private SampleMecanumDrive ControlledDrives;
+    //private SampleMecanumDrive ControlledDrives;
     private int ButtonY = 0;
     FtcDashboard Graph;
 
     private final double DistancePerPulse = Math.PI*2.0/8192;
     @Override
     public void runOpMode() throws InterruptedException {
-        ControlledDrives = new SampleMecanumDrive(hardwareMap);
-        ControlledDrives.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //ControlledDrives = new SampleMecanumDrive(hardwareMap);
+        //ControlledDrives.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
          lf = new MotorEx(hardwareMap, "lf");
          rf = new MotorEx(hardwareMap, "leftodom");
          lb = new MotorEx(hardwareMap, "backodom");
@@ -59,7 +59,7 @@ public class KEHANPurePursuitTest extends LinearOpMode {
         RightEncoder = new MotorEx(hardwareMap, "rightodom");
 
         Drivers = new MecanumDrive(lf, rf, lb, rb);
-        ControlledDrives = new SampleMecanumDrive(hardwareMap);
+        //ControlledDrives = new SampleMecanumDrive(hardwareMap);
         //Drivers;
         LeftEncoder.setDistancePerPulse(DistancePerPulse);
         RightEncoder.setDistancePerPulse(DistancePerPulse);
@@ -88,12 +88,12 @@ public class KEHANPurePursuitTest extends LinearOpMode {
         Graph = FtcDashboard.getInstance();
 
 
-        Waypoint startW = new StartWaypoint(OdometrySubSystem.getPose().getX(), OdometrySubSystem.getPose().getY());
+        Waypoint startW = new StartWaypoint(0, 0);
         //Waypoint premW = new InterruptWaypoint(8192*2, 8192*2, odometry.updatePose()); //Learning "Position Buffer"
-        Waypoint intermediateW = new GeneralWaypoint(OdometrySubSystem.getPose().getX()+8192 * 5, OdometrySubSystem.getPose().getY(), 0, 0.8,0.1, Math.PI*10);
+        Waypoint intermediateW = new GeneralWaypoint(0, 8192 * 5, 0, 0.8,0.1, Math.PI*10);
         Waypoint postW = new InterruptWaypoint();
         //Waypoint endW = new EndWaypoint(LeftEncoder.getCurrentPosition()+8192 * 11, 0, Math.PI/4, 0.6, 0.2, Math.PI, Math.PI, Math.PI );
-        Waypoint endW = new EndWaypoint(OdometrySubSystem.getPose().getX()+8192*11, OdometrySubSystem.getPose().getY(), 0, 0.8, 0.1, Math.PI, Math.PI*10, Math.PI*10);
+        Waypoint endW = new EndWaypoint(0, 8192*11, 0, 0.8, 0.1, Math.PI, Math.PI*10, Math.PI*10);
         Path testP = new Path(startW, endW);
         //testP.setWaypointTimeouts(100);
 
@@ -143,6 +143,12 @@ public class KEHANPurePursuitTest extends LinearOpMode {
                     )
             );
 */
+
+            lf.set(0.6 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
+            rf.set(0.6 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
+            lb.set(0.6 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
+            rb.set(0.6 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
+
 
             if(gamepad1.x){
 
