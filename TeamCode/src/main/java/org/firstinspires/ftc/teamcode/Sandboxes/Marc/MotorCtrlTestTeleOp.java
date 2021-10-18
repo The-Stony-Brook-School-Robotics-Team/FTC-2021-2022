@@ -34,8 +34,15 @@ public class MotorCtrlTestTeleOp extends OpMode {
     T265Controller camCtrl;
     FtcDashboard dashboard;
 
+
+
+
     @Override
     public void init() {
+        msStuckDetectInit = 1000000;
+        msStuckDetectLoop = 1000000;
+        msStuckDetectStop = 1000000;
+        msStuckDetectStart = 1000000;
         telemetry = new MultipleTelemetry(telemetry);
       //  motorCtrls = new MotorEncoderController(hardwareMap,telemetry);
         dashboard = FtcDashboard.getInstance();
