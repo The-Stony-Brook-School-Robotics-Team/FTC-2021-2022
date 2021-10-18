@@ -57,8 +57,8 @@ public class pptUNSAFE extends LinearOpMode {
         lb = new MotorEx(hardwareMap, "backodom");
         rb = new MotorEx(hardwareMap, "rightodom");
 
-        rf.setInverted(false);
-        rb.setInverted(false);
+        lf.setInverted(true);
+        rb.setInverted(true);
 
         encoderLeft = new MotorEx(hardwareMap, "leftodom");
         encoderRight = new MotorEx(hardwareMap, "rightodom");
@@ -77,8 +77,8 @@ public class pptUNSAFE extends LinearOpMode {
         dashboard = FtcDashboard.getInstance();
 
         HolonomicOdometry holOdom = new HolonomicOdometry(
-                () -> encoderLeft.getCurrentPosition() * TICKS_TO_INCHES,
-                () -> (encoderRight.getCurrentPosition() * TICKS_TO_INCHES),
+                () -> (encoderLeft.getCurrentPosition() * TICKS_TO_INCHES),
+                () -> -(encoderRight.getCurrentPosition() * TICKS_TO_INCHES),
                 () -> (encoderPerp.getCurrentPosition() * TICKS_TO_INCHES),
                 TRACKWIDTH, CENTER_WHEEL_OFFSET
         );
@@ -160,7 +160,7 @@ public class pptUNSAFE extends LinearOpMode {
 
             TelemetryPacket telemPacket = new TelemetryPacket();
             Canvas ftcField = telemPacket.fieldOverlay();
-            DashboardUtil.drawRobot(ftcField, new Pose2d(odometry.getPose().getX(), (odometry.getPose().getY()), -(odometry.getPose().getHeading())));
+            DashboardUtil.drawRobot(ftcField, new Pose2d(odometry.getPose().getX(), -(odometry.getPose().getY()), -(odometry.getPose().getHeading())));
 
             telemPacket.put("Robot Test", 1);
             telemPacket.put("Estimated Pose X", odometry.getPose().getX());

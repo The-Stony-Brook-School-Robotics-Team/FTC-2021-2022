@@ -82,7 +82,7 @@ public class MotorEncoderController {
 
 
         }
-
+        // rb lb rf lf
         motors[3].setDirection(DcMotorSimple.Direction.REVERSE);
         motors[0].setDirection(DcMotorSimple.Direction.REVERSE);
 
