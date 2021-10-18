@@ -68,51 +68,51 @@ public class PurePursuitTest extends LinearOpMode {
         RightEncoder.set(0);
         CentralEncoder.set(0);
 
+        waitForStart();
 
 
 
+        DoubleSupplier LP,RP,CP;
+        double TicksPerInch = 8192*4*Math.PI;
+        LeftEncoder.resetEncoder();
+        RightEncoder.resetEncoder();
+        CentralEncoder.resetEncoder();
+        LP = () -> LeftEncoder.getCurrentPosition()/(TicksPerInch);
+        RP = () -> (RightEncoder.getCurrentPosition()/(TicksPerInch));
+        CP = () -> CentralEncoder.getCurrentPosition()/(TicksPerInch);
+
+
+        HolonomicOdometry = new HolonomicOdometry(LP,RP,CP,12.75, -8.7);
+        OdometrySubSystem = new OdometrySubsystem(this.HolonomicOdometry);
+
+        Graph = FtcDashboard.getInstance();
+
+
+        Waypoint startW = new StartWaypoint(OdometrySubSystem.getPose().getX(), OdometrySubSystem.getPose().getY());
+        //Waypoint premW = new InterruptWaypoint(8192*2, 8192*2, odometry.updatePose()); //Learning "Position Buffer"
+        Waypoint intermediateW = new GeneralWaypoint(OdometrySubSystem.getPose().getX()+8192 * 5, OdometrySubSystem.getPose().getY(), Math.PI, 0.3,0.3, Math.PI*10);
+        Waypoint postW = new InterruptWaypoint();
+        //Waypoint endW = new EndWaypoint(LeftEncoder.getCurrentPosition()+8192 * 11, 0, Math.PI/4, 0.6, 0.2, Math.PI, Math.PI, Math.PI );
+        Waypoint endW = new EndWaypoint(OdometrySubSystem.getPose().getX()+8192*11, OdometrySubSystem.getPose().getY(), 0, 0.3, 0.3, Math.PI, Math.PI*10, Math.PI*10);
+        Path testP = new Path(startW, endW);
+        //testP.setWaypointTimeouts(100);
 
         while(true) {
 
-            DoubleSupplier LP,RP,CP;
-            double TicksPerInch = 8192*4*Math.PI;
-            LP = () -> LeftEncoder.getCurrentPosition()/(TicksPerInch);
-            RP = () -> (RightEncoder.getCurrentPosition()/(TicksPerInch));
-            CP = () -> CentralEncoder.getCurrentPosition()/(TicksPerInch);
-
-
-            HolonomicOdometry = new HolonomicOdometry(LP,RP,CP,12.75, -8.7);
-            OdometrySubSystem = new OdometrySubsystem(this.HolonomicOdometry);
-
-
-            waitForStart();
-
-            Waypoint startW = new StartWaypoint(OdometrySubSystem.getPose().getX(), OdometrySubSystem.getPose().getY());
-            //Waypoint premW = new InterruptWaypoint(8192*2, 8192*2, odometry.updatePose()); //Learning "Position Buffer"
-            Waypoint intermediateW = new GeneralWaypoint(OdometrySubSystem.getPose().getX()+8192 * 5, 0);
-            Waypoint postW = new InterruptWaypoint();
-            //Waypoint endW = new EndWaypoint(LeftEncoder.getCurrentPosition()+8192 * 11, 0, Math.PI/4, 0.6, 0.2, Math.PI, Math.PI, Math.PI );
-            Waypoint endW = new EndWaypoint(OdometrySubSystem.getPose().getX(), 0, 0, 0.3, 0.3, Math.PI, Math.PI*10, Math.PI*10);
-            Path testP = new Path(startW, endW);
-            //testP.setWaypointTimeouts(100);
-
-
-            Graph = FtcDashboard.getInstance();
             TelemetryPacket TelemetryPacket = new TelemetryPacket();
-            Canvas Field = new TelemetryPacket().fieldOverlay();
-            Pose2d Pose2dField= new Pose2d(OdometrySubSystem.getPose().getX(), OdometrySubSystem.getPose().getY(),OdometrySubSystem.getPose().getHeading());
-            Graph.updateConfig();
             OdometrySubSystem.update();
-
+            Pose2d Pose2dField= new Pose2d(OdometrySubSystem.getPose().getX(), OdometrySubSystem.getPose().getY(),OdometrySubSystem.getPose().getHeading());
+            //Graph.updateConfig();
             TelemetryPacket.put("Pure Pursuit Position Indicator", 1);
             TelemetryPacket.put("X: ", OdometrySubSystem.getPose().getX());
             TelemetryPacket.put("Y: ", OdometrySubSystem.getPose().getY());
             TelemetryPacket.put("H: ", OdometrySubSystem.getPose().getHeading());
-            Graph.sendTelemetryPacket(TelemetryPacket);
             telemetry.addData("X: ", LeftEncoder.getCurrentPosition());
             telemetry.addData("Y: ", RightEncoder.getCurrentPosition());
-            telemetry.addData("H: ", Math.toDegrees(CentralEncoder.getCurrentPosition()));
+            telemetry.addData("H: ", CentralEncoder.getCurrentPosition());
             telemetry.update();
+            Canvas Field = new TelemetryPacket().fieldOverlay();
+            Graph.sendTelemetryPacket(TelemetryPacket);
             DashboardUtil.drawRobot(Field, Pose2dField);
 
             if (gamepad1.a) {
@@ -130,6 +130,7 @@ public class PurePursuitTest extends LinearOpMode {
                 testP.init();
                 testP.followPath(Drivers, HolonomicOdometry);
                 ButtonY = 0;
+
             }
 
             ControlledDrives.setWeightedDrivePower(
@@ -139,6 +140,13 @@ public class PurePursuitTest extends LinearOpMode {
                             -0.3*gamepad1.right_stick_x
                     )
             );
+
+
+            if(gamepad1.x){
+
+                stop();
+
+            }
 
         }
 
