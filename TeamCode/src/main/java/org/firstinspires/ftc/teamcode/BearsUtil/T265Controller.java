@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.BearsUtil;
 
+import static java.lang.Thread.sleep;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.arcrobotics.ftclib.geometry.Transform2d;
@@ -20,9 +22,10 @@ public class T265Controller {
     private double whichH;
     private double dH;
     public T265Controller(HardwareMap hwMap, Telemetry telemetry) {
-        camToRobot = new Transform2d(new Translation2d(0,0),new Rotation2d());
+        camToRobot = new Transform2d(new Translation2d(0.025,-0.08),new Rotation2d());
         intelCam = new T265Camera(camToRobot,0.1,hwMap.appContext);
-        try {intelCam.start();}
+        try {intelCam.start();
+            sleep(1000);}
         catch (Exception e)
         {
             e.printStackTrace();
@@ -30,6 +33,14 @@ public class T265Controller {
             telemetry.addData("You forgot to stop","the camera!!");
             telemetry.update();
             intelCam.start();
+            try {
+                sleep(1000);
+            } catch (InterruptedException interruptedException) {
+                interruptedException.printStackTrace();
+            }
+            telemetry.addData("Initialized","camera");
+            telemetry.update();
+
         }
     }
     public static Pose2d convert265PosToRR(com.arcrobotics.ftclib.geometry.Pose2d input)
@@ -42,12 +53,18 @@ public class T265Controller {
     }
     public Pose2d getIntelPos()
     {
-        double x = intelCam.getLastReceivedCameraUpdate().pose.getTranslation().getX() / 0.0254;
-        double y = intelCam.getLastReceivedCameraUpdate().pose.getTranslation().getY() / 0.0254;
-        double h = intelCam.getLastReceivedCameraUpdate().pose.getHeading();
+        com.arcrobotics.ftclib.geometry.Pose2d LastPose = intelCam.getLastReceivedCameraUpdate().pose;
+        double x = LastPose.getTranslation().getX() / 0.0254;
+        double y = LastPose.getTranslation().getY() / 0.0254;
+        double h = LastPose.getHeading();
         return new Pose2d(x,y,h);
     }
     public void shutDown() {
         intelCam.stop();
+        try {
+            sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

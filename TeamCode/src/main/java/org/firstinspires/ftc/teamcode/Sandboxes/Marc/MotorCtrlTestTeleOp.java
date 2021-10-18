@@ -37,7 +37,7 @@ public class MotorCtrlTestTeleOp extends OpMode {
     @Override
     public void init() {
         telemetry = new MultipleTelemetry(telemetry);
-        motorCtrls = new MotorEncoderController(hardwareMap,telemetry);
+      //  motorCtrls = new MotorEncoderController(hardwareMap,telemetry);
         dashboard = FtcDashboard.getInstance();
         camCtrl = new T265Controller(hardwareMap,telemetry);
 
@@ -96,10 +96,6 @@ public class MotorCtrlTestTeleOp extends OpMode {
         }
 
 
-        motorCtrls.LF().setPower(0.6*(-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
-        motorCtrls.RF().setPower(0.6*(-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
-        motorCtrls.LB().setPower(0.6*(-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
-        motorCtrls.RB().setPower(0.6*(-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
 
     }
 

@@ -90,7 +90,7 @@ public class KEHANPurePursuitTest extends LinearOpMode {
 
         Waypoint startW = new StartWaypoint(OdometrySubSystem.getPose().getX(), OdometrySubSystem.getPose().getY());
         //Waypoint premW = new InterruptWaypoint(8192*2, 8192*2, odometry.updatePose()); //Learning "Position Buffer"
-        Waypoint intermediateW = new GeneralWaypoint(OdometrySubSystem.getPose().getX()+8192 * 5, OdometrySubSystem.getPose().getY(), Math.PI, 0.8,0.1, Math.PI*10);
+        Waypoint intermediateW = new GeneralWaypoint(OdometrySubSystem.getPose().getX()+8192 * 5, OdometrySubSystem.getPose().getY(), 0, 0.8,0.1, Math.PI*10);
         Waypoint postW = new InterruptWaypoint();
         //Waypoint endW = new EndWaypoint(LeftEncoder.getCurrentPosition()+8192 * 11, 0, Math.PI/4, 0.6, 0.2, Math.PI, Math.PI, Math.PI );
         Waypoint endW = new EndWaypoint(OdometrySubSystem.getPose().getX()+8192*11, OdometrySubSystem.getPose().getY(), 0, 0.8, 0.1, Math.PI, Math.PI*10, Math.PI*10);
@@ -133,15 +133,16 @@ public class KEHANPurePursuitTest extends LinearOpMode {
 
             }
 
+            /*
             ControlledDrives.setWeightedDrivePower(
                     new Pose2d(
 
-                            -0.3*gamepad1.left_stick_x,
-                            -0.3*gamepad1.left_stick_y,
+                            -0.4*gamepad1.left_stick_x,
+                            -0.4*gamepad1.left_stick_y,
                             -0.3*gamepad1.right_stick_x
                     )
             );
-
+*/
 
             if(gamepad1.x){
 
