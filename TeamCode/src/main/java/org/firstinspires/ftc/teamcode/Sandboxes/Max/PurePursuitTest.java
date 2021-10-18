@@ -77,9 +77,9 @@ public class PurePursuitTest extends LinearOpMode {
         LeftEncoder.resetEncoder();
         RightEncoder.resetEncoder();
         CentralEncoder.resetEncoder();
-        LP = () -> LeftEncoder.getCurrentPosition()/(TicksPerInch);
-        RP = () -> (RightEncoder.getCurrentPosition()/(TicksPerInch));
-        CP = () -> CentralEncoder.getCurrentPosition()/(TicksPerInch);
+        LP = () -> LeftEncoder.getCurrentPosition();///(TicksPerInch);
+        RP = () -> RightEncoder.getCurrentPosition();///(TicksPerInch));
+        CP = () -> CentralEncoder.getCurrentPosition();///(TicksPerInch);
 
 
         HolonomicOdometry = new HolonomicOdometry(LP,RP,CP,12.75, -8.7);
@@ -99,8 +99,8 @@ public class PurePursuitTest extends LinearOpMode {
 
         while(true) {
 
-            TelemetryPacket TelemetryPacket = new TelemetryPacket();
             OdometrySubSystem.update();
+            TelemetryPacket TelemetryPacket = new TelemetryPacket();
             Pose2d Pose2dField= new Pose2d(OdometrySubSystem.getPose().getX(), OdometrySubSystem.getPose().getY(),OdometrySubSystem.getPose().getHeading());
             //Graph.updateConfig();
             TelemetryPacket.put("Pure Pursuit Position Indicator", 1);
@@ -111,8 +111,8 @@ public class PurePursuitTest extends LinearOpMode {
             telemetry.addData("Y: ", RightEncoder.getCurrentPosition());
             telemetry.addData("H: ", CentralEncoder.getCurrentPosition());
             telemetry.update();
-            Canvas Field = new TelemetryPacket().fieldOverlay();
             Graph.sendTelemetryPacket(TelemetryPacket);
+            Canvas Field = new TelemetryPacket().fieldOverlay();
             DashboardUtil.drawRobot(Field, Pose2dField);
 
             if (gamepad1.a) {
@@ -122,7 +122,7 @@ public class PurePursuitTest extends LinearOpMode {
             }
 
 
-            if (gamepad1.y && ButtonY!=1) {
+            if (gamepad1.y && ButtonY==0) {
                 /*The Code Below Is Related to The Pure Pursuit Road Tracking Codes Above*/
                 ButtonY = 1;
             }
