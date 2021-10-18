@@ -24,7 +24,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import java.util.function.DoubleSupplier;
 
 @TeleOp
-public class PurePursuitTest extends LinearOpMode {
+public class KEHANPurePursuitTest extends LinearOpMode {
 //    private Motor.Encoder LeftEncoder;
 //    private Motor.Encoder RightEncoder;
 //    private Motor.Encoder CentralEncoder;
