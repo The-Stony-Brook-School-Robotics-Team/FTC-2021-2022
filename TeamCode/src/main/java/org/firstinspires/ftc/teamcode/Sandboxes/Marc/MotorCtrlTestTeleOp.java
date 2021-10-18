@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.BearsUtil.MotorEncoderController;
+import org.firstinspires.ftc.teamcode.BearsUtil.T265Controller;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 @TeleOp
@@ -30,7 +31,7 @@ public class MotorCtrlTestTeleOp extends OpMode {
     public static final double TICKS_PER_REV = 8192;
     public static final double TICKS_TO_INCHES = TICKS_PER_REV*WHEEL_DIAMETER*Math.PI;
     public static final double DISTANCE_PER_PULSE = Math.PI * WHEEL_DIAMETER / TICKS_PER_REV;
-
+    T265Controller camCtrl;
     FtcDashboard dashboard;
 
     @Override
@@ -38,35 +39,22 @@ public class MotorCtrlTestTeleOp extends OpMode {
         telemetry = new MultipleTelemetry(telemetry);
         motorCtrls = new MotorEncoderController(hardwareMap,telemetry);
         dashboard = FtcDashboard.getInstance();
-
+        camCtrl = new T265Controller(hardwareMap,telemetry);
 
 
     }
 
     @Override
     public void loop() {
+        com.acmerobotics.roadrunner.geometry.Pose2d currentPos = camCtrl.getIntelPos();
+        telemetry.addData("x",currentPos.getX());
+        telemetry.addData("y",currentPos.getY());
+        telemetry.addData("h",currentPos.getHeading());
+         telemetry.update();
 
-        telemetry.addData("L ODOM",motorCtrls.getLOdomValSoft());
-        telemetry.addData("R ODOM",motorCtrls.getROdomValSoft());
-        telemetry.addData("B ODOM",motorCtrls.getBOdomValSoft());
-        telemetry.addData("L ODOM inch",MotorEncoderController.convertOdomTickToRobotInches(motorCtrls.getLOdomValSoft()));
-        telemetry.addData("R ODOM inch",MotorEncoderController.convertOdomTickToRobotInches(motorCtrls.getROdomValSoft()));
-        telemetry.addData("B ODOM inch",MotorEncoderController.convertOdomTickToRobotInches(motorCtrls.getBOdomValSoft()));
-        telemetry.addData("Lpow",motorCtrls.LF().getPower());
-        telemetry.addData("Rpow",motorCtrls.RF().getPower());
-        telemetry.addData("powerRatio",motorCtrls.LF().getPower()/motorCtrls.RF().getPower());
-        telemetry.addData("odomDiff",motorCtrls.getROdomValSoft() - motorCtrls.getLOdomValSoft());
-        //telemetry.addData("xpos",motorCtrls.getPosition().getX());
-        //telemetry.addData("ypos",motorCtrls.getPosition().getY());
-       // telemetry.addData("hpos",Math.toDegrees(motorCtrls.getPosition().getHeading()));
-        telemetry.update();
-
-        if (gamepad1.x && !qX) {
-            qX = true;
             TelemetryPacket packet = new TelemetryPacket();
-            Pose2d currentPos = motorCtrls.getPosition();
             Canvas field = packet.fieldOverlay();
-            DashboardUtil.drawRobot(field,new com.acmerobotics.roadrunner.geometry.Pose2d(currentPos.getX(),currentPos.getY(),currentPos.getHeading()));
+            DashboardUtil.drawRobot(field,currentPos);
             //packet.put("L ODOM",motorCtrls.getLOdomValSoft());
             //packet.put("R ODOM",motorCtrls.getROdomValSoft());
             //packet.put("B ODOM",motorCtrls.getBOdomValSoft());
@@ -78,29 +66,21 @@ public class MotorCtrlTestTeleOp extends OpMode {
             //packet.put("powerRatio",motorCtrls.LF().getPower()/motorCtrls.RF().getPower());
             // packet.put("odomDiff",motorCtrls.getROdomValSoft() - motorCtrls.getLOdomValSoft());
             // packet.put("TO Travel",30000);
-            packet.put("xpos",motorCtrls.getPosition().getX());
-            packet.put("ypos",motorCtrls.getPosition().getY());
-            packet.put("hpos",Math.toDegrees(motorCtrls.getPosition().getHeading()));
+            packet.put("xpos",currentPos.getX());
+            packet.put("ypos",currentPos.getY());
+            packet.put("hpos",currentPos.getHeading());
 
             dashboard.sendTelemetryPacket(packet);
-        }
-        else if (!gamepad1.x && qX) {
-            qX = false;
-        }
 
 
 
 
-        /*if (gamepad1.a && !qA) {
-            qA = true;
-            motorCtrls.resetSoftMotorEncoders();
-        }
-        else if (!gamepad1.a && qA) {
-            qA = false;
-        }*/
+
+
+
         if (gamepad1.a && !qA) {
             qA = true;
-            motorCtrls.resetPosition();
+            //motorCtrls.resetPosition();
         }
         else if (!gamepad1.a && qA) {
             qA = false;
@@ -109,7 +89,7 @@ public class MotorCtrlTestTeleOp extends OpMode {
 
         if (gamepad1.b && !qB) {
             qB = true;
-            motorCtrls.resetSoftOdom();
+            //motorCtrls.resetSoftOdom();
         }
         else if (!gamepad1.b && qB) {
             qB = false;
@@ -121,5 +101,11 @@ public class MotorCtrlTestTeleOp extends OpMode {
         motorCtrls.LB().setPower(0.6*(-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
         motorCtrls.RB().setPower(0.6*(-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
 
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        camCtrl.shutDown();
     }
 }
