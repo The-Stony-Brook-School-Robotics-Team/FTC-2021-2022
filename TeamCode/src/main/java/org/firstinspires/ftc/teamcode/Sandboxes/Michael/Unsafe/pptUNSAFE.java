@@ -44,9 +44,11 @@ public class pptUNSAFE extends LinearOpMode {
     private boolean pressingA = false;
     private boolean pressingB = false;
     private boolean pressingY = false;
+    private boolean pressingDpadUp = false;
 
     private int ButtonACounter = 0;
     private int ButtonBCounter = 0;
+    private boolean isInverted = false;
 
     public static FtcDashboard dashboard;
 
@@ -58,8 +60,8 @@ public class pptUNSAFE extends LinearOpMode {
         lb = new MotorEx(hardwareMap, "backodom");
         rb = new MotorEx(hardwareMap, "rightodom");
 
-        //lf.setInverted(true);
-        //rb.setInverted(true);
+        lf.setInverted(false);
+        rb.setInverted(false);
 
         encoderLeft = new MotorEx(hardwareMap, "leftodom");
         encoderRight = new MotorEx(hardwareMap, "rightodom");
@@ -79,7 +81,7 @@ public class pptUNSAFE extends LinearOpMode {
 
         HolonomicOdometry holOdom = new HolonomicOdometry(
                 () -> (encoderLeft.getCurrentPosition() * TICKS_TO_INCHES),
-                () -> -(encoderRight.getCurrentPosition() * TICKS_TO_INCHES),
+                () -> -(encoderRight.getCurrentPosition() * TICKS_TO_INCHES), //-
                 () -> (encoderPerp.getCurrentPosition() * TICKS_TO_INCHES),
                 TRACKWIDTH, CENTER_WHEEL_OFFSET
         );
@@ -151,6 +153,13 @@ public class pptUNSAFE extends LinearOpMode {
             } else if(!gamepad1.y && pressingY) {
                 vanillaPath.followPath(robotDrive, holOdom);
             }
+            if(gamepad1.dpad_up && !pressingDpadUp){
+                pressingDpadUp = true;
+            }
+            else if(!gamepad1.dpad_up && pressingDpadUp){
+                lf.setInverted(!isInverted);
+                rb.setInverted(!isInverted);
+            }
 
 
             lf.set(0.6 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
@@ -163,6 +172,7 @@ public class pptUNSAFE extends LinearOpMode {
             Canvas ftcField = telemPacket.fieldOverlay();
 
             DashboardUtil.drawRobot(ftcField, new Pose2d(odometry.getPose().getX(), -(odometry.getPose().getY()), -(odometry.getPose().getHeading())));
+            DashboardUtil.drawRobot(ftcField, new Pose2d(odometry.getPose().getX(), (odometry.getPose().getY()), -odometry.getPose().getHeading()));
 
 
 
