@@ -14,7 +14,7 @@ import org.opencv.core.Mat;
 
 
 public class T265Controller {
-    static T265Camera intelCam;
+   public static T265Camera intelCam;
     Transform2d camToRobot;
     private double whichX;
     private double dX;
@@ -27,8 +27,9 @@ public class T265Controller {
 
     public T265Controller(HardwareMap hwMap, Telemetry telemetry) {
         camToRobot = new Transform2d(new Translation2d(0.025,-0.08),new Rotation2d());
-        intelCam = new T265Camera(camToRobot,0.1,hwMap.appContext);
-        try {intelCam.start();
+        if(intelCam == null){intelCam = new T265Camera(camToRobot,0.1,hwMap.appContext);}
+        try {
+            intelCam.start();
             sleep(1000);}
         catch (Exception e)
         {
@@ -63,8 +64,8 @@ public class T265Controller {
         double b = 8;
         com.arcrobotics.ftclib.geometry.Pose2d LastPose = intelCam.getLastReceivedCameraUpdate().pose;
         double h = LastPose.getHeading();
-        double x = LastPose.getTranslation().getX() / 0.0254 + a*Math.sin(-h) - b*Math.cos(-h);
-        double y = LastPose.getTranslation().getY() / 0.0254 - a*Math.cos(-h) + b*Math.sin(-h);
+        double x = LastPose.getTranslation().getX() / 0.0254; // + a*Math.sin(-h) - b*Math.cos(-h);
+        double y = LastPose.getTranslation().getY() / 0.0254; // - a*Math.cos(-h) + b*Math.sin(-h);
        currentPos =  new Pose2d(x,y,h);
        return currentPos;
     }
