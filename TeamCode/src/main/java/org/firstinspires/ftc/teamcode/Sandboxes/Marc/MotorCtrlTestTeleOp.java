@@ -87,7 +87,7 @@ public class MotorCtrlTestTeleOp extends OpMode {
 
         if (gamepad1.a && !qA) {
             qA = true;
-            //motorCtrls.resetPosition();
+            camCtrl.resetPos();
         }
         else if (!gamepad1.a && qA) {
             qA = false;

@@ -48,9 +48,9 @@ public class T265Controller {
         }
         currentPos = getIntelPos();
         softPos = new Pose2d();
-        dX = softPos.getX() - currentPos.getX();
-        dY = softPos.getY() - currentPos.getY();
-        dH = softPos.getHeading() - currentPos.getHeading();
+        dX = currentPos.getX() - softPos.getX();
+        dY = currentPos.getY() - softPos.getY();
+        dH = currentPos.getHeading() - softPos.getHeading();
 
     }
     public static Pose2d convert265PosToRR(com.arcrobotics.ftclib.geometry.Pose2d input)
@@ -68,9 +68,17 @@ public class T265Controller {
         com.arcrobotics.ftclib.geometry.Pose2d LastPose = intelCam.getLastReceivedCameraUpdate().pose;
         double h = LastPose.getHeading();
         double x = LastPose.getTranslation().getX() / 0.0254 + a*Math.sin(-h) - b*Math.cos(-h);
-        double y = LastPose.getTranslation().getY() / 0.0254 - a*Math.cos(-h) + b*Math.sin(-h);
+        double y = LastPose.getTranslation().getY() / 0.0254 + a*Math.cos(-h) - b*Math.sin(-h);
        currentPos =  new Pose2d(x,y,h);
-       return currentPos;
+       softPos =  new Pose2d(x-dX,y-dY,h-dH);
+       return softPos;
+    }
+    public Pose2d resetPos() {
+        currentPos = getIntelPos();
+        dX = currentPos.getX();
+        dY = currentPos.getY();
+        dH = currentPos.getHeading();
+        return getIntelPos();
     }
     public void shutDown() {
         intelCam.stop();
