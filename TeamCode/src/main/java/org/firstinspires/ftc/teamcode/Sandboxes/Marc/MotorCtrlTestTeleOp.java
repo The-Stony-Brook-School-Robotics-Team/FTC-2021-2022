@@ -6,12 +6,13 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.arcrobotics.ftclib.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.BearsUtil.MotorEncoderController;
 import org.firstinspires.ftc.teamcode.BearsUtil.T265Controller;
+import org.firstinspires.ftc.teamcode.Sandboxes.Dennis.PurePursuit.Robot;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 @TeleOp
@@ -33,8 +34,11 @@ public class MotorCtrlTestTeleOp extends OpMode {
     public static final double DISTANCE_PER_PULSE = Math.PI * WHEEL_DIAMETER / TICKS_PER_REV;
     T265Controller camCtrl;
     FtcDashboard dashboard;
+        RobotState state = RobotState.STOPPED;
 
-
+        double iniH;
+    double iniX;
+    double iniY;
 
 
     @Override
@@ -44,7 +48,7 @@ public class MotorCtrlTestTeleOp extends OpMode {
         msStuckDetectStop = 1000000;
         msStuckDetectStart = 1000000;
         telemetry = new MultipleTelemetry(telemetry);
-      //  motorCtrls = new MotorEncoderController(hardwareMap,telemetry);
+        motorCtrls = new MotorEncoderController(hardwareMap,telemetry);
         dashboard = FtcDashboard.getInstance();
         camCtrl = new T265Controller(hardwareMap,telemetry);
 
@@ -87,22 +91,39 @@ public class MotorCtrlTestTeleOp extends OpMode {
 
         if (gamepad1.a && !qA) {
             qA = true;
-            camCtrl.resetPos();
+            state = RobotState.TURNR;
+            iniH = camCtrl.getIntelPos().getHeading();
+            return;
+
         }
         else if (!gamepad1.a && qA) {
             qA = false;
+
+        }
+
+        if (gamepad1.y && !qY) {
+            qY = true;
+            state = RobotState.STRAFEL;
+            iniY = camCtrl.getIntelPos().getY();
+            return;
+
+        }
+        else if (!gamepad1.y && qY) {
+            qY = false;
+
         }
 
 
         if (gamepad1.b && !qB) {
             qB = true;
-            //motorCtrls.resetSoftOdom();
+            iniX = camCtrl.getIntelPos().getX();
+            state = RobotState.FORWARD;
         }
         else if (!gamepad1.b && qB) {
             qB = false;
         }
 
-
+        doStateCommands();
 
     }
 
@@ -111,4 +132,44 @@ public class MotorCtrlTestTeleOp extends OpMode {
         super.stop();
         camCtrl.shutDown();
     }
+    public void doStateCommands()
+    {
+        Pose2d currentPos = camCtrl.getIntelPos();
+        switch(state) {
+            case TURNR:
+                if(currentPos.getHeading() <= iniH + Math.PI/2)
+                {
+                    motorCtrls.turnRightPower(0.3);
+                }
+                else {motorCtrls.stopRobot();
+                state = RobotState.STOPPED;
+                }
+            case FORWARD:
+                if(currentPos.getX() <= iniX + 24)
+                {
+                    motorCtrls.goForwardPower(0.3);
+                }
+                else {motorCtrls.stopRobot();
+                state = RobotState.STOPPED;}
+            case STRAFEL:
+                if(currentPos.getY() <= iniY + 24)
+                {
+                    motorCtrls.strafeLeftPower(0.3);
+                }
+                else {motorCtrls.stopRobot();
+                    state = RobotState.STOPPED;}
+        }
+    }
+}
+enum RobotState {
+    STOPPED,
+    GAMEPAD,
+    FORWARD,
+    BACKWARD,
+    STRAFER,
+    STRAFEL,
+    TURNR,
+    TURNL,
+    AUTO
+
 }
