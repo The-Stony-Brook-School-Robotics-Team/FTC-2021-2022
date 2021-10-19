@@ -97,7 +97,7 @@ public class KEHANPurePursuitTest extends LinearOpMode {
         Path testP = new Path(startW,endW);
         testP.setWaypointTimeouts(100);
 
-        while(true) {
+        while(!isStopRequested()) {
 
             odometrySubSystem.update();
             TelemetryPacket TelemetryPacket = new TelemetryPacket();
