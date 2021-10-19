@@ -87,10 +87,10 @@ public class KEHANPurePursuitTest extends LinearOpMode {
         HolonomicOdometry = new HolonomicOdometry(LP,RP,CP,12.75, -8.7);
         OdometrySubSystem = new OdometrySubsystem(this.HolonomicOdometry);
 
-        Graph = FtcDashboard.getInstance();
 
 
-        Waypoint startW = new StartWaypoint(0, 0);
+
+        Waypoint startW = new StartWaypoint(OdometrySubSystem.getPose());
         //Waypoint premW = new InterruptWaypoint(8192*2, 8192*2, odometry.updatePose()); //Learning "Position Buffer"
         Waypoint intermediateW = new GeneralWaypoint(0, 8192 * 5, 0, 0.8,0, 8192);
         Waypoint postW = new InterruptWaypoint();
@@ -105,7 +105,7 @@ public class KEHANPurePursuitTest extends LinearOpMode {
             OdometrySubSystem.update();
             TelemetryPacket TelemetryPacket = new TelemetryPacket();
             //com.acmerobotics.roadrunner.geometry.Pose2d Pose2dField= new Pose2d(OdometrySubSystem.getPose().getX(), OdometrySubSystem.getPose().getY(),OdometrySubSystem.getPose().getHeading());
-            com.acmerobotics.roadrunner.geometry.Pose2d Pose2dField= new Pose2d(OdometrySubSystem.getPose().getX(), OdometrySubSystem.getPose().getY(),OdometrySubSystem.getPose().getHeading());
+            Pose2d Pose2dField = new Pose2d(OdometrySubSystem.getPose().getX(),OdometrySubSystem.getPose().getY(),OdometrySubSystem.getPose().getRotation().getDegrees());
             //Graph.updateConfig();
             //TelemetryPacket.put("Pure Pursuit Position Indicator", 1);
             TelemetryPacket.put("X: ", OdometrySubSystem.getPose().getX());
@@ -115,6 +115,7 @@ public class KEHANPurePursuitTest extends LinearOpMode {
             telemetry.addData("Y: ", RightEncoder.getCurrentPosition());
             telemetry.addData("H: ", CentralEncoder.getCurrentPosition());
             telemetry.update();
+            Graph = FtcDashboard.getInstance();
             Graph.sendTelemetryPacket(TelemetryPacket);
             Canvas Field = new TelemetryPacket().fieldOverlay();
             DashboardUtil.drawRobot(Field, Pose2dField);
