@@ -38,6 +38,7 @@ public class pptUNSAFE extends LinearOpMode {
     private OdometrySubsystem odometry;
     private MotorEx encoderLeft, encoderRight, encoderPerp;
 
+    // TODO: push to github
     private MecanumDrive robotDrive;
 
     private boolean pressingA = false;
@@ -57,8 +58,8 @@ public class pptUNSAFE extends LinearOpMode {
         lb = new MotorEx(hardwareMap, "backodom");
         rb = new MotorEx(hardwareMap, "rightodom");
 
-        lf.setInverted(true);
-        rb.setInverted(true);
+        //lf.setInverted(true);
+        //rb.setInverted(true);
 
         encoderLeft = new MotorEx(hardwareMap, "leftodom");
         encoderRight = new MotorEx(hardwareMap, "rightodom");
@@ -83,8 +84,8 @@ public class pptUNSAFE extends LinearOpMode {
                 TRACKWIDTH, CENTER_WHEEL_OFFSET
         );
         odometry = new OdometrySubsystem(holOdom);
-
-        //com.arcrobotics.ftclib.geometry.Pose2d currentPose = new com.arcrobotics.ftclib.geometry.Pose2d(odometry.getPose().getX(), odometry.getPose().getY(), odometry.getPose().getRotation());
+        //TODO: list raw encoder values-- what does it look like when it tracks? what about when it doesnt?
+        com.arcrobotics.ftclib.geometry.Pose2d currentPose = new com.arcrobotics.ftclib.geometry.Pose2d(odometry.getPose().getX(), odometry.getPose().getY(), odometry.getPose().getRotation());
         Waypoint p1 = new StartWaypoint(0.0, 0.0);
         Waypoint p2 = new GeneralWaypoint(
                 10, 10,
@@ -166,9 +167,13 @@ public class pptUNSAFE extends LinearOpMode {
 
 
             telemPacket.put("Robot Test", 1);
-            telemPacket.put("Estimated Pose X", odometry.getPose().getX());
-            telemPacket.put("Estimated Pose Y", odometry.getPose().getY());
-            telemPacket.put("Estimated Pose Heading", Math.toDegrees(odometry.getPose().getHeading()));
+            telemPacket.put("Estimated corrected Pose X", odometry.getPose().getX());
+            telemPacket.put("Estimated corrected Pose Y", -odometry.getPose().getY());
+            telemPacket.put("Estimated corrected Pose Heading", Math.toDegrees(-odometry.getPose().getHeading()));
+
+            telemPacket.put("not corrected x pose ", odometry.getPose().getX());
+            telemPacket.put("not corrected y pose ", odometry.getPose().getY());
+            telemPacket.put("not corrected x pose ", odometry.getPose().getHeading());
 
             dashboard.sendTelemetryPacket(telemPacket);
 
