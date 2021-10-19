@@ -109,8 +109,9 @@ public class MotorCtrlTestTeleOpRR extends OpMode {
 
         if (gamepad1.b && !qB) {
             qB = true;
-            iniX = camCtrl.getIntelPos().getX();
-            state = RobotState.FORWARD;
+            //iniX = camCtrl.getIntelPos().getX();
+            //state = RobotState.FORWARD;
+
         }
         else if (!gamepad1.b && qB) {
             qB = false;
