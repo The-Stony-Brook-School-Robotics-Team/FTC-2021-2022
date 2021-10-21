@@ -29,7 +29,7 @@ public class T265LocalizationTest extends LinearOpMode {
     boolean qA,qB,qX,qY;
     RobotState state = RobotState.STOPPED;
     Pose2d currentPos;
-    public static int DIST = 72;
+    public static int DIST = 24;
 
     double iniX;
     FtcDashboard dashboard;
@@ -45,7 +45,7 @@ msStuckDetectStop = 500000000;
         T265Controller camCtrl = new T265Controller(hardwareMap,telemetry);
         for (int i = 0; i < 4; i++) {
             motors[i] = (hardwareMap.get(DcMotor.class, motorNames[i]));
-            motors[i].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motors[i].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             motors[i].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
         motors[3].setDirection(DcMotorSimple.Direction.REVERSE);
