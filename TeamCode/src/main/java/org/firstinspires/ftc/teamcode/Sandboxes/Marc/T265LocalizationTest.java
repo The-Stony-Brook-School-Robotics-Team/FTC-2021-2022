@@ -66,6 +66,9 @@ msStuckDetectStop = 500000000;
             packet3.put("state",state);
 
         telemetry.addData("state",state);
+            telemetry.addData("xpos",currentPos.getX());
+            telemetry.addData("ypos",currentPos.getY());
+            telemetry.addData("hpos",currentPos.getHeading());
         telemetry.update();
 
             if(gamepad1.a && !qA) {
@@ -78,6 +81,11 @@ msStuckDetectStop = 500000000;
                     pack.put("iniX",iniX);
                     pack.put("state",state);
                     dashboard.sendTelemetryPacket(pack);
+                    telemetry.addData("state",state);
+                    telemetry.addData("xpos",currentPos.getX());
+                    telemetry.addData("ypos",currentPos.getY());
+                    telemetry.addData("hpos",currentPos.getHeading());
+                    telemetry.update();
                 }
                 stopMotors();
                 continue;
@@ -87,7 +95,7 @@ msStuckDetectStop = 500000000;
             }
             if(gamepad1.b && !qB) {
                 qB = true;
-                state = (state.equals(RobotState.STOPPED)) ? RobotState.GAMEPAD : RobotState.STOPPED;
+                //state = (state.equals(RobotState.STOPPED)) ? RobotState.GAMEPAD : RobotState.STOPPED;
                 continue;
             }
             else if (!gamepad1.b && qB) {

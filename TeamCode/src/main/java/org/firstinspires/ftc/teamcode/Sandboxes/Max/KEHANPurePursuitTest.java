@@ -81,23 +81,23 @@ public class KEHANPurePursuitTest extends LinearOpMode {
         //    private Motor.Encoder LeftEncoder;
         //    private Motor.Encoder RightEncoder;
         //    private Motor.Encoder CentralEncoder;
-        com.arcrobotics.ftclib.kinematics.HolonomicOdometry holonomicOdometry = new HolonomicOdometry(LP, RP, CP, 12.75, -8.7);
+        HolonomicOdometry holonomicOdometry = new HolonomicOdometry(LP, RP, CP, 12.75, -8.7);
         OdometrySubsystem odometrySubSystem = new OdometrySubsystem(holonomicOdometry);
 
 
 
 
-        Waypoint startW = new StartWaypoint(odometrySubSystem.getPose());
+        Waypoint startW = new StartWaypoint(odometrySubSystem.getPose().getX(), odometrySubSystem.getPose().getY());
         //Waypoint premW = new InterruptWaypoint(8192*2, 8192*2, odometry.updatePose()); //Learning "Position Buffer"
         Waypoint intermediateW = new GeneralWaypoint(0, Integer.MAX_VALUE, 0, 0.8,0, 8192);
         Waypoint postW = new InterruptWaypoint();
         //Waypoint endW = new EndWaypoint(LeftEncoder.getCurrentPosition()+8192 * 11, 0, Math.PI/4, 0.6, 0.2, Math.PI, Math.PI, Math.PI );
         //Waypoint endW = new EndWaypoint(0, 8192*11, 0, 0.8, 0, 8192, 8192, 8192);
-        Waypoint endW = new EndWaypoint(odometrySubSystem.getPose().getX(), Integer.MAX_VALUE, Math.PI, 0.8, 0, 5,8192, 8192);
+        Waypoint endW = new EndWaypoint(odometrySubSystem.getPose().getX(), Integer.MAX_VALUE, Math.PI, 0.8, 0, 5,1, 1);
         Path testP = new Path(startW,endW);
         //testP.setWaypointTimeouts(100);
 
-        while(true) {
+        while(!isStopRequested()) {
 
             odometrySubSystem.update();
             TelemetryPacket TelemetryPacket = new TelemetryPacket();
@@ -114,7 +114,7 @@ public class KEHANPurePursuitTest extends LinearOpMode {
             telemetry.update();
             Graph = FtcDashboard.getInstance();
             Graph.sendTelemetryPacket(TelemetryPacket);
-            Canvas Field = new TelemetryPacket().fieldOverlay();
+            Canvas Field = TelemetryPacket.fieldOverlay();
             DashboardUtil.drawRobot(Field, Pose2dField);
 
             if (gamepad1.a) {
