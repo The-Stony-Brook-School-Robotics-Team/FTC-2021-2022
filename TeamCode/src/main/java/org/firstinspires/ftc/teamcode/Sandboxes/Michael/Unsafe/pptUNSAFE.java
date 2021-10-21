@@ -71,6 +71,8 @@ public class pptUNSAFE extends LinearOpMode {
         encoderRight.setDistancePerPulse(TICKS_TO_INCHES);
         encoderPerp.setDistancePerPulse(TICKS_TO_INCHES);
 
+        encoderRight.setInverted(true);
+
         encoderLeft.resetEncoder();
         encoderRight.resetEncoder();
         encoderPerp.resetEncoder();
@@ -81,7 +83,7 @@ public class pptUNSAFE extends LinearOpMode {
 
         HolonomicOdometry holOdom = new HolonomicOdometry(
                 () -> (encoderLeft.getCurrentPosition() * TICKS_TO_INCHES),
-                () -> -(encoderRight.getCurrentPosition() * TICKS_TO_INCHES), //-
+                () -> (encoderRight.getCurrentPosition() * TICKS_TO_INCHES), //-
                 () -> (encoderPerp.getCurrentPosition() * TICKS_TO_INCHES),
                 TRACKWIDTH, CENTER_WHEEL_OFFSET
         );
@@ -120,6 +122,8 @@ public class pptUNSAFE extends LinearOpMode {
         customPath path = new customPath(p1, p2, p3, p4);
         customPath newpath = new customPath(p1, p5);
         Path vanillaPath = new Path(p1, p5);
+        newpath.init();
+        vanillaPath.init();
 
         waitForStart();
 
