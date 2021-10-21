@@ -117,10 +117,10 @@ public class KEHANPurePursuitTest extends LinearOpMode {
             telemetry.addData("H: ", CentralEncoder.getCurrentPosition());
             telemetry.update();
             Graph = FtcDashboard.getInstance();
-            Graph.sendTelemetryPacket(TelemetryPacket);
             Canvas Field = TelemetryPacket.fieldOverlay();
             Pose2d Pose2dField = new Pose2d(odometrySubSystem.getPose().getX(), odometrySubSystem.getPose().getY(), odometrySubSystem.getPose().getHeading());
             DashboardUtil.drawRobot(Field, Pose2dField);
+            Graph.sendTelemetryPacket(TelemetryPacket);
 
             if (gamepad1.a) {
                 LeftEncoder.set(0);
