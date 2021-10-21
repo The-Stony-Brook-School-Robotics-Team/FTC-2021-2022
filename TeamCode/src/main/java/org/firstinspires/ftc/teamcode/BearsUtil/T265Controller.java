@@ -66,9 +66,9 @@ public class T265Controller {
         double b = 8;
         com.arcrobotics.ftclib.geometry.Pose2d LastPose = intelCam.getLastReceivedCameraUpdate().pose;
         double h = LastPose.getHeading();
-        double x = LastPose.getTranslation().getX() / 0.0254; // + a*Math.sin(-h) - b*Math.cos(-h);
-        double y = LastPose.getTranslation().getY() / 0.0254; // - a*Math.cos(-h) + b*Math.sin(-h);
-       currentPos =  new Pose2d(x,y,h);
+        double x = LastPose.getTranslation().getX() / 0.0254  + a*Math.sin(-h) - b*Math.cos(-h);
+        double y = -1*(LastPose.getTranslation().getY() / 0.0254  - a*Math.cos(-h) + b*Math.sin(-h));
+       currentPos =  new Pose2d(x,y,-h);
        return currentPos;
     }
 

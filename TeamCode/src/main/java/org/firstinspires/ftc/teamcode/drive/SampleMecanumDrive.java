@@ -67,8 +67,8 @@ import android.graphics.Bitmap;
 public class SampleMecanumDrive extends MecanumDrive {
 
 
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(1, 0, 0); // changed
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(1/*changed from 10*/, 0/*was 0.5*/, 0); // changed
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(4, 0, 0.1); // changed
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(3/*changed from 10*/, 0/*was 0.5*/, 0.1); // changed
 
     public static double LATERAL_MULTIPLIER = 1.42; // changed
 
@@ -202,7 +202,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
 
         setLocalizer(new T265Localizer(hardwareMap));
-        //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap, qAdj));
+       // setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
