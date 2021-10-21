@@ -97,12 +97,13 @@ public class KEHANPurePursuitTest extends LinearOpMode {
         Path testP = new Path(startW,endW);
         //testP.setWaypointTimeouts(100);
 
+        Pose2d Pose2dField = new Pose2d(odometrySubSystem.getPose().getX(), odometrySubSystem.getPose().getY(), odometrySubSystem.getPose().getHeading());
+
         while(true) {
 
             odometrySubSystem.update();
             TelemetryPacket TelemetryPacket = new TelemetryPacket();
             //com.acmerobotics.roadrunner.geometry.Pose2d Pose2dField= new Pose2d(OdometrySubSystem.getPose().getX(), OdometrySubSystem.getPose().getY(),OdometrySubSystem.getPose().getHeading());
-            Pose2d Pose2dField = new Pose2d(odometrySubSystem.getPose().getX(), odometrySubSystem.getPose().getY(), odometrySubSystem.getPose().getHeading());
             //Graph.updateConfig();
             //TelemetryPacket.put("Pure Pursuit Position Indicator", 1);
             TelemetryPacket.put("X: ", odometrySubSystem.getPose().getX());
