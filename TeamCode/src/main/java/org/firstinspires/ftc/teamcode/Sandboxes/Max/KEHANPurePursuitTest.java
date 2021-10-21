@@ -62,6 +62,9 @@ public class KEHANPurePursuitTest extends LinearOpMode {
         LeftEncoder.set(0);
         RightEncoder.set(0);
         CentralEncoder.set(0);
+        LeftEncoder.resetEncoder();
+        RightEncoder.resetEncoder();
+        CentralEncoder.resetEncoder();
 
         waitForStart();
 
@@ -73,15 +76,23 @@ public class KEHANPurePursuitTest extends LinearOpMode {
         RightEncoder.resetEncoder();
         CentralEncoder.resetEncoder();
 
-        LP = () -> LeftEncoder.getCurrentPosition()*(TicksPerInch);
-        RP = () -> RightEncoder.getCurrentPosition()*(TicksPerInch);
-        CP = () -> CentralEncoder.getCurrentPosition()*(TicksPerInch);
-
+        /*
+        LP = () -> (LeftEncoder.getCurrentPosition()*(TicksPerInch));
+        RP = () -> (RightEncoder.getCurrentPosition()*(TicksPerInch));
+        CP = () -> (CentralEncoder.getCurrentPosition()*(TicksPerInch));
+        */
 
         //    private Motor.Encoder LeftEncoder;
         //    private Motor.Encoder RightEncoder;
         //    private Motor.Encoder CentralEncoder;
-        HolonomicOdometry holonomicOdometry = new HolonomicOdometry(LP, RP, CP, 12.75, -8.7);
+        //HolonomicOdometry holonomicOdometry = new HolonomicOdometry(LP, RP, CP, 12.75, -8.7);
+        HolonomicOdometry holonomicOdometry = new HolonomicOdometry(
+        () -> (LeftEncoder.getCurrentPosition()*(TicksPerInch)),
+        () -> (RightEncoder.getCurrentPosition()*(TicksPerInch)),
+        () -> (CentralEncoder.getCurrentPosition()*(TicksPerInch)),
+        12.75, -8.7
+                );
+
         OdometrySubsystem odometrySubSystem = new OdometrySubsystem(holonomicOdometry);
 
 
@@ -97,14 +108,17 @@ public class KEHANPurePursuitTest extends LinearOpMode {
         Path testP = new Path(startW,intermediateW,endW);
         //testP.setWaypointTimeouts(100);
 
+        //testP.init();
+
         while(!isStopRequested()) {
 
-
-            LP = () -> LeftEncoder.getCurrentPosition()*(TicksPerInch);
-            RP = () -> RightEncoder.getCurrentPosition()*(TicksPerInch);
-            CP = () -> CentralEncoder.getCurrentPosition()*(TicksPerInch);
-            holonomicOdometry.updatePose();
             odometrySubSystem.update();
+
+            LP = () -> LeftEncoder.getCurrentPosition();
+            RP = () -> RightEncoder.getCurrentPosition();
+            CP = () -> CentralEncoder.getCurrentPosition();
+            holonomicOdometry.updatePose();
+
 
 
 
@@ -128,7 +142,7 @@ public class KEHANPurePursuitTest extends LinearOpMode {
 
 
 
-            
+
             if (gamepad1.a) {
                 LeftEncoder.set(0);
                 RightEncoder.set(0);
@@ -144,7 +158,7 @@ public class KEHANPurePursuitTest extends LinearOpMode {
                 ButtonY = 1;
             }
             else if(!gamepad1.y && ButtonY == 1){
-                testP.init();
+
                 testP.followPath(Drivers, holonomicOdometry);
                 ButtonY = 0;
 
