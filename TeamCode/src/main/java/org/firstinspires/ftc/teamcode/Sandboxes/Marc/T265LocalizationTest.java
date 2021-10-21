@@ -75,6 +75,7 @@ msStuckDetectStop = 500000000;
                 qA = true;
                 iniX = currentPos.getX();
                 while (Math.abs(currentPos.getX() - iniX) < DIST) {
+                    if(gamepad1.right_bumper) {break;}
                     forwardPow(0.3);
                     TelemetryPacket pack = new TelemetryPacket();
                     pack.put("xpos",currentPos.getX());
