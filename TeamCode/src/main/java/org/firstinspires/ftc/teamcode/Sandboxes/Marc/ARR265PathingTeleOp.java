@@ -29,22 +29,47 @@ public class ARR265PathingTeleOp extends LinearOpMode {
 
 
         drive= new SampleMecanumDrive(hardwareMap);
-    waitForStart();
+        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Thread.sleep(2000);
+        waitForStart();
+        new Thread(()->{
+            while(opModeIsActive()) {
+                Pose2d poseEstimate = drive.getPoseEstimate();
+            telemetry.addData("x", poseEstimate.getX());
+            telemetry.addData("y", poseEstimate.getY());
+            telemetry.addData("heading", poseEstimate.getHeading());
+            telemetry.update();
 
+            }
+
+        }).start();
         while(opModeIsActive()) {
 
 
             if(gamepad1.a && !qA) {
                 qA = true;
                 state = RobotState.AUTO;
-                continue;
             }
             else if (!gamepad1.a && qA) {
                 qA = false;
             }
+            if(gamepad1.b && !qB) {
+                qB = true;
+                state = (state != RobotState.STOPPED) ? RobotState.STOPPED : RobotState.GAMEPAD;
+            }
+            else if (!gamepad1.b && qB) {
+                qB = false;
+            }
+           doRobotStateAction();
+            drive.setWeightedDrivePower(
+                    new Pose2d(
+                            -gamepad1.left_stick_y,
+                            -gamepad1.left_stick_x,
+                            -gamepad1.right_stick_x
+                    )
+            );
 
-            doRobotStateAction();
-
+            drive.update();
 
 
         }
@@ -57,11 +82,15 @@ public class ARR265PathingTeleOp extends LinearOpMode {
             case STOPPED:
                 return;
             case AUTO:
-                Trajectory traj = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToSplineHeading(new Pose2d(DX,DY,Math.toRadians(DH)))
+                Pose2d loc = drive.getPoseEstimate();
+                Trajectory traj = drive.trajectoryBuilder(loc)
+                        .lineToSplineHeading(new Pose2d(loc.getX() + DX,loc.getY() + DY,loc.getHeading() + Math.toRadians(DH)))
                         .build();
 
-                drive.followTrajectoryAsync(traj);
+                drive.followTrajectory(traj);
+                drive.update();
+                state = RobotState.STOPPED;
+            case GAMEPAD:
                 state = RobotState.STOPPED;
         }
     }

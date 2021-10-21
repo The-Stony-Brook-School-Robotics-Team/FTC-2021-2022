@@ -25,7 +25,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous
+
 public class OpenCVtest extends OpMode {
     //Continuation<? extends Consumer<Bitmap>> continuation;
 
