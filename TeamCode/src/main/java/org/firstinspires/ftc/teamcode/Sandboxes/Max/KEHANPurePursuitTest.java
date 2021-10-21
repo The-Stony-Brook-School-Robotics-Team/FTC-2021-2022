@@ -9,6 +9,7 @@ import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
+import com.arcrobotics.ftclib.kinematics.Odometry;
 import com.arcrobotics.ftclib.purepursuit.Path;
 import com.arcrobotics.ftclib.purepursuit.Waypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.EndWaypoint;
@@ -48,7 +49,8 @@ public class KEHANPurePursuitTest extends LinearOpMode {
          rf = new MotorEx(hardwareMap, "leftodom");
          lb = new MotorEx(hardwareMap, "backodom");
          rb = new MotorEx(hardwareMap, "rightodom");
-        // rb.setInverted(true);
+        rb.setInverted(true);
+        
         LeftEncoder = new MotorEx(hardwareMap, "leftodom");
         CentralEncoder = new MotorEx(hardwareMap, "backodom");
         RightEncoder = new MotorEx(hardwareMap, "rightodom");
@@ -65,6 +67,8 @@ public class KEHANPurePursuitTest extends LinearOpMode {
         LeftEncoder.resetEncoder();
         RightEncoder.resetEncoder();
         CentralEncoder.resetEncoder();
+
+        OdometrySubsystem odometrySubSystem;
 
         waitForStart();
 
@@ -86,14 +90,15 @@ public class KEHANPurePursuitTest extends LinearOpMode {
         //    private Motor.Encoder RightEncoder;
         //    private Motor.Encoder CentralEncoder;
         //HolonomicOdometry holonomicOdometry = new HolonomicOdometry(LP, RP, CP, 12.75, -8.7);
-        HolonomicOdometry holonomicOdometry = new HolonomicOdometry(
+        Odometry holonomicOdometry = new HolonomicOdometry(
         () -> (LeftEncoder.getCurrentPosition()*(TicksPerInch)),
         () -> (RightEncoder.getCurrentPosition()*(TicksPerInch)),
         () -> (CentralEncoder.getCurrentPosition()*(TicksPerInch)),
         12.75, -8.7
                 );
 
-        OdometrySubsystem odometrySubSystem = new OdometrySubsystem(holonomicOdometry);
+
+        odometrySubSystem = new OdometrySubsystem(holonomicOdometry);
 
 
 
