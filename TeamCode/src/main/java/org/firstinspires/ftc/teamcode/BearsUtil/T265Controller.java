@@ -35,16 +35,18 @@ public class T265Controller {
         {
             e.printStackTrace();
             intelCam.stop();
+            if(telemetry != null) {
             telemetry.addData("You forgot to stop","the camera!!");
-            telemetry.update();
+            telemetry.update();}
             intelCam.start();
             try {
                 sleep(1000);
             } catch (InterruptedException interruptedException) {
                 interruptedException.printStackTrace();
             }
-            telemetry.addData("Initialized","camera");
-            telemetry.update();
+            if(telemetry != null) {
+                telemetry.addData("Initialized","camera");
+            telemetry.update();}
 
         }
         currentPos = getIntelPos();
