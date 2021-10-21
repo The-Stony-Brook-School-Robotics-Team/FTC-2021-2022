@@ -73,9 +73,9 @@ public class KEHANPurePursuitTest extends LinearOpMode {
         RightEncoder.resetEncoder();
         CentralEncoder.resetEncoder();
 
-        LP = () -> LeftEncoder.getCurrentPosition();///(TicksPerInch);
-        RP = () -> RightEncoder.getCurrentPosition();///(TicksPerInch));
-        CP = () -> CentralEncoder.getCurrentPosition();///(TicksPerInch);
+        LP = () -> LeftEncoder.getCurrentPosition()*(TicksPerInch);
+        RP = () -> RightEncoder.getCurrentPosition()*(TicksPerInch);
+        CP = () -> CentralEncoder.getCurrentPosition()*(TicksPerInch);
 
 
         //    private Motor.Encoder LeftEncoder;
@@ -95,14 +95,14 @@ public class KEHANPurePursuitTest extends LinearOpMode {
         //Waypoint endW = new EndWaypoint(0, 8192*11, 0, 0.8, 0, 8192, 8192, 8192);
         Waypoint endW = new EndWaypoint(odometrySubSystem.getPose().getX(), Integer.MAX_VALUE, Math.PI, 0.8, 0, 5,8192, 8192);
         Path testP = new Path(startW,endW);
-        testP.setWaypointTimeouts(100);
+        //testP.setWaypointTimeouts(100);
 
-        while(!isStopRequested()) {
+        while(true) {
 
             odometrySubSystem.update();
             TelemetryPacket TelemetryPacket = new TelemetryPacket();
             //com.acmerobotics.roadrunner.geometry.Pose2d Pose2dField= new Pose2d(OdometrySubSystem.getPose().getX(), OdometrySubSystem.getPose().getY(),OdometrySubSystem.getPose().getHeading());
-            Pose2d Pose2dField = new Pose2d(odometrySubSystem.getPose().getX(), odometrySubSystem.getPose().getY(), odometrySubSystem.getPose().getRotation().getDegrees());
+            Pose2d Pose2dField = new Pose2d(odometrySubSystem.getPose().getX(), odometrySubSystem.getPose().getY(), odometrySubSystem.getPose().getHeading());
             //Graph.updateConfig();
             //TelemetryPacket.put("Pure Pursuit Position Indicator", 1);
             TelemetryPacket.put("X: ", odometrySubSystem.getPose().getX());
