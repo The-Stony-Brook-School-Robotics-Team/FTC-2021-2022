@@ -89,12 +89,12 @@ public class KEHANPurePursuitTest extends LinearOpMode {
 
         Waypoint startW = new StartWaypoint(odometrySubSystem.getPose().getX(), odometrySubSystem.getPose().getY());
         //Waypoint premW = new InterruptWaypoint(8192*2, 8192*2, odometry.updatePose()); //Learning "Position Buffer"
-        Waypoint intermediateW = new GeneralWaypoint(0, Integer.MAX_VALUE, 0, 0.8,0, 8192);
+        Waypoint intermediateW = new GeneralWaypoint(0, 8192, 0, 0.8,0, 4096);
         Waypoint postW = new InterruptWaypoint();
         //Waypoint endW = new EndWaypoint(LeftEncoder.getCurrentPosition()+8192 * 11, 0, Math.PI/4, 0.6, 0.2, Math.PI, Math.PI, Math.PI );
         //Waypoint endW = new EndWaypoint(0, 8192*11, 0, 0.8, 0, 8192, 8192, 8192);
         Waypoint endW = new EndWaypoint(odometrySubSystem.getPose().getX(), Integer.MAX_VALUE, Math.PI, 0.8, 0, 5,1, 1);
-        Path testP = new Path(startW,endW);
+        Path testP = new Path(startW,intermediateW,endW);
         //testP.setWaypointTimeouts(100);
 
         while(!isStopRequested()) {
@@ -105,6 +105,10 @@ public class KEHANPurePursuitTest extends LinearOpMode {
             CP = () -> CentralEncoder.getCurrentPosition()*(TicksPerInch);
             holonomicOdometry.updatePose();
             odometrySubSystem.update();
+
+
+
+
             TelemetryPacket TelemetryPacket = new TelemetryPacket();
             //com.acmerobotics.roadrunner.geometry.Pose2d Pose2dField= new Pose2d(OdometrySubSystem.getPose().getX(), OdometrySubSystem.getPose().getY(),OdometrySubSystem.getPose().getHeading());
             //Graph.updateConfig();
@@ -122,6 +126,9 @@ public class KEHANPurePursuitTest extends LinearOpMode {
             DashboardUtil.drawRobot(Field, Pose2dField);
             Graph.sendTelemetryPacket(TelemetryPacket);
 
+
+
+            
             if (gamepad1.a) {
                 LeftEncoder.set(0);
                 RightEncoder.set(0);

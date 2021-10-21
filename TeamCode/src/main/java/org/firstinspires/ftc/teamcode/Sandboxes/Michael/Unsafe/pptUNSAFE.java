@@ -114,7 +114,7 @@ public class pptUNSAFE extends LinearOpMode {
         Waypoint p5 = new EndWaypoint(
                 odometry.getPose().getX() + 10,
                 odometry.getPose().getY(),
-                0, .8, .3, 5, .4, .4
+                0, .1, .3, 5, .4, .4
         );
 
         customPath path = new customPath(p1, p2, p3, p4);
