@@ -110,7 +110,15 @@ public class KEHANPurePursuitTest extends LinearOpMode {
         //Waypoint endW = new EndWaypoint(LeftEncoder.getCurrentPosition()+8192 * 11, 0, Math.PI/4, 0.6, 0.2, Math.PI, Math.PI, Math.PI );
         //Waypoint endW = new EndWaypoint(0, 8192*11, 0, 0.8, 0, 8192, 8192, 8192);
         Waypoint endW = new EndWaypoint(odometrySubSystem.getPose().getX(), 20, 0, 0.8, 0, 5,1, 1);
-        Path testP = new Path(startW,intermediateW,endW);
+
+        Waypoint p5 = new EndWaypoint(
+                odometrySubSystem.getPose().getX() + 10,
+                odometrySubSystem.getPose().getY(),
+                0, .3, .3, 5, .4, .4
+        );
+
+
+        Path testP = new Path(startW,p5);
         //testP.setWaypointTimeouts(100);
 
         //testP.init();
