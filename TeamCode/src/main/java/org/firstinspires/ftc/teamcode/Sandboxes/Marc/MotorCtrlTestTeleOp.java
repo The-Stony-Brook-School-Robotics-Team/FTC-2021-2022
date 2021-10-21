@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.BearsUtil.T265Controller;
 import org.firstinspires.ftc.teamcode.Sandboxes.Dennis.PurePursuit.Robot;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
-@TeleOp
+
 
 public class MotorCtrlTestTeleOp extends OpMode {
     MotorEncoderController motorCtrls;

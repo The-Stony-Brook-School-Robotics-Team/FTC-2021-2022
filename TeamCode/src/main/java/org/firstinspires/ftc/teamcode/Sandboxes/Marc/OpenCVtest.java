@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Sandboxes.Marc;
 import android.graphics.Bitmap;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.vuforia.Image;
@@ -24,8 +25,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@TeleOp
-public class OpenCVTestTeleOpNoVuforia extends OpMode {
+@Autonomous
+public class OpenCVtest extends OpMode {
     //Continuation<? extends Consumer<Bitmap>> continuation;
 
     static final int STREAM_WIDTH = 1920;

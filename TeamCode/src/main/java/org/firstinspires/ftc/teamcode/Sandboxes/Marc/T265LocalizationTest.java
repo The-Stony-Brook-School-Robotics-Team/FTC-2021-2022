@@ -21,8 +21,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.BearsUtil.T265Controller;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
-@TeleOp
-@Config
+
 public class T265LocalizationTest extends LinearOpMode {
     DcMotor[] motors = new DcMotor[4];
     DcMotor[] odoms = new DcMotor[3];
