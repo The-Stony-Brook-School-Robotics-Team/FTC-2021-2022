@@ -26,7 +26,7 @@ public class T265Controller {
     Pose2d softPos;
 
     public T265Controller(HardwareMap hwMap, Telemetry telemetry) {
-        camToRobot = new Transform2d(new Translation2d(0.025,-0.08),new Rotation2d());
+        camToRobot = new Transform2d(new Translation2d(0,0),new Rotation2d());
         if(intelCam == null){intelCam = new T265Camera(camToRobot,0.1,hwMap.appContext);}
         try {
             intelCam.start();
