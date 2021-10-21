@@ -99,10 +99,14 @@ public class KEHANPurePursuitTest extends LinearOpMode {
 
         while(!isStopRequested()) {
 
+
+            LP = () -> LeftEncoder.getCurrentPosition()*(TicksPerInch);
+            RP = () -> RightEncoder.getCurrentPosition()*(TicksPerInch);
+            CP = () -> CentralEncoder.getCurrentPosition()*(TicksPerInch);
+            holonomicOdometry.updatePose();
             odometrySubSystem.update();
             TelemetryPacket TelemetryPacket = new TelemetryPacket();
             //com.acmerobotics.roadrunner.geometry.Pose2d Pose2dField= new Pose2d(OdometrySubSystem.getPose().getX(), OdometrySubSystem.getPose().getY(),OdometrySubSystem.getPose().getHeading());
-            Pose2d Pose2dField = new Pose2d(odometrySubSystem.getPose().getX(), odometrySubSystem.getPose().getY(), odometrySubSystem.getPose().getHeading());
             //Graph.updateConfig();
             //TelemetryPacket.put("Pure Pursuit Position Indicator", 1);
             TelemetryPacket.put("X: ", odometrySubSystem.getPose().getX());
@@ -113,9 +117,10 @@ public class KEHANPurePursuitTest extends LinearOpMode {
             telemetry.addData("H: ", CentralEncoder.getCurrentPosition());
             telemetry.update();
             Graph = FtcDashboard.getInstance();
-            Graph.sendTelemetryPacket(TelemetryPacket);
             Canvas Field = TelemetryPacket.fieldOverlay();
+            Pose2d Pose2dField = new Pose2d(odometrySubSystem.getPose().getX(), odometrySubSystem.getPose().getY(), odometrySubSystem.getPose().getHeading());
             DashboardUtil.drawRobot(Field, Pose2dField);
+            Graph.sendTelemetryPacket(TelemetryPacket);
 
             if (gamepad1.a) {
                 LeftEncoder.set(0);
