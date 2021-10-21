@@ -9,6 +9,7 @@ import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
+import com.arcrobotics.ftclib.kinematics.Odometry;
 import com.arcrobotics.ftclib.purepursuit.Path;
 import com.arcrobotics.ftclib.purepursuit.Waypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.EndWaypoint;
@@ -48,7 +49,8 @@ public class KEHANPurePursuitTest extends LinearOpMode {
          rf = new MotorEx(hardwareMap, "leftodom");
          lb = new MotorEx(hardwareMap, "backodom");
          rb = new MotorEx(hardwareMap, "rightodom");
-        // rb.setInverted(true);
+        rb.setInverted(true);
+
         LeftEncoder = new MotorEx(hardwareMap, "leftodom");
         CentralEncoder = new MotorEx(hardwareMap, "backodom");
         RightEncoder = new MotorEx(hardwareMap, "rightodom");
@@ -65,6 +67,8 @@ public class KEHANPurePursuitTest extends LinearOpMode {
         LeftEncoder.resetEncoder();
         RightEncoder.resetEncoder();
         CentralEncoder.resetEncoder();
+
+        OdometrySubsystem odometrySubSystem;
 
         waitForStart();
 
@@ -86,25 +90,26 @@ public class KEHANPurePursuitTest extends LinearOpMode {
         //    private Motor.Encoder RightEncoder;
         //    private Motor.Encoder CentralEncoder;
         //HolonomicOdometry holonomicOdometry = new HolonomicOdometry(LP, RP, CP, 12.75, -8.7);
-        HolonomicOdometry holonomicOdometry = new HolonomicOdometry(
+        Odometry holonomicOdometry = new HolonomicOdometry(
         () -> (LeftEncoder.getCurrentPosition()*(TicksPerInch)),
         () -> (RightEncoder.getCurrentPosition()*(TicksPerInch)),
         () -> (CentralEncoder.getCurrentPosition()*(TicksPerInch)),
         12.75, -8.7
                 );
 
-        OdometrySubsystem odometrySubSystem = new OdometrySubsystem(holonomicOdometry);
+
+        odometrySubSystem = new OdometrySubsystem(holonomicOdometry);
 
 
 
 
         Waypoint startW = new StartWaypoint(odometrySubSystem.getPose().getX(), odometrySubSystem.getPose().getY());
         //Waypoint premW = new InterruptWaypoint(8192*2, 8192*2, odometry.updatePose()); //Learning "Position Buffer"
-        Waypoint intermediateW = new GeneralWaypoint(0, 8192, 0, 0.8,0, 4096);
+        Waypoint intermediateW = new GeneralWaypoint(odometrySubSystem.getPose().getX(), 10, 0, 0.8,0, 4096);
         Waypoint postW = new InterruptWaypoint();
         //Waypoint endW = new EndWaypoint(LeftEncoder.getCurrentPosition()+8192 * 11, 0, Math.PI/4, 0.6, 0.2, Math.PI, Math.PI, Math.PI );
         //Waypoint endW = new EndWaypoint(0, 8192*11, 0, 0.8, 0, 8192, 8192, 8192);
-        Waypoint endW = new EndWaypoint(odometrySubSystem.getPose().getX(), Integer.MAX_VALUE, Math.PI, 0.8, 0, 5,1, 1);
+        Waypoint endW = new EndWaypoint(odometrySubSystem.getPose().getX(), 20, 0, 0.8, 0, 5,1, 1);
         Path testP = new Path(startW,intermediateW,endW);
         //testP.setWaypointTimeouts(100);
 
