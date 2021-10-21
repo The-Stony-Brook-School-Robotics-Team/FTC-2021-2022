@@ -73,22 +73,8 @@ msStuckDetectStop = 500000000;
 
             if(gamepad1.a && !qA) {
                 qA = true;
-                iniX = currentPos.getX();
-                while (Math.abs(currentPos.getX() - iniX) < DIST) {
-                    if(gamepad1.right_bumper) {break;}
-                    forwardPow(0.3);
-                    TelemetryPacket pack = new TelemetryPacket();
-                    pack.put("xpos",currentPos.getX());
-                    pack.put("iniX",iniX);
-                    pack.put("state",state);
-                    dashboard.sendTelemetryPacket(pack);
-                    telemetry.addData("state",state);
-                    telemetry.addData("xpos",currentPos.getX());
-                    telemetry.addData("ypos",currentPos.getY());
-                    telemetry.addData("hpos",currentPos.getHeading());
-                    telemetry.update();
-                }
-                stopMotors();
+                if(state != RobotState.FORWARD) {iniX = currentPos.getX();}
+                state = RobotState.FORWARD;
                 continue;
             }
             else if (!gamepad1.a && qA) {
@@ -96,7 +82,7 @@ msStuckDetectStop = 500000000;
             }
             if(gamepad1.b && !qB) {
                 qB = true;
-                //state = (state.equals(RobotState.STOPPED)) ? RobotState.GAMEPAD : RobotState.STOPPED;
+                state = (state.equals(RobotState.STOPPED)) ? RobotState.GAMEPAD : RobotState.STOPPED;
                 continue;
             }
             else if (!gamepad1.b && qB) {
@@ -110,11 +96,11 @@ msStuckDetectStop = 500000000;
             else if (!gamepad1.y && qY) {
                 qY = false;
             }
-            motors[3].setPower(0.6 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
+            /*motors[3].setPower(0.6 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
             motors[2].setPower(0.6 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
             motors[1].setPower(0.6 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
             motors[0].setPower(0.6 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
-            //doStateCommands();
+            */doStateCommands();
 
 
         }
@@ -134,45 +120,22 @@ msStuckDetectStop = 500000000;
         }
     }
 
-   /* public void doStateCommands() {
+    public void doStateCommands() {
         switch (state) {
             case FORWARD:
                 if (Math.abs(currentPos.getX() - iniX) < DIST) {
                     forwardPow(0.3);
-                    TelemetryPacket pack = new TelemetryPacket();
-                    pack.put("xpos",currentPos.getX());
-                    pack.put("iniX",iniX);
-                    pack.put("state",state);
-                    dashboard.sendTelemetryPacket(pack);
                 } else {
                     stopMotors();
                     state = RobotState.STOPPED;
                 }
             case GAMEPAD:
-                TelemetryPacket packet = new TelemetryPacket();
-                Canvas field = packet.fieldOverlay();
-                DashboardUtil.drawRobot(field,currentPos);
-                packet.put("xpos",currentPos.getX());
-                packet.put("ypos",currentPos.getY());
-                packet.put("hpos",currentPos.getHeading());
-                packet.put("state",state);
-
-                dashboard.sendTelemetryPacket(packet);
                 motors[3].setPower(0.6 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
                 motors[2].setPower(0.6 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
                 motors[1].setPower(0.6 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
                 motors[0].setPower(0.6 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
             case STOPPED:
-                TelemetryPacket packet3 = new TelemetryPacket();
-                Canvas field3 = packet3.fieldOverlay();
-                DashboardUtil.drawRobot(field3,currentPos);
-                packet3.put("xpos",currentPos.getX());
-                packet3.put("ypos",currentPos.getY());
-                packet3.put("hpos",currentPos.getHeading());
-                packet3.put("state",state);
-
-                dashboard.sendTelemetryPacket(packet3);
                 stopMotors();
         }
-    }*/
+    }
 }
