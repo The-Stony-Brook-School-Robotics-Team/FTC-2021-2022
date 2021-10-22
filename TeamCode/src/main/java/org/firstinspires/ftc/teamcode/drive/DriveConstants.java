@@ -31,10 +31,10 @@ public class DriveConstants {
     public static double kA = 0.0055; // Previous was 0.012
     public static double kStatic = 0.01;
 
-    public static double MAX_VEL = 60; // 80
-    public static double MAX_ACCEL = 12;
-    public static double MAX_ANG_VEL = 20; // measured with max ang velo tuner.
-    public static double MAX_ANG_ACCEL = Math.toRadians(20);
+    public static double MAX_VEL = 80; // 80
+    public static double MAX_ACCEL = 30;
+    public static double MAX_ANG_VEL = 24; // measured with max ang velo tuner.
+    public static double MAX_ANG_ACCEL = Math.toRadians(40);
 
 
     public static double encoderTicksToInches(double ticks) {

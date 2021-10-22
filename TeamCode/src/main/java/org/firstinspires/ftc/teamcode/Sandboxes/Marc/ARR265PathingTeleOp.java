@@ -21,7 +21,7 @@ public class ARR265PathingTeleOp extends LinearOpMode {
     volatile AutonomousStates state = AutonomousStates.STOPPED;
     boolean qA, qB, qX, qY;
     Object stateMutex = new Object();
-
+    Pose2d loc2;
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -42,25 +42,25 @@ public class ARR265PathingTeleOp extends LinearOpMode {
             }
 
         }).start();
+        synchronized (stateMutex) {state = AutonomousStates.One_STAGE_ADVANCE;}
         while(opModeIsActive()) {
 
 
             if(gamepad1.a && !qA) {
                 qA = true;
-                state = AutonomousStates.One_STAGE_ADVANCE;
             }
             else if (!gamepad1.a && qA) {
                 qA = false;
             }
 
             doRobotStateAction();
-            drive.setWeightedDrivePower(
+            /*drive.setWeightedDrivePower(
                     new Pose2d(
                             -gamepad1.left_stick_y,
                             -gamepad1.left_stick_x,
                             -gamepad1.right_stick_x
                     )
-            );
+            );*/
             drive.update();
 
 
@@ -82,7 +82,16 @@ public class ARR265PathingTeleOp extends LinearOpMode {
                 drive.update();
                 synchronized (stateMutex) {state = AutonomousStates.Two_ROTATE;}
             case Two_ROTATE:
+                loc2 = drive.getPoseEstimate();
                 drive.turn(Math.toRadians(90));
+                drive.update();
+                synchronized (stateMutex) {state = AutonomousStates.Twobis_FIXPOS;}
+            case Twobis_FIXPOS:
+                if(loc2 == null) {loc2 = new Pose2d(6,0,0);}
+                Trajectory traj2 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .lineToSplineHeading(new Pose2d(loc2.getX(),loc2.getY(),loc2.getHeading() + Math.toRadians(90)))
+                        .build();
+                drive.followTrajectory(traj2);
                 drive.update();
                 synchronized (stateMutex) {state = AutonomousStates.Three_BACK_TO_WALL;}
             case Three_BACK_TO_WALL:
@@ -167,6 +176,7 @@ public class ARR265PathingTeleOp extends LinearOpMode {
     GAMEPAD(100),
     One_STAGE_ADVANCE(1),
     Two_ROTATE(2),
+     Twobis_FIXPOS(2.5),
     Three_BACK_TO_WALL(3),
     FORWARD1(4),
     BACKWARD1(5),
@@ -179,11 +189,11 @@ public class ARR265PathingTeleOp extends LinearOpMode {
     FORWARD5(12),
     BACKWARD5(13);
 
-    public int home = 0;
-     AutonomousStates(int i) {
+    public double home = 0;
+     AutonomousStates(double i) {
          home = i;
     }
-    public int getInt(){
+    public double getID(){
          return home;
     }
 }
