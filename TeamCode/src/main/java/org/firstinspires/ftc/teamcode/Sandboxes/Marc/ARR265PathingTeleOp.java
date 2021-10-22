@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -14,7 +15,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.checkerframework.checker.units.qual.C;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-@TeleOp
+@Autonomous
 
 public class ARR265PathingTeleOp extends LinearOpMode {
     SampleMecanumDrive drive;
@@ -85,19 +86,18 @@ public class ARR265PathingTeleOp extends LinearOpMode {
                 loc2 = drive.getPoseEstimate();
                 drive.turn(Math.toRadians(90));
                 drive.update();
-                synchronized (stateMutex) {state = AutonomousStates.Twobis_FIXPOS;}
-            case Twobis_FIXPOS:
-                if(loc2 == null) {loc2 = new Pose2d(6,0,0);}
+                synchronized (stateMutex) {state = AutonomousStates.Three_BACK_TO_WALL;}
+            /*case Twobis_FIXPOS: // skipped
                 Trajectory traj2 = drive.trajectoryBuilder(drive.getPoseEstimate())
                         .lineToSplineHeading(new Pose2d(loc2.getX(),loc2.getY(),loc2.getHeading() + Math.toRadians(90)))
                         .build();
                 drive.followTrajectory(traj2);
                 drive.update();
-                synchronized (stateMutex) {state = AutonomousStates.Three_BACK_TO_WALL;}
+                synchronized (stateMutex) {state = AutonomousStates.Three_BACK_TO_WALL;}*/
             case Three_BACK_TO_WALL:
                 Pose2d loc3 = drive.getPoseEstimate();
                 Trajectory traj3 = drive.trajectoryBuilder(loc3)
-                        .lineToSplineHeading(new Pose2d(loc3.getX() - 6,loc3.getY(),loc3.getHeading()))
+                        .lineToSplineHeading(new Pose2d(loc3.getX() - 8,loc3.getY(),loc3.getHeading()))
                         .build();
                 drive.followTrajectory(traj3);
                 drive.update();
@@ -176,7 +176,7 @@ public class ARR265PathingTeleOp extends LinearOpMode {
     GAMEPAD(100),
     One_STAGE_ADVANCE(1),
     Two_ROTATE(2),
-     Twobis_FIXPOS(2.5),
+     //Twobis_FIXPOS(2.5),
     Three_BACK_TO_WALL(3),
     FORWARD1(4),
     BACKWARD1(5),
