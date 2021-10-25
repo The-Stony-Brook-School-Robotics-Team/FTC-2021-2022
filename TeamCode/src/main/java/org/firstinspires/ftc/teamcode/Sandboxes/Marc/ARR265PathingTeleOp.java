@@ -99,7 +99,7 @@ public class ARR265PathingTeleOp extends LinearOpMode {
             case Three_BACK_TO_WALL:
                 Pose2d loc3 = drive.getPoseEstimate();
                 Trajectory traj3 = drive.trajectoryBuilder(loc3)
-                        .lineToSplineHeading(new Pose2d(loc3.getX() - 8,loc3.getY(),loc3.getHeading()))
+                        .lineToSplineHeading(new Pose2d(loc3.getX() - 8,loc3.getY(),loc2.getHeading()+Math.toRadians(90)))
                         .build();
                 drive.followTrajectory(traj3);
                 drive.update();
