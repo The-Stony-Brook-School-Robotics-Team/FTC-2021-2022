@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.BearsUtil;
 
 import static java.lang.Thread.sleep;
 
+import android.util.Log;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.arcrobotics.ftclib.geometry.Transform2d;
@@ -26,7 +28,7 @@ public class T265Controller {
     Pose2d softPos;
 
     public T265Controller(HardwareMap hwMap, Telemetry telemetry) {
-        camToRobot = new Transform2d(new Translation2d(0.025,-0.08),new Rotation2d());
+        camToRobot = new Transform2d(new Translation2d(0,0),new Rotation2d());
         if(intelCam == null){intelCam = new T265Camera(camToRobot,0.1,hwMap.appContext);}
         try {
             intelCam.start();
@@ -35,19 +37,25 @@ public class T265Controller {
         {
             e.printStackTrace();
             intelCam.stop();
+            if(telemetry != null) {
             telemetry.addData("You forgot to stop","the camera!!");
-            telemetry.update();
+            telemetry.update();}
             intelCam.start();
             try {
                 sleep(1000);
             } catch (InterruptedException interruptedException) {
                 interruptedException.printStackTrace();
             }
-            telemetry.addData("Initialized","camera");
-            telemetry.update();
+            if(telemetry != null) {
+                telemetry.addData("Initialized","camera");
+            telemetry.update();}
 
         }
         currentPos = getIntelPos();
+        Pose2d currentPos2 = getIntelPos();
+        if(currentPos2.getX() == currentPos.getX()) {
+            Log.d("t265controller","camera not sending good data....");
+        }
 
     }
     public static Pose2d convert265PosToRR(com.arcrobotics.ftclib.geometry.Pose2d input)
@@ -64,14 +72,15 @@ public class T265Controller {
         double b = 8;
         com.arcrobotics.ftclib.geometry.Pose2d LastPose = intelCam.getLastReceivedCameraUpdate().pose;
         double h = LastPose.getHeading();
-        double x = LastPose.getTranslation().getX() / 0.0254; // + a*Math.sin(-h) - b*Math.cos(-h);
-        double y = LastPose.getTranslation().getY() / 0.0254; // - a*Math.cos(-h) + b*Math.sin(-h);
-       currentPos =  new Pose2d(x,y,h);
+        double x = LastPose.getTranslation().getX() / 0.0254  + a*Math.sin(-h) - b*Math.cos(-h);
+        double y = -1*(LastPose.getTranslation().getY() / 0.0254  - a*Math.cos(-h) + b*Math.sin(-h));
+       currentPos =  new Pose2d(x,y,-h);
        return currentPos;
     }
 
-    public void shutDown() {
+    public static void shutDown() {
         intelCam.stop();
+        intelCam.free();
         try {
             sleep(1000);
         } catch (InterruptedException e) {

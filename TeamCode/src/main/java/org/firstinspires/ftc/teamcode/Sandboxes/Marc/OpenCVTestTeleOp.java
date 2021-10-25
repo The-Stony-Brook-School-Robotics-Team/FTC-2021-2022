@@ -24,7 +24,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@TeleOp
+
 public class OpenCVTestTeleOp extends OpMode {
     static final int STREAM_WIDTH = 640;
     static final int STREAM_HEIGHT = 480;

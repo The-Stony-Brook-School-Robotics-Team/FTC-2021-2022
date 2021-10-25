@@ -5,6 +5,7 @@ import static java.lang.Thread.sleep;
 import android.graphics.Bitmap;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.vuforia.Image;
@@ -27,8 +28,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@TeleOp
-public class OpenCVTestTeleOp2 extends OpMode {
+@Autonomous
+public class ATheOpenCVTest extends OpMode {
     //Continuation<? extends Consumer<Bitmap>> continuation;
 
     static final int STREAM_WIDTH = 1920;

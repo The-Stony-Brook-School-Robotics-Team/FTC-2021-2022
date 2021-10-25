@@ -35,6 +35,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
+import org.firstinspires.ftc.teamcode.BearsUtil.T265Exception;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -67,8 +68,8 @@ import android.graphics.Bitmap;
 public class SampleMecanumDrive extends MecanumDrive {
 
 
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(40, 0.05, 0.5); // changed
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(5/*changed from 10*/, 0.1/*was 0.5*/, 1); // changed
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(18, 0, 1.8); // changed
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(1, 0, 0); // changed
 
     public static double LATERAL_MULTIPLIER = 1.42; // changed
 
@@ -111,11 +112,10 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     private Pose2d lastPoseOnTurn;
 
-    public SampleMecanumDrive(HardwareMap hardwareMap)
-    {
+    public SampleMecanumDrive(HardwareMap hardwareMap){
         this(hardwareMap,false);
     }
-    public SampleMecanumDrive(HardwareMap hardwareMap, boolean qAdj) {
+    public SampleMecanumDrive(HardwareMap hardwareMap, boolean qAdj){
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         dashboard = FtcDashboard.getInstance();
@@ -136,7 +136,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         ));
         accelConstraint = new ProfileAccelerationConstraint(MAX_ACCEL);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
-                new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 2/*0.5*/);
+                new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.1);
 
         poseHistory = new LinkedList<>();
 
@@ -201,8 +201,9 @@ public class SampleMecanumDrive extends MecanumDrive {
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
 
-        setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
-        //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap, qAdj));
+        setLocalizer(new T265Localizer(hardwareMap));
+
+        // setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {

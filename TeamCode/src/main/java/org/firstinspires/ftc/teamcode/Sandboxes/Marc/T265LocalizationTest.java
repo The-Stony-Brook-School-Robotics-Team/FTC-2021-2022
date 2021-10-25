@@ -19,17 +19,17 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.BearsUtil.T265Controller;
+import org.firstinspires.ftc.teamcode.BearsUtil.T265Exception;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
-@TeleOp
-@Config
+
 public class T265LocalizationTest extends LinearOpMode {
     DcMotor[] motors = new DcMotor[4];
     DcMotor[] odoms = new DcMotor[3];
     boolean qA,qB,qX,qY;
     RobotState state = RobotState.STOPPED;
     Pose2d currentPos;
-    public static int DIST = 72;
+    public static int DIST = 24;
 
     double iniX;
     FtcDashboard dashboard;
@@ -42,10 +42,12 @@ msStuckDetectInit = 500000000;
 msStuckDetectStop = 500000000;
          dashboard = FtcDashboard.getInstance();
         Log.d("265localizer","starting up camera");
-        T265Controller camCtrl = new T265Controller(hardwareMap,telemetry);
+        T265Controller camCtrl = null;
+        camCtrl = new T265Controller(hardwareMap,telemetry);
+
         for (int i = 0; i < 4; i++) {
             motors[i] = (hardwareMap.get(DcMotor.class, motorNames[i]));
-            motors[i].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motors[i].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             motors[i].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
         motors[3].setDirection(DcMotorSimple.Direction.REVERSE);
@@ -66,20 +68,15 @@ msStuckDetectStop = 500000000;
             packet3.put("state",state);
 
         telemetry.addData("state",state);
+            telemetry.addData("xpos",currentPos.getX());
+            telemetry.addData("ypos",currentPos.getY());
+            telemetry.addData("hpos",currentPos.getHeading());
         telemetry.update();
 
             if(gamepad1.a && !qA) {
                 qA = true;
-                iniX = currentPos.getX();
-                while (Math.abs(currentPos.getX() - iniX) < DIST) {
-                    forwardPow(0.3);
-                    TelemetryPacket pack = new TelemetryPacket();
-                    pack.put("xpos",currentPos.getX());
-                    pack.put("iniX",iniX);
-                    pack.put("state",state);
-                    dashboard.sendTelemetryPacket(pack);
-                }
-                stopMotors();
+                if(state != RobotState.FORWARD) {iniX = currentPos.getX();}
+                state = RobotState.FORWARD;
                 continue;
             }
             else if (!gamepad1.a && qA) {
@@ -101,16 +98,16 @@ msStuckDetectStop = 500000000;
             else if (!gamepad1.y && qY) {
                 qY = false;
             }
-            motors[3].setPower(0.6 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
+            /*motors[3].setPower(0.6 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
             motors[2].setPower(0.6 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
             motors[1].setPower(0.6 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
             motors[0].setPower(0.6 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
-            //doStateCommands();
+            */doStateCommands();
 
 
         }
         Log.d("265localizer","shutting down camera");
-        new Thread(() -> {camCtrl.shutDown();}).start();
+        new Thread(() -> {T265Controller.shutDown();}).start();
         sleep(1000);
     }
     public void forwardPow(double pow) {
@@ -125,45 +122,22 @@ msStuckDetectStop = 500000000;
         }
     }
 
-   /* public void doStateCommands() {
+    public void doStateCommands() {
         switch (state) {
             case FORWARD:
                 if (Math.abs(currentPos.getX() - iniX) < DIST) {
                     forwardPow(0.3);
-                    TelemetryPacket pack = new TelemetryPacket();
-                    pack.put("xpos",currentPos.getX());
-                    pack.put("iniX",iniX);
-                    pack.put("state",state);
-                    dashboard.sendTelemetryPacket(pack);
                 } else {
                     stopMotors();
                     state = RobotState.STOPPED;
                 }
             case GAMEPAD:
-                TelemetryPacket packet = new TelemetryPacket();
-                Canvas field = packet.fieldOverlay();
-                DashboardUtil.drawRobot(field,currentPos);
-                packet.put("xpos",currentPos.getX());
-                packet.put("ypos",currentPos.getY());
-                packet.put("hpos",currentPos.getHeading());
-                packet.put("state",state);
-
-                dashboard.sendTelemetryPacket(packet);
                 motors[3].setPower(0.6 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
                 motors[2].setPower(0.6 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
                 motors[1].setPower(0.6 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
                 motors[0].setPower(0.6 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
             case STOPPED:
-                TelemetryPacket packet3 = new TelemetryPacket();
-                Canvas field3 = packet3.fieldOverlay();
-                DashboardUtil.drawRobot(field3,currentPos);
-                packet3.put("xpos",currentPos.getX());
-                packet3.put("ypos",currentPos.getY());
-                packet3.put("hpos",currentPos.getHeading());
-                packet3.put("state",state);
-
-                dashboard.sendTelemetryPacket(packet3);
                 stopMotors();
         }
-    }*/
+    }
 }

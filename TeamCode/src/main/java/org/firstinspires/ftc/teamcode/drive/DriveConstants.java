@@ -16,8 +16,8 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
  */
 @Config
 public class DriveConstants {
-    public static final double TICKS_PER_REV = 145.6; // added
-    public static final double MAX_RPM = 847; // was 1100
+    public static final double TICKS_PER_REV = 8192; // added
+    public static final double MAX_RPM = 1150; // was 1100
 
     public static final boolean RUN_USING_ENCODER = false;
     public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(0, 0, 0,
@@ -31,10 +31,10 @@ public class DriveConstants {
     public static double kA = 0.0055; // Previous was 0.012
     public static double kStatic = 0.01;
 
-    public static double MAX_VEL = 60; // 80
-    public static double MAX_ACCEL = 20;
-    public static double MAX_ANG_VEL = 50; // measured with max ang velo tuner.
-    public static double MAX_ANG_ACCEL = Math.toRadians(60);
+    public static double MAX_VEL = 100; // 80
+    public static double MAX_ACCEL = 60;
+    public static double MAX_ANG_VEL = 24; // measured with max ang velo tuner.
+    public static double MAX_ANG_ACCEL = Math.toRadians(40);
 
 
     public static double encoderTicksToInches(double ticks) {

@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-@TeleOp(name="Marc TurnTeleOp", group="drive")
+
 public class TurnTeleOp extends OpMode {
 
     private DcMotor lf = null;
