@@ -127,9 +127,12 @@ public class KEHANPurePursuitTest extends LinearOpMode {
 
             odometrySubSystem.update();
 
+            /*
             LP = () -> LeftEncoder.getCurrentPosition();
             RP = () -> RightEncoder.getCurrentPosition();
             CP = () -> CentralEncoder.getCurrentPosition();
+             */
+
             holonomicOdometry.updatePose();
 
 
