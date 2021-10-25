@@ -27,7 +27,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  */
 @Config
 @Autonomous(group = "drive")
-public class BackAndForth extends LinearOpMode {
+public class BackAndForthDefault extends LinearOpMode {
 
     public static double DISTANCE = 48;
 
@@ -35,22 +35,20 @@ public class BackAndForth extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
+        Trajectory trajectoryForward = drive.trajectoryBuilder(new Pose2d())
+                .forward(DISTANCE)
+                .build();
 
+        Trajectory trajectoryBackward = drive.trajectoryBuilder(trajectoryForward.end())
+                .back(DISTANCE)
+                .build();
 
         waitForStart();
 
         while (opModeIsActive() && !isStopRequested()) {
-            Trajectory trajectoryForward = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .forward(DISTANCE)
-                    .build();
-
-
             drive.followTrajectory(trajectoryForward);
-            Trajectory trajectoryBackward = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .back(DISTANCE)
-                    .build();
             drive.followTrajectory(trajectoryBackward);
         }
-//        T265Controller.shutDown();
+        //T265Controller.shutDown();
     }
 }

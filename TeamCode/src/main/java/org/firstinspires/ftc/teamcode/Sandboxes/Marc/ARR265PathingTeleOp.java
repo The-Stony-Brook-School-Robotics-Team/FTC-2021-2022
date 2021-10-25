@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.checkerframework.checker.units.qual.C;
+import org.firstinspires.ftc.teamcode.BearsUtil.T265Controller;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 @Autonomous
@@ -44,7 +45,7 @@ public class ARR265PathingTeleOp extends LinearOpMode {
 
         }).start();
         synchronized (stateMutex) {state = AutonomousStates.One_STAGE_ADVANCE;}
-        while(opModeIsActive()) {
+        while(opModeIsActive() && !isStopRequested()) {
 
 
             if(gamepad1.a && !qA) {
@@ -66,6 +67,7 @@ public class ARR265PathingTeleOp extends LinearOpMode {
 
 
         }
+        T265Controller.shutDown();
 
     }
 

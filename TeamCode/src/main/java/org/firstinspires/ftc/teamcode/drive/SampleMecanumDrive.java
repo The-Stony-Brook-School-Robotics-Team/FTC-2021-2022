@@ -35,6 +35,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
+import org.firstinspires.ftc.teamcode.BearsUtil.T265Exception;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -67,8 +68,8 @@ import android.graphics.Bitmap;
 public class SampleMecanumDrive extends MecanumDrive {
 
 
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(24, 0, 0.1); // changed
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(30/*changed from 10*/, 0/*was 0.5*/, 0.1); // changed
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 0.001); // changed
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(5/*changed from 10*/, 0/*was 0.5*/, 0.001); // changed
 
     public static double LATERAL_MULTIPLIER = 1.42; // changed
 
@@ -111,11 +112,10 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     private Pose2d lastPoseOnTurn;
 
-    public SampleMecanumDrive(HardwareMap hardwareMap)
-    {
+    public SampleMecanumDrive(HardwareMap hardwareMap){
         this(hardwareMap,false);
     }
-    public SampleMecanumDrive(HardwareMap hardwareMap, boolean qAdj) {
+    public SampleMecanumDrive(HardwareMap hardwareMap, boolean qAdj){
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         dashboard = FtcDashboard.getInstance();
@@ -202,7 +202,8 @@ public class SampleMecanumDrive extends MecanumDrive {
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
 
         setLocalizer(new T265Localizer(hardwareMap));
-       // setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
+
+        // setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {

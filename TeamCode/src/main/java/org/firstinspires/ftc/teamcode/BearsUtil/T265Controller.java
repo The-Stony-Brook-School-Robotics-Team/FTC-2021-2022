@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.BearsUtil;
 
 import static java.lang.Thread.sleep;
 
+import android.util.Log;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.arcrobotics.ftclib.geometry.Transform2d;
@@ -50,6 +52,10 @@ public class T265Controller {
 
         }
         currentPos = getIntelPos();
+        Pose2d currentPos2 = getIntelPos();
+        if(currentPos2.getX() == currentPos.getX()) {
+            Log.d("t265controller","camera not sending good data....");
+        }
 
     }
     public static Pose2d convert265PosToRR(com.arcrobotics.ftclib.geometry.Pose2d input)
@@ -72,8 +78,9 @@ public class T265Controller {
        return currentPos;
     }
 
-    public void shutDown() {
+    public static void shutDown() {
         intelCam.stop();
+        intelCam.free();
         try {
             sleep(1000);
         } catch (InterruptedException e) {

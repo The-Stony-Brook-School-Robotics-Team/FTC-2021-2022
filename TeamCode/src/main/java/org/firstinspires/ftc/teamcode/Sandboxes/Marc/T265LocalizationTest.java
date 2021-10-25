@@ -19,6 +19,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.BearsUtil.T265Controller;
+import org.firstinspires.ftc.teamcode.BearsUtil.T265Exception;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 
@@ -41,7 +42,9 @@ msStuckDetectInit = 500000000;
 msStuckDetectStop = 500000000;
          dashboard = FtcDashboard.getInstance();
         Log.d("265localizer","starting up camera");
-        T265Controller camCtrl = new T265Controller(hardwareMap,telemetry);
+        T265Controller camCtrl = null;
+        camCtrl = new T265Controller(hardwareMap,telemetry);
+
         for (int i = 0; i < 4; i++) {
             motors[i] = (hardwareMap.get(DcMotor.class, motorNames[i]));
             motors[i].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -104,7 +107,7 @@ msStuckDetectStop = 500000000;
 
         }
         Log.d("265localizer","shutting down camera");
-        new Thread(() -> {camCtrl.shutDown();}).start();
+        new Thread(() -> {T265Controller.shutDown();}).start();
         sleep(1000);
     }
     public void forwardPow(double pow) {

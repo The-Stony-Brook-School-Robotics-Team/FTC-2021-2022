@@ -12,11 +12,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.BearsUtil.T265Controller;
+import org.firstinspires.ftc.teamcode.BearsUtil.T265Exception;
 
 public class T265Localizer implements Localizer {
     T265Controller camCtrl;
 
-    public T265Localizer(HardwareMap hardwareMap) {
+    public T265Localizer(HardwareMap hardwareMap){
         camCtrl = new T265Controller(hardwareMap,null);
     }
 
@@ -41,5 +42,8 @@ public class T265Localizer implements Localizer {
     @Override
     public void update() {
 
+    }
+    public void shutDown() {
+        T265Controller.shutDown();
     }
 }
