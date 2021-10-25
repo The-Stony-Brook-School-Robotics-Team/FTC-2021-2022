@@ -27,6 +27,13 @@ import java.util.function.DoubleSupplier;
 @TeleOp
 public class KEHANPurePursuitTest extends LinearOpMode {
 
+    private static final double TRACKWIDTH = 12.75;
+    private static final double CENTER_WHEEL_OFFSET = -8.7;
+    private static final double WHEEL_DIAMETER = 2.0;
+    private static final double TICKS_PER_REV = 8192;
+    private static final double TICKS_TO_INCHES = Math.PI * WHEEL_DIAMETER / TICKS_PER_REV;
+
+
     private MotorEx LeftEncoder;
     private MotorEx RightEncoder;
     private MotorEx CentralEncoder;
@@ -94,7 +101,7 @@ public class KEHANPurePursuitTest extends LinearOpMode {
         () -> (LeftEncoder.getCurrentPosition()*(TicksPerInch)),
         () -> (RightEncoder.getCurrentPosition()*(TicksPerInch)),
         () -> (CentralEncoder.getCurrentPosition()*(TicksPerInch)),
-        12.75, -8.7
+        TRACKWIDTH, CENTER_WHEEL_OFFSET
                 );
 
 
@@ -111,25 +118,26 @@ public class KEHANPurePursuitTest extends LinearOpMode {
         //Waypoint endW = new EndWaypoint(0, 8192*11, 0, 0.8, 0, 8192, 8192, 8192);
         Waypoint endW = new EndWaypoint(odometrySubSystem.getPose().getX(), 20, 0, 0.8, 0, 5,1, 1);
 
+        /*
+
         Waypoint p5 = new EndWaypoint(
                 odometrySubSystem.getPose().getX() + 10,
                 odometrySubSystem.getPose().getY(),
                 0, .3, .3, 5, .4, .4
         );
+*/
+
+        Path testP = new Path(startW,endW);
+        testP.setWaypointTimeouts(100);
 
 
-        Path testP = new Path(startW,p5);
-        //testP.setWaypointTimeouts(100);
+        //Pose2d Pose2dField = new Pose2d(odometrySubSystem.getPose().getX(), odometrySubSystem.getPose().getY(), odometrySubSystem.getPose().getHeading());
 
-<<<<<<< HEAD
-        Pose2d Pose2dField = new Pose2d(odometrySubSystem.getPose().getX(), odometrySubSystem.getPose().getY(), odometrySubSystem.getPose().getHeading());
 
-        while(true) {
-=======
         //testP.init();
 
         while(!isStopRequested()) {
->>>>>>> f4b1173a3ce65b7eea077934129196d1f4cf27e5
+
 
             odometrySubSystem.update();
 
