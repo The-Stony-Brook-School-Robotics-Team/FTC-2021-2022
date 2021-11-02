@@ -65,17 +65,14 @@ public class servoTest extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        servo.setPosition(0.28);
-        servo2.setPosition(0.28);
-        Thread.sleep(500);
         servo.setPosition(0);
         servo2.setPosition(0);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            servo.setPosition(0.28);
-            servo2.setPosition(0.28);
+            servo.setPosition(0.6);
+            servo2.setPosition(0.6);
             Thread.sleep(500);
             telemetry.addData("Servo Position: ", servo.getPosition()*360);
             telemetry.addData("Servo2 Position: ", servo2.getPosition()*360);
