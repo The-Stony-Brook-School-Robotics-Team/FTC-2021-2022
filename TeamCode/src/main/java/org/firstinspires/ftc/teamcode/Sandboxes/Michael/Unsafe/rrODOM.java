@@ -63,7 +63,7 @@ public class rrODOM extends LinearOpMode {
         new Thread(()->{
             while(opModeIsActive()) {
                 //TODO: handler
-
+                Pose2d poseEstimate = drive.getPoseEstimate();
                 //Pose2d poseEstimate = drive.getPoseEstimate();
                 telemetry.addData("x", poseEstimate.getX());
                 telemetry.addData("y", poseEstimate.getY());
