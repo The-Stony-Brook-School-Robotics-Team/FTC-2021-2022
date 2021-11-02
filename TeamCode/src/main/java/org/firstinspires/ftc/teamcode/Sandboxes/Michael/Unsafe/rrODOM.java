@@ -22,7 +22,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.checkerframework.checker.units.qual.C;
 import org.firstinspires.ftc.teamcode.BearsUtil.T265Controller;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-
+/*
 @Autonomous
 
 public class rrODOM extends LinearOpMode {
@@ -92,7 +92,7 @@ public class rrODOM extends LinearOpMode {
                             -gamepad1.left_stick_x,
                             -gamepad1.right_stick_x
                     )
-            );*/
+            );
             drive.update();
 
 
@@ -126,7 +126,7 @@ public class rrODOM extends LinearOpMode {
                 drive.followTrajectory(traj2);
                 drive.update();
                 synchronized (stateMutex) {state = AutonomousStates.Three_BACK_TO_WALL;}*/
-            case Three_BACK_TO_WALL:
+     /*       case Three_BACK_TO_WALL:
                 Pose2d loc3 = drive.getPoseEstimate();
                 Trajectory traj3 = drive.trajectoryBuilder(loc3)
                         .lineToSplineHeading(new Pose2d(loc3.getX() - 8,loc3.getY(),loc2.getHeading()+Math.toRadians(90)))
@@ -228,4 +228,5 @@ enum AutonomousStates {
     public double getID(){
         return home;
     }
-}
+*/
+

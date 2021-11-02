@@ -37,13 +37,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="servo test michael", group="Linear Opmode")
-@Disabled
+//@Disabled
 public class servoTest extends LinearOpMode {
     boolean pressingA = false;
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
     private Servo servo = null;
+    private Servo servo2 = null;
 
     @Override
     public void runOpMode() {
@@ -55,9 +56,11 @@ public class servoTest extends LinearOpMode {
         // step (using the FTC Robot Controller app on the phone).
 
         servo = hardwareMap.get(Servo.class, "servo");
+        servo2 = hardwareMap.get(Servo.class, "servo2");
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         servo.setDirection(Servo.Direction.FORWARD);
+        servo2.setDirection(Servo.Direction.FORWARD);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -66,7 +69,8 @@ public class servoTest extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            servo.setPosition(110);
+            servo.setPosition(.28); //100 / 360, has to be expressed  0.0-1.0
+            servo.setPosition(.28);
 
             /**if(gamepad1.a && pressingA == false){
                 pressingA = true;
@@ -76,7 +80,8 @@ public class servoTest extends LinearOpMode {
                 servo.setDirection(Servo.Direction.REVERSE);
             }**/
             // Show the elapsed game time and wheel power.
-            telemetry.addData("Servo Position: ", servo.getPosition());
+            telemetry.addData("Servo Position: ", servo.getPosition()*360);
+            telemetry.addData("Servo2 Position: ", servo2.getPosition()*360);
             telemetry.update();
         }
     }
