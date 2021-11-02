@@ -47,7 +47,7 @@ public class servoTest extends LinearOpMode {
     private Servo servo2 = null;
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -60,17 +60,32 @@ public class servoTest extends LinearOpMode {
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         servo.setDirection(Servo.Direction.FORWARD);
-        servo2.setDirection(Servo.Direction.FORWARD);
+        servo2.setDirection(Servo.Direction.REVERSE);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        runtime.reset();
+
+        servo.setPosition(0.28);
+        servo2.setPosition(0.28);
+        Thread.sleep(500);
+        servo.setPosition(0);
+        servo2.setPosition(0);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            servo.setPosition(.28); //100 / 360, has to be expressed  0.0-1.0
-            servo.setPosition(.28);
+            servo.setPosition(0.28);
+            servo2.setPosition(0.28);
+            Thread.sleep(500);
+            telemetry.addData("Servo Position: ", servo.getPosition()*360);
+            telemetry.addData("Servo2 Position: ", servo2.getPosition()*360);
+            telemetry.update();
+            servo.setPosition(0);
+            servo2.setPosition(0);
+            Thread.sleep(500);
+            telemetry.addData("Servo Position: ", servo.getPosition()*360);
+            telemetry.addData("Servo2 Position: ", servo2.getPosition()*360);
+            telemetry.update();
 
             /**if(gamepad1.a && pressingA == false){
                 pressingA = true;
@@ -79,10 +94,6 @@ public class servoTest extends LinearOpMode {
                 servo.setPosition(0);
                 servo.setDirection(Servo.Direction.REVERSE);
             }**/
-            // Show the elapsed game time and wheel power.
-            telemetry.addData("Servo Position: ", servo.getPosition()*360);
-            telemetry.addData("Servo2 Position: ", servo2.getPosition()*360);
-            telemetry.update();
         }
     }
 }
