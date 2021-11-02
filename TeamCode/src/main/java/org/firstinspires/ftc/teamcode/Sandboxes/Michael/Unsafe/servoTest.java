@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="servo test michael", group="Linear Opmode")
-@Disabled
+//@Disabled
 public class servoTest extends LinearOpMode {
     boolean pressingA = false;
     // Declare OpMode members.
