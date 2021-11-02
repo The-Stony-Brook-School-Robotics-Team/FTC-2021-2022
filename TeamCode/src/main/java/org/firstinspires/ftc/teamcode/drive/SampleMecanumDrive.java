@@ -68,8 +68,8 @@ import android.graphics.Bitmap;
 public class SampleMecanumDrive extends MecanumDrive {
 
 
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(18, 0, 1.8); // changed
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(1, 0, 0); // changed
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(24, 0, 0.1); // changed
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(5, 0, 0); // changed
 
     public static double LATERAL_MULTIPLIER = 1.42; // changed
 

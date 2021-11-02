@@ -39,7 +39,7 @@ public class BackAndForthPos extends LinearOpMode {
         Pose2d ini = drive.getPoseEstimate();
         waitForStart();
 
-        for (int i = 0 ; i < 2; i++) {
+        while(opModeIsActive() && !isStopRequested()) {
             Trajectory trajectoryForward = drive.trajectoryBuilder(drive.getPoseEstimate())
                     .lineToSplineHeading(new Pose2d(drive.getPoseEstimate().getX()+DISTANCE,ini.getY(),ini.getHeading()))
                     .build();
