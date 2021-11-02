@@ -75,7 +75,7 @@ public class ARR265PathingTeleOp2 extends LinearOpMode {
                 Pose2d loc = drive.getPoseEstimate();
                 Trajectory traj1 = drive.trajectoryBuilder(loc, true)
                         //.splineTo(new Vector2d(loc.getX()-24*Math.cos(loc.getHeading()),loc.getY()+24*Math.sin(loc.getHeading())),loc.getHeading()-Math.PI/4)
-                        .splineTo(new Vector2d(loc.getX()-48, loc.getY()-48), loc.getHeading()+Math.PI/2)
+                        .splineTo(new Vector2d(loc.getX()-48, loc.getY()+48), loc.getHeading()-Math.PI/2)
                         .build();
                 drive.followTrajectory(traj1);
                 drive.update();
