@@ -80,8 +80,8 @@ public class servoTest extends LinearOpMode {
                 servo.setDirection(Servo.Direction.REVERSE);
             }**/
             // Show the elapsed game time and wheel power.
-            telemetry.addData("Servo Position: ", servo.getPosition());
-            telemetry.addData("Servo2 Position: ", servo2.getPosition());
+            telemetry.addData("Servo Position: ", servo.getPosition()*360);
+            telemetry.addData("Servo2 Position: ", servo2.getPosition()*360);
             telemetry.update();
         }
     }
