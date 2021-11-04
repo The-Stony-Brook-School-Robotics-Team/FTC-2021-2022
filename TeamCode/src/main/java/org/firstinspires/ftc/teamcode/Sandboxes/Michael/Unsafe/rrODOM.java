@@ -1,25 +1,60 @@
-package org.firstinspires.ftc.teamcode.Sandboxes.Marc;
+package org.firstinspires.ftc.teamcode.Sandboxes.Michael.Unsafe;
 
+import static org.firstinspires.ftc.teamcode.BearsUtil.MotorEncoderController.motorNames;
+import static org.firstinspires.ftc.teamcode.Sandboxes.Michael.Unsafe.RobotConfig.CENTER_WHEEL_OFFSET;
+import static org.firstinspires.ftc.teamcode.Sandboxes.Michael.Unsafe.RobotConfig.TICKS_PER_REV;
+import static org.firstinspires.ftc.teamcode.Sandboxes.Michael.Unsafe.RobotConfig.TRACKWIDTH;
+import static org.firstinspires.ftc.teamcode.Sandboxes.Michael.Unsafe.RobotConfig.WHEEL_DIAMETER;
+
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.arcrobotics.ftclib.command.OdometrySubsystem;
+import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import org.checkerframework.checker.units.qual.C;
 import org.firstinspires.ftc.teamcode.BearsUtil.T265Controller;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-
+/*
 @Autonomous
 
-public class ARR265PathingTeleOp extends LinearOpMode {
+public class rrODOM extends LinearOpMode {
     SampleMecanumDrive drive;
     volatile AutonomousStates state = AutonomousStates.STOPPED;
     boolean qA, qB, qX, qY;
     Object stateMutex = new Object();
     Pose2d loc2;
+    private static final double TICKS_TO_INCHES = Math.PI * WHEEL_DIAMETER / TICKS_PER_REV;
+    private MotorEx encoderLeft, encoderRight, encoderPerp;
+    private OdometrySubsystem odometry;
     @Override
     public void runOpMode() throws InterruptedException {
+        encoderLeft = new MotorEx(hardwareMap, "leftodom");
+        encoderRight = new MotorEx(hardwareMap, "rightodom");
+        encoderPerp = new MotorEx(hardwareMap, "backodom");
+        encoderLeft.setDistancePerPulse(TICKS_TO_INCHES);
+        encoderRight.setDistancePerPulse(TICKS_TO_INCHES);
+        encoderPerp.setDistancePerPulse(TICKS_TO_INCHES);
 
+        encoderRight.setInverted(true);
+
+        encoderLeft.resetEncoder();
+        encoderRight.resetEncoder();
+        encoderPerp.resetEncoder();
+        HolonomicOdometry holOdom = new HolonomicOdometry(
+                () -> (encoderLeft.getCurrentPosition() * TICKS_TO_INCHES),
+                () -> (encoderRight.getCurrentPosition() * TICKS_TO_INCHES), //-
+                () -> (encoderPerp.getCurrentPosition() * TICKS_TO_INCHES),
+                TRACKWIDTH, CENTER_WHEEL_OFFSET
+        );
+        odometry = new OdometrySubsystem(holOdom);
 
         drive= new SampleMecanumDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -27,12 +62,14 @@ public class ARR265PathingTeleOp extends LinearOpMode {
         waitForStart();
         new Thread(()->{
             while(opModeIsActive()) {
+                //TODO: handler
                 Pose2d poseEstimate = drive.getPoseEstimate();
-            telemetry.addData("x", poseEstimate.getX());
-            telemetry.addData("y", poseEstimate.getY());
-            telemetry.addData("heading", poseEstimate.getHeading());
-            synchronized (stateMutex) {telemetry.addData("State",state);}
-            telemetry.update();
+                //Pose2d poseEstimate = drive.getPoseEstimate();
+                telemetry.addData("x", poseEstimate.getX());
+                telemetry.addData("y", poseEstimate.getY());
+                telemetry.addData("heading", poseEstimate.getHeading());
+                synchronized (stateMutex) {telemetry.addData("State",state);}
+                telemetry.update();
 
             }
 
@@ -55,7 +92,7 @@ public class ARR265PathingTeleOp extends LinearOpMode {
                             -gamepad1.left_stick_x,
                             -gamepad1.right_stick_x
                     )
-            );*/
+            );
             drive.update();
 
 
@@ -89,7 +126,7 @@ public class ARR265PathingTeleOp extends LinearOpMode {
                 drive.followTrajectory(traj2);
                 drive.update();
                 synchronized (stateMutex) {state = AutonomousStates.Three_BACK_TO_WALL;}*/
-            case Three_BACK_TO_WALL:
+     /*       case Three_BACK_TO_WALL:
                 Pose2d loc3 = drive.getPoseEstimate();
                 Trajectory traj3 = drive.trajectoryBuilder(loc3)
                         .lineToSplineHeading(new Pose2d(loc3.getX() - 8,loc3.getY(),loc2.getHeading()+Math.toRadians(90)))
@@ -166,12 +203,12 @@ public class ARR265PathingTeleOp extends LinearOpMode {
 
 
 }
- enum AutonomousStates {
+enum AutonomousStates {
     STOPPED(0),
     GAMEPAD(100),
     One_STAGE_ADVANCE(1),
     Two_ROTATE(2),
-     //Twobis_FIXPOS(2.5),
+    //Twobis_FIXPOS(2.5),
     Three_BACK_TO_WALL(3),
     FORWARD1(4),
     BACKWARD1(5),
@@ -185,10 +222,11 @@ public class ARR265PathingTeleOp extends LinearOpMode {
     BACKWARD5(13);
 
     public double home = 0;
-     AutonomousStates(double i) {
-         home = i;
+    AutonomousStates(double i) {
+        home = i;
     }
     public double getID(){
-         return home;
+        return home;
     }
-}
+*/
+
