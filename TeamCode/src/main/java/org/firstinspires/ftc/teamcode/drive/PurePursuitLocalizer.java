@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.BearsUtil.T265Controller;
 
 public class PurePursuitLocalizer implements Localizer {
     private static final double TRACKWIDTH = 12.75;
-    private static final double CENTER_WHEEL_OFFSET = -8.7;
+    private static final double CENTER_WHEEL_OFFSET = -9.76;
     private static final double WHEEL_DIAMETER = 2.0;
     private static final double TICKS_PER_REV = 8192;
     private static final double TICKS_TO_INCHES = Math.PI * WHEEL_DIAMETER / TICKS_PER_REV;
@@ -56,8 +56,8 @@ public class PurePursuitLocalizer implements Localizer {
 
         holOdom = new HolonomicOdometry(
                 () -> encoderLeft.getCurrentPosition() * TICKS_TO_INCHES,
-                () -> -(encoderRight.getCurrentPosition() * TICKS_TO_INCHES),
-                () -> (encoderPerp.getCurrentPosition() * TICKS_TO_INCHES),
+                () -> (encoderRight.getCurrentPosition() * TICKS_TO_INCHES),
+                () -> -(encoderPerp.getCurrentPosition() * TICKS_TO_INCHES),
                 TRACKWIDTH, CENTER_WHEEL_OFFSET
         );
         odometry = new OdometrySubsystem(holOdom);
