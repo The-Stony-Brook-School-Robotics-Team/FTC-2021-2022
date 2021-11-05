@@ -6,14 +6,17 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.arcrobotics.ftclib.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.BearsUtil.MotorEncoderController;
+import org.firstinspires.ftc.teamcode.BearsUtil.T265Controller;
+import org.firstinspires.ftc.teamcode.BearsUtil.T265Exception;
+import org.firstinspires.ftc.teamcode.Sandboxes.Dennis.PurePursuit.Robot;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
-@TeleOp
+
 
 public class MotorCtrlTestTeleOp extends OpMode {
     MotorEncoderController motorCtrls;
@@ -30,14 +33,25 @@ public class MotorCtrlTestTeleOp extends OpMode {
     public static final double TICKS_PER_REV = 8192;
     public static final double TICKS_TO_INCHES = TICKS_PER_REV*WHEEL_DIAMETER*Math.PI;
     public static final double DISTANCE_PER_PULSE = Math.PI * WHEEL_DIAMETER / TICKS_PER_REV;
-
+    T265Controller camCtrl;
     FtcDashboard dashboard;
+        RobotState state = RobotState.STOPPED;
+
+        double iniH;
+    double iniX;
+    double iniY;
+
 
     @Override
     public void init() {
+        msStuckDetectInit = 1000000;
+        msStuckDetectLoop = 1000000;
+        msStuckDetectStop = 1000000;
+        msStuckDetectStart = 1000000;
         telemetry = new MultipleTelemetry(telemetry);
         motorCtrls = new MotorEncoderController(hardwareMap,telemetry);
         dashboard = FtcDashboard.getInstance();
+        camCtrl = new T265Controller(hardwareMap,telemetry);
 
 
 
@@ -45,28 +59,15 @@ public class MotorCtrlTestTeleOp extends OpMode {
 
     @Override
     public void loop() {
+        com.acmerobotics.roadrunner.geometry.Pose2d currentPos = camCtrl.getIntelPos();
+        telemetry.addData("x",currentPos.getX());
+        telemetry.addData("y",currentPos.getY());
+        telemetry.addData("h",currentPos.getHeading());
+         telemetry.update();
 
-        telemetry.addData("L ODOM",motorCtrls.getLOdomValSoft());
-        telemetry.addData("R ODOM",motorCtrls.getROdomValSoft());
-        telemetry.addData("B ODOM",motorCtrls.getBOdomValSoft());
-        telemetry.addData("L ODOM inch",MotorEncoderController.convertOdomTickToRobotInches(motorCtrls.getLOdomValSoft()));
-        telemetry.addData("R ODOM inch",MotorEncoderController.convertOdomTickToRobotInches(motorCtrls.getROdomValSoft()));
-        telemetry.addData("B ODOM inch",MotorEncoderController.convertOdomTickToRobotInches(motorCtrls.getBOdomValSoft()));
-        telemetry.addData("Lpow",motorCtrls.LF().getPower());
-        telemetry.addData("Rpow",motorCtrls.RF().getPower());
-        telemetry.addData("powerRatio",motorCtrls.LF().getPower()/motorCtrls.RF().getPower());
-        telemetry.addData("odomDiff",motorCtrls.getROdomValSoft() - motorCtrls.getLOdomValSoft());
-        //telemetry.addData("xpos",motorCtrls.getPosition().getX());
-        //telemetry.addData("ypos",motorCtrls.getPosition().getY());
-       // telemetry.addData("hpos",Math.toDegrees(motorCtrls.getPosition().getHeading()));
-        telemetry.update();
-
-        if (gamepad1.x && !qX) {
-            qX = true;
             TelemetryPacket packet = new TelemetryPacket();
-            Pose2d currentPos = motorCtrls.getPosition();
             Canvas field = packet.fieldOverlay();
-            DashboardUtil.drawRobot(field,new com.acmerobotics.roadrunner.geometry.Pose2d(currentPos.getX(),currentPos.getY(),currentPos.getHeading()));
+            DashboardUtil.drawRobot(field,currentPos);
             //packet.put("L ODOM",motorCtrls.getLOdomValSoft());
             //packet.put("R ODOM",motorCtrls.getROdomValSoft());
             //packet.put("B ODOM",motorCtrls.getBOdomValSoft());
@@ -78,48 +79,99 @@ public class MotorCtrlTestTeleOp extends OpMode {
             //packet.put("powerRatio",motorCtrls.LF().getPower()/motorCtrls.RF().getPower());
             // packet.put("odomDiff",motorCtrls.getROdomValSoft() - motorCtrls.getLOdomValSoft());
             // packet.put("TO Travel",30000);
-            packet.put("xpos",motorCtrls.getPosition().getX());
-            packet.put("ypos",motorCtrls.getPosition().getY());
-            packet.put("hpos",Math.toDegrees(motorCtrls.getPosition().getHeading()));
+            packet.put("xpos",currentPos.getX());
+            packet.put("ypos",currentPos.getY());
+            packet.put("hpos",currentPos.getHeading());
 
             dashboard.sendTelemetryPacket(packet);
-        }
-        else if (!gamepad1.x && qX) {
-            qX = false;
-        }
 
 
 
 
-        /*if (gamepad1.a && !qA) {
-            qA = true;
-            motorCtrls.resetSoftMotorEncoders();
-        }
-        else if (!gamepad1.a && qA) {
-            qA = false;
-        }*/
+
+
+
         if (gamepad1.a && !qA) {
             qA = true;
-            motorCtrls.resetPosition();
+            state = RobotState.TURNR;
+            iniH = camCtrl.getIntelPos().getHeading();
+            return;
+
         }
         else if (!gamepad1.a && qA) {
             qA = false;
+
+        }
+
+        if (gamepad1.y && !qY) {
+            qY = true;
+            state = RobotState.STRAFEL;
+            iniY = camCtrl.getIntelPos().getY();
+            return;
+
+        }
+        else if (!gamepad1.y && qY) {
+            qY = false;
+
         }
 
 
         if (gamepad1.b && !qB) {
             qB = true;
-            motorCtrls.resetSoftOdom();
+            iniX = camCtrl.getIntelPos().getX();
+            state = RobotState.FORWARD;
         }
         else if (!gamepad1.b && qB) {
             qB = false;
         }
 
-
-        motorCtrls.LF().setPower(0.6*(-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
-        motorCtrls.RF().setPower(0.6*(-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
-        motorCtrls.LB().setPower(0.6*(-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
-        motorCtrls.RB().setPower(0.6*(-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
+        doStateCommands();
 
     }
+
+    @Override
+    public void stop() {
+        super.stop();
+        camCtrl.shutDown();
+    }
+    public void doStateCommands()
+    {
+        Pose2d currentPos = camCtrl.getIntelPos();
+        switch(state) {
+            case TURNR:
+                if(currentPos.getHeading() <= iniH + Math.PI/2)
+                {
+                    motorCtrls.turnRightPower(0.3);
+                }
+                else {motorCtrls.stopRobot();
+                state = RobotState.STOPPED;
+                }
+            case FORWARD:
+                if(currentPos.getX() <= iniX + 24)
+                {
+                    motorCtrls.goForwardPower(0.3);
+                }
+                else {motorCtrls.stopRobot();
+                state = RobotState.STOPPED;}
+            case STRAFEL:
+                if(currentPos.getY() <= iniY + 24)
+                {
+                    motorCtrls.strafeLeftPower(0.3);
+                }
+                else {motorCtrls.stopRobot();
+                    state = RobotState.STOPPED;}
+        }
+    }
+}
+enum RobotState {
+    STOPPED,
+    GAMEPAD,
+    FORWARD,
+    BACKWARD,
+    STRAFER,
+    STRAFEL,
+    TURNR,
+    TURNL,
+    AUTO
+
 }

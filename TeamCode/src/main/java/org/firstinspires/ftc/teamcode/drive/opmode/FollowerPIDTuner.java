@@ -39,17 +39,17 @@ public class FollowerPIDTuner extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (!isStopRequested()) {
-            TrajectorySequence trajSeq = drive.trajectorySequenceBuilder(startPose)
-                    .forward(DISTANCE)
-                    .turn(Math.toRadians(90))
-                    .forward(DISTANCE)
-                    .turn(Math.toRadians(90))
-                    .forward(DISTANCE)
-                    .turn(Math.toRadians(90))
-                    .forward(DISTANCE)
-                    .turn(Math.toRadians(90))
-                    .build();
-            drive.followTrajectorySequence(trajSeq);
+         //   Traj//ectorySequence trajSeq = drive.trajectorySequenceBuilder(startPose)
+                  //  .forward(DISTANCE)
+                  //  .turn(Math.toRadians(90))
+                  //  .forward(DISTANCE)
+                  //  .turn(Math.toRadians(90))
+                 //   .forward(DISTANCE)
+               //     .turn(Math.toRadians(90))
+               //     .forward(DISTANCE)
+               //     .turn(Math.toRadians(90))
+               //     .build();
+          //  dr/ive.followTrajectorySequence(trajSeq);
         }
     }
 }

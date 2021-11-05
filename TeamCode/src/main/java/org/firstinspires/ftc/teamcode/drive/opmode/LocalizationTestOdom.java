@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.BearsUtil.T265Controller;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.T265Localizer;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDriveOdom;
 
 /**
  * This is a simple teleop routine for testing localization. Drive the robot around like a normal
@@ -17,10 +17,10 @@ import org.firstinspires.ftc.teamcode.drive.T265Localizer;
  * encoder localizer heading may be significantly off if the track width has not been tuned).
  */
 @TeleOp(group = "drive")
-public class LocalizationTest extends LinearOpMode {
+public class LocalizationTestOdom extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        SampleMecanumDriveOdom drive = new SampleMecanumDriveOdom(hardwareMap);
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -43,6 +43,5 @@ public class LocalizationTest extends LinearOpMode {
             telemetry.addData("heading", poseEstimate.getHeading());
             telemetry.update();
         }
-        T265Controller.shutDown();
     }
 }

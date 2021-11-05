@@ -2,11 +2,11 @@ package org.firstinspires.ftc.teamcode.drive.opmode;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.BearsUtil.T265Controller;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 /*
@@ -27,7 +27,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  */
 @Config
 @Autonomous(group = "drive")
-public class BackAndForth extends LinearOpMode {
+public class BackAndForthPos extends LinearOpMode {
 
     public static double DISTANCE = 48;
 
@@ -36,18 +36,18 @@ public class BackAndForth extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
 
-
+        Pose2d ini = drive.getPoseEstimate();
         waitForStart();
 
-        while (opModeIsActive() && !isStopRequested()) {
+        while(opModeIsActive() && !isStopRequested()) {
             Trajectory trajectoryForward = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .forward(DISTANCE)
+                    .lineToSplineHeading(new Pose2d(drive.getPoseEstimate().getX()+DISTANCE,ini.getY(),ini.getHeading()))
                     .build();
 
 
             drive.followTrajectory(trajectoryForward);
             Trajectory trajectoryBackward = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .back(DISTANCE)
+                    .lineToSplineHeading(ini)
                     .build();
             drive.followTrajectory(trajectoryBackward);
         }

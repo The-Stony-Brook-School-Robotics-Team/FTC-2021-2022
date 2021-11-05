@@ -13,7 +13,16 @@ import java.util.ArrayList;
 public class BasicOpenCVEngine extends OpenCvPipeline {
     static final int STREAM_WIDTH = 1920;
     static final int STREAM_HEIGHT = 1080;
+    static volatile Object semaphore = new Object();
+    public static boolean doAnalysis = false;
+    static volatile DuckPosition position = DuckPosition.NA;
 
+    enum DuckPosition {
+        NA,
+        A,
+        B,
+        C
+    }
 
     /*
      * Some color constants
@@ -37,7 +46,6 @@ public class BasicOpenCVEngine extends OpenCvPipeline {
     static final int HeightRectC = 110; // for goal alignment window
     static final Point RectCTopLeftAnchor = new Point((STREAM_WIDTH - WidthRectB) / 2 + 100, ((STREAM_HEIGHT - HeightRectA) / 2) - 100);
 
-    final int PresentThreshold = 127;
 
     Point RectATLCorner = new Point(
             RectATopLeftAnchor.x,
@@ -46,14 +54,12 @@ public class BasicOpenCVEngine extends OpenCvPipeline {
             RectATopLeftAnchor.x + WidthRectA,
             RectATopLeftAnchor.y + HeightRectA);
 
-
     Point RectBTLCorner = new Point(
             RectBTopLeftAnchor.x,
             RectBTopLeftAnchor.y);
     Point RectBBRCorner = new Point(
             RectBTopLeftAnchor.x + WidthRectB,
             RectBTopLeftAnchor.y + HeightRectB);
-
 
     Point RectCTLCorner = new Point(
             RectCTopLeftAnchor.x,
@@ -62,111 +68,49 @@ public class BasicOpenCVEngine extends OpenCvPipeline {
             RectCTopLeftAnchor.x + WidthRectC,
             RectCTopLeftAnchor.y + HeightRectC);
 
-    /*
-     * Working variables
-     */
-    Mat RectA_Cb;
-    Mat RectA_Cr;
     Mat RectA_Y;
-
-
-    //Mat regionGoal_Cr;
     Mat YCrCb = new Mat();
     Mat Y = new Mat();
-    Mat Cr = new Mat();
-    Mat Cb = new Mat();
-    ///Mat Cr = new Mat();
     int avgA;
-
-
     int avgACr;
-
-    int avgAY;
-
-
-    /*
-     * Working variables
-     */
-
-    Mat RectB_Cb;
-    Mat RectC_Cb;
-
-    Mat RectB_Cr;
-    Mat RectC_Cr;
-
+    volatile int avgAY;
     Mat RectB_Y;
     Mat RectC_Y;
-
-    //Mat regionGoal_Cr;
-
-    ///Mat Cr = new Mat();
-
-    int avgB;
-    int avgC;
-
-
-    int avgBCr;
-    int avgCCr;
-
-    int avgBY;
-    int avgCY;
-
-    //int avgGoalCr;
-
+    volatile int avgBY;
+    volatile int avgCY;
+    public boolean analyzedOnce = false;
 
     /*
      * This function takes the RGB frame, converts to YCrCb,
      * and extracts the Cb channel to the 'Cb' variable
      */
-    void inputToCb(Mat input) {
+    void convertY(Mat input) {
         Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
 //            Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2HSV);
         ArrayList<Mat> yCrCbChannels = new ArrayList<Mat>(3);
         Core.split(YCrCb, yCrCbChannels);
-        //Core.extractChannel(YCrCb, Cb, 1);
         Y = yCrCbChannels.get(0);
-        Cr = yCrCbChannels.get(1);
-        Cb = yCrCbChannels.get(2);
     }
 
     @Override
     public void init(Mat firstFrame) {
-        inputToCb(firstFrame);
-
-        RectA_Cb = Cb.submat(new Rect(RectATLCorner, RectABRCorner));
-        RectB_Cb = Cb.submat(new Rect(RectBTLCorner, RectBBRCorner));
-        RectC_Cb = Cb.submat(new Rect(RectCTLCorner, RectCBRCorner));
-
-        RectA_Cr = Cr.submat(new Rect(RectATLCorner, RectABRCorner));
-        RectB_Cr = Cr.submat(new Rect(RectBTLCorner, RectBBRCorner));
-        RectC_Cr = Cr.submat(new Rect(RectCTLCorner, RectCBRCorner));
+       convertY(firstFrame);
 
         RectA_Y = Y.submat(new Rect(RectATLCorner, RectABRCorner));
         RectB_Y = Y.submat(new Rect(RectBTLCorner, RectBBRCorner));
         RectC_Y = Y.submat(new Rect(RectCTLCorner, RectCBRCorner));
-
-        /////regionGoal_Cr = Cr.submat(new Rect(region1_pointA_goal, region1_pointB_goal));
+        System.out.println("Submatted");
     }
-
     @Override
     public Mat processFrame(Mat input) {
-        inputToCb(input);
-          avgA = (int) Core.mean(RectA_Cb).val[0];
-        avgB = (int) Core.mean(RectB_Cb).val[0];
-        avgC = (int) Core.mean(RectC_Cb).val[0];
-
-        avgACr = (int) Core.mean(RectA_Cr).val[0];
-        avgBCr = (int) Core.mean(RectB_Cr).val[0];
-        avgCCr = (int) Core.mean(RectC_Cr).val[0];
-
-        avgAY = (int) Core.mean(RectA_Y).val[0];
-        avgBY = (int) Core.mean(RectB_Y).val[0];
-        avgCY = (int) Core.mean(RectC_Y).val[0];
-        //avgGoalCr = (int) Core.mean(regionGoal_Cr).val[0]; // need to fix val[0]
-
-
-
-
+       if(doAnalysis) {
+           convertY(input);
+           synchronized (semaphore) {
+               avgAY = (int) Core.mean(RectA_Y).val[0];
+               avgBY = (int) Core.mean(RectB_Y).val[0];
+               avgCY = (int) Core.mean(RectC_Y).val[0];
+           }
+       }
         Imgproc.rectangle( // rings
                 input, // Buffer to draw on
                 RectATLCorner, // First point which defines the rectangle
@@ -187,27 +131,65 @@ public class BasicOpenCVEngine extends OpenCvPipeline {
                 RED, // The color the rectangle is drawn in
                 2); // Thickness of the rectangle lines
 
+       if(doAnalysis) {
 
+           int dAB = Math.abs(avgAY- avgBY);
+           int dAC = Math.abs(avgAY- avgCY);
+           int dBC = Math.abs(avgBY- avgCY);
+
+           if (dAB <= 2) {
+               synchronized (semaphore) {
+                   position = DuckPosition.C;
+               }
+               System.out.println("Found the duck: C");
+           }
+           else {
+               if (dAC <= 2) {
+                   synchronized (semaphore) {
+                       position = DuckPosition.B;
+                   }
+                   System.out.println("Found the duck: B");
+               }
+               else if (dBC <= 2) {
+                   synchronized (semaphore) {
+                       position = DuckPosition.A;
+                   }
+                   System.out.println("Found the duck: A");
+               }
+           }
+
+           /*if (avgAY > 190) {
+               synchronized (semaphore) {
+                   position = DuckPosition.A;
+               }
+               System.out.println("Found the duck: A");
+           } else if (avgBY > 190) {
+               synchronized (semaphore) {
+                   position = DuckPosition.B;
+               }
+               System.out.println("Found the duck: B");
+           } else {
+               synchronized (semaphore) {
+                   position = DuckPosition.C;
+               }
+               System.out.println("Found the duck: C");
+           }*/
+       }
         return input;
     }
 
-
-    public int getAanalysis() {
-        return avgA;
-    }
-
-
-
-    public int getACranalysis() {
-        return avgACr;
-    }
-
-
-
     public int getAYanalysis() {
-        return avgAY;
+        synchronized (semaphore) {return avgAY;}
+    }
+    public int getBYanalysis() {
+         synchronized (semaphore) {return avgBY;}
+    }
+    public int getCYanalysis() {
+         synchronized (semaphore) {return avgCY;}
     }
 
-
+    public DuckPosition getPosition() {
+        synchronized (semaphore) {return position;}
+    }
 
 }

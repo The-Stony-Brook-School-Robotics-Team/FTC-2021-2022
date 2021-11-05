@@ -139,5 +139,8 @@ repositories {
     flatDir {
         dirs rootProject.file('libs')
     }
+    maven {
+        url 'https://maven.0x778.tk'
+    }
 }
 
