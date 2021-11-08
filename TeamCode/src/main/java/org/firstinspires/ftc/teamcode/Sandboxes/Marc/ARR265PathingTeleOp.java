@@ -8,11 +8,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.BearsUtil.T265Controller;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDriveOdom;
 
 @Autonomous
 
 public class ARR265PathingTeleOp extends LinearOpMode {
-    SampleMecanumDrive drive;
+    SampleMecanumDriveOdom drive;
     volatile AutonomousStates state = AutonomousStates.STOPPED;
     boolean qA, qB, qX, qY;
     Object stateMutex = new Object();
@@ -21,7 +22,7 @@ public class ARR265PathingTeleOp extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
 
-        drive= new SampleMecanumDrive(hardwareMap);
+        drive= new SampleMecanumDriveOdom(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Thread.sleep(2000);
         waitForStart();

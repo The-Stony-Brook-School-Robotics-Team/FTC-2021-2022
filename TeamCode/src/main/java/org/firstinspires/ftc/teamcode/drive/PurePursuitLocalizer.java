@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.geometry.Translation2d;
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.MecanumDriveKinematics;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -17,13 +18,13 @@ import com.arcrobotics.ftclib.kinematics.wpilibkinematics.MecanumDriveWheelSpeed
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.BearsUtil.T265Controller;
-
+@Config
 public class PurePursuitLocalizer implements Localizer {
-    private static final double TRACKWIDTH = 12.75;
-    private static final double CENTER_WHEEL_OFFSET = -8.7;
-    private static final double WHEEL_DIAMETER = 2.0;
-    private static final double TICKS_PER_REV = 8192;
-    private static final double TICKS_TO_INCHES = Math.PI * WHEEL_DIAMETER / TICKS_PER_REV;
+    public static  double TRACKWIDTH = 11;
+    public static  double CENTER_WHEEL_OFFSET = -7.5;
+    public static  double WHEEL_DIAMETER = 2.0;
+    public static  double TICKS_PER_REV = 8192;
+    public static  double TICKS_TO_INCHES = Math.PI * WHEEL_DIAMETER / TICKS_PER_REV;
     private HolonomicOdometry holOdom;
     private MotorEx lf, rf, lb, rb;
     private MecanumDrive drive;
@@ -56,8 +57,8 @@ public class PurePursuitLocalizer implements Localizer {
 
         holOdom = new HolonomicOdometry(
                 () -> encoderLeft.getCurrentPosition() * TICKS_TO_INCHES,
-                () -> -(encoderRight.getCurrentPosition() * TICKS_TO_INCHES),
-                () -> (encoderPerp.getCurrentPosition() * TICKS_TO_INCHES),
+                () -> (encoderRight.getCurrentPosition() * TICKS_TO_INCHES),
+                () -> -(encoderPerp.getCurrentPosition() * TICKS_TO_INCHES),
                 TRACKWIDTH, CENTER_WHEEL_OFFSET
         );
         odometry = new OdometrySubsystem(holOdom);

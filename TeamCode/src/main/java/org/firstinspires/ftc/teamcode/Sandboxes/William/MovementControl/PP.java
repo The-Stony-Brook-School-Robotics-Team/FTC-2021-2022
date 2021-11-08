@@ -1,8 +1,7 @@
-package org.firstinspires.ftc.teamcode.Sandboxes.William;
+package org.firstinspires.ftc.teamcode.Sandboxes.William.MovementControl;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.arcrobotics.ftclib.command.OdometrySubsystem;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -12,14 +11,11 @@ import org.firstinspires.ftc.teamcode.BearsUtil.MotorEncoderController;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import com.arcrobotics.ftclib.drivebase.MecanumDrive;
-
 @TeleOp(name = "PP Test by Will", group = "PP")
 public class PP extends OpMode {
     public static final double WHEEL_DIAMETER = 2.0;
     public static final double TICKS_PER_REV = 8192;
     public static final double TICKS_TO_INCHES = TICKS_PER_REV * WHEEL_DIAMETER * Math.PI;
-    public static final double DISTANCE_PER_PULSE = Math.PI * WHEEL_DIAMETER / TICKS_PER_REV;
     public static final double TRACK_WIDTH = 12.75;
     public static final double CENTER_WHEEL_OFFSET = -8.7;
     private static final double MINIMUM_STOP_DISTANCE = 10; //In inches.
