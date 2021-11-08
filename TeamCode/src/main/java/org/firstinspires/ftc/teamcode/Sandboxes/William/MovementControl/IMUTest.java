@@ -29,6 +29,6 @@ public class IMUTest extends OpMode {
     }
 
     private double getZAngle() {
-        return (-imu.getAngularOrientation().firstAngle);
+        return (-180 * Math.PI / imu.getAngularOrientation().firstAngle);
     }
 }

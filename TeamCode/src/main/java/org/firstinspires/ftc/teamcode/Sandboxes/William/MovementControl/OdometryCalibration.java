@@ -178,7 +178,7 @@ public class OdometryCalibration extends LinearOpMode {
      * @return the angle of the robot
      */
     private double getZAngle() {
-        return (-imu.getAngularOrientation().firstAngle);
+        return (-180 * Math.PI / imu.getAngularOrientation().firstAngle);
     }
 
     /**
