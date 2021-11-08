@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.Sandboxes.William.MovementControl;
 
 public class ControllerHelper {
-    public static double COUNTS_PER_INCH = 51471.8; //307.699557
+    public static double COUNTS_PER_INCH = 1304.777; //307.699557
 
     public static final String leftFrontMotorName = "lf";
     public static final String rightFrontMotorName = "leftodom";
