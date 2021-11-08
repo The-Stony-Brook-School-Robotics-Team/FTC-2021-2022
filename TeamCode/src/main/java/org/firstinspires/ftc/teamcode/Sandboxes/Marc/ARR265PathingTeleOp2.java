@@ -15,7 +15,7 @@ import java.util.Vector;
 
 @Autonomous
 public class ARR265PathingTeleOp2 extends LinearOpMode {
-    SampleMecanumDriveOdom drive;
+    SampleMecanumDrive drive;
     volatile AutonomousStates2 state = AutonomousStates2.STOPPED;
     boolean qA, qB, qX, qY;
     Object stateMutex = new Object();
@@ -24,7 +24,7 @@ public class ARR265PathingTeleOp2 extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
 
-        drive= new SampleMecanumDriveOdom(hardwareMap);
+        drive= new SampleMecanumDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Thread.sleep(2000);
         waitForStart();
@@ -75,12 +75,12 @@ public class ARR265PathingTeleOp2 extends LinearOpMode {
             case One_SPLINE:
                 drive.setPoseEstimate(new Pose2d(0,65,-Math.PI/2));
                 Pose2d loc = drive.getPoseEstimate();
-                Trajectory traj1 = drive.trajectoryBuilder(loc, false)
+                Trajectory traj1 = drive.trajectoryBuilder(new Pose2d(0, 65, -Math.PI / 2), false)
                         //.splineTo(new Vector2d(loc.getX()-24*Math.cos(loc.getHeading()),loc.getY()+24*Math.sin(loc.getHeading())),loc.getHeading()-Math.PI/4)
                         .splineToSplineHeading(new Pose2d(24, 65, 0), 0)
-                        .splineToSplineHeading(new Pose2d(43,48,0),-Math.PI/4)
-                        .splineToSplineHeading(new Pose2d(65,24,0),-Math.PI/2)
-                        .splineToSplineHeading(new Pose2d(65,12,0),-Math.PI/2)
+                        .splineToSplineHeading(new Pose2d(43, 48, 0), -Math.PI / 4)
+                        .splineToSplineHeading(new Pose2d(65, 24, 0), -Math.PI / 2)
+                        .splineToSplineHeading(new Pose2d(65, 12, 0), -Math.PI / 2)
                         .build();
                 drive.followTrajectory(traj1);
                 drive.update();
