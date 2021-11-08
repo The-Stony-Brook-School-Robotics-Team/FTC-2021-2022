@@ -2,7 +2,9 @@ package org.firstinspires.ftc.teamcode.Sandboxes.William.MovementControl;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+@TeleOp(name = "IMUTest", group = "Calibration")
 public class IMUTest extends OpMode {
     BNO055IMU imu;
     String rightFrontMotorName = ControllerHelper.rightFrontMotorName;
