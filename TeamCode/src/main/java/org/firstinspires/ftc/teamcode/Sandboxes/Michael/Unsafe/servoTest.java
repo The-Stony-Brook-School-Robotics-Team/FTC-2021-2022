@@ -66,7 +66,7 @@ public class servoTest extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-<<<<<<< Updated upstream
+
             double power = gamepad1.left_stick_y;
             Range.clip(power, 0.0, 1.0);
             //servo.setPosition(1);
@@ -80,7 +80,7 @@ public class servoTest extends LinearOpMode {
             //Thread.sleep(500);
             telemetry.addData("Servo Position: ", servo.getPosition()*360);
             telemetry.addData("Servo2 Position: ", servo2.getPosition()*360);
-=======
+
       /*      if(gamepad1.dpad_up){
                 servo.setPosition(0.9);
             }
@@ -91,7 +91,7 @@ public class servoTest extends LinearOpMode {
 
             telemetry.addData("Servo Position: ", servo.getPosition());
             telemetry.addData("Servo2 Position: ", servo2.getPosition());
->>>>>>> Stashed changes
+
             telemetry.update();
 
 
