@@ -1,14 +1,10 @@
 package org.firstinspires.ftc.teamcode.Sandboxes.William.MovementControl;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 @TeleOp(name = "IMUTest", group = "Calibration")
 public class IMUTest extends OpMode {
