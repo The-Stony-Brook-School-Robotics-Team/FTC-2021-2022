@@ -23,6 +23,7 @@ public class MaxServoStudy extends LinearOpMode {
     // Button Logic
     int pressingA = 0;
     int pressingB = 0;
+    int pressingY = 0;
 
 
 
@@ -34,9 +35,9 @@ public class MaxServoStudy extends LinearOpMode {
         Servo1 = hardwareMap.servo.get("servo");
         Servo2 = hardwareMap.servo.get("servo2");
         double InitialServo1Position = Servo1.getPosition();
-        double DesiredServo1Position = InitialServo1Position-0.17;
+        double DesiredServo1Position = InitialServo1Position+0.17;
         double InitialServo2Position = Servo2.getPosition();
-        double DesiredServo2Position = InitialServo2Position-0.17;
+        double DesiredServo2Position = InitialServo2Position+0.17;
         telemetry.addData("Servo One Initial Position", InitialServo1Position*360);
         telemetry.addData("Servo Two Initial Position", InitialServo2Position*360);
         telemetry.update();
@@ -89,6 +90,22 @@ public class MaxServoStudy extends LinearOpMode {
                 telemetry.update();
                 Thread.sleep(configuration.servoWaitToReturnTime);
                 pressingA = 0;
+            }
+            if(gamepad1.b && pressingB != 1) {
+                pressingB = 1;
+            } else if (!gamepad1.b && pressingB == 1) {
+
+                Servo1.setDirection(Servo.Direction.FORWARD);
+                Servo2.setDirection(Servo.Direction.REVERSE);
+                pressingB = 0;
+            }
+            if(gamepad1.y && pressingY != 1) {
+                pressingY = 1;
+            } else if (!gamepad1.y && pressingY == 1) {
+
+                Servo1.setDirection(Servo.Direction.REVERSE);
+                Servo2.setDirection(Servo.Direction.FORWARD);
+                pressingY = 0;
             }
             telemetry.addData("Servo One Position", Servo1.getPosition()*360);
 
