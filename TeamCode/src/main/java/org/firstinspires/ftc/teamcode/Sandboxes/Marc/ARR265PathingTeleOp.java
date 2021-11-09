@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDriveOdom;
 @Autonomous
 
 public class ARR265PathingTeleOp extends LinearOpMode {
-    SampleMecanumDriveOdom drive;
+    SampleMecanumDrive drive;
     volatile AutonomousStates state = AutonomousStates.STOPPED;
     boolean qA, qB, qX, qY;
     Object stateMutex = new Object();
@@ -22,7 +22,7 @@ public class ARR265PathingTeleOp extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
 
-        drive= new SampleMecanumDriveOdom(hardwareMap);
+        drive= new SampleMecanumDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Thread.sleep(2000);
         waitForStart();

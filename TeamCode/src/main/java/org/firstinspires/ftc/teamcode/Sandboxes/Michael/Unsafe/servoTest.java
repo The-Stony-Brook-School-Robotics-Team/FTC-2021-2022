@@ -51,25 +51,22 @@ public class servoTest extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
 
         servo = hardwareMap.get(Servo.class, "servo");
         servo2 = hardwareMap.get(Servo.class, "servo2");
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
+
         servo.setDirection(Servo.Direction.FORWARD);
         servo2.setDirection(Servo.Direction.REVERSE);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        servo.setPosition(0);
-        servo2.setPosition(0);
+        servo.setPosition(0.25);
+        servo2.setPosition(0.25);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+
             double power = gamepad1.left_stick_y;
             Range.clip(power, 0.0, 1.0);
             //servo.setPosition(1);
@@ -83,7 +80,21 @@ public class servoTest extends LinearOpMode {
             //Thread.sleep(500);
             telemetry.addData("Servo Position: ", servo.getPosition()*360);
             telemetry.addData("Servo2 Position: ", servo2.getPosition()*360);
+
+      /*      if(gamepad1.dpad_up){
+                servo.setPosition(0.9);
+            }
+            if(gamepad1.dpad_down){
+                servo.setPosition(0.3);
+            } */
+            servo.setPosition(0.25);
+
+            telemetry.addData("Servo Position: ", servo.getPosition());
+            telemetry.addData("Servo2 Position: ", servo2.getPosition());
+
             telemetry.update();
+
+
 
             /**if(gamepad1.a && pressingA == false){
                 pressingA = true;
