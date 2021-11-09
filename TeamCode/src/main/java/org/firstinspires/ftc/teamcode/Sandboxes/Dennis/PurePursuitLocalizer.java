@@ -1,10 +1,12 @@
-package org.firstinspires.ftc.teamcode.drive;
+package org.firstinspires.ftc.teamcode.Sandboxes.Dennis;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.localization.Localizer;
+import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer;
 import com.arcrobotics.ftclib.command.OdometrySubsystem;
 import com.arcrobotics.ftclib.geometry.Translation2d;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
@@ -18,6 +20,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.BearsUtil.T265Controller;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
+import java.util.Arrays;
+import java.util.List;
+
 
 @Config
 public class PurePursuitLocalizer implements Localizer {
@@ -29,11 +34,14 @@ public class PurePursuitLocalizer implements Localizer {
 
     private static final double TICKS_TO_INCHES = Math.PI * WHEEL_DIAMETER / TICKS_PER_REV;
 
+
+    private Encoder leftEncoder, rightEncoder, frontEncoder;
+    private MotorEx lf, rf, lb, rb;
+
     HolonomicOdometry holOdom;
     OdometrySubsystem odometry;
 
     private MotorEx encoderLeft, encoderRight, encoderPerp;
-    private MotorEx lf, rf, lb, rb;
     private MecanumDriveKinematics kinematics;
 
     public PurePursuitLocalizer(HardwareMap hardwareMap) {
@@ -43,28 +51,32 @@ public class PurePursuitLocalizer implements Localizer {
         lb = new MotorEx(hardwareMap, "backodom");
         rb = new MotorEx(hardwareMap, "rightodom");
 
-        encoderLeft = new MotorEx(hardwareMap, "leftodom");
-        encoderRight = new MotorEx(hardwareMap, "rightodom");
-        encoderPerp = new MotorEx(hardwareMap, "backodom");
+       // leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "leftodom"));
+       // rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rightodom"));
+        //frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "backodom"));
+
         // Mapping End
 
         // Pure Pursuit Start -------------
+        holOdom = new HolonomicOdometry(
+                () -> (leftEncoder.getCurrentPosition() * TICKS_TO_INCHES),
+                () -> -(rightEncoder.getCurrentPosition() * TICKS_TO_INCHES),
+                () -> (frontEncoder.getCurrentPosition() * TICKS_TO_INCHES),
+                TRACKWIDTH, CENTER_WHEEL_OFFSET
+        );
+
+        encoderLeft = new MotorEx(hardwareMap, "leftodom");
+        encoderRight = new MotorEx(hardwareMap, "rightodom");
+        encoderPerp = new MotorEx(hardwareMap, "backodom");
 
         encoderLeft.setDistancePerPulse(TICKS_TO_INCHES);
         encoderRight.setDistancePerPulse(TICKS_TO_INCHES);
         encoderPerp.setDistancePerPulse(TICKS_TO_INCHES);
 
+
         encoderLeft.resetEncoder();
         encoderRight.resetEncoder();
         encoderPerp.resetEncoder();
-
-
-        holOdom = new HolonomicOdometry(
-                () -> (encoderLeft.getCurrentPosition() * TICKS_TO_INCHES),
-                () -> -(encoderRight.getCurrentPosition() * TICKS_TO_INCHES),
-                () -> (encoderPerp.getCurrentPosition() * TICKS_TO_INCHES),
-                TRACKWIDTH, CENTER_WHEEL_OFFSET
-        );
         // Pure Pursuit End -----------
 
         // Kinematics
