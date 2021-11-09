@@ -26,6 +26,7 @@ public class IMUTest extends OpMode {
     @Override
     public void loop() {
         telemetry.addData("angle", getZAngle());
+        telemetry.update();
     }
 
     private double getZAngle() {
