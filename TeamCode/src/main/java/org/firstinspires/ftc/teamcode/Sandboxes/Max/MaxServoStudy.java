@@ -117,7 +117,7 @@ public class MaxServoStudy extends LinearOpMode {
             telemetry.addData("Servo Two Distance", configuration.servoTwoMovementDistance);
             */
             telemetry.update();
-            
+            //
         }
 
     }
