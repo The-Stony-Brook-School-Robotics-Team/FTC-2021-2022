@@ -77,8 +77,10 @@ public class MaxServoStudy extends LinearOpMode {
                 DesiredServo1Position = InitialServo1Position+0.15;
                 InitialServo2Position = Servo2.getPosition();
                 DesiredServo2Position = InitialServo2Position+0.15;
-                Servo1.setPosition(DesiredServo1Position);
-                Servo2.setPosition(DesiredServo2Position);
+                Servo1.setPosition(configuration.servoOneMovementDistance);
+                //Servo1.setPosition(DesiredServo1Position);
+                Servo2.setPosition(configuration.servoTwoMovementDistance);
+                //Servo2.setPosition(DesiredServo2Position);
                 telemetry.addData("Servo One Position", Servo1.getPosition()*360);
                 telemetry.addData("Servo Two Position", Servo2.getPosition()*360);
                 telemetry.update();
@@ -109,13 +111,15 @@ public class MaxServoStudy extends LinearOpMode {
             if(gamepad1.x && pressingX != 1) {
                 pressingX = 1;
             } else if (!gamepad1.x && pressingX == 1) {
-                Servo1.setPosition(InitialServo1Position);
+            /*    Servo1.setPosition(InitialServo1Position);
                 Servo2.setPosition(InitialServo2Position);
+                Thread.sleep(500);*/
+                Servo1.resetDeviceConfigurationForOpMode();
+                Servo2.resetDeviceConfigurationForOpMode();
                 Thread.sleep(configuration.servoWaitToReturnTime);
                 telemetry.addData("Servo One Position", Servo1.getPosition()*360);
                 telemetry.addData("Servo Two Position", Servo2.getPosition()*360);
                 telemetry.update();
-                pressingA = 0;
                 pressingX = 0;
             }
             telemetry.addData("Servo One Position", Servo1.getPosition()*360);
