@@ -34,9 +34,9 @@ public class MaxServoStudy extends LinearOpMode {
         Servo1 = hardwareMap.servo.get("servo");
         Servo2 = hardwareMap.servo.get("servo2");
         double InitialServo1Position = Servo1.getPosition();
-        double DesiredServo1Position = InitialServo1Position+0.17;
+        double DesiredServo1Position = InitialServo1Position-0.17;
         double InitialServo2Position = Servo2.getPosition();
-        double DesiredServo2Position = InitialServo2Position+0.17;
+        double DesiredServo2Position = InitialServo2Position-0.17;
         telemetry.addData("Servo One Initial Position", InitialServo1Position*360);
         telemetry.addData("Servo Two Initial Position", InitialServo2Position*360);
         telemetry.update();
@@ -95,7 +95,7 @@ public class MaxServoStudy extends LinearOpMode {
             telemetry.addData("Servo Two Position", Servo2.getPosition()*360);
 
             /*
-            
+
             telemetry.addData("Servo One Distance", configuration.servoOneMovementDistance);
             telemetry.addData("Servo Two Distance", configuration.servoTwoMovementDistance);
             */
