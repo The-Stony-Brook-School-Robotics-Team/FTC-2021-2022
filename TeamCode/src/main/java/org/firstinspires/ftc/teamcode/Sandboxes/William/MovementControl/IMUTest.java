@@ -1,31 +1,38 @@
 package org.firstinspires.ftc.teamcode.Sandboxes.William.MovementControl;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.canvas.Canvas;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.util.DashboardUtil;
+
 @TeleOp(name = "IMUTest", group = "Calibration")
 public class IMUTest extends OpMode {
     BNO055IMU imu;
-    String rightFrontMotorName = ControllerHelper.rightFrontMotorName;
-    String rightBackMotorName = ControllerHelper.rightBackMotorName;
-    String leftFrontMotorName = ControllerHelper.leftFrontMotorName;
-    String leftBackMotorName = ControllerHelper.leftBackMotorName;
-    String leftOdometryName = ControllerHelper.leftOdometryName;
-    String rightOdometryName = ControllerHelper.rightOdometryName;
-    String backOdometryName = ControllerHelper.backOdometryName;
+    BNO055IMU.Parameters parameters;
+    TelemetryPacket telemetryPacket;
+    public static FtcDashboard dashboard;
 
     @Override
     public void init() {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        telemetryPacket = new TelemetryPacket();
+
+        parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
     }
 
     @Override
     public void loop() {
-        telemetry.addData("angle", getZAngle());
+        telemetryPacket.put("Angle", getZAngle());
+        dashboard.sendTelemetryPacket(telemetryPacket);
+
+        telemetry.addData("Angle", getZAngle());
         telemetry.update();
     }
 
