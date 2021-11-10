@@ -12,11 +12,9 @@ import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.ChassisSpeeds;
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.MecanumDriveKinematics;
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.MecanumDriveWheelSpeeds;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.BearsUtil.T265Controller;
-import org.firstinspires.ftc.teamcode.util.Encoder;
+import org.firstinspires.ftc.teamcode.common.BearsUtil.T265Controller;
 
 
 @Config
@@ -33,7 +31,7 @@ public class PurePursuitLocalizer implements Localizer {
     OdometrySubsystem odometry;
 
     private MotorEx encoderLeft, encoderRight, encoderPerp;
-    private MotorEx lf, rf, lb, rb;
+    private MotorEx lf, rf, lb, rb, lfenc, rfenc, lbenc, rbenc;
     private MecanumDriveKinematics kinematics;
 
     public PurePursuitLocalizer(HardwareMap hardwareMap) {
@@ -42,6 +40,10 @@ public class PurePursuitLocalizer implements Localizer {
         rf = new MotorEx(hardwareMap, "leftodom");
         lb = new MotorEx(hardwareMap, "backodom");
         rb = new MotorEx(hardwareMap, "rightodom");
+        lfenc = new MotorEx(hardwareMap, "lfencoder");
+        rfenc = new MotorEx(hardwareMap, "rfencoder");
+        lbenc = new MotorEx(hardwareMap, "lbencoder");
+        rbenc = new MotorEx(hardwareMap, "rbencoder");
 
         encoderLeft = new MotorEx(hardwareMap, "leftodom");
         encoderRight = new MotorEx(hardwareMap, "rightodom");
@@ -61,7 +63,7 @@ public class PurePursuitLocalizer implements Localizer {
 
         holOdom = new HolonomicOdometry(
                 () -> (encoderLeft.getCurrentPosition() * TICKS_TO_INCHES),
-                () -> -(encoderRight.getCurrentPosition() * TICKS_TO_INCHES),
+                () -> (encoderRight.getCurrentPosition() * TICKS_TO_INCHES),
                 () -> (encoderPerp.getCurrentPosition() * TICKS_TO_INCHES),
                 TRACKWIDTH, CENTER_WHEEL_OFFSET
         );
@@ -88,14 +90,15 @@ public class PurePursuitLocalizer implements Localizer {
         return pos;
     }
 
+
     public void setPoseEstimate(@NonNull Pose2d pose2d) {
         holOdom.updatePose(T265Controller.reverseConvert265PosToRR(pose2d));
     }
 
     public Pose2d getPoseVelocity() {
-        MecanumDriveWheelSpeeds wheelSpeeds = new MecanumDriveWheelSpeeds(lf.getVelocity(),rf.getVelocity(),lb.getVelocity(),rb.getVelocity());
+        MecanumDriveWheelSpeeds wheelSpeeds = new MecanumDriveWheelSpeeds(lfenc.getCorrectedVelocity(),rfenc.getCorrectedVelocity(),lbenc.getCorrectedVelocity(),rbenc.getCorrectedVelocity());
         ChassisSpeeds sped = kinematics.toChassisSpeeds(wheelSpeeds);
-        Pose2d vel = new Pose2d(sped.vxMetersPerSecond,sped.vyMetersPerSecond, sped.omegaRadiansPerSecond);
+        Pose2d vel = new Pose2d(sped.vxMetersPerSecond/ 0.0254,sped.vyMetersPerSecond / 0.0254, sped.omegaRadiansPerSecond);
         return vel;
     }
 

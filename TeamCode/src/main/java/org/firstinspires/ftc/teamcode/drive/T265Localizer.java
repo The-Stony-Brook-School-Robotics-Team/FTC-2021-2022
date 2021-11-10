@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.drive;
 
-import android.telecom.TelecomManager;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -10,9 +8,8 @@ import com.acmerobotics.roadrunner.localization.Localizer;
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.ChassisSpeeds;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.BearsUtil.T265Controller;
-import org.firstinspires.ftc.teamcode.BearsUtil.T265Exception;
+import org.firstinspires.ftc.teamcode.common.BearsUtil.T265Controller;
+import org.firstinspires.ftc.teamcode.common.BearsUtil.T265Exception;
 
 public class T265Localizer implements Localizer {
     T265Controller camCtrl;
