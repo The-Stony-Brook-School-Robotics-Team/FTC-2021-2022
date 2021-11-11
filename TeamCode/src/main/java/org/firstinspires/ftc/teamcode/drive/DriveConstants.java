@@ -34,8 +34,8 @@ public class DriveConstants {
 
     public static double MAX_VEL = 100; // 80
     public static double MAX_ACCEL = 60;
-    public static double MAX_ANG_VEL = 24; // measured with max ang velo tuner.
-    public static double MAX_ANG_ACCEL = Math.toRadians(40);
+    public static double MAX_ANG_VEL = 2; // measured with max ang velo tuner.
+    public static double MAX_ANG_ACCEL = 2;
 
 
     public static double encoderTicksToInches(double ticks) {
