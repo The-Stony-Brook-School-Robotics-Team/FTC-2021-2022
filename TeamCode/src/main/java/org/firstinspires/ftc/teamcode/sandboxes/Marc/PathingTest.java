@@ -30,7 +30,7 @@ public class PathingTest extends LinearOpMode {
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", poseEstimate.getHeading());
-                telemetry.addData("version", 6);
+                telemetry.addData("version", 7);
             synchronized (stateMutex) {telemetry.addData("State",state);}
             telemetry.update();
 
@@ -78,35 +78,21 @@ public class PathingTest extends LinearOpMode {
                     state = AutonomousStates3.Two_TURN1;
                 }
             case Two_TURN1:
-                drive.turn(-Math.PI/2);
+                drive.turn(-Math.PI);
                 drive.update();
                 synchronized (stateMutex) {
                     state = AutonomousStates3.Three_FORWARD2;
                 }
             case Three_FORWARD2:
-                Trajectory traj3 = drive.trajectoryBuilder(new Pose2d(72,0,-Math.PI/2), false)
-                        .lineToSplineHeading(new Pose2d(72,-24,-Math.PI/2))
+                Trajectory traj3 = drive.trajectoryBuilder(new Pose2d(72,0,-Math.PI), false)
+                        .lineToSplineHeading(new Pose2d(0,0,-Math.PI))
                         .build();
                 drive.followTrajectory(traj3);
                 drive.update();
                 synchronized (stateMutex) {
-                    state = AutonomousStates3.Four_TURN2;
-                }
-            case Four_TURN2:
-                drive.turn(-Math.PI/2);
-                drive.update();
-                synchronized (stateMutex) {
-                    state = AutonomousStates3.Five_FORWARD3;
-                }
-            case Five_FORWARD3:
-                Trajectory traj5 = drive.trajectoryBuilder(new Pose2d(72,-24,-Math.PI), false)
-                        .lineToSplineHeading(new Pose2d(0,-24,-Math.PI))
-                        .build();
-                drive.followTrajectory(traj5);
-                drive.update();
-                synchronized (stateMutex) {
                     state = AutonomousStates3.STOPPED;
                 }
+
         }
     }
 
@@ -119,7 +105,7 @@ enum AutonomousStates3 {
    One_FORWARD1,
     Two_TURN1,
     Three_FORWARD2,
-    Four_TURN2,
-    Five_FORWARD3
+    //Four_TURN2,
+    //Five_FORWARD3
 
 }
