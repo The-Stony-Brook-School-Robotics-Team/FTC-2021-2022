@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 @TeleOp
 public class buttonmotor extends LinearOpMode {
     DcMotor[] motors = new DcMotor[4];
-
+    //public static
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -30,18 +30,18 @@ public class buttonmotor extends LinearOpMode {
 
 
             if(gamepad1.a) {
-                motors[0].setPower(1);
+                motors[0].setPower(1); //right
                 continue;
             }
             if(gamepad1.b) {
-                motors[1].setPower(1);
+                motors[1].setPower(1); //back
                 continue;
             }
             if(gamepad1.y) {
-                motors[2].setPower(1);                continue;
+                motors[2].setPower(1);                continue; //left
             }
             if(gamepad1.x) {
-                motors[3].setPower(1);                continue;
+                motors[3].setPower(1);                continue; //lf
             }
             stopMotors();
 

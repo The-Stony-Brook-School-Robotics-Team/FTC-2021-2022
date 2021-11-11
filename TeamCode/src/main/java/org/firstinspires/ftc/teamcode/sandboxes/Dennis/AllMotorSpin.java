@@ -18,11 +18,11 @@ public class AllMotorSpin extends LinearOpMode {
         rightFront = hardwareMap.get(DcMotorEx.class, "rightodom");
 
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftRear.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightRear.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
 
         waitForStart();
+
+
 
         leftFront.setPower(0.3);
         leftRear.setPower(0.3);
