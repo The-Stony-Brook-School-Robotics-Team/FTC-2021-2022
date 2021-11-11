@@ -47,6 +47,8 @@ public class servoTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry.addData("Status", "Initialized");
+        servo = hardwareMap.get(Servo.class, "servo");
+        servo2 = hardwareMap.get(Servo.class, "servo2");
         telemetry.update();
 
 
@@ -59,14 +61,12 @@ public class servoTest extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        servo.setPosition(0.25);
-        servo2.setPosition(0.25);
+
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            double power = gamepad1.left_stick_y;
-            Range.clip(power, 0.0, 1.0);
+
             //servo.setPosition(1);
             //servo2.setPosition(1);
             //Thread.sleep(500);
@@ -76,8 +76,6 @@ public class servoTest extends LinearOpMode {
             //servo.setPosition(0.3);
             //servo2.setPosition(0.3);
             //Thread.sleep(500);
-            telemetry.addData("Servo Position: ", servo.getPosition()*360);
-            telemetry.addData("Servo2 Position: ", servo2.getPosition()*360);
 
       /*      if(gamepad1.dpad_up){
                 servo.setPosition(0.9);
@@ -86,11 +84,8 @@ public class servoTest extends LinearOpMode {
                 servo.setPosition(0.3);
             } */
             servo.setPosition(0.25);
+            servo2.setPosition(.25);
 
-            telemetry.addData("Servo Position: ", servo.getPosition());
-            telemetry.addData("Servo2 Position: ", servo2.getPosition());
-
-            telemetry.update();
 
 
 
