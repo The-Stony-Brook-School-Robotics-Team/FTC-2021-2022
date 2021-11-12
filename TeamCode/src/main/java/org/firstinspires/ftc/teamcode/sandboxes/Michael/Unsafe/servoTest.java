@@ -48,15 +48,7 @@ public class servoTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-<<<<<<< Updated upstream:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/sandboxes/Michael/Unsafe/servoTest.java
-        telemetry.addData("Status", "Initialized");
-        servo = hardwareMap.get(Servo.class, "servo");
-        servo2 = hardwareMap.get(Servo.class, "servo2");
-        telemetry.update();
 
-
-=======
->>>>>>> Stashed changes:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Sandboxes/Michael/Unsafe/servoTest.java
         servo = hardwareMap.get(Servo.class, "servo");
         servo2 = hardwareMap.get(Servo.class, "servo2");
 
@@ -79,28 +71,6 @@ public class servoTest extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-
-<<<<<<< Updated upstream:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/sandboxes/Michael/Unsafe/servoTest.java
-            //servo.setPosition(1);
-            //servo2.setPosition(1);
-            //Thread.sleep(500);
-            telemetry.addData("Servo Position: ", servo.getPosition()*360);
-            telemetry.addData("Servo2 Position: ", servo2.getPosition()*360);
-            telemetry.update();
-            //servo.setPosition(0.3);
-            //servo2.setPosition(0.3);
-            //Thread.sleep(500);
-
-      /*      if(gamepad1.dpad_up){
-                servo.setPosition(0.9);
-            }
-            if(gamepad1.dpad_down){
-                servo.setPosition(0.3);
-            } */
-            servo.setPosition(0.25);
-            servo2.setPosition(.25);
-
-=======
             if(servoPos > MIN){
                 servoPos = MIN;
             }
@@ -146,21 +116,7 @@ public class servoTest extends LinearOpMode {
             telemetry.addData("Servo Position: ", servo.getPosition());
             telemetry.addData("Servo2 Position: ", servo2.getPosition());
             telemetry.update();
->>>>>>> Stashed changes:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Sandboxes/Michael/Unsafe/servoTest.java
 
-
-
-
-
-
-
-            /**if(gamepad1.a && pressingA == false){
-                pressingA = true;
-            }
-            else if(!gamepad1.a && pressingA == true){
-                servo.setPosition(0);
-                servo.setDirection(Servo.Direction.REVERSE);
-            }**/
         }
     }
 }
