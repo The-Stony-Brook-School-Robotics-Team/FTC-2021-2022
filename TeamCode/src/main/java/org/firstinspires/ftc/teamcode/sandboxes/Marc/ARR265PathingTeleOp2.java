@@ -27,11 +27,11 @@ public class ARR265PathingTeleOp2 extends LinearOpMode {
         new Thread(()->{
             while(opModeIsActive()) {
                 Pose2d poseEstimate = drive.getPoseEstimate();
-            telemetry.addData("x", poseEstimate.getX());
-            telemetry.addData("y", poseEstimate.getY());
-            telemetry.addData("heading", poseEstimate.getHeading());
-            synchronized (stateMutex) {telemetry.addData("State",state);}
-            telemetry.update();
+                telemetry.addData("x", poseEstimate.getX());
+                telemetry.addData("y", poseEstimate.getY());
+                telemetry.addData("heading", poseEstimate.getHeading());
+                synchronized (stateMutex) {telemetry.addData("State",state);}
+                telemetry.update();
 
             }
 
@@ -70,13 +70,13 @@ public class ARR265PathingTeleOp2 extends LinearOpMode {
                 return;
             case One_SPLINE:
                 drive.setPoseEstimate(new Pose2d(0,65,-Math.PI/2));
-                Pose2d loc = drive.getPoseEstimate();
+                //Pose2d loc = drive.getPoseEstimate();
                 Trajectory traj1 = drive.trajectoryBuilder(new Pose2d(0, 65, -Math.PI / 2), false)
                         //.splineTo(new Vector2d(loc.getX()-24*Math.cos(loc.getHeading()),loc.getY()+24*Math.sin(loc.getHeading())),loc.getHeading()-Math.PI/4)
-                        .splineToSplineHeading(new Pose2d(24, 65, 0), 0)
-                        .splineToSplineHeading(new Pose2d(43, 48, 0), -Math.PI / 4)
-                        .splineToSplineHeading(new Pose2d(65, 24, 0), -Math.PI / 2)
-                        .splineToSplineHeading(new Pose2d(65, 12, 0), -Math.PI / 2)
+                        .strafeLeft(24.0)
+                        .splineToSplineHeading(new Pose2d(43.0, 48.0, -Math.PI * 3.0 / 4.0), -Math.PI / 4.0)
+                        .splineToSplineHeading(new Pose2d(65.0, 24.0, -Math.PI/1.0), -Math.PI / 2.0)
+                        .splineToSplineHeading(new Pose2d(65.0, 12.0, -Math.PI), -Math.PI / 2.0)
                         .build();
                 drive.followTrajectory(traj1);
                 drive.update();
@@ -102,9 +102,9 @@ public class ARR265PathingTeleOp2 extends LinearOpMode {
 }
 
 enum AutonomousStates2 {
-   STOPPED,
-   GAMEPAD,
-   One_SPLINE,
+    STOPPED,
+    GAMEPAD,
+    One_SPLINE,
     Two_SPLINE2
 
 }
