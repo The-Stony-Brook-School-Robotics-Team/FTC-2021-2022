@@ -26,16 +26,16 @@ public class DriveConstants {
 
     public static double WHEEL_RADIUS = 1.97;
     public static double GEAR_RATIO = 8.0 / 14;
-    public static double TRACK_WIDTH = 12.75;
+    public static double TRACK_WIDTH = 13.25;
 
-    public static double kV = 0.0133; // Previous was 0.01
-    public static double kA = 0.0055; // Previous was 0.012
-    public static double kStatic = 0.01;
+    public static double kV = 0.015; // Previous was 0.01
+    public static double kA = 0.004; // Previous was 0.012
+    public static double kStatic = 0.0134;
 
     public static double MAX_VEL = 100; // 80
     public static double MAX_ACCEL = 60;
-    public static double MAX_ANG_VEL = 24; // measured with max ang velo tuner.
-    public static double MAX_ANG_ACCEL = Math.toRadians(40);
+    public static double MAX_ANG_VEL = 2; // measured with max ang velo tuner.
+    public static double MAX_ANG_ACCEL = 2;
 
 
     public static double encoderTicksToInches(double ticks) {
