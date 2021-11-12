@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 
-@TeleOp
+//@TeleOp
 public class BallCollecting extends LinearOpMode {
     private DcMotor Motor;
 
