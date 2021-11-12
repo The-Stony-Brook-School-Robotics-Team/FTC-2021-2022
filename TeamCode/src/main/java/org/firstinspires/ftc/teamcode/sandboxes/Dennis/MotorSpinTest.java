@@ -6,19 +6,19 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp(name="U - Motor Spin Test", group="Linear Opmode")
-public class AllMotorSpin extends LinearOpMode {
+public class MotorSpinTest extends LinearOpMode {
 
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
 
     @Override
     public void runOpMode() {
         leftFront = hardwareMap.get(DcMotorEx.class, "lf");
-        leftRear = hardwareMap.get(DcMotorEx.class, "backodom");
-        rightRear = hardwareMap.get(DcMotorEx.class, "leftodom");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightodom");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rf");
+        leftRear = hardwareMap.get(DcMotorEx.class, "lb");
+        rightRear = hardwareMap.get(DcMotorEx.class, "rb");
 
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
 
         waitForStart();
 

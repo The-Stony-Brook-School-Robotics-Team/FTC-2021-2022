@@ -1,11 +1,11 @@
-package org.firstinspires.ftc.teamcode.drive;
+package org.firstinspires.ftc.teamcode.drive.testing;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 
 @Config
-public class DriveConstants {
+public class DriveConstantsTesting {
 
 
     public static final double TICKS_PER_REV = 8192;
