@@ -34,31 +34,44 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="servo test michael", group="Linear Opmode")
+@TeleOp(name="AUGH test michael", group="Linear Opmode")
 //@Disabled
 public class servoTest extends LinearOpMode {
+    boolean pressingUp = false;
+    boolean pressingDown = false;
     boolean pressingA = false;
+    boolean pressingB = false;
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-
     private Servo servo = null;
     private Servo servo2 = null;
 
     @Override
     public void runOpMode() throws InterruptedException {
+<<<<<<< Updated upstream:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/sandboxes/Michael/Unsafe/servoTest.java
         telemetry.addData("Status", "Initialized");
         servo = hardwareMap.get(Servo.class, "servo");
         servo2 = hardwareMap.get(Servo.class, "servo2");
         telemetry.update();
 
 
+=======
+>>>>>>> Stashed changes:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Sandboxes/Michael/Unsafe/servoTest.java
         servo = hardwareMap.get(Servo.class, "servo");
         servo2 = hardwareMap.get(Servo.class, "servo2");
 
         servo.setDirection(Servo.Direction.FORWARD);
         servo2.setDirection(Servo.Direction.REVERSE);
 
-        // Wait for the game to start (driver presses PLAY)
+        double servoPos = 0;
+        final double MIN = 1;
+        final double MAX = .7;
+        servo.setPosition(MAX);
+        servo2.setPosition(MAX);
+        telemetry.addData("Status", "Initialized");
+        telemetry.addData("pos1", servo.getPosition());
+        telemetry.addData("pos2", servo2.getPosition());
+        telemetry.update();
         waitForStart();
 
 
@@ -67,6 +80,7 @@ public class servoTest extends LinearOpMode {
         while (opModeIsActive()) {
 
 
+<<<<<<< Updated upstream:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/sandboxes/Michael/Unsafe/servoTest.java
             //servo.setPosition(1);
             //servo2.setPosition(1);
             //Thread.sleep(500);
@@ -85,6 +99,57 @@ public class servoTest extends LinearOpMode {
             } */
             servo.setPosition(0.25);
             servo2.setPosition(.25);
+
+=======
+            if(servoPos > MIN){
+                servoPos = MIN;
+            }
+            if(servoPos < MAX ){
+                servoPos = MAX;
+            }
+            if(gamepad1.dpad_up && !pressingUp){
+                pressingUp = true;
+            }
+            else if(!gamepad1.dpad_up && pressingUp){
+                servoPos-=.05;
+                servo.setPosition(servoPos);
+                servo2.setPosition(servoPos);
+                pressingUp = false;
+            }
+            if(gamepad1.dpad_down && !pressingDown){
+                pressingDown = true;
+            }
+            else if(!gamepad1.dpad_down && pressingDown){
+                servoPos+=.05;
+                servo.setPosition(servoPos);
+                servo2.setPosition(servoPos);
+                pressingDown = false;
+            }
+            if(gamepad1.a && !pressingA){
+                pressingA = true;
+            }
+            else if(!gamepad1.a && pressingA){
+                servo.setPosition(MIN);
+                servo2.setPosition(MIN);
+                pressingA = false;
+            }
+            if(gamepad1.b && !pressingB){
+                pressingB = true;
+            }
+            else if(!gamepad1.b && pressingB){
+                servo.setPosition(MAX);
+                servo2.setPosition(MAX);
+                pressingB = false;
+            }
+
+
+            telemetry.addData("Servo Position: ", servo.getPosition());
+            telemetry.addData("Servo2 Position: ", servo2.getPosition());
+            telemetry.update();
+>>>>>>> Stashed changes:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Sandboxes/Michael/Unsafe/servoTest.java
+
+
+
 
 
 
