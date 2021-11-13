@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode.sandboxes.Marc;
+package org.firstinspires.ftc.teamcode.archive;
 
 import static org.firstinspires.ftc.teamcode.archive.MotorEncoderController.motorNames;
 
-import android.util.Log;
+//import android.util.Log;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.common.BearsUtil.T265Controller;
+import org.firstinspires.ftc.teamcode.common.RobotState;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 
@@ -35,7 +36,7 @@ msStuckDetectStart = 500000000;
 msStuckDetectInit = 500000000;
 msStuckDetectStop = 500000000;
          dashboard = FtcDashboard.getInstance();
-        Log.d("265localizer","starting up camera");
+        //Log.d("265localizer","starting up camera");
         T265Controller camCtrl = null;
         camCtrl = new T265Controller(hardwareMap,telemetry);
 
@@ -100,7 +101,7 @@ msStuckDetectStop = 500000000;
 
 
         }
-        Log.d("265localizer","shutting down camera");
+        //Log.d("265localizer","shutting down camera");
         new Thread(() -> {T265Controller.shutDown();}).start();
         sleep(1000);
     }

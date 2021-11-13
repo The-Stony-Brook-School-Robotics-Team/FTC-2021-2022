@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.sandboxes.Marc;
+package org.firstinspires.ftc.teamcode.archive;
 
 
 
@@ -9,8 +9,8 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.archive.MotorEncoderController;
 import org.firstinspires.ftc.teamcode.common.BearsUtil.T265Controller;
+import org.firstinspires.ftc.teamcode.common.RobotState;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 
@@ -159,16 +159,4 @@ public class MotorCtrlTestTeleOp extends OpMode {
                     state = RobotState.STOPPED;}
         }
     }
-}
-enum RobotState {
-    STOPPED,
-    GAMEPAD,
-    FORWARD,
-    BACKWARD,
-    STRAFER,
-    STRAFEL,
-    TURNR,
-    TURNL,
-    AUTO
-
 }
