@@ -9,22 +9,57 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.common.BearsUtil.T265Controller;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-@Autonomous
+/**
+ * This OpMode performs the following path using a state machine:
+ * 6 inches forward;
+ * turn right 90;
+ * 8 inches strafe right;
+ * 24 inches forward;
+ * 24 inches backward;
+ * 24 inches forward;
+ * 24 inches backward;
+ * 24 inches forward;
+ * 24 inches backward;
+ * 24 inches forward;
+ * 24 inches backward;
+ * 24 inches forward;
+ * 24 inches backward;
+ * @author Marc N
+ * @version 5.1
+ */
+@Autonomous(name="A - Sample Autonomous Path")
+public class SampleAutonPath extends LinearOpMode {
+    // MARK - Class Variables
 
-public class ARR265PathingTeleOp extends LinearOpMode {
+    /**
+     * This is the object which allows us to use RR pathing utilities.
+     */
     SampleMecanumDrive drive;
+    /**
+     * This is the object representing the state. It is <code>volatile</code> in order to ensure
+     * multithreading works as expected.
+     */
     volatile AutonomousStates state = AutonomousStates.STOPPED;
-    boolean qA, qB, qX, qY;
+    /**
+     * This is the mutex object ensuring that concurrent threads don't override each other.
+     */
     Object stateMutex = new Object();
+
+    // tmp position
     Pose2d loc2;
+
+    /**
+     * This method consists of the OpMode initialization, start, and loop code.
+     */
     @Override
     public void runOpMode() throws InterruptedException {
-
-
+        // MARK - Initialization
         drive= new SampleMecanumDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Thread.sleep(2000);
         waitForStart();
+
+        // Thread to report data through telemetry independently of state
         new Thread(()->{
             while(opModeIsActive()) {
                 Pose2d poseEstimate = drive.getPoseEstimate();
@@ -37,39 +72,29 @@ public class ARR265PathingTeleOp extends LinearOpMode {
             }
 
         }).start();
+        // start the machine
         synchronized (stateMutex) {state = AutonomousStates.One_STAGE_ADVANCE;}
+        drive.setPoseEstimate(new Pose2d()); // set start position!
         while(opModeIsActive() && !isStopRequested()) {
-
-
-            if(gamepad1.a && !qA) {
-                qA = true;
-            }
-            else if (!gamepad1.a && qA) {
-                qA = false;
-            }
-
+            // MARK - Loop Code
             doRobotStateAction();
-            /*drive.setWeightedDrivePower(
-                    new Pose2d(
-                            -gamepad1.left_stick_y,
-                            -gamepad1.left_stick_x,
-                            -gamepad1.right_stick_x
-                    )
-            );*/
             drive.update();
-
-
         }
-        T265Controller.shutDown();
 
     }
-
+    // MARK  - Helper Methods
+    /**
+     * This method contains the state actions for each state.
+     * It is called each time in the loop.
+     * Note that the state changes automatically at the end of the state actions.
+     */
     public void doRobotStateAction()
     {
         switch(state) {
             case STOPPED:
                 return;
             case One_STAGE_ADVANCE:
+                // prepare trajectory: 6 inch forward
                 Pose2d loc = drive.getPoseEstimate();
                 Trajectory traj1 = drive.trajectoryBuilder(loc)
                         .lineToSplineHeading(new Pose2d(loc.getX() + 6,loc.getY(),loc.getHeading()))
@@ -78,6 +103,7 @@ public class ARR265PathingTeleOp extends LinearOpMode {
                 drive.update();
                 synchronized (stateMutex) {state = AutonomousStates.Two_ROTATE;}
             case Two_ROTATE:
+                // NOTE turning is not a trajectory
                 loc2 = drive.getPoseEstimate();
                 drive.turn(Math.toRadians(90));
                 drive.update();
@@ -166,29 +192,28 @@ public class ARR265PathingTeleOp extends LinearOpMode {
 
 
 }
- enum AutonomousStates {
-    STOPPED(0),
-    GAMEPAD(100),
-    One_STAGE_ADVANCE(1),
-    Two_ROTATE(2),
-     //Twobis_FIXPOS(2.5),
-    Three_BACK_TO_WALL(3),
-    FORWARD1(4),
-    BACKWARD1(5),
-    FORWARD2(6),
-    BACKWARD2(7),
-    FORWARD3(8),
-    BACKWARD3(9),
-    FORWARD4(10),
-    BACKWARD4(11),
-    FORWARD5(12),
-    BACKWARD5(13);
 
-    public double home = 0;
-     AutonomousStates(double i) {
-         home = i;
-    }
-    public double getID(){
-         return home;
-    }
+/**
+ * This enum contains the possible states the State Machine can have.
+ * @author Marc N
+ * @version 1.0
+ */
+ enum AutonomousStates {
+    STOPPED,
+    GAMEPAD,
+    One_STAGE_ADVANCE,
+    Two_ROTATE,
+     //Twobis_FIXPOS(2.5),
+    Three_BACK_TO_WALL,
+    FORWARD1,
+    BACKWARD1,
+    FORWARD2,
+    BACKWARD2,
+    FORWARD3,
+    BACKWARD3,
+    FORWARD4,
+    BACKWARD4,
+    FORWARD5,
+    BACKWARD5;
+
 }
