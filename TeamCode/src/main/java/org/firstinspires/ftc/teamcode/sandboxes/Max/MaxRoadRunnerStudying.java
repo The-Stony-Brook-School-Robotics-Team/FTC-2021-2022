@@ -39,7 +39,7 @@ public class MaxRoadRunnerStudying extends OpMode {
         RightEncoder = new MotorEx(hardwareMap, "rightodom");
         SampleMecanumDrive = new SampleMecanumDrive(hardwareMap);
         SampleMecanumDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        FTCDashboard = new FtcDashboard.getInstance();
+        // FTCDashboard = new FtcDashboard.getInstance();
 
     }
 
