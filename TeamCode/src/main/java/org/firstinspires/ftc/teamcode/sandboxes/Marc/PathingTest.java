@@ -45,7 +45,7 @@ public class PathingTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         // MARK - Initialization
         drive = new SampleMecanumDrive(hardwareMap);
-        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Thread.sleep(2000);
         waitForStart();
         drive.setPoseEstimate(new Pose2d());
