@@ -76,7 +76,7 @@ public class SplineTestAuton extends LinearOpMode {
                 drive.setPoseEstimate(new Pose2d(12,65,0));
                 // prepare spline trajectory
                 // NOTE: we use splines since then the trajectory is smooth and we minimize time
-                Trajectory traj1 = drive.trajectoryBuilder(new Pose2d(0, 65, -Math.PI / 2), false)
+                Trajectory traj1 = drive.trajectoryBuilder(new Pose2d(12, 65, 0), false)
                         .forward(12)
                         .splineToSplineHeading(new Pose2d(43.0, 48.0, -Math.PI/ 4.0), -Math.PI / 4.0)
                         .splineToSplineHeading(new Pose2d(65.0, 24.0, -Math.PI/2.0), -Math.PI / 2.0)
