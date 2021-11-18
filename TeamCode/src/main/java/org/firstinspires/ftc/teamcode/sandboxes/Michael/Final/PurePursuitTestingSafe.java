@@ -9,6 +9,9 @@ import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
@@ -22,7 +25,7 @@ public class PurePursuitTestingSafe extends LinearOpMode {
     private static final double TICKS_PER_REV = 8192;
     private static final double TICKS_TO_INCHES = Math.PI * WHEEL_DIAMETER / TICKS_PER_REV;
 
-    private MotorEx lf, rf, lb, rb;
+    private DcMotorEx lf, rf, lb, rb;
     private MecanumDrive drive;
     private OdometrySubsystem odometry;
     private MotorEx encoderLeft, encoderRight, encoderPerp;
@@ -39,14 +42,17 @@ public class PurePursuitTestingSafe extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        lf = new MotorEx(hardwareMap, "lf");
-        rf = new MotorEx(hardwareMap, "leftodom");
-        lb = new MotorEx(hardwareMap, "backodom");
-        rb = new MotorEx(hardwareMap, "rightodom");
+        lf = hardwareMap.get(DcMotorEx.class, "lf");
+        rf = hardwareMap.get(DcMotorEx.class, "rf");
+        lb = hardwareMap.get(DcMotorEx.class, "lb");
+        rb = hardwareMap.get(DcMotorEx.class, "rb");
+
+        lb.setDirection(DcMotorSimple.Direction.REVERSE);
+        rf.setDirection(DcMotorSimple.Direction.REVERSE);
 
         encoderLeft = new MotorEx(hardwareMap, "leftodom");
         encoderRight = new MotorEx(hardwareMap, "rightodom");
-        encoderPerp = new MotorEx(hardwareMap, "backodom");
+        encoderPerp = new MotorEx(hardwareMap, "centerodom");
 
         encoderLeft.setDistancePerPulse(TICKS_TO_INCHES);
         encoderRight.setDistancePerPulse(TICKS_TO_INCHES);
@@ -56,7 +62,6 @@ public class PurePursuitTestingSafe extends LinearOpMode {
         encoderRight.resetEncoder();
         encoderPerp.resetEncoder();
 
-        robotDrive = new MecanumDrive(lf, rf, lb, rb);
         dashboard = FtcDashboard.getInstance();
 
         HolonomicOdometry holOdom = new HolonomicOdometry(
@@ -85,10 +90,22 @@ public class PurePursuitTestingSafe extends LinearOpMode {
             }
 
 
-            lf.set(0.6 * (-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
-            rf.set(0.6 * (-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
-            lb.set(0.6 * (-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
-            rb.set(0.6 * (-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
+            // Weighted Driving
+            double y = -gamepad1.left_stick_y;
+            double x = gamepad1.left_stick_x * 1.1;
+            double rx = gamepad1.right_stick_x;
+
+            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+            double frontLeftPower = (y + x + rx) / denominator;
+            double backLeftPower = (y - x + rx) / denominator;
+            double frontRightPower = (y - x - rx) / denominator;
+            double backRightPower = (y + x - rx) / denominator;
+
+            lf.setPower(frontLeftPower);
+            lb.setPower(backLeftPower);
+            rf.setPower(frontRightPower);
+            rb.setPower(backRightPower);
+            // End
 
 
             TelemetryPacket telemPacket = new TelemetryPacket();

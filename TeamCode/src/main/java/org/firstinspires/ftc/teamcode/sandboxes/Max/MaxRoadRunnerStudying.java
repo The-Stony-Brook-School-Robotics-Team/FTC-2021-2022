@@ -42,7 +42,7 @@ public class MaxRoadRunnerStudying extends OpMode {
         HolonomicOdometry HOdometrySystem = new HolonomicOdometry(LeftEncoder.getCurrentPosition(), RightEncoder.getCurrentPosition(), CentralEncoder.getCurrentPosition());
         SampleMecanumDrive = new SampleMecanumDrive(hardwareMap);
         SampleMecanumDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        FTCDashboard = new FtcDashboard.getInstance();
+        // FTCDashboard = new FtcDashboard.getInstance();
 
     }
 
