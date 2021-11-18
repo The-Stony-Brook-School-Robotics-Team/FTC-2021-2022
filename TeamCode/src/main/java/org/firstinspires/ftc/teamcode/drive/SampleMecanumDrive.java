@@ -48,16 +48,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/*
- * Simple mecanum drive hardware implementation for REV hardware.
- */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(220, 0, 10);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(250, 0, 5);
+
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(250, 2, 8);
+    // previous: public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(220, 0, 10);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(120, 2, 4);
+    // previous: public static PIDCoefficients HEADING_PID = new PIDCoefficients(250, 0, 5);
+
 
     public static double LATERAL_MULTIPLIER = 1;
-
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
