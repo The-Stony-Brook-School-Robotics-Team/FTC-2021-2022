@@ -39,7 +39,7 @@ public class MaxRoadRunnerStudying extends OpMode {
         LeftEncoder = new MotorEx(hardwareMap, "leftodom");
         CentralEncoder = new MotorEx(hardwareMap, "backodom");
         RightEncoder = new MotorEx(hardwareMap, "rightodom");
-        HolonomicOdometry HOdometrySystem = new HolonomicOdometry(LeftEncoder.getCurrentPosition(), RightEncoder.getCurrentPosition(), CentralEncoder.getCurrentPosition());
+        //HolonomicOdometry HOdometrySystem = new HolonomicOdometry(LeftEncoder.getCurrentPosition(), RightEncoder.getCurrentPosition(), CentralEncoder.getCurrentPosition());
         SampleMecanumDrive = new SampleMecanumDrive(hardwareMap);
         SampleMecanumDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // FTCDashboard = new FtcDashboard.getInstance();
