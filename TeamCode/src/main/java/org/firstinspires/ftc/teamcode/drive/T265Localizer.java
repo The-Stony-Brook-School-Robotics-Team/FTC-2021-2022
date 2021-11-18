@@ -8,8 +8,7 @@ import com.acmerobotics.roadrunner.localization.Localizer;
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.ChassisSpeeds;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.common.BearsUtil.T265Controller;
-import org.firstinspires.ftc.teamcode.common.BearsUtil.T265Exception;
+import org.firstinspires.ftc.teamcode.common.util.T265Controller;
 
 public class T265Localizer implements Localizer {
     T265Controller camCtrl;

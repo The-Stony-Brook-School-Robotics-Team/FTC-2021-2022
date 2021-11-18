@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import org.firstinspires.ftc.teamcode.common.BearsUtil.T265Controller;
+import org.firstinspires.ftc.teamcode.common.util.T265Controller;
 import org.firstinspires.ftc.teamcode.common.RobotState;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 

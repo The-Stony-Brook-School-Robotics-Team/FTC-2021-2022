@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.common.BearsUtil.T265Controller;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 /**
