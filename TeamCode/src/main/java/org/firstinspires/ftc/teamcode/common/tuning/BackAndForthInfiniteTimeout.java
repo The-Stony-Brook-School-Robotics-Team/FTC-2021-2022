@@ -7,7 +7,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.custom.CustomPIDTunerDrive;
 
 /*
  * Op mode for preliminary tuning of the follower PID coefficients (located in the drive base
@@ -38,7 +38,7 @@ public class BackAndForthInfiniteTimeout extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         // Init
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        CustomPIDTunerDrive drive = new CustomPIDTunerDrive(hardwareMap);
         drive.setPoseEstimate(new Pose2d(0, 0));
 
         currentState = states.READY;
