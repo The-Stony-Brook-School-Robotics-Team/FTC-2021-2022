@@ -1,12 +1,18 @@
 package org.firstinspires.ftc.teamcode.sandboxes.Marc;
 
+import android.util.Log;
+
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
 
 /**
  * This OpMode performs the following path using a state machine:
@@ -26,14 +32,21 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  * @author Marc N
  * @version 5.1
  */
-@Autonomous(name="A - Sample Autonomous Path")
+@TeleOp(name="A - Sample Autonomous Path")
+@Config
 public class SampleAutonPath extends LinearOpMode {
     // MARK - Class Variables
+    public static PIDCoefficients SPLINE_TRANSLATIONAL_PID = new PIDCoefficients(20, .2, .5);
+    public static PIDCoefficients SPLINE_HEADING_PID = new PIDCoefficients(40, .2, .7);
+    // tuning log: SPLINEs done Michael and Marc 11/18/2021
+    public static PIDCoefficients[] PID_BUFFER = new PIDCoefficients[]{new PIDCoefficients(SampleMecanumDrive.TRANSLATIONAL_PID.kP,SampleMecanumDrive.TRANSLATIONAL_PID.kI,SampleMecanumDrive.TRANSLATIONAL_PID.kD),new PIDCoefficients(SampleMecanumDrive.HEADING_PID.kP,SampleMecanumDrive.HEADING_PID.kI,SampleMecanumDrive.HEADING_PID.kD)};
 
     /**
      * This is the object which allows us to use RR pathing utilities.
      */
     SampleMecanumDrive drive;
+
+    TrajectorySequenceRunner runner;
     /**
      * This is the object representing the state. It is <code>volatile</code> in order to ensure
      * multithreading works as expected.
@@ -45,7 +58,7 @@ public class SampleAutonPath extends LinearOpMode {
     Object stateMutex = new Object();
 
     // tmp position
-    Pose2d loc2;
+    Pose2d loc3;
 
     /**
      * This method consists of the OpMode initialization, start, and loop code.
@@ -55,6 +68,7 @@ public class SampleAutonPath extends LinearOpMode {
         // MARK - Initialization
         drive= new SampleMecanumDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        runner = drive.trajectorySequenceRunner;
         Thread.sleep(2000);
         waitForStart();
 
@@ -67,7 +81,12 @@ public class SampleAutonPath extends LinearOpMode {
             telemetry.addData("heading", poseEstimate.getHeading());
             synchronized (stateMutex) {telemetry.addData("State",state);}
             telemetry.update();
-
+            if(gamepad1.a) {
+                synchronized (stateMutex) {state = AutonomousStates.STOPPED;}
+                runner.cancelTraj();
+                stop();
+                break;
+            }
             }
 
         }).start();
@@ -76,12 +95,20 @@ public class SampleAutonPath extends LinearOpMode {
         drive.setPoseEstimate(new Pose2d()); // set start position!
         while(opModeIsActive() && !isStopRequested()) {
             // MARK - Loop Code
-            doRobotStateAction();
+            try{doRobotStateAction();}
+            catch(Exception e) {
+                Log.d("AUTON-SYS","RR PATHS STOPPED");
+                synchronized (stateMutex) {state = AutonomousStates.STOPPED;}
+                stop();
+                break;
+            }
             drive.update();
         }
 
     }
     // MARK  - Helper Methods
+
+
     /**
      * This method contains the state actions for each state.
      * It is called each time in the loop.
@@ -93,6 +120,8 @@ public class SampleAutonPath extends LinearOpMode {
             case STOPPED:
                 return;
             case ONE_BACKWARD:
+                SampleMecanumDrive.TRANSLATIONAL_PID = SPLINE_TRANSLATIONAL_PID;
+                SampleMecanumDrive.HEADING_PID = SPLINE_HEADING_PID;
                 Pose2d loc = drive.getPoseEstimate();
                 Trajectory traj1 = drive.trajectoryBuilder(loc)
                         .back(40)
@@ -110,9 +139,10 @@ public class SampleAutonPath extends LinearOpMode {
                 drive.update();
                 synchronized (stateMutex) {state = AutonomousStates.THREE_TURN35;}
             case THREE_TURN35:
-                Pose2d loc3 = drive.getPoseEstimate();
+                loc3 = drive.getPoseEstimate();
+
                 Trajectory traj3 = drive.trajectoryBuilder(loc3)
-                        .lineToSplineHeading(new Pose2d(loc3.getX() + (9-9*Math.sqrt(2)*Math.cos(Math.toRadians(80))),loc3.getY() + (9-9*Math.sqrt(2)*Math.sin(Math.toRadians(80))),loc3.getHeading()+Math.toRadians(35)))
+                        .lineToSplineHeading(new Pose2d(loc3.getX() + (9-9*Math.sqrt(2)*Math.cos(Math.toRadians(80))),loc3.getY() + (9-9*Math.sqrt(2)*Math.sin(Math.toRadians(80))),loc3.getHeading()-Math.toRadians(35)))
                         .build();
                 drive.followTrajectory(traj3);
                 drive.update();
@@ -127,10 +157,12 @@ public class SampleAutonPath extends LinearOpMode {
             case FIVE_TURNBACK:
                 Pose2d loc5 = drive.getPoseEstimate();
                 Trajectory traj5 = drive.trajectoryBuilder(loc5)
-                        .lineToSplineHeading(new Pose2d(loc5.getX() - (9-9*Math.sqrt(2)*Math.cos(Math.toRadians(80))),loc5.getY() - (9-9*Math.sqrt(2)*Math.sin(Math.toRadians(80))),loc5.getHeading()-Math.toRadians(35)))
+                        .lineToSplineHeading(loc3)
                         .build();
                 drive.followTrajectory(traj5);
                 drive.update();
+               // SampleMecanumDrive.TRANSLATIONAL_PID = PID_BUFFER[0];
+               // SampleMecanumDrive.HEADING_PID = PID_BUFFER[1];
                 synchronized (stateMutex) {state = AutonomousStates.STOPPED;}
 
         }

@@ -51,7 +51,7 @@ import java.util.List;
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
 
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(250, 2, 8);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(160, 1.5, 8.4);
     // previous: public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(220, 0, 10);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(120, 2, 4);
     // previous: public static PIDCoefficients HEADING_PID = new PIDCoefficients(250, 0, 5);
@@ -62,7 +62,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
 
-    private TrajectorySequenceRunner trajectorySequenceRunner;
+    public TrajectorySequenceRunner trajectorySequenceRunner;
 
     private static final TrajectoryVelocityConstraint VEL_CONSTRAINT = getVelocityConstraint(MAX_VEL, MAX_ANG_VEL, TRACK_WIDTH);
     private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT = getAccelerationConstraint(MAX_ACCEL);
