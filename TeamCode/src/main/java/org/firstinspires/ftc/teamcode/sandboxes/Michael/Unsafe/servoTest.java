@@ -34,21 +34,20 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="servo test michael", group="Linear Opmode")
+@TeleOp(name="AUGH test michael", group="Linear Opmode")
 //@Disabled
 public class servoTest extends LinearOpMode {
+    boolean pressingUp = false;
+    boolean pressingDown = false;
     boolean pressingA = false;
+    boolean pressingB = false;
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-
     private Servo servo = null;
     private Servo servo2 = null;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
-
 
         servo = hardwareMap.get(Servo.class, "servo");
         servo2 = hardwareMap.get(Servo.class, "servo2");
@@ -56,51 +55,68 @@ public class servoTest extends LinearOpMode {
         servo.setDirection(Servo.Direction.FORWARD);
         servo2.setDirection(Servo.Direction.REVERSE);
 
-        // Wait for the game to start (driver presses PLAY)
+        double servoPos = 0;
+        final double MIN = 1;
+        final double MAX = .7;
+        servo.setPosition(MAX);
+        servo2.setPosition(MAX);
+        telemetry.addData("Status", "Initialized");
+        telemetry.addData("pos1", servo.getPosition());
+        telemetry.addData("pos2", servo2.getPosition());
+        telemetry.update();
         waitForStart();
 
-        servo.setPosition(0.25);
-        servo2.setPosition(0.25);
+
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            double power = gamepad1.left_stick_y;
-            Range.clip(power, 0.0, 1.0);
-            //servo.setPosition(1);
-            //servo2.setPosition(1);
-            //Thread.sleep(500);
-            telemetry.addData("Servo Position: ", servo.getPosition()*360);
-            telemetry.addData("Servo2 Position: ", servo2.getPosition()*360);
-            telemetry.update();
-            //servo.setPosition(0.3);
-            //servo2.setPosition(0.3);
-            //Thread.sleep(500);
-            telemetry.addData("Servo Position: ", servo.getPosition()*360);
-            telemetry.addData("Servo2 Position: ", servo2.getPosition()*360);
-
-      /*      if(gamepad1.dpad_up){
-                servo.setPosition(0.9);
+            if(servoPos > MIN){
+                servoPos = MIN;
             }
-            if(gamepad1.dpad_down){
-                servo.setPosition(0.3);
-            } */
-            servo.setPosition(0.25);
+            if(servoPos < MAX ){
+                servoPos = MAX;
+            }
+            if(gamepad1.dpad_up && !pressingUp){
+                pressingUp = true;
+            }
+            else if(!gamepad1.dpad_up && pressingUp){
+                servoPos-=.05;
+                servo.setPosition(servoPos);
+                servo2.setPosition(servoPos);
+                pressingUp = false;
+            }
+            if(gamepad1.dpad_down && !pressingDown){
+                pressingDown = true;
+            }
+            else if(!gamepad1.dpad_down && pressingDown){
+                servoPos+=.05;
+                servo.setPosition(servoPos);
+                servo2.setPosition(servoPos);
+                pressingDown = false;
+            }
+            if(gamepad1.a && !pressingA){
+                pressingA = true;
+            }
+            else if(!gamepad1.a && pressingA){
+                servo.setPosition(MIN);
+                servo2.setPosition(MIN);
+                pressingA = false;
+            }
+            if(gamepad1.b && !pressingB){
+                pressingB = true;
+            }
+            else if(!gamepad1.b && pressingB){
+                servo.setPosition(MAX);
+                servo2.setPosition(MAX);
+                pressingB = false;
+            }
+
 
             telemetry.addData("Servo Position: ", servo.getPosition());
             telemetry.addData("Servo2 Position: ", servo2.getPosition());
-
             telemetry.update();
 
-
-
-            /**if(gamepad1.a && pressingA == false){
-                pressingA = true;
-            }
-            else if(!gamepad1.a && pressingA == true){
-                servo.setPosition(0);
-                servo.setDirection(Servo.Direction.REVERSE);
-            }**/
         }
     }
 }
