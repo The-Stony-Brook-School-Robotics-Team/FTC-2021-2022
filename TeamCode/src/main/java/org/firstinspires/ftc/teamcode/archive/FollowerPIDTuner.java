@@ -21,8 +21,9 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
  * If you are using SampleTankDrive, you should be tuning AXIAL_PID, CROSS_TRACK_PID, and HEADING_PID.
  * These coefficients can be tuned live in dashboard.
  */
+@Autonomous
 public class FollowerPIDTuner extends LinearOpMode {
-    public static double DISTANCE = 48; // in
+    public static double DISTANCE = 24; // in
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -37,17 +38,17 @@ public class FollowerPIDTuner extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (!isStopRequested()) {
-         //   Traj//ectorySequence trajSeq = drive.trajectorySequenceBuilder(startPose)
-                  //  .forward(DISTANCE)
-                  //  .turn(Math.toRadians(90))
-                  //  .forward(DISTANCE)
-                  //  .turn(Math.toRadians(90))
-                 //   .forward(DISTANCE)
-               //     .turn(Math.toRadians(90))
-               //     .forward(DISTANCE)
-               //     .turn(Math.toRadians(90))
-               //     .build();
-          //  dr/ive.followTrajectorySequence(trajSeq);
+            TrajectorySequence trajSeq = drive.trajectorySequenceBuilder(startPose)
+                    .forward(DISTANCE)
+                    .turn(Math.toRadians(90))
+                    .forward(DISTANCE)
+                    .turn(Math.toRadians(90))
+                    .forward(DISTANCE)
+                   .turn(Math.toRadians(90))
+                    .forward(DISTANCE)
+                    .turn(Math.toRadians(90))
+                    .build();
+            drive.followTrajectorySequence(trajSeq);
         }
     }
 }

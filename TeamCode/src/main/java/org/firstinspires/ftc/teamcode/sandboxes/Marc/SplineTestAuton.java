@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.sandboxes.Marc;
 
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -15,10 +17,14 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  * @author Marc N
  * @version 5.1
  */
+@Config
 @Autonomous(name="A - Spline Test (Marc)")
 public class SplineTestAuton extends LinearOpMode {
     // MARK - Class Variables
-
+    public static PIDCoefficients SPLINE_TRANSLATIONAL_PID = new PIDCoefficients(20, .2, .2);
+    public static PIDCoefficients SPLINE_HEADING_PID = new PIDCoefficients(40, .2, .4);
+    // tuning log: SPLINEs done Michael and Marc 11/18/2021
+    public static PIDCoefficients[] PID_BUFFER = new PIDCoefficients[]{new PIDCoefficients(SampleMecanumDrive.TRANSLATIONAL_PID.kP,SampleMecanumDrive.TRANSLATIONAL_PID.kI,SampleMecanumDrive.TRANSLATIONAL_PID.kD),new PIDCoefficients(SampleMecanumDrive.HEADING_PID.kP,SampleMecanumDrive.HEADING_PID.kI,SampleMecanumDrive.HEADING_PID.kD)};
     /**
      * This is the object which allows us to use RR pathing utilities.
      */
@@ -73,17 +79,21 @@ public class SplineTestAuton extends LinearOpMode {
             case STOPPED:
                 return;
             case One_SPLINE:
-                drive.setPoseEstimate(new Pose2d(0,65,-Math.PI/2));
+                drive.setPoseEstimate(new Pose2d(12,65,0));
+                SampleMecanumDrive.TRANSLATIONAL_PID = SPLINE_TRANSLATIONAL_PID;
+                SampleMecanumDrive.HEADING_PID = SPLINE_HEADING_PID;
                 // prepare spline trajectory
                 // NOTE: we use splines since then the trajectory is smooth and we minimize time
-                Trajectory traj1 = drive.trajectoryBuilder(new Pose2d(0, 65, -Math.PI / 2), false)
-                        .strafeLeft(24.0)
-                        .splineToSplineHeading(new Pose2d(43.0, 48.0, -Math.PI * 3.0 / 4.0), -Math.PI / 4.0)
-                        .splineToSplineHeading(new Pose2d(65.0, 24.0, -Math.PI/1.0), -Math.PI / 2.0)
-                        .splineToSplineHeading(new Pose2d(65.0, 12.0, -Math.PI), -Math.PI / 2.0)
+                Trajectory traj1 = drive.trajectoryBuilder(new Pose2d(12, 65, 0), false)
+                        .forward(12)
+                        .splineToSplineHeading(new Pose2d(43.0, 48.0, -Math.PI/ 4.0), -Math.PI / 4.0)
+                        .splineToSplineHeading(new Pose2d(65.0, 24.0, -Math.PI/2.0), -Math.PI / 2.0)
+                        .forward(12)
                         .build();
                 drive.followTrajectory(traj1);
                 drive.update();
+                SampleMecanumDrive.TRANSLATIONAL_PID = PID_BUFFER[0];
+                SampleMecanumDrive.HEADING_PID = PID_BUFFER[1];
                 synchronized (stateMutex) {
                     state = AutonomousStates2.STOPPED;
                 }

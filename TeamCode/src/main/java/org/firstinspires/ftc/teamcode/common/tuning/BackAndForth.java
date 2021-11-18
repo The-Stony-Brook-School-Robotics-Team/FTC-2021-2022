@@ -35,8 +35,6 @@ public class BackAndForth extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-
-
         waitForStart();
 
         while (opModeIsActive() && !isStopRequested()) {
