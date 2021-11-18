@@ -22,8 +22,6 @@ public class MotorSpinTest extends LinearOpMode {
 
         waitForStart();
 
-
-
         leftFront.setPower(0.3);
         leftRear.setPower(0.3);
         rightRear.setPower(0.3);
