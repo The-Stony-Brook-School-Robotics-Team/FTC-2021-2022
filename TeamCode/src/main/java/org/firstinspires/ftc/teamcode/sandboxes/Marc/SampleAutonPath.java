@@ -120,8 +120,8 @@ public class SampleAutonPath extends LinearOpMode {
             case STOPPED:
                 return;
             case ONE_BACKWARD:
-                SampleMecanumDrive.TRANSLATIONAL_PID = SPLINE_TRANSLATIONAL_PID;
-                SampleMecanumDrive.HEADING_PID = SPLINE_HEADING_PID;
+               // SampleMecanumDrive.TRANSLATIONAL_PID = SPLINE_TRANSLATIONAL_PID;
+                //SampleMecanumDrive.HEADING_PID = SPLINE_HEADING_PID;
                 Pose2d loc = drive.getPoseEstimate();
                 Trajectory traj1 = drive.trajectoryBuilder(loc)
                         .back(40)
@@ -130,21 +130,12 @@ public class SampleAutonPath extends LinearOpMode {
                 drive.update();
                 synchronized (stateMutex) {state = AutonomousStates.TWO_FORWARD;}
             case TWO_FORWARD:
-                // NOTE turning is not a trajectory
-                Pose2d loc2 = drive.getPoseEstimate();
-                Trajectory traj2 = drive.trajectoryBuilder(loc2)
-                        .forward(40)
+                loc3 = drive.getPoseEstimate();
+                Trajectory traj2 = drive.trajectoryBuilder(loc3)
+                        .forward(33.21)
+                        .splineToSplineHeading(new Pose2d(loc3.getX() + (9-9*Math.sqrt(2)*Math.cos(Math.toRadians(80))),loc3.getY() + (9-9*Math.sqrt(2)*Math.sin(Math.toRadians(80))),loc3.getHeading()-Math.toRadians(35)),-Math.toRadians(35))
                         .build();
                 drive.followTrajectory(traj2);
-                drive.update();
-                synchronized (stateMutex) {state = AutonomousStates.THREE_TURN35;}
-            case THREE_TURN35:
-                loc3 = drive.getPoseEstimate();
-
-                Trajectory traj3 = drive.trajectoryBuilder(loc3)
-                        .lineToSplineHeading(new Pose2d(loc3.getX() + (9-9*Math.sqrt(2)*Math.cos(Math.toRadians(80))),loc3.getY() + (9-9*Math.sqrt(2)*Math.sin(Math.toRadians(80))),loc3.getHeading()-Math.toRadians(35)))
-                        .build();
-                drive.followTrajectory(traj3);
                 drive.update();
                 synchronized (stateMutex) {state = AutonomousStates.FOUR_WAIT;}
             case FOUR_WAIT:
