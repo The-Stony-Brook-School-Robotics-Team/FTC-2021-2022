@@ -116,7 +116,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <!-- ======== START OF CLASS DATA ======== -->
 <main role="main">
 <div class="header">
-<div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">org.firstinspires.ftc.teamcode.common.BearsUtil</a></div>
+<div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">org.firstinspires.ftc.teamcode.common.util</a></div>
 <h2 title="Class DuckOpenCVEngine" class="title">Class DuckOpenCVEngine</h2>
 </div>
 <div class="contentContainer">
@@ -127,7 +127,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li>org.openftc.easyopencv.OpenCvPipeline</li>
 <li>
 <ul class="inheritance">
-<li>org.firstinspires.ftc.teamcode.common.BearsUtil.DuckOpenCVEngine</li>
+<li>org.firstinspires.ftc.teamcode.common.util.DuckOpenCVEngine</li>
 </ul>
 </li>
 </ul>
@@ -168,7 +168,7 @@ extends org.openftc.easyopencv.OpenCvPipeline</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>(package private) static class&nbsp;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="DuckOpenCVEngine.DuckPosition.html" title="enum in org.firstinspires.ftc.teamcode.common.BearsUtil">DuckOpenCVEngine.DuckPosition</a></span></code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="DuckOpenCVEngine.DuckPosition.html" title="enum in org.firstinspires.ftc.teamcode.common.util">DuckOpenCVEngine.DuckPosition</a></span></code></th>
 <td class="colLast">
 <div class="block">This enum describes the Duck Position.</div>
 </td>
@@ -255,7 +255,7 @@ extends org.openftc.easyopencv.OpenCvPipeline</pre>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>protected static <a href="DuckOpenCVEngine.DuckPosition.html" title="enum in org.firstinspires.ftc.teamcode.common.BearsUtil">DuckOpenCVEngine.DuckPosition</a></code></td>
+<td class="colFirst"><code>protected static <a href="DuckOpenCVEngine.DuckPosition.html" title="enum in org.firstinspires.ftc.teamcode.common.util">DuckOpenCVEngine.DuckPosition</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#position">position</a></span></code></th>
 <td class="colLast">
 <div class="block">This variable represents the Duck's Position on the barcode.</div>
@@ -490,7 +490,7 @@ extends org.openftc.easyopencv.OpenCvPipeline</pre>
 </td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code><a href="DuckOpenCVEngine.DuckPosition.html" title="enum in org.firstinspires.ftc.teamcode.common.BearsUtil">DuckOpenCVEngine.DuckPosition</a></code></td>
+<td class="colFirst"><code><a href="DuckOpenCVEngine.DuckPosition.html" title="enum in org.firstinspires.ftc.teamcode.common.util">DuckOpenCVEngine.DuckPosition</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPosition()">getPosition</a></span>()</code></th>
 <td class="colLast">
 <div class="block">This method returns the position of the duck on the barcode
@@ -604,7 +604,7 @@ extends org.openftc.easyopencv.OpenCvPipeline</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>position</h4>
-<pre>protected static volatile&nbsp;<a href="DuckOpenCVEngine.DuckPosition.html" title="enum in org.firstinspires.ftc.teamcode.common.BearsUtil">DuckOpenCVEngine.DuckPosition</a> position</pre>
+<pre>protected static volatile&nbsp;<a href="DuckOpenCVEngine.DuckPosition.html" title="enum in org.firstinspires.ftc.teamcode.common.util">DuckOpenCVEngine.DuckPosition</a> position</pre>
 <div class="block">This variable represents the Duck's Position on the barcode.
  This variable is made to be read from outside (hence its "protected" state).
  The "volatile" keyword makes it better suited for use with multithreading.</div>
@@ -1050,7 +1050,7 @@ extends org.openftc.easyopencv.OpenCvPipeline</pre>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getPosition</h4>
-<pre class="methodSignature">public&nbsp;<a href="DuckOpenCVEngine.DuckPosition.html" title="enum in org.firstinspires.ftc.teamcode.common.BearsUtil">DuckOpenCVEngine.DuckPosition</a>&nbsp;getPosition()</pre>
+<pre class="methodSignature">public&nbsp;<a href="DuckOpenCVEngine.DuckPosition.html" title="enum in org.firstinspires.ftc.teamcode.common.util">DuckOpenCVEngine.DuckPosition</a>&nbsp;getPosition()</pre>
 <div class="block">This method returns the position of the duck on the barcode
  using a semaphore to make sure concurrent threads don't
  overwrite each other.</div>

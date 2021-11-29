@@ -270,4 +270,7 @@ public class TrajectorySequenceRunner {
     public boolean isBusy() {
         return currentTrajectorySequence != null;
     }
+    public void cancelTraj() {
+         currentTrajectorySequence = null;
+    }
 }

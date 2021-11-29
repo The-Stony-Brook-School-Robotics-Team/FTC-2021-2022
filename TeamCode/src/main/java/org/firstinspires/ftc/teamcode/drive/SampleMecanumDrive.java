@@ -51,9 +51,9 @@ import java.util.List;
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
 
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(250, 2, 8);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(43, 26.4, 46.54);
     // previous: public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(220, 0, 10);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(120, 2, 4);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(100, 0, 3);
     // previous: public static PIDCoefficients HEADING_PID = new PIDCoefficients(250, 0, 5);
 
 
@@ -62,7 +62,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
 
-    private TrajectorySequenceRunner trajectorySequenceRunner;
+    public TrajectorySequenceRunner trajectorySequenceRunner;
 
     private static final TrajectoryVelocityConstraint VEL_CONSTRAINT = getVelocityConstraint(MAX_VEL, MAX_ANG_VEL, TRACK_WIDTH);
     private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT = getAccelerationConstraint(MAX_ACCEL);
@@ -79,7 +79,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
-                new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
+                new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 

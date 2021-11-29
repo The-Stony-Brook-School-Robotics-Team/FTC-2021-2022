@@ -9,7 +9,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.common.BearsUtil.T265Controller;
+import org.firstinspires.ftc.teamcode.common.util.T265Controller;
 import org.firstinspires.ftc.teamcode.common.RobotState;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 

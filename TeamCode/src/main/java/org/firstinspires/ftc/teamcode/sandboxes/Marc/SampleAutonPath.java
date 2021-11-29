@@ -1,13 +1,18 @@
 package org.firstinspires.ftc.teamcode.sandboxes.Marc;
 
+import android.util.Log;
+
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.common.BearsUtil.T265Controller;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
 
 /**
  * This OpMode performs the following path using a state machine:
@@ -27,14 +32,21 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  * @author Marc N
  * @version 5.1
  */
-@Autonomous(name="A - Sample Autonomous Path")
+@TeleOp(name="A - Sample Autonomous Path")
+@Config
 public class SampleAutonPath extends LinearOpMode {
     // MARK - Class Variables
+    public static PIDCoefficients SPLINE_TRANSLATIONAL_PID = new PIDCoefficients(20, .2, .5);
+    public static PIDCoefficients SPLINE_HEADING_PID = new PIDCoefficients(40, .2, .7);
+    // tuning log: SPLINEs done Michael and Marc 11/18/2021
+    public static PIDCoefficients[] PID_BUFFER = new PIDCoefficients[]{new PIDCoefficients(SampleMecanumDrive.TRANSLATIONAL_PID.kP,SampleMecanumDrive.TRANSLATIONAL_PID.kI,SampleMecanumDrive.TRANSLATIONAL_PID.kD),new PIDCoefficients(SampleMecanumDrive.HEADING_PID.kP,SampleMecanumDrive.HEADING_PID.kI,SampleMecanumDrive.HEADING_PID.kD)};
 
     /**
      * This is the object which allows us to use RR pathing utilities.
      */
     SampleMecanumDrive drive;
+
+    TrajectorySequenceRunner runner;
     /**
      * This is the object representing the state. It is <code>volatile</code> in order to ensure
      * multithreading works as expected.
@@ -46,7 +58,7 @@ public class SampleAutonPath extends LinearOpMode {
     Object stateMutex = new Object();
 
     // tmp position
-    Pose2d loc2;
+    Pose2d loc3;
 
     /**
      * This method consists of the OpMode initialization, start, and loop code.
@@ -56,6 +68,7 @@ public class SampleAutonPath extends LinearOpMode {
         // MARK - Initialization
         drive= new SampleMecanumDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        runner = drive.trajectorySequenceRunner;
         Thread.sleep(2000);
         waitForStart();
 
@@ -68,21 +81,34 @@ public class SampleAutonPath extends LinearOpMode {
             telemetry.addData("heading", poseEstimate.getHeading());
             synchronized (stateMutex) {telemetry.addData("State",state);}
             telemetry.update();
-
+            if(gamepad1.a) {
+                synchronized (stateMutex) {state = AutonomousStates.STOPPED;}
+                runner.cancelTraj();
+                stop();
+                break;
+            }
             }
 
         }).start();
         // start the machine
-        synchronized (stateMutex) {state = AutonomousStates.One_STAGE_ADVANCE;}
+        synchronized (stateMutex) {state = AutonomousStates.ONE_BACKWARD;}
         drive.setPoseEstimate(new Pose2d()); // set start position!
         while(opModeIsActive() && !isStopRequested()) {
             // MARK - Loop Code
-            doRobotStateAction();
+            try{doRobotStateAction();}
+            catch(Exception e) {
+                Log.d("AUTON-SYS","RR PATHS STOPPED");
+                synchronized (stateMutex) {state = AutonomousStates.STOPPED;}
+                stop();
+                break;
+            }
             drive.update();
         }
 
     }
     // MARK  - Helper Methods
+
+
     /**
      * This method contains the state actions for each state.
      * It is called each time in the loop.
@@ -93,100 +119,43 @@ public class SampleAutonPath extends LinearOpMode {
         switch(state) {
             case STOPPED:
                 return;
-            case One_STAGE_ADVANCE:
-                // prepare trajectory: 6 inch forward
+            case ONE_BACKWARD:
+               // SampleMecanumDrive.TRANSLATIONAL_PID = SPLINE_TRANSLATIONAL_PID;
+                //SampleMecanumDrive.HEADING_PID = SPLINE_HEADING_PID;
                 Pose2d loc = drive.getPoseEstimate();
                 Trajectory traj1 = drive.trajectoryBuilder(loc)
-                        .lineToSplineHeading(new Pose2d(loc.getX() + 6,loc.getY(),loc.getHeading()))
+                        .back(40)
                         .build();
                 drive.followTrajectory(traj1);
                 drive.update();
-                synchronized (stateMutex) {state = AutonomousStates.Two_ROTATE;}
-            case Two_ROTATE:
-                // NOTE turning is not a trajectory
-                loc2 = drive.getPoseEstimate();
-                drive.turn(Math.toRadians(90));
-                drive.update();
-                synchronized (stateMutex) {state = AutonomousStates.Three_BACK_TO_WALL;}
-            /*case Twobis_FIXPOS: // skipped
-                Trajectory traj2 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToSplineHeading(new Pose2d(loc2.getX(),loc2.getY(),loc2.getHeading() + Math.toRadians(90)))
+                synchronized (stateMutex) {state = AutonomousStates.TWO_FORWARD;}
+            case TWO_FORWARD:
+                loc3 = drive.getPoseEstimate();
+                Trajectory traj2 = drive.trajectoryBuilder(loc3)
+                        .forward(33.21)
+                        .splineToSplineHeading(new Pose2d(loc3.getX() + (9-9*Math.sqrt(2)*Math.cos(Math.toRadians(80))),loc3.getY() + (9-9*Math.sqrt(2)*Math.sin(Math.toRadians(80))),loc3.getHeading()-Math.toRadians(35)),-Math.toRadians(35))
                         .build();
                 drive.followTrajectory(traj2);
                 drive.update();
-                synchronized (stateMutex) {state = AutonomousStates.Three_BACK_TO_WALL;}*/
-            case Three_BACK_TO_WALL:
-                Pose2d loc3 = drive.getPoseEstimate();
-                Trajectory traj3 = drive.trajectoryBuilder(loc3)
-                        .lineToSplineHeading(new Pose2d(loc3.getX() - 8,loc3.getY(),loc2.getHeading()+Math.toRadians(90)))
-                        .build();
-                drive.followTrajectory(traj3);
-                drive.update();
-                synchronized (stateMutex) {state = AutonomousStates.FORWARD1;}
-            case FORWARD1:
-                Pose2d loc4 = drive.getPoseEstimate();
-                Trajectory traj4 = drive.trajectoryBuilder(loc4)
-                        .lineToSplineHeading(new Pose2d(loc4.getX(),loc4.getY()+24,loc4.getHeading()))
-                        .build();
-                drive.followTrajectory(traj4);
-                drive.update();
-                synchronized (stateMutex) {state = AutonomousStates.BACKWARD1;}
-            case BACKWARD1:
+                synchronized (stateMutex) {state = AutonomousStates.FOUR_WAIT;}
+            case FOUR_WAIT:
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                synchronized (stateMutex) {state = AutonomousStates.FIVE_TURNBACK;}
+            case FIVE_TURNBACK:
                 Pose2d loc5 = drive.getPoseEstimate();
                 Trajectory traj5 = drive.trajectoryBuilder(loc5)
-                        .lineToSplineHeading(new Pose2d(loc5.getX(),loc5.getY()-24,loc5.getHeading()))
+                        .lineToSplineHeading(loc3)
                         .build();
                 drive.followTrajectory(traj5);
                 drive.update();
-                synchronized (stateMutex) {state = AutonomousStates.FORWARD3;}
-            case FORWARD3:
-                Pose2d loc6 = drive.getPoseEstimate();
-                Trajectory traj6 = drive.trajectoryBuilder(loc6)
-                        .lineToSplineHeading(new Pose2d(loc6.getX(),loc6.getY()+24,loc6.getHeading()))
-                        .build();
-                drive.followTrajectory(traj6);
-                drive.update();
-                synchronized (stateMutex) {state = AutonomousStates.BACKWARD3;}
-            case BACKWARD3:
-                Pose2d loc7 = drive.getPoseEstimate();
-                Trajectory traj7 = drive.trajectoryBuilder(loc7)
-                        .lineToSplineHeading(new Pose2d(loc7.getX(),loc7.getY()-24,loc7.getHeading()))
-                        .build();
-                drive.followTrajectory(traj7);
-                drive.update();
-                synchronized (stateMutex) {state = AutonomousStates.FORWARD4;}
-            case FORWARD4:
-                Pose2d loc8 = drive.getPoseEstimate();
-                Trajectory traj8 = drive.trajectoryBuilder(loc8)
-                        .lineToSplineHeading(new Pose2d(loc8.getX(),loc8.getY()+24,loc8.getHeading()))
-                        .build();
-                drive.followTrajectory(traj8);
-                drive.update();
-                synchronized (stateMutex) {state = AutonomousStates.BACKWARD4;}
-            case BACKWARD4:
-                Pose2d loc9 = drive.getPoseEstimate();
-                Trajectory traj9 = drive.trajectoryBuilder(loc9)
-                        .lineToSplineHeading(new Pose2d(loc9.getX(),loc9.getY()-24,loc9.getHeading()))
-                        .build();
-                drive.followTrajectory(traj9);
-                drive.update();
-                synchronized (stateMutex) {state = AutonomousStates.FORWARD5;}
-            case FORWARD5:
-                Pose2d loc10 = drive.getPoseEstimate();
-                Trajectory traj10 = drive.trajectoryBuilder(loc10)
-                        .lineToSplineHeading(new Pose2d(loc10.getX(),loc10.getY()+24,loc10.getHeading()))
-                        .build();
-                drive.followTrajectory(traj10);
-                drive.update();
-                synchronized (stateMutex) {state = AutonomousStates.BACKWARD5;}
-            case BACKWARD5:
-                Pose2d loc11 = drive.getPoseEstimate();
-                Trajectory traj11 = drive.trajectoryBuilder(loc11)
-                        .lineToSplineHeading(new Pose2d(loc11.getX(),loc11.getY()-24,loc11.getHeading()))
-                        .build();
-                drive.followTrajectory(traj11);
-                drive.update();
+               // SampleMecanumDrive.TRANSLATIONAL_PID = PID_BUFFER[0];
+               // SampleMecanumDrive.HEADING_PID = PID_BUFFER[1];
                 synchronized (stateMutex) {state = AutonomousStates.STOPPED;}
+
         }
     }
 
@@ -201,19 +170,11 @@ public class SampleAutonPath extends LinearOpMode {
  enum AutonomousStates {
     STOPPED,
     GAMEPAD,
-    One_STAGE_ADVANCE,
-    Two_ROTATE,
-     //Twobis_FIXPOS(2.5),
-    Three_BACK_TO_WALL,
-    FORWARD1,
-    BACKWARD1,
-    FORWARD2,
-    BACKWARD2,
-    FORWARD3,
-    BACKWARD3,
-    FORWARD4,
-    BACKWARD4,
-    FORWARD5,
-    BACKWARD5;
+    ONE_BACKWARD,
+    TWO_FORWARD,
+    THREE_TURN35,
+    FOUR_WAIT,
+    FIVE_TURNBACK,
+
 
 }

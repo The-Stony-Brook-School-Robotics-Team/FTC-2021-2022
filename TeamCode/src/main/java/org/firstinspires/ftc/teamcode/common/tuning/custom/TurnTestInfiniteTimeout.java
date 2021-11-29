@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.common.tuning;
+package org.firstinspires.ftc.teamcode.common.tuning.custom;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -7,7 +7,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.custom.CustomPIDTunerDrive;
 
 /*
  * Op mode for preliminary tuning of the follower PID coefficients (located in the drive base
@@ -26,10 +26,11 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  * is recommended that you use the FollowerPIDTuner opmode for further fine tuning.
  */
 @Config
-@Autonomous(group = "drive", name="T - BackAndForthInfiniteTimeout")
-public class BackAndForthInfiniteTimeout extends LinearOpMode {
+@Autonomous(group = "drive", name="T - TurnTestInfiniteTimeout")
+public class TurnTestInfiniteTimeout extends LinearOpMode {
 
     public static double DISTANCE = 48;
+    public static double HEADING = 0;
     private enum states { STILL, READY, WORKING }
     private states currentState = states.STILL;
 
@@ -38,7 +39,7 @@ public class BackAndForthInfiniteTimeout extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         // Init
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        CustomPIDTunerDrive drive = new CustomPIDTunerDrive(hardwareMap);
         drive.setPoseEstimate(new Pose2d(0, 0));
 
         currentState = states.READY;
@@ -60,9 +61,9 @@ public class BackAndForthInfiniteTimeout extends LinearOpMode {
             }
 
             if(currentState == states.WORKING) {
-                Vector2d targetVec = new Vector2d(0, DISTANCE);
+                Pose2d targetPos = new Pose2d(DISTANCE, 0, Math.toRadians(HEADING));
                 Trajectory targetTraj = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineTo(targetVec)
+                        .lineToSplineHeading(targetPos)
                         .build();
 
                 drive.followTrajectory(targetTraj);
