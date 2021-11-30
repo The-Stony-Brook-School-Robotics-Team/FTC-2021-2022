@@ -52,9 +52,7 @@ import java.util.List;
 @Config
 public class CustomTimeoutTuningDrive extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(62, 2, 3);
-    // previous: public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(220, 0, 10);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(9, 0, .03);
-    // previous: public static PIDCoefficients HEADING_PID = new PIDCoefficients(250, 0, 5);
 
 
     public static double LATERAL_MULTIPLIER = 1;
