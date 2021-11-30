@@ -1,9 +1,11 @@
-package org.firstinspires.ftc.teamcode.sandboxes.William.MovementControl;
+package org.firstinspires.ftc.teamcode.Sandboxes.William.MovementControl;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
+import org.firstinspires.ftc.teamcode.Sandboxes.William.Util.ControllerHelper;
 
 /**
  * Created by Sarthak on 6/1/2019.
@@ -20,9 +22,9 @@ public class GlobalCoordinatePositionUpdateSample extends LinearOpMode {
     public final double COUNTS_PER_INCH = ControllerHelper.COUNTS_PER_INCH;
 
     //Hardware map names for the encoder wheels. Again, these will change for each robot and need to be updated below
-    String leftOdometryName = ControllerHelper.leftOdometryName;
-    String rightOdometryName = ControllerHelper.rightOdometryName;
-    String backOdometryName = ControllerHelper.backOdometryName;
+    String leftOdometryName = ControllerHelper.LEFT_ODOMETRY_NAME;
+    String rightOdometryName = ControllerHelper.RIGHT_ODOMETRY_NAME;
+    String backOdometryName = ControllerHelper.BACK_ODOMETRY_NAME;
 
     @Override
     public void runOpMode() throws InterruptedException {

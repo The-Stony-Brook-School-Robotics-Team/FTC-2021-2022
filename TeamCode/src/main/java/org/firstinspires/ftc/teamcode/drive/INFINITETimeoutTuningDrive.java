@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.custom;
+package org.firstinspires.ftc.teamcode.drive;
 
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ACCEL;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_ACCEL;
@@ -39,7 +39,6 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -50,8 +49,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Config
-public class CustomPIDTunerDrive extends MecanumDrive {
-
+public class INFINITETimeoutTuningDrive extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(110, 1.5, 8.4);
     // previous: public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(220, 0, 10);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(70, 0.5, 1.2);
@@ -76,11 +74,11 @@ public class CustomPIDTunerDrive extends MecanumDrive {
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
 
-    public CustomPIDTunerDrive(HardwareMap hardwareMap) {
+    public INFINITETimeoutTuningDrive(HardwareMap hardwareMap, Double timeoutValue) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
-                new Pose2d(0, 0, Math.toRadians(0)), Double.MAX_VALUE);
+                new Pose2d(0, 0, Math.toRadians(0)), timeoutValue);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
