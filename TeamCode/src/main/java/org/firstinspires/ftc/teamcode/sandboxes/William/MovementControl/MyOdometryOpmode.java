@@ -1,9 +1,11 @@
-package org.firstinspires.ftc.teamcode.sandboxes.William.MovementControl;
+package org.firstinspires.ftc.teamcode.Sandboxes.William.MovementControl;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
+import org.firstinspires.ftc.teamcode.Sandboxes.William.Util.ControllerHelper;
 
 /**
  * Created by Sarthak on 10/4/2019.
@@ -55,14 +57,14 @@ public class MyOdometryOpmode extends LinearOpMode {
     }
 
     private void initDriveHardwareMap() {
-        right_front = hardwareMap.dcMotor.get(ControllerHelper.leftFrontMotorName);
-        right_back = hardwareMap.dcMotor.get(ControllerHelper.rightBackMotorName);
-        left_front = hardwareMap.dcMotor.get(ControllerHelper.leftFrontMotorName);
-        left_back = hardwareMap.dcMotor.get(ControllerHelper.leftBackMotorName);
+        right_front = hardwareMap.dcMotor.get(ControllerHelper.LEFT_FRONT_MOTOR_NAME);
+        right_back = hardwareMap.dcMotor.get(ControllerHelper.RIGHT_BACK_MOTOR_NAME);
+        left_front = hardwareMap.dcMotor.get(ControllerHelper.LEFT_FRONT_MOTOR_NAME);
+        left_back = hardwareMap.dcMotor.get(ControllerHelper.LEFT_BACK_MOTOR_NAME);
 
-        verticalLeft = hardwareMap.dcMotor.get(ControllerHelper.leftOdometryName);
-        verticalRight = hardwareMap.dcMotor.get(ControllerHelper.rightOdometryName);
-        horizontal = hardwareMap.dcMotor.get(ControllerHelper.backOdometryName);
+        verticalLeft = hardwareMap.dcMotor.get(ControllerHelper.LEFT_ODOMETRY_NAME);
+        verticalRight = hardwareMap.dcMotor.get(ControllerHelper.RIGHT_ODOMETRY_NAME);
+        horizontal = hardwareMap.dcMotor.get(ControllerHelper.BACK_ODOMETRY_NAME);
 
         right_front.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         right_back.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

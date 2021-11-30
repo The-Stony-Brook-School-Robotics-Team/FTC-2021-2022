@@ -1,7 +1,9 @@
-package org.firstinspires.ftc.teamcode.sandboxes.William.MovementControl;
+package org.firstinspires.ftc.teamcode.Sandboxes.William.MovementControl;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.firstinspires.ftc.teamcode.Sandboxes.William.Util.ControllerHelper;
 
 public class JoySticksControlDriver extends OpMode implements Runnable {
 
@@ -17,10 +19,10 @@ public class JoySticksControlDriver extends OpMode implements Runnable {
 
     @Override
     public void run() {
-        hardwareMap.get(DcMotor.class, ControllerHelper.leftFrontMotorName).setPower(motorPower * (gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
-        hardwareMap.get(DcMotor.class, ControllerHelper.rightFrontMotorName).setPower(motorPower * (gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
-        hardwareMap.get(DcMotor.class, ControllerHelper.leftBackMotorName).setPower(motorPower * (gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
-        hardwareMap.get(DcMotor.class, ControllerHelper.rightBackMotorName).setPower(motorPower * (gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
+        hardwareMap.get(DcMotor.class, ControllerHelper.LEFT_FRONT_MOTOR_NAME).setPower(motorPower * (gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x));
+        hardwareMap.get(DcMotor.class, ControllerHelper.RIGHT_FRONT_MOTOR_NAME).setPower(motorPower * (gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x));
+        hardwareMap.get(DcMotor.class, ControllerHelper.LEFT_BACK_MOTOR_NAME).setPower(motorPower * (gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x));
+        hardwareMap.get(DcMotor.class, ControllerHelper.RIGHT_BACK_MOTOR_NAME).setPower(motorPower * (gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x));
     }
 
     @Override
