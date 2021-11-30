@@ -26,7 +26,7 @@ public class OfficialSensorsProgramLINEAR extends LinearOpMode{
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        RANGE1 = hardwareMap.i2cDevice.get("UltrasonicSensor");
+        RANGE1 = hardwareMap.i2cDevice.get("ultrasonicsensor");
         RANGE1Reader = new I2cDeviceSynchImpl(RANGE1, RANGE1ADDRESS, false);
         RANGE1Reader.engage();
 

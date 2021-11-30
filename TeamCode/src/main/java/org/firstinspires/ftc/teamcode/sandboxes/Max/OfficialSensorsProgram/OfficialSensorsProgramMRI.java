@@ -22,7 +22,7 @@ public class OfficialSensorsProgramMRI extends OpMode {
 
     @Override
     public void init() {
-        RANGE1 = hardwareMap.i2cDevice.get("UltrasonicSensor");
+        RANGE1 = hardwareMap.i2cDevice.get("us");
         RANGE1Reader = new I2cDeviceSynchImpl(RANGE1, RANGE1ADDRESS, false);
         RANGE1Reader.engage();
     }
