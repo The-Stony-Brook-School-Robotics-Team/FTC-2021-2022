@@ -37,7 +37,7 @@ public class TurnTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         // Init
-        INFINITETimeoutTuningDrive drive = new INFINITETimeoutTuningDrive(hardwareMap);
+        INFINITETimeoutTuningDrive drive = new INFINITETimeoutTuningDrive(hardwareMap,Double.MAX_VALUE);
         drive.setPoseEstimate(new Pose2d(0, 0));
 
         states currentState = states.READY;
