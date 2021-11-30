@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.common.tuning.custom;
+package org.firstinspires.ftc.teamcode.common.tuning.INFINITETimeoutTuning;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
@@ -10,12 +10,12 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.drive.custom.CustomPIDTunerDrive;
+import org.firstinspires.ftc.teamcode.drive.INFINITETimeoutTuningDrive;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 @Config
-@Autonomous(group = "drive", name="T - Point Test Infinite Timeout")
-public class PointTestTunerInfiniteTimeout extends LinearOpMode {
+@Autonomous(group = "drive", name="**INFINITE** PointTest")
+public class PointTest extends LinearOpMode {
 
     // Config
     public static double DISTANCE = 48;
@@ -31,7 +31,7 @@ public class PointTestTunerInfiniteTimeout extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         // Init
-        CustomPIDTunerDrive drive = new CustomPIDTunerDrive(hardwareMap);
+        INFINITETimeoutTuningDrive drive = new INFINITETimeoutTuningDrive(hardwareMap);
         drive.setPoseEstimate(new Pose2d(0, 0));
 
         currentState = states.READY;
@@ -50,13 +50,11 @@ public class PointTestTunerInfiniteTimeout extends LinearOpMode {
             } else if(!gamepad1.a && pA) {
                 switch(currentState) {
                     case WORKING:
+                    case READY:
                         currentState = states.STILL;
                         break;
                     case STILL:
                         currentState = states.WORKING;
-                        break;
-                    case READY:
-                        currentState = states.STILL;
                         break;
                 }
                 pA = false;

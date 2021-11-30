@@ -1,13 +1,12 @@
-package org.firstinspires.ftc.teamcode.common.tuning.custom;
+package org.firstinspires.ftc.teamcode.common.tuning.INFINITETimeoutTuning;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.drive.custom.CustomPIDTunerDrive;
+import org.firstinspires.ftc.teamcode.drive.INFINITETimeoutTuningDrive;
 
 /*
  * Op mode for preliminary tuning of the follower PID coefficients (located in the drive base
@@ -26,23 +25,22 @@ import org.firstinspires.ftc.teamcode.drive.custom.CustomPIDTunerDrive;
  * is recommended that you use the FollowerPIDTuner opmode for further fine tuning.
  */
 @Config
-@Autonomous(group = "drive", name="T - TurnTestInfiniteTimeout")
-public class TurnTestInfiniteTimeout extends LinearOpMode {
+@Autonomous(group = "drive", name="**INFINITE** TurnTest")
+public class TurnTest extends LinearOpMode {
 
     public static double DISTANCE = 48;
     public static double HEADING = 0;
     private enum states { STILL, READY, WORKING }
-    private states currentState = states.STILL;
 
     private boolean pA = false;
 
     @Override
     public void runOpMode() throws InterruptedException {
         // Init
-        CustomPIDTunerDrive drive = new CustomPIDTunerDrive(hardwareMap);
+        INFINITETimeoutTuningDrive drive = new INFINITETimeoutTuningDrive(hardwareMap);
         drive.setPoseEstimate(new Pose2d(0, 0));
 
-        currentState = states.READY;
+        states currentState = states.READY;
         telemetry.addData("Status: ", currentState);
 
         // On Start

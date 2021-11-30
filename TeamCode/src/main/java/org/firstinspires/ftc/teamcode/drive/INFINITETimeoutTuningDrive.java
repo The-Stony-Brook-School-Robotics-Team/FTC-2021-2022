@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.custom;
+package org.firstinspires.ftc.teamcode.drive;
 
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ACCEL;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_ACCEL;
@@ -50,7 +50,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Config
-public class CustomPIDTunerDrive extends MecanumDrive {
+public class INFINITETimeoutTuningDrive extends MecanumDrive {
 
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(110, 1.5, 8.4);
     // previous: public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(220, 0, 10);
@@ -76,7 +76,7 @@ public class CustomPIDTunerDrive extends MecanumDrive {
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
 
-    public CustomPIDTunerDrive(HardwareMap hardwareMap) {
+    public INFINITETimeoutTuningDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
