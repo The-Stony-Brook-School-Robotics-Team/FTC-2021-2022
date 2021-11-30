@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.common.tuning;
+package org.firstinspires.ftc.teamcode.common.tuning.roadrunner;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -26,7 +26,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  */
 @Config
 @Autonomous(group = "drive")
-public class BackAndForthPos extends LinearOpMode {
+public class BackAndForthDefault extends LinearOpMode {
 
     public static double DISTANCE = 48;
 
@@ -34,22 +34,20 @@ public class BackAndForthPos extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
+        Trajectory trajectoryForward = drive.trajectoryBuilder(new Pose2d())
+                .forward(DISTANCE)
+                .build();
 
-        Pose2d ini = drive.getPoseEstimate();
+        Trajectory trajectoryBackward = drive.trajectoryBuilder(trajectoryForward.end())
+                .back(DISTANCE)
+                .build();
+
         waitForStart();
 
-        while(opModeIsActive() && !isStopRequested()) {
-            Trajectory trajectoryForward = drive.trajectoryBuilder(ini)
-                    .lineToSplineHeading(new Pose2d(ini.getX()+DISTANCE,ini.getY(),ini.getHeading()))
-                    .build();
-
-
+        while (opModeIsActive() && !isStopRequested()) {
             drive.followTrajectory(trajectoryForward);
-            Trajectory trajectoryBackward = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .lineToSplineHeading(ini)
-                    .build();
             drive.followTrajectory(trajectoryBackward);
         }
-//        T265Controller.shutDown();
+        //T265Controller.shutDown();
     }
 }

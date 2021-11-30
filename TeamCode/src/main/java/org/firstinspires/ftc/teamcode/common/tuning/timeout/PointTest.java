@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.common.tuning.INFINITETimeoutTuning;
+package org.firstinspires.ftc.teamcode.common.tuning.timeout;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
@@ -10,7 +10,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.drive.INFINITETimeoutTuningDrive;
+import org.firstinspires.ftc.teamcode.drive.timeout.CustomTimeoutTuningDrive;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 @Config
@@ -31,7 +31,7 @@ public class PointTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         // Init
-        INFINITETimeoutTuningDrive drive = new INFINITETimeoutTuningDrive(hardwareMap,Double.MAX_VALUE);
+        CustomTimeoutTuningDrive drive = new CustomTimeoutTuningDrive(hardwareMap,Double.MAX_VALUE);
         drive.setPoseEstimate(new Pose2d(0, 0));
 
         currentState = states.READY;

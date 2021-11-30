@@ -1,12 +1,12 @@
-package org.firstinspires.ftc.teamcode.common.tuning;
+package org.firstinspires.ftc.teamcode.common.tuning.timeout;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.archive.SampleMecanumDriveOld;
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.timeout.CustomTimeoutTuningDrive;
 
 /*
  * Op mode for preliminary tuning of the follower PID coefficients (located in the drive base
@@ -25,31 +25,49 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  * is recommended that you use the FollowerPIDTuner opmode for further fine tuning.
  */
 @Config
-@Autonomous(group = "drive")
-public class BackAndForthCam extends LinearOpMode {
+@Autonomous(group = "drive", name="**INFINITE** TurnTest")
+public class TurnTest extends LinearOpMode {
 
     public static double DISTANCE = 48;
+    public static double HEADING = 0;
+    private enum states { STILL, READY, WORKING }
+
+    private boolean pA = false;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        SampleMecanumDriveOld drive = new SampleMecanumDriveOld(hardwareMap);
+        // Init
+        CustomTimeoutTuningDrive drive = new CustomTimeoutTuningDrive(hardwareMap,Double.MAX_VALUE);
+        drive.setPoseEstimate(new Pose2d(0, 0));
 
+        states currentState = states.READY;
+        telemetry.addData("Status: ", currentState);
 
-
+        // On Start
         waitForStart();
 
+        telemetry.clearAll();
+
+        // Work Loop
         while (opModeIsActive() && !isStopRequested()) {
-            Trajectory trajectoryForward = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .forward(DISTANCE)
-                    .build();
+            if(gamepad1.a && !pA) {
+                pA = true;
+            } else {
+                currentState = states.WORKING;
+                telemetry.addData("Status: ", currentState);
+                pA = false;
+            }
 
+            if(currentState == states.WORKING) {
+                Pose2d targetPos = new Pose2d(DISTANCE, 0, Math.toRadians(HEADING));
+                Trajectory targetTraj = drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .lineToSplineHeading(targetPos)
+                        .build();
 
-            drive.followTrajectory(trajectoryForward);
-            Trajectory trajectoryBackward = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .back(DISTANCE)
-                    .build();
-            drive.followTrajectory(trajectoryBackward);
+                drive.followTrajectory(targetTraj);
+            }
+
+            telemetry.update();
         }
-//        T265Controller.shutDown();
     }
 }

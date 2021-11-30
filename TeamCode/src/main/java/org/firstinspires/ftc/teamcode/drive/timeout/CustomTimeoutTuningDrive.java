@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive;
+package org.firstinspires.ftc.teamcode.drive.timeout;
 
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ACCEL;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_ACCEL;
@@ -39,6 +39,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -49,10 +50,10 @@ import java.util.Arrays;
 import java.util.List;
 
 @Config
-public class INFINITETimeoutTuningDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(110, 1.5, 8.4);
+public class CustomTimeoutTuningDrive extends MecanumDrive {
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
     // previous: public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(220, 0, 10);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(70, 0.5, 1.2);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
     // previous: public static PIDCoefficients HEADING_PID = new PIDCoefficients(250, 0, 5);
 
 
@@ -74,7 +75,7 @@ public class INFINITETimeoutTuningDrive extends MecanumDrive {
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
 
-    public INFINITETimeoutTuningDrive(HardwareMap hardwareMap, Double timeoutValue) {
+    public CustomTimeoutTuningDrive(HardwareMap hardwareMap, Double timeoutValue) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,

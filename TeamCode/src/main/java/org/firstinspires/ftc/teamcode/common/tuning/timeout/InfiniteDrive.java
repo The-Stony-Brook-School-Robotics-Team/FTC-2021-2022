@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.common.tuning.INFINITETimeoutTuning;
+package org.firstinspires.ftc.teamcode.common.tuning.timeout;
 
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 
