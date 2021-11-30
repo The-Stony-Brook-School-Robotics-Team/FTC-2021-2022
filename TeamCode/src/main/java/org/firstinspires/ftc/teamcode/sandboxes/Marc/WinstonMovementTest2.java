@@ -1,11 +1,10 @@
-package org.firstinspires.ftc.teamcode.sandboxes.Dennis;
+package org.firstinspires.ftc.teamcode.sandboxes.Marc;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -13,8 +12,8 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 
-@TeleOp(name = "P - Winston Movement", group = "default")
-public class WinstonMovementTest1 extends LinearOpMode {
+@TeleOp(name = "P - Winston Movement2", group = "default")
+public class WinstonMovementTest2 extends LinearOpMode {
 
     private static Pose2d homePose = new Pose2d(0, 0,0);
     // Dashboard
@@ -25,7 +24,7 @@ public class WinstonMovementTest1 extends LinearOpMode {
     private static int x = 48;
 
 
-    public static Pose2d toPos = new Pose2d(x,0,0);
+    public static Pose2d toPos = new Pose2d(48,0,0);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -42,7 +41,7 @@ public class WinstonMovementTest1 extends LinearOpMode {
             dashboard.sendTelemetryPacket(telemPacket);
 
 
-            if(x < 57) {
+            if(x < 53) {
                 Trajectory mainTraj1 = drive.trajectoryBuilder(homePose)
                         .lineToSplineHeading(toPos)
                         .build();
