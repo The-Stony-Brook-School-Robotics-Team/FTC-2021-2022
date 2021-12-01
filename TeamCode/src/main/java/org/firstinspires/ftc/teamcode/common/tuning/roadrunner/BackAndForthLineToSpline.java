@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 @Config
-@Autonomous(group = "drive")
+@Autonomous(name = "T - BackAndForthLineToSpline", group = "drive")
 public class BackAndForthLineToSpline extends LinearOpMode {
 
     public static double DISTANCE = 48;

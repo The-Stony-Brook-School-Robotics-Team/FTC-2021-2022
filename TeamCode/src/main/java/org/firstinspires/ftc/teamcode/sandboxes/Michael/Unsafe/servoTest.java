@@ -34,8 +34,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="AUGH test michael", group="Linear Opmode")
-//@Disabled
+@TeleOp(name="DoubleServoTest", group="Linear Opmode")
+
 public class servoTest extends LinearOpMode {
     boolean pressingUp = false;
     boolean pressingDown = false;

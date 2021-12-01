@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.sandboxes.Max;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -15,6 +16,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 //This is the code of Max
 @TeleOp(name="Max TeleOp", group="drive")
+@Disabled
 public class SampleTeleOp extends OpMode {
     private static BNO055IMU imu;
     private static DcMotor lf = null;

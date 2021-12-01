@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.testing.MecanumDriveTesting;
 
 
-@TeleOp(group = "drive")
+@TeleOp(name = "T - LocalizationTest", group = "drive")
 public class LocalizationTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

@@ -12,6 +12,7 @@ import com.arcrobotics.ftclib.purepursuit.Waypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.EndWaypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.GeneralWaypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.StartWaypoint;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -21,6 +22,7 @@ import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 import java.util.function.DoubleSupplier;
 
 @TeleOp(name="Michael Unsafe Testing", group="drive")
+@Disabled
 public class pptUNSAFE extends LinearOpMode {
 
 

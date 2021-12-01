@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.drive.testing.MecanumDriveTesting;
  * This is a simple routine to test translational drive capabilities.
  */
 @Config
-@Autonomous(group = "drive")
+@Autonomous(name = "T - StrafeTest", group = "drive")
 public class StrafeTest extends LinearOpMode {
     public static double DISTANCE = 60; // in
 

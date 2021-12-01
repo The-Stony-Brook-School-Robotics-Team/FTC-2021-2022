@@ -63,7 +63,7 @@ import org.firstinspires.ftc.teamcode.drive.testing.MecanumDriveTesting;
  * precision. The heading should still line up.
  */
 @Config
-@TeleOp(group = "drive")
+@TeleOp(group = "drive", name="T - TrackingWheelLateralDistanceTuner")
 public class TrackingWheelLateralDistanceTuner extends LinearOpMode {
     public static int NUM_TURNS = 10;
 
