@@ -57,6 +57,7 @@ public class CustomizedMecanumDrive extends MecanumDrive {
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
+
     public static double DEFAULT_ACCEPTABLE_DISTANCE_ERROR = 0.5;
     public static double DEFAULT_ACCEPTABLE_HEADING_ERROR =  5;
     public static double DEFAULT_TIMEOUT_VALUE = 0.5;
@@ -84,9 +85,9 @@ public class CustomizedMecanumDrive extends MecanumDrive {
         /**
          * Set values used by follower.
          */
-        this.acceptableDistanceError_IN = acceptableDistanceError_IN;
-        this.acceptableHeadingError_DE = acceptableHeadingError_DE;
-        this.timeoutValue_SE = timeoutValue_SE;
+        this.acceptableDistanceError_IN = DEFAULT_ACCEPTABLE_DISTANCE_ERROR;
+        this.acceptableHeadingError_DE = DEFAULT_ACCEPTABLE_HEADING_ERROR;
+        this.timeoutValue_SE = DEFAULT_TIMEOUT_VALUE;
 
         /**
          *  CUSTOMIZED HOLONOMIC_PID_VA_FOLLOWER.
