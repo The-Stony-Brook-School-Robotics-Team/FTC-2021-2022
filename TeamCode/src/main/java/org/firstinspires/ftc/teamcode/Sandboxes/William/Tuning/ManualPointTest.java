@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Sandboxes.William.Util.CustomizedMecanumDrive;
 
 @Config
-@Autonomous(group = "drive")
+@Autonomous(group = "drive", name="***** Manual Point Test")
 public class ManualPointTest extends LinearOpMode {
 
     public static double DISTANCE = 48;
