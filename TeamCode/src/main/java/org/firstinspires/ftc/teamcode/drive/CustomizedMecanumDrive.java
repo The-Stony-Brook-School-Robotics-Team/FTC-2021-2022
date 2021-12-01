@@ -57,6 +57,9 @@ public class CustomizedMecanumDrive extends MecanumDrive {
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
+    public static double DEFAULT_ACCEPTABLE_DISTANCE_ERROR = 0.5;
+    public static double DEFAULT_ACCEPTABLE_HEADING_ERROR =  5;
+    public static double DEFAULT_TIMEOUT_VALUE = 0.5;
 
     public TrajectorySequenceRunner trajectorySequenceRunner;
 
@@ -71,14 +74,24 @@ public class CustomizedMecanumDrive extends MecanumDrive {
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
 
-    public CustomizedMecanumDrive(HardwareMap hardwareMap, int IN_acceptableDistanceError, int D_acceptableHeadingError, Double timeoutValue) {
+    private double acceptableDistanceError_IN;
+    private double acceptableHeadingError_DE;
+    private double timeoutValue_SE;
+
+    public CustomizedMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
+
+        /**
+         * Set values used by follower.
+         */
+        this.acceptableDistanceError_IN = acceptableDistanceError_IN;
+        this.acceptableHeadingError_DE = acceptableHeadingError_DE;
+        this.timeoutValue_SE = timeoutValue_SE;
 
         /**
          *  CUSTOMIZED HOLONOMIC_PID_VA_FOLLOWER.
          */
-        follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
-                new Pose2d(IN_acceptableDistanceError, IN_acceptableDistanceError, Math.toRadians(D_acceptableHeadingError)), timeoutValue);
+        refreshFollower(acceptableDistanceError_IN,acceptableHeadingError_DE,timeoutValue_SE);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -132,6 +145,11 @@ public class CustomizedMecanumDrive extends MecanumDrive {
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
+        return new TrajectoryBuilder(startPose, VEL_CONSTRAINT, ACCEL_CONSTRAINT);
+    }
+    public TrajectoryBuilder trajectoryBuilderCustomizedTimeout(Pose2d startPose, double timeoutValue_SE) {
+        this.timeoutValue_SE = timeoutValue_SE;
+        refreshFollower();
         return new TrajectoryBuilder(startPose, VEL_CONSTRAINT, ACCEL_CONSTRAINT);
     }
 
@@ -205,6 +223,28 @@ public class CustomizedMecanumDrive extends MecanumDrive {
         return trajectorySequenceRunner.isBusy();
     }
 
+    private void refreshFollower()
+    {
+        follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
+                new Pose2d(acceptableDistanceError_IN, acceptableDistanceError_IN, Math.toRadians(acceptableHeadingError_DE)), timeoutValue_SE);
+    }
+    
+    public void refreshFollower(double IN_acceptableDistanceError, double DE_acceptableHeadingError, double SE_timeoutValue)
+    {
+        this.acceptableDistanceError_IN = IN_acceptableDistanceError;
+        this.acceptableHeadingError_DE = DE_acceptableHeadingError;
+        this.timeoutValue_SE = SE_timeoutValue;
+        refreshFollower();
+    }
+
+    public void resetFollower()
+    {
+        this.acceptableDistanceError_IN = DEFAULT_ACCEPTABLE_DISTANCE_ERROR;
+        this.acceptableHeadingError_DE = DEFAULT_ACCEPTABLE_HEADING_ERROR;
+        this.timeoutValue_SE = DEFAULT_TIMEOUT_VALUE;
+        refreshFollower();
+    }
+
     public void setMode(DcMotor.RunMode runMode) {
         for (DcMotorEx motor : motors) {
             motor.setMode(runMode);
@@ -246,6 +286,35 @@ public class CustomizedMecanumDrive extends MecanumDrive {
         }
 
         setDrivePower(vel);
+    }
+
+    /**
+     * Change the value of acceptableDistanceError then Automatically refresh follower.
+     * @param acceptableDistanceError_IN acceptable distance error measured in inches.
+     */
+    public void setAcceptableDistanceError_IN(double acceptableDistanceError_IN)
+    {
+        this.acceptableDistanceError_IN = acceptableDistanceError_IN;
+        refreshFollower();
+    }
+
+    /**
+     * Change the value of acceptableDistanceError then Automatically refresh follower.
+     * @param acceptableDistanceError_IN acceptable distance error measured in degrees.
+     */
+    public void setAcceptableHeadingError_DE(double acceptableDistanceError_IN)
+    {
+        this.acceptableHeadingError_DE = acceptableDistanceError_IN;
+        refreshFollower();
+    }
+
+    /**
+     * Change the value of timeoutValue then Automatically refresh follower.
+     * @param timeoutValue_SE timeout value measured in seconds.
+     */
+    public void setTimeoutValue_SE(double timeoutValue_SE){
+        this.timeoutValue_SE = timeoutValue_SE;
+        refreshFollower();
     }
 
     @NonNull
@@ -312,5 +381,17 @@ public class CustomizedMecanumDrive extends MecanumDrive {
 
     public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel) {
         return new ProfileAccelerationConstraint(maxAccel);
+    }
+
+    public double getAcceptableDistanceError_IN() {
+        return acceptableDistanceError_IN;
+    }
+
+    public double getAcceptableHeadingError_DE() {
+        return acceptableHeadingError_DE;
+    }
+
+    public double getTimeoutValue_SE() {
+        return timeoutValue_SE;
     }
 }
