@@ -32,11 +32,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="S - servoTestDouble", group="Linear Opmode")
-
-public class servoTest extends LinearOpMode {
+@TeleOp(name="S - Single Servo", group="Linear Opmode")
+//@Disabled
+public class servoTestSingle extends LinearOpMode {
+    // you should treat yourself NOW
     boolean pressingUp = false;
     boolean pressingDown = false;
     boolean pressingA = false;
@@ -56,8 +56,8 @@ public class servoTest extends LinearOpMode {
         servo2.setDirection(Servo.Direction.REVERSE);
 
         double servoPos = 0;
-        final double MIN = 1;
-        final double MAX = .7;
+        final double MIN = 1 ;
+        final double MAX = 0;
         servo.setPosition(MAX);
         servo2.setPosition(MAX);
         telemetry.addData("Status", "Initialized");
@@ -65,8 +65,6 @@ public class servoTest extends LinearOpMode {
         telemetry.addData("pos2", servo2.getPosition());
         telemetry.update();
         waitForStart();
-
-
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -82,6 +80,12 @@ public class servoTest extends LinearOpMode {
             }
             else if(!gamepad1.dpad_up && pressingUp){
                 servoPos-=.05;
+                if(servoPos > MIN){
+                    servoPos = MIN;
+                }
+                if(servoPos < MAX ){
+                    servoPos = MAX;
+                }
                 servo.setPosition(servoPos);
                 servo2.setPosition(servoPos);
                 pressingUp = false;
@@ -90,7 +94,14 @@ public class servoTest extends LinearOpMode {
                 pressingDown = true;
             }
             else if(!gamepad1.dpad_down && pressingDown){
+
                 servoPos+=.05;
+                if(servoPos > MIN){
+                    servoPos = MIN;
+                }
+                if(servoPos < MAX ){
+                    servoPos = MAX;
+                }
                 servo.setPosition(servoPos);
                 servo2.setPosition(servoPos);
                 pressingDown = false;

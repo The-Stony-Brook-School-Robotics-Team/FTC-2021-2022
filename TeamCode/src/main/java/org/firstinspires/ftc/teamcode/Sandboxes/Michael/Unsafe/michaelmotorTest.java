@@ -30,39 +30,28 @@
 package org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="S - servoTestDouble", group="Linear Opmode")
+@TeleOp(name="S - Motor Test", group="Linear Opmode")
+//@Disabled
+public class michaelmotorTest extends LinearOpMode {
 
-public class servoTest extends LinearOpMode {
-    boolean pressingUp = false;
-    boolean pressingDown = false;
-    boolean pressingA = false;
-    boolean pressingB = false;
-    // Declare OpMode members.
-    private ElapsedTime runtime = new ElapsedTime();
-    private Servo servo = null;
-    private Servo servo2 = null;
-
+    private DcMotor motor = null;
+    private double motorPosition;
+    private boolean pressingUp = false;
+    private boolean pressingDown = false;
     @Override
     public void runOpMode() throws InterruptedException {
-
-        servo = hardwareMap.get(Servo.class, "servo");
-        servo2 = hardwareMap.get(Servo.class, "servo2");
-
-        servo.setDirection(Servo.Direction.FORWARD);
-        servo2.setDirection(Servo.Direction.REVERSE);
-
-        double servoPos = 0;
-        final double MIN = 1;
-        final double MAX = .7;
-        servo.setPosition(MAX);
-        servo2.setPosition(MAX);
+        motor = hardwareMap.get(DcMotor.class, "motor");
+        motor.setDirection(DcMotorSimple.Direction.FORWARD);
+        motor.setPower(0);
+        motorPosition = 0.0;
         telemetry.addData("Status", "Initialized");
-        telemetry.addData("pos1", servo.getPosition());
-        telemetry.addData("pos2", servo2.getPosition());
+        telemetry.addData("motor power", motor.getPower());
         telemetry.update();
         waitForStart();
 
@@ -70,51 +59,32 @@ public class servoTest extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
-            if(servoPos > MIN){
-                servoPos = MIN;
-            }
-            if(servoPos < MAX ){
-                servoPos = MAX;
-            }
             if(gamepad1.dpad_up && !pressingUp){
                 pressingUp = true;
             }
             else if(!gamepad1.dpad_up && pressingUp){
-                servoPos-=.05;
-                servo.setPosition(servoPos);
-                servo2.setPosition(servoPos);
+                motorPosition += .1;
                 pressingUp = false;
             }
-            if(gamepad1.dpad_down && !pressingDown){
+            else if(gamepad1.dpad_down && ! pressingDown){
                 pressingDown = true;
             }
             else if(!gamepad1.dpad_down && pressingDown){
-                servoPos+=.05;
-                servo.setPosition(servoPos);
-                servo2.setPosition(servoPos);
+                motorPosition -= .1;
                 pressingDown = false;
             }
-            if(gamepad1.a && !pressingA){
-                pressingA = true;
-            }
-            else if(!gamepad1.a && pressingA){
-                servo.setPosition(MIN);
-                servo2.setPosition(MIN);
-                pressingA = false;
-            }
-            if(gamepad1.b && !pressingB){
-                pressingB = true;
-            }
-            else if(!gamepad1.b && pressingB){
-                servo.setPosition(MAX);
-                servo2.setPosition(MAX);
-                pressingB = false;
-            }
 
 
-            telemetry.addData("Servo Position: ", servo.getPosition());
-            telemetry.addData("Servo2 Position: ", servo2.getPosition());
+
+            if(motorPosition > 1){
+                motorPosition = 1;
+            }
+            else if(motorPosition < 0){
+                motorPosition = 0;
+            }
+            motor.setPower(motorPosition);
+
+            telemetry.addData("Motor Power: ", motor.getPower());
             telemetry.update();
 
         }
