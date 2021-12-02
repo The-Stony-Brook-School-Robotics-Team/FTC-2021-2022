@@ -1,6 +1,8 @@
-package org.firstinspires.ftc.teamcode.sandboxes.William.MovementControl;
+package org.firstinspires.ftc.teamcode.Sandboxes.William.MovementControl;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.firstinspires.ftc.teamcode.Sandboxes.William.Util.ControllerHelper;
 
 /**
  * Created by Sarthak on 6/1/2019.
@@ -18,8 +20,8 @@ public class OdometryGlobalCoordinatePosition implements Runnable {
     private double previousVerticalRightEncoderWheelPosition = 0, previousVerticalLeftEncoderWheelPosition = 0, prevNormalEncoderWheelPosition = 0;
 
     //Algorithm constants
-    private final double robotEncoderWheelDistance = ControllerHelper.robotEncoderWheelDistance;
-    private final double horizontalEncoderTickPerDegreeOffset = ControllerHelper.horizontalEncoderTickPerDegreeOffset;
+    private final double robotEncoderWheelDistance = ControllerHelper.ROBOT_ENCODER_WHEEL_DISTANCE;
+    private final double horizontalEncoderTickPerDegreeOffset = ControllerHelper.HORIZONTAL_ENCODER_TICK_PER_DEGREE_OFFSET;
 
     //Sleep time interval (milliseconds) for the position update thread
     private final int sleepTime;

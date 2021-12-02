@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.sandboxes.William.WheelControl;
+package org.firstinspires.ftc.teamcode.Sandboxes.William.WheelControl;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -10,12 +10,18 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  * This code is used to test the movement and time of the motor which
  * is designed to spin the wheel on the corner of the field.
  * <p>
- * There are three stages during the spinning, which are called Stage 1, Stage 2 and Stage 3.
+ * There are three stages during the spinning, which are called Stage 1 and Stage 2.
+ * Stage 1: accelerate.
+ * Stage 2: Stop the wheel.
+ * <p>
+ * Game pad Controls:
  * Press DpadUp & DpadDown to control the time for FRICTION_CONSTANT.
  * Press X & B on the game pad to control the time for FIRST_STAGE_TIME.
  * Press DpadLeft & DpadRight to control the time for SECOND_STAGE_TIME.
  * <p>
  * Press A to start a spin.
+ * <p>
+ * --------With MAGICAL_CONSTANT--------
  */
 
 @TeleOp(name = "Wheel Control (Final)", group = "WC")
@@ -26,8 +32,6 @@ public class WheelControl extends OpMode {
     private boolean isPressingB = false;
     private boolean isPressingDpadUp = false;
     private boolean isPressingDpadDown = false;
-    private boolean isPressingDpadLeft = false;
-    private boolean isPressingDpadRight = false;
     private boolean hasStarted = false;
 
     private boolean emergencyStop = false;
@@ -39,7 +43,6 @@ public class WheelControl extends OpMode {
 
     private double MAGICAL_CONSTANT = 0.45;
     private double FIRST_STAGE_TIME_INTERVAL = 0.46;
-    private double SECOND_STAGE_TIME_INTERVAL = 0.24;
     private final double THIRD_STAGE_TIME_INTERVAL = 0.025;
 
     private double timer;
@@ -56,8 +59,6 @@ public class WheelControl extends OpMode {
         //Print data to the phone.
         telemetry.update();
         telemetry.addData("FIRST_STAGE_TIME_INTERVAL", "%.3f", FIRST_STAGE_TIME_INTERVAL);
-        telemetry.addData("SECOND_STAGE_TIME_INTERVAL", "%.3f", SECOND_STAGE_TIME_INTERVAL);
-        telemetry.addData("THIRD_STAGE_TIME_INTERVAL","%.3f",THIRD_STAGE_TIME_INTERVAL);
         telemetry.addData("MAGICAL_CONSTANT", "--%.3f--", MAGICAL_CONSTANT);
 
         //Detect keys on the game pad.
@@ -66,8 +67,6 @@ public class WheelControl extends OpMode {
         PressingB();            //Subtract 0.01 second to Stage 2 time.
         PressingDpadUp();       //Add 0.01 second to Stage 1 time.
         PressingDpadDown();     //Subtract 0.01 second to Stage 1 time.
-        PressingDpadLeft();     //Add 0.005 second to Stage 3 time.
-        PressingDpadRight();    //Subtract 0.005 second to Stage 3 time.
 
         enableEmergencyStop();
 
@@ -81,33 +80,21 @@ public class WheelControl extends OpMode {
             if (runTime >= 0 && runTime < FIRST_STAGE_TIME) {
                 //First Stage
                 wheelMover.setPower(getFirstStageMotorSpeed());
-            } else if (runTime >= FIRST_STAGE_TIME && runTime < SECOND_STAGE_TIME) {
-                //Second Stage
-                wheelMover.setPower(1);
-            } else if (runTime >= SECOND_STAGE_TIME && runTime < THIRD_STAGE_TIME) {
-                //Third Stage
+            } else if (runTime >= FIRST_STAGE_TIME && runTime < THIRD_STAGE_TIME) {   //Third Stage
                 wheelMover.setPower(-1);
             } else {
                 //Ending
                 wheelMover.setPower(0);
                 hasStarted = false;
             }
-        }else{
+        } else {
             WheelControlInitializer();
         }
     }
 
     private void WheelControlInitializer() {
-        double MAX_FIRST_STAGE_TIME_INTERVAL = 1/Math.sqrt(MAGICAL_CONSTANT);
-        if(FIRST_STAGE_TIME_INTERVAL>MAX_FIRST_STAGE_TIME_INTERVAL)
-        {
-            SECOND_STAGE_TIME_INTERVAL += FIRST_STAGE_TIME_INTERVAL - MAX_FIRST_STAGE_TIME_INTERVAL;
-            FIRST_STAGE_TIME_INTERVAL = MAX_FIRST_STAGE_TIME_INTERVAL;
-        }
-
         FIRST_STAGE_TIME = FIRST_STAGE_TIME_INTERVAL;
-        SECOND_STAGE_TIME = FIRST_STAGE_TIME + SECOND_STAGE_TIME_INTERVAL;
-        THIRD_STAGE_TIME = SECOND_STAGE_TIME + THIRD_STAGE_TIME_INTERVAL;
+        THIRD_STAGE_TIME = FIRST_STAGE_TIME + THIRD_STAGE_TIME_INTERVAL;
         timer = getRuntime();
     }
 
@@ -172,24 +159,6 @@ public class WheelControl extends OpMode {
         } else if (!gamepad1.dpad_down && isPressingDpadDown) {
             FIRST_STAGE_TIME_INTERVAL -= 0.005;
             isPressingDpadDown = false;
-        }
-    }
-
-    private void PressingDpadLeft() {
-        if (gamepad1.dpad_left && !isPressingDpadLeft) {
-            isPressingDpadLeft = true;
-        } else if (!gamepad1.dpad_left && isPressingDpadLeft) {
-            SECOND_STAGE_TIME_INTERVAL += 0.005;
-            isPressingDpadLeft = false;
-        }
-    }
-
-    private void PressingDpadRight() {
-        if (gamepad1.dpad_right && !isPressingDpadRight) {
-            isPressingDpadRight = true;
-        } else if (!gamepad1.dpad_right && isPressingDpadRight) {
-            SECOND_STAGE_TIME_INTERVAL -= 0.005;
-            isPressingDpadRight = false;
         }
     }
 }

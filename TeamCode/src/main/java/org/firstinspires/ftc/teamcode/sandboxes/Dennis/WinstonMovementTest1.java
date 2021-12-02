@@ -13,9 +13,9 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 
-@TeleOp(name = "P - Winston Movement", group = "default")
+@TeleOp(name = "Winston Movement", group = "default")
 public class WinstonMovementTest1 extends LinearOpMode {
-
+//TODO: push to github :)
     private static Pose2d homePose = new Pose2d(0, 0,0);
     // Dashboard
     private static FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -25,7 +25,7 @@ public class WinstonMovementTest1 extends LinearOpMode {
     private static int x = 48;
 
 
-    public static Pose2d toPos = new Pose2d(48,0,0);
+    public static Pose2d toPos = new Pose2d(x,0,0);
 
     @Override
     public void runOpMode() throws InterruptedException {

@@ -1,10 +1,12 @@
-package org.firstinspires.ftc.teamcode.sandboxes.William.MovementControl;
+package org.firstinspires.ftc.teamcode.Sandboxes.William.MovementControl;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.firstinspires.ftc.teamcode.Sandboxes.William.Util.ControllerHelper;
 
 /**
  * Created by Sarthak on 6/1/2019.
@@ -14,15 +16,15 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @TeleOp(name = "Odometry System Calibration", group = "Calibration")
 public class OdometryCalibration extends OpMode {
     //Drive motors
-    DcMotor right_front = hardwareMap.dcMotor.get(ControllerHelper.rightFrontMotorName);
-    DcMotor right_back = hardwareMap.dcMotor.get(ControllerHelper.rightBackMotorName);
-    DcMotor left_front = hardwareMap.dcMotor.get(ControllerHelper.leftFrontMotorName);
-    DcMotor left_back = hardwareMap.dcMotor.get(ControllerHelper.leftBackMotorName);
+    DcMotor right_front = hardwareMap.dcMotor.get(ControllerHelper.RIGHT_FRONT_MOTOR_NAME);
+    DcMotor right_back = hardwareMap.dcMotor.get(ControllerHelper.RIGHT_BACK_MOTOR_NAME);
+    DcMotor left_front = hardwareMap.dcMotor.get(ControllerHelper.LEFT_FRONT_MOTOR_NAME);
+    DcMotor left_back = hardwareMap.dcMotor.get(ControllerHelper.LEFT_BACK_MOTOR_NAME);
 
     //Odometry Wheels
-    DcMotor verticalLeft = hardwareMap.dcMotor.get(ControllerHelper.leftOdometryName);
-    DcMotor verticalRight = hardwareMap.dcMotor.get(ControllerHelper.rightOdometryName);
-    DcMotor horizontal = hardwareMap.dcMotor.get(ControllerHelper.backOdometryName);
+    DcMotor verticalLeft = hardwareMap.dcMotor.get(ControllerHelper.LEFT_ODOMETRY_NAME);
+    DcMotor verticalRight = hardwareMap.dcMotor.get(ControllerHelper.RIGHT_ODOMETRY_NAME);
+    DcMotor horizontal = hardwareMap.dcMotor.get(ControllerHelper.BACK_ODOMETRY_NAME);
 
     //IMU Sensor
     BNO055IMU imu;

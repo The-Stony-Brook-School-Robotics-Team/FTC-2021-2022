@@ -15,6 +15,7 @@ import com.arcrobotics.ftclib.purepursuit.waypoints.EndWaypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.GeneralWaypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.InterruptWaypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.StartWaypoint;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -23,6 +24,7 @@ import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 import java.util.function.DoubleSupplier;
 
 @TeleOp
+@Disabled
 public class KEHANPurePursuitTest extends LinearOpMode {
 
     private static final double TRACKWIDTH = 12.75;
