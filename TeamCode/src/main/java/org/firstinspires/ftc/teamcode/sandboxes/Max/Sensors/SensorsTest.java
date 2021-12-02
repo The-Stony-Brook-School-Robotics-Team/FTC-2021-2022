@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.sandboxes.Max;
+package org.firstinspires.ftc.teamcode.sandboxes.Max.Sensors;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 
@@ -31,7 +31,7 @@ public class SensorsTest extends OpMode {
 
     @Override
     public void init() {
-        UltrasonicSensor = hardwareMap.i2cDevice.get("UltrasonicSensor");
+        UltrasonicSensor = hardwareMap.i2cDevice.get("us");
         UltrasonicSensorEXE = new I2cDeviceSynchImpl(UltrasonicSensor, UltrasonicSensorBiosAddress, false);
         UltrasonicSensorEXE.engage();
 

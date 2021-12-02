@@ -204,10 +204,11 @@ public class SensorColor extends LinearOpMode {
       /* If this color sensor also has a distance sensor, display the measured distance.
        * Note that the reported distance is only useful at very close range, and is impacted by
        * ambient light and surface reflectivity. */
+      /*
       if (colorSensor instanceof DistanceSensor) {
         telemetry.addData("Distance (cm)", "%.3f", ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM));
       }
-
+*/
       telemetry.update();
 
       // Change the Robot Controller's background color to match the color detected by the color sensor.

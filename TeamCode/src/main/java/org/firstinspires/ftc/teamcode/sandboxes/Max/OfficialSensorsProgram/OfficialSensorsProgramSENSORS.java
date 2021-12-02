@@ -25,8 +25,8 @@ public class OfficialSensorsProgramSENSORS extends OpMode{
     public void init() {
         telemetry.addData("Status", "Initialized");
 
-        rangeA = hardwareMap.i2cDevice.get("ultrasonicsensor");
-        rangeC = hardwareMap.i2cDevice.get("coloursensor");
+        rangeA = hardwareMap.i2cDevice.get("us");
+        rangeC = hardwareMap.i2cDevice.get("cs");
 
         rangeAreader = new I2cDeviceSynchImpl(rangeA, I2cAddr.create8bit(0x28), false);
         rangeCreader = new I2cDeviceSynchImpl(rangeC, I2cAddr.create8bit(0x2a), false);
