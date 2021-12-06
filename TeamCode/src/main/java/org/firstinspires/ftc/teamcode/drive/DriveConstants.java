@@ -17,12 +17,12 @@ public class DriveConstants {
     public static double GEAR_RATIO = 1.46; // 14.0 / 8; // output (wheel) speed / input (motor) speed 8/14
     public static double TRACK_WIDTH = 10; // in
 
-    public static double kV = 0.0089; // prev: 0.0021
-    public static double kA = 0.0045; // prev: 0.00278
-    public static double kStatic = 0.03;
+    public static double kV = 0.0099;
+    public static double kA = 0.00384;
+    public static double kStatic = 0.035;
 
-    public static double MAX_VEL = 100; //160; // 50 measured for new bot
-    public static double MAX_ACCEL = 40; //120;
+    public static double MAX_VEL = 50;
+    public static double MAX_ACCEL = 60;
     public static double MAX_ANG_VEL = Math.toRadians(60);
     public static double MAX_ANG_ACCEL = Math.toRadians(60);
 

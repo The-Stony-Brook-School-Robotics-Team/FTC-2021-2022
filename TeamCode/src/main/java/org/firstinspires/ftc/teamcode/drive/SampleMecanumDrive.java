@@ -52,7 +52,7 @@ import java.util.List;
 public class SampleMecanumDrive extends MecanumDrive {
 
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(10, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(10, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(18, 0, 0);
 
     public static boolean isUsingT265 = true;
 
