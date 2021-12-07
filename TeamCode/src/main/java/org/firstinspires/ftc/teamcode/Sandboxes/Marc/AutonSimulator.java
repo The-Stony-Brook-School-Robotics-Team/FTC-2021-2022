@@ -1,7 +1,12 @@
 package org.firstinspires.ftc.teamcode.sandboxes.Marc;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -51,7 +56,7 @@ public class AutonSimulator extends LinearOpMode {
     }
     public void goSlower() {
         Trajectory trajForward = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .forward(5)
+                .forward(7)
                 .build();
         drive.followTrajectory(trajForward);
     }
