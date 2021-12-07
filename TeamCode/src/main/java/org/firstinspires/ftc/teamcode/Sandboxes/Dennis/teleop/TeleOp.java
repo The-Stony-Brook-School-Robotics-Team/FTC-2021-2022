@@ -38,6 +38,9 @@ public class TeleOp extends OpMode {
         synchronized (stateObject) {
             currentState = ROBOT_STATE.IDLE;
         }
+        blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "colorstrip");
+        blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_LAVA_PALETTE);
+
 
         lf = hardwareMap.get(DcMotorEx.class, "lf");
         rf = hardwareMap.get(DcMotorEx.class, "rf");
