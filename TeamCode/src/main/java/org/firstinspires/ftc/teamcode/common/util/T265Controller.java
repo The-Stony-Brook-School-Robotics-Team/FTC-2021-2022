@@ -4,6 +4,7 @@ import static java.lang.Thread.sleep;
 
 //import android.util.Log;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.arcrobotics.ftclib.geometry.Transform2d;
@@ -19,8 +20,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * @author Marc N.
  * @version 12.0.1
  */
+@Config
 public class T265Controller {
 
+    public static double X_OFFSET = 6.45;
+    public static double Y_OFFSET = 0;
     /**
      * This is the <strong>static</strong> T265Camera object, which represents
      * the camera itself.
@@ -102,8 +106,8 @@ public class T265Controller {
      */
     public Pose2d getIntelPos()
     {
-        double a = 2.5; // offset x
-        double b = 8; // offset y
+        double a = X_OFFSET; // offset x
+        double b = Y_OFFSET; // offset y
         com.arcrobotics.ftclib.geometry.Pose2d LastPose = intelCam.getLastReceivedCameraUpdate().pose;
         double h = LastPose.getHeading();
         double x = LastPose.getTranslation().getX() / 0.0254  + a*Math.sin(-h) - b*Math.cos(-h); // use trigonometry to account for camera offset.
@@ -115,12 +119,17 @@ public class T265Controller {
      * This method shuts down the T265, freeing the object and stopping the camera.
      */
     public static void shutDown() {
-        intelCam.stop();
-        intelCam.free();
+        try {
+            intelCam.stop();
+            intelCam.free();
+            intelCam = null;
         try {
             sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }}
+        catch (Exception e) {
+            intelCam = null;
         }
     }
 }

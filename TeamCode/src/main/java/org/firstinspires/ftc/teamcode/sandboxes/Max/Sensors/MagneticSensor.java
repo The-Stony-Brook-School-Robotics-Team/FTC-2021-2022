@@ -16,16 +16,17 @@ RevTouchSensor DigChannel;
     @Override
     public void runOpMode() throws InterruptedException {
 MagneticSensor = hardwareMap.get(TouchSensor.class, "mg");
-DigChannel = hardwareMap.get(RevTouchSensor.class, "mgd");
+//DigChannel = hardwareMap.get(RevTouchSensor.class, "mgd");
 
     waitForStart();
 
         while (true){
-
+/*
             telemetry.addLine()
             .addData("Magnetic", "%.3f", MagneticSensor.getValue())
-            .addData("Configuration",MagneticSensor.getConnectionInfo())
-            .addData("Rev Touch", "%.3f", DigChannel.getValue());
+            .addData("Configuration",MagneticSensor.getConnectionInfo());
+            //.addData("Rev Touch", "%.3f", DigChannel.getValue());
+ */
             telemetry.update();
 
             if (MagneticSensor.isPressed() == true) {
@@ -35,13 +36,13 @@ DigChannel = hardwareMap.get(RevTouchSensor.class, "mgd");
                 telemetry.addData("MagneticSensor", "Is Not Pressed");
                 telemetry.update();
 
-                if (DigChannel.isPressed() == true) {
-                    telemetry.addData("Digital Touch", "Is Pressed");
-                    telemetry.update();
-                } else {
-                    telemetry.addData("Digital Touch", "Is Not Pressed");
-                    telemetry.update();
-            }
+//                if (DigChannel.isPressed() == true) {
+//                    telemetry.addData("Digital Touch", "Is Pressed");
+//                    telemetry.update();
+//                } else {
+//                    telemetry.addData("Digital Touch", "Is Not Pressed");
+//                    telemetry.update();
+//            }
 
         }
 

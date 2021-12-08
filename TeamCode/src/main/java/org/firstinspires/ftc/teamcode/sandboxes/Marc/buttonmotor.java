@@ -37,7 +37,9 @@ public class buttonmotor extends LinearOpMode {
         waitForStart();
         // MARK - Start of Run code
         while(opModeIsActive()) {
-            // MARK - Start of loop code
+            // MARK: Start of loop code
+            telemetry.addData("RB Enc",motors[0].getCurrentPosition());
+            telemetry.update();
             if(gamepad1.a) {
                 // RB
                 motors[0].setPower(1);
