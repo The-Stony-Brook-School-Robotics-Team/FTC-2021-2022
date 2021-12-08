@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.trajectorysequence;
+package org.firstinspires.ftc.teamcode.Sandboxes.William.Util;
 
 import androidx.annotation.Nullable;
 
@@ -16,6 +16,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryMarker;
 import com.acmerobotics.roadrunner.util.NanoClock;
 
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.SequenceSegment;
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.TrajectorySegment;
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.TurnSegment;
@@ -28,7 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Config
-public class TrajectorySequenceRunner {
+public class CustomizedTrajectorySequenceRunner {
     public static String COLOR_INACTIVE_TRAJECTORY = "#4caf507a";
     public static String COLOR_INACTIVE_TURN = "#7c4dff7a";
     public static String COLOR_INACTIVE_WAIT = "#dd2c007a";
@@ -57,7 +58,7 @@ public class TrajectorySequenceRunner {
     private final FtcDashboard dashboard;
     private final LinkedList<Pose2d> poseHistory = new LinkedList<>();
 
-    public TrajectorySequenceRunner(TrajectoryFollower follower, PIDCoefficients headingPIDCoefficients) {
+    public CustomizedTrajectorySequenceRunner(TrajectoryFollower follower, PIDCoefficients headingPIDCoefficients) {
         this.follower = follower;
 
         turnController = new PIDFController(headingPIDCoefficients);
@@ -87,6 +88,10 @@ public class TrajectorySequenceRunner {
         SequenceSegment currentSegment = null;
 
         if (currentTrajectorySequence != null) {
+            /**
+             * Clear the remaining markers if there is
+             * no remaining segment index in current trajectory sequence.
+             */
             if (currentSegmentIndex >= currentTrajectorySequence.size()) {
                 for (TrajectoryMarker marker : remainingMarkers) {
                     marker.getCallback().onMarkerReached();
@@ -97,30 +102,39 @@ public class TrajectorySequenceRunner {
                 currentTrajectorySequence = null;
             }
 
+            /**
+             * Stop method if current trajectory sequence is empty, or there is
+             * no remaining segment index in current trajectory sequence (changed to null in Line-100).
+             */
             if (currentTrajectorySequence == null)
                 return new DriveSignal();
+
+            //Actual method start from HERE.
 
             double now = clock.seconds();
             boolean isNewTransition = currentSegmentIndex != lastSegmentIndex;
 
             currentSegment = currentTrajectorySequence.get(currentSegmentIndex);
 
+            /**
+             * Change to the next markers segment if the current segment is finished.
+             */
             if (isNewTransition) {
                 currentSegmentStartTime = now;
                 lastSegmentIndex = currentSegmentIndex;
 
                 for (TrajectoryMarker marker : remainingMarkers) {
-                    marker.getCallback().onMarkerReached();
+                    marker.getCallback().onMarkerReached(); //TODO: What does this method do???
                 }
 
                 remainingMarkers.clear();
 
-                remainingMarkers.addAll(currentSegment.getMarkers());
+                remainingMarkers.addAll(currentSegment.getMarkers());   //Switch the new markers to remainingMarkers.
 
                 /**
                  * TrajectoryMarker class has getTime() method.
                  */
-                Collections.sort(remainingMarkers, (t1, t2) -> Double.compare(t1.getTime(), t2.getTime()));
+                Collections.sort(remainingMarkers, (t1, t2) -> Double.compare(t1.getTime(), t2.getTime())); //Sort by time.
             }
 
             double deltaTime = now - currentSegmentStartTime;
@@ -140,7 +154,9 @@ public class TrajectorySequenceRunner {
                     lastPoseError = follower.getLastError();
                 }
 
+                //--------------------------------------------
                 targetPose = currentTrajectory.get(deltaTime);
+                //--------------------------------------------
 
             } else if (currentSegment instanceof TurnSegment) {
                 MotionState targetState = ((TurnSegment) currentSegment).getMotionProfile().get(deltaTime);
