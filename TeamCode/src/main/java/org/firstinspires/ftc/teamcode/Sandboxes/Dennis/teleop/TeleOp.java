@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop;
 
+import static org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop.TeleOp.blinkinLedDriver;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -15,11 +18,12 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class TeleOp extends OpMode {
 
     // Robot Enum States
-    private static enum ROBOT_STATE {
+    public enum ROBOT_STATE {
         STOPPED,
         IDLE,
         INITIALIZING,
-        RUNNING
+        RUNNING,
+        INTERNAL_ERROR
     }
 
     // Current Robot State
@@ -27,17 +31,26 @@ public class TeleOp extends OpMode {
     private Object stateObject = new Object();
 
     // Blinkin LED Driver
-    private static RevBlinkinLedDriver blinkinLedDriver;
+    public static RevBlinkinLedDriver blinkinLedDriver;
 
     // Motors
     private DcMotorEx lf, rf, rb, lb;
 
+    // Sub Routines
+    public static SecondaryRoutine secondaryRoutine;
 
     @Override
     public void init() {
         synchronized (stateObject) {
             currentState = ROBOT_STATE.IDLE;
         }
+        secondaryRoutine = new SecondaryRoutine(hardwareMap);
+        if(secondaryRoutine.isInitialized()) {
+            secondaryRoutine.start();
+        }
+
+
+
         blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "colorstrip");
         blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_LAVA_PALETTE);
 
@@ -60,6 +73,24 @@ public class TeleOp extends OpMode {
 
     @Override
     public void loop() {
+        switch(currentState) {
+
+            case RUNNING:
+                handleWeightedDriving();
+
+            case INTERNAL_ERROR:
+                emergencyStop();
+
+        }
+
+
+    }
+
+    public static ROBOT_STATE returnState() {
+        return currentState;
+    }
+
+    public void handleWeightedDriving() {
         double y = -gamepad1.left_stick_y;
         double x = gamepad1.left_stick_x * 1.1;
         double rx = gamepad1.right_stick_x;
@@ -75,6 +106,25 @@ public class TeleOp extends OpMode {
         rf.setPower(frontRightPower);
         rb.setPower(backRightPower);
     }
+
+    public void emergencyStop() {
+        if(lf.isMotorEnabled()) {
+            lf.setPower(0);
+        }
+        if(lb.isMotorEnabled()) {
+            lb.setPower(0);
+        }
+        if(rf.isMotorEnabled()) {
+            rf.setPower(0);
+        }
+        if(rb.isMotorEnabled()) {
+            rb.setPower(0);
+        }
+    }
+
+    public void stop() {
+        secondaryRoutine.stop();
+    };
 }
 
 /**
@@ -85,9 +135,9 @@ class SecondaryRoutine {
     // HardwareMap
     private HardwareMap hardwareMap;
     // Internal Routine Controller
-    private Thread subroutine;
+    public Thread subroutine;
     // Internals
-    private boolean initializedRoutine = false;
+    private boolean initialized = false;
     private boolean externalinterrupt = false;
 
     /**
@@ -96,7 +146,7 @@ class SecondaryRoutine {
      */
     public SecondaryRoutine(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
-        this.initializeRoutine();
+        this.initialize();
     }
 
      //                    Add Variables In Here                  \\
@@ -113,12 +163,31 @@ class SecondaryRoutine {
     /**
      * Initializes the subroutine
      */
-    public boolean initializeRoutine() {
+    private boolean initialize() {
         try {
             // Create the thread
             subroutine = new Thread(() -> {
-                while(!externalinterrupt && initializedRoutine) {
+                // TODO: Add Initialization For Subroutine TeleOp
+
+
+                // Main Loop
+                while(!externalinterrupt && initialized) {
                     // add internals here (this is where the code goes!
+                    switch(TeleOp.returnState()) {
+
+                        case RUNNING:
+                            blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_PARTY_PALETTE);
+
+                        case INTERNAL_ERROR:
+                            blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.STROBE_RED);
+
+                    }
+
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
             // Return
@@ -134,8 +203,8 @@ class SecondaryRoutine {
      * Enable Internal Thread
      * @return status
      */
-    public int enable() {
-        if(initializedRoutine) {
+    public int start() {
+        if(initialized) {
             subroutine.start();
             return 1;
         } else {
@@ -147,12 +216,32 @@ class SecondaryRoutine {
      * Disable Internal Thread
      * @return status
      */
-    public int disable() {
-        if(initializedRoutine) {
-            subroutine.stop();
-            return 1;
+    public int stop() {
+        if(isInitialized()) {
+            subroutine.checkAccess();
+            if(subroutine.isAlive()) {
+                subroutine.stop();
+                if(subroutine.isAlive()) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            }
         } else {
-            return -1;
+            return 1;
+        }
+        return -1;
+    }
+
+    /**
+     * Checks If Subroutine Is Initialized
+     * @return true or false
+     */
+    public boolean isInitialized() {
+        if(initialized) {
+            return true;
+        } else {
+            return false;
         }
     }
 
