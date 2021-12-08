@@ -5,11 +5,18 @@ import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+<<<<<<< HEAD
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+=======
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.teamcode.drive.StandardDrive;
+>>>>>>> parent of 0317b1a (Drivetrain)
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 
@@ -20,7 +27,11 @@ public class WinstonMovementTest1 extends LinearOpMode {
     // Dashboard
     private static FtcDashboard dashboard = FtcDashboard.getInstance();
     // Drive
+<<<<<<< HEAD
     private static SampleMecanumDrive drive;
+=======
+    private static StandardDrive drive;
+>>>>>>> parent of 0317b1a (Drivetrain)
     // The coolest man alive variable
     private static int x = 48;
 
@@ -31,7 +42,11 @@ public class WinstonMovementTest1 extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         dashboard = FtcDashboard.getInstance();
 
+<<<<<<< HEAD
         drive = new SampleMecanumDrive(hardwareMap);
+=======
+        drive = new StandardDrive(hardwareMap);
+>>>>>>> parent of 0317b1a (Drivetrain)
         drive.setPoseEstimate(new Pose2d(0, 0,0));
         waitForStart();
 
