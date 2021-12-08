@@ -2,11 +2,12 @@ package org.firstinspires.ftc.teamcode.archive;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.drive.StandardDrive;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 /**
  * This OpMode performs the following path using a state machine:
@@ -33,7 +34,7 @@ public class SampleAutonPathold extends LinearOpMode {
     /**
      * This is the object which allows us to use RR pathing utilities.
      */
-    StandardDrive drive;
+    SampleMecanumDrive drive;
     /**
      * This is the object representing the state. It is <code>volatile</code> in order to ensure
      * multithreading works as expected.
@@ -53,7 +54,7 @@ public class SampleAutonPathold extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         // MARK - Initialization
-        drive= new StandardDrive(hardwareMap);
+        drive= new SampleMecanumDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Thread.sleep(2000);
         waitForStart();

@@ -14,7 +14,7 @@ import com.arcrobotics.ftclib.kinematics.wpilibkinematics.MecanumDriveKinematics
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.MecanumDriveWheelSpeeds;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.sbs.bears.util.T265Controller;
+import org.firstinspires.ftc.teamcode.common.util.T265Controller;
 
 
 @Config

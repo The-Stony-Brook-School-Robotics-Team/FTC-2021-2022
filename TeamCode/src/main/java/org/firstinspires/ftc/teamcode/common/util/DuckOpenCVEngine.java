@@ -1,4 +1,4 @@
-package org.sbs.bears.util;
+package org.firstinspires.ftc.teamcode.common.util;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;

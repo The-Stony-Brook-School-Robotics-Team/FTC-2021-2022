@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Config
-public class Odometry3Localizer extends com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer {
+public class StandardTrackingWheelLocalizer extends com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer {
     public static double TICKS_PER_REV = 8192;
     public static double WHEEL_RADIUS = 1; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
@@ -23,7 +23,7 @@ public class Odometry3Localizer extends com.acmerobotics.roadrunner.localization
 
     private Encoder leftEncoder, rightEncoder, frontEncoder;
 
-    public Odometry3Localizer(HardwareMap hardwareMap) {
+    public StandardTrackingWheelLocalizer(HardwareMap hardwareMap) {
         super(Arrays.asList(
                 new Pose2d(0, LATERAL_DISTANCE / 2, 0), // left
                 new Pose2d(0, -LATERAL_DISTANCE / 2, 0), // right

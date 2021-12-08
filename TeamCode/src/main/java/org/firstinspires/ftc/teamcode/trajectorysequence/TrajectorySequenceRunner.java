@@ -76,13 +76,6 @@ public class TrajectorySequenceRunner {
         lastSegmentIndex = -1;
     }
 
-    public void followTrajectorySequenceAsyncTime(TrajectorySequence trajectorySequence, double time) {
-        currentTrajectorySequence = trajectorySequence;
-        currentSegmentStartTime = time;
-        currentSegmentIndex = 0;
-        lastSegmentIndex = -1;
-    }
-
     public @Nullable
     DriveSignal update(Pose2d poseEstimate, Pose2d poseVelocity) {
         Pose2d targetPose = null;

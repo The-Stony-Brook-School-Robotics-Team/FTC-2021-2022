@@ -6,8 +6,6 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 @Config
 public class DriveConstants {
 
-    // RR
-
     public static final double TICKS_PER_REV = 380;
     public static final double MAX_RPM = 400;
 
@@ -40,7 +38,4 @@ public class DriveConstants {
     public static double getMotorVelocityF(double ticksPerSecond) {
         return 32767 / ticksPerSecond;
     }
-
-
-
 }
