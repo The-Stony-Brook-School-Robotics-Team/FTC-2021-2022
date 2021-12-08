@@ -1,20 +1,20 @@
 package org.firstinspires.ftc.teamcode.Sandboxes.Marc;
 
-import com.acmerobotics.roadrunner.drive.Drive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
+import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.common.util.ColorStripController;
+import org.firstinspires.ftc.teamcode.drive.StandardDrive;
+import org.sbs.bears.controller.ColorStripController;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 @TeleOp(name="A - Autonomous Simulator (X)")
 public class AutonSimulator extends LinearOpMode {
-    SampleMecanumDrive drive;
+    StandardDrive drive;
     ColorStripController colorCtrl;
 
     // Published parameters
@@ -24,8 +24,8 @@ public class AutonSimulator extends LinearOpMode {
     public static double brakeVel = DriveConstants.MAX_VEL;
 
     // constraints
-    TrajectoryVelocityConstraint velModif = SampleMecanumDrive.getVelocityConstraint(brakeVel, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH);
-    TrajectoryAccelerationConstraint accelModif =  SampleMecanumDrive.getAccelerationConstraint(brakeDecel);
+    TrajectoryVelocityConstraint velModif = StandardDrive.getVelocityConstraint(brakeVel, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH);
+    TrajectoryAccelerationConstraint accelModif =  StandardDrive.getAccelerationConstraint(brakeDecel);
 
     Object stateMutex = new Object();
     enum State {
@@ -37,7 +37,8 @@ public class AutonSimulator extends LinearOpMode {
     State state = State.STOPPED;
     @Override
     public void runOpMode() throws InterruptedException {
-        drive = new SampleMecanumDrive(hardwareMap);
+        NanoClock clock = NanoClock.system();
+        drive = new StandardDrive(hardwareMap);
         drive.setPoseEstimate(new Pose2d());
         colorCtrl = new ColorStripController(hardwareMap);
         colorCtrl.setDarkBlue();
@@ -63,12 +64,16 @@ public class AutonSimulator extends LinearOpMode {
             synchronized (stateMutex) {
             state = State.FORWARD;
             colorCtrl.setForest();}
+            double time = clock.seconds();
+            double iniX = drive.getPoseEstimate().getX();
             goForward(); // could be interrupted.
             if(!instaStop) {
             synchronized (stateMutex) {
             state = State.BRAKE;}
+            double currentX = drive.getPoseEstimate().getX();
+            double deltaX = currentX - iniX;
             colorCtrl.setParty();
-            goSlower();
+            goSlower(time, deltaX);
             }
             synchronized (stateMutex) {
             state = State.BACKWARDS;}
@@ -82,11 +87,11 @@ public class AutonSimulator extends LinearOpMode {
                 .build();
         drive.followTrajectory(trajForward);
     }
-    public void goSlower() {
+    public void goSlower(double time, double deltaX) {
         Trajectory trajForward = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .forward(stoppingDistance,velModif,accelModif)
+                .forward(stoppingDistance+deltaX,velModif,accelModif)
                 .build();
-        drive.followTrajectory(trajForward);
+        drive.followTrajectoryTime(trajForward, time);
     }
     public void goHome() {
         Trajectory backHome = drive.trajectoryBuilder(drive.getPoseEstimate())

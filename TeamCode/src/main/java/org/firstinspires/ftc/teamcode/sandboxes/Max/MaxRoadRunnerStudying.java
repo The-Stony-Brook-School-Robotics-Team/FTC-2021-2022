@@ -6,15 +6,12 @@ import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
-import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
-import com.arcrobotics.ftclib.kinematics.Odometry;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.StandardDrive;
 
 @TeleOp(name="MaxRoadRunnerStudy", group="drive")
 @Disabled
@@ -27,7 +24,7 @@ public class MaxRoadRunnerStudying extends OpMode {
     private MotorEx LeftEncoder;
     private MotorEx RightEncoder;
     private MotorEx CentralEncoder;
-    private SampleMecanumDrive SampleMecanumDrive;
+    private StandardDrive StandardDrive;
     TelemetryPacket TelemetryPacket = new TelemetryPacket();
     private FtcDashboard FTCDashboard;
     Canvas Canvas = TelemetryPacket.fieldOverlay();
@@ -42,8 +39,8 @@ public class MaxRoadRunnerStudying extends OpMode {
         CentralEncoder = new MotorEx(hardwareMap, "backodom");
         RightEncoder = new MotorEx(hardwareMap, "rightodom");
         //HolonomicOdometry HOdometrySystem = new HolonomicOdometry(LeftEncoder.getCurrentPosition(), RightEncoder.getCurrentPosition(), CentralEncoder.getCurrentPosition());
-        SampleMecanumDrive = new SampleMecanumDrive(hardwareMap);
-        SampleMecanumDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        StandardDrive = new StandardDrive(hardwareMap);
+        StandardDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // FTCDashboard = new FtcDashboard.getInstance();
 
     }
@@ -52,7 +49,7 @@ public class MaxRoadRunnerStudying extends OpMode {
     public void loop(){
 
 
-        SampleMecanumDrive.setWeightedDrivePower(
+        StandardDrive.setWeightedDrivePower(
                 new Pose2d(
                         -0.3*gamepad1.left_stick_y,
                         -0.3*gamepad1.left_stick_x,

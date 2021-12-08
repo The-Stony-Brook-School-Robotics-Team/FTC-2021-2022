@@ -6,12 +6,11 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.StandardDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
 
 /**
@@ -39,12 +38,12 @@ public class SampleAutonPath extends LinearOpMode {
     public static PIDCoefficients SPLINE_TRANSLATIONAL_PID = new PIDCoefficients(20, .2, .5);
     public static PIDCoefficients SPLINE_HEADING_PID = new PIDCoefficients(40, .2, .7);
     // tuning log: SPLINEs done Michael and Marc 11/18/2021
-    public static PIDCoefficients[] PID_BUFFER = new PIDCoefficients[]{new PIDCoefficients(SampleMecanumDrive.TRANSLATIONAL_PID.kP,SampleMecanumDrive.TRANSLATIONAL_PID.kI,SampleMecanumDrive.TRANSLATIONAL_PID.kD),new PIDCoefficients(SampleMecanumDrive.HEADING_PID.kP,SampleMecanumDrive.HEADING_PID.kI,SampleMecanumDrive.HEADING_PID.kD)};
+    public static PIDCoefficients[] PID_BUFFER = new PIDCoefficients[]{new PIDCoefficients(StandardDrive.TRANSLATIONAL_PID.kP, StandardDrive.TRANSLATIONAL_PID.kI, StandardDrive.TRANSLATIONAL_PID.kD),new PIDCoefficients(StandardDrive.HEADING_PID.kP, StandardDrive.HEADING_PID.kI, StandardDrive.HEADING_PID.kD)};
 
     /**
      * This is the object which allows us to use RR pathing utilities.
      */
-    SampleMecanumDrive drive;
+    StandardDrive drive;
 
     TrajectorySequenceRunner runner;
     /**
@@ -66,7 +65,7 @@ public class SampleAutonPath extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         // MARK - Initialization
-        drive= new SampleMecanumDrive(hardwareMap);
+        drive= new StandardDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         runner = drive.trajectorySequenceRunner;
         Thread.sleep(2000);

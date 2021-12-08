@@ -5,15 +5,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.testing.MecanumDriveTesting;
+import org.firstinspires.ftc.teamcode.drive.StandardDrive;
 
 
 @TeleOp(name = "T - LocalizationTest", group = "drive")
 public class LocalizationTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        StandardDrive drive = new StandardDrive(hardwareMap);
 
         drive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 

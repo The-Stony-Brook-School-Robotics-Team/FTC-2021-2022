@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.StandardDrive;
 
 //This is the code of Max
 @TeleOp(name="KEHANSandBox", group="drive")
@@ -35,7 +35,7 @@ public class KEHANSandBox extends OpMode {
     boolean pressingDown = false;
 
 
-    private SampleMecanumDrive drive;
+    private StandardDrive drive;
 
 
     @Override
@@ -47,7 +47,7 @@ public class KEHANSandBox extends OpMode {
         rb = hardwareMap.get(DcMotor.class, "rightodom");
         AxesOrder axesOrder = AxesOrder.XYZ;
         imu = hardwareMap.get(BNO055IMU.class, "imu");
-        drive = new SampleMecanumDrive(hardwareMap);
+        drive = new StandardDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //Pose2d startPose = new Pose2d(-61, -27, 0);
         //Pose2d startPose = new Pose2d(12, -6, 0);

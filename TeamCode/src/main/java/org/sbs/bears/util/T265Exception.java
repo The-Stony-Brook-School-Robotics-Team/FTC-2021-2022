@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.common.util;
+package org.sbs.bears.util;
 
 /**
  * This exception is used when the T265 does not feed position data and is frozen.

@@ -49,7 +49,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Config
-public class SampleMecanumDrive extends MecanumDrive {
+public class StandardDrive extends MecanumDrive {
 
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(10, 0.01, 1);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(5, 0, 0);
@@ -74,7 +74,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
 
-    public SampleMecanumDrive(HardwareMap hardwareMap) {
+    public StandardDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
@@ -182,6 +182,14 @@ public class SampleMecanumDrive extends MecanumDrive {
         );
     }
 
+    public void followTrajectoryTime(Trajectory trajectory, double iniTime) {
+        trajectorySequenceRunner.followTrajectorySequenceAsyncTime(
+                trajectorySequenceBuilder(trajectory.start())
+                        .addTrajectory(trajectory)
+                        .build(),iniTime
+        );
+        waitForIdle();
+    }
     public void followTrajectory(Trajectory trajectory) {
         followTrajectoryAsync(trajectory);
         waitForIdle();
