@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode.Sandboxes.William.MovementControl;
+package org.firstinspires.ftc.teamcode.sandboxes.William.MovementControl;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.Sandboxes.William.Util.ControllerHelper;
+import org.firstinspires.ftc.teamcode.sandboxes.William.Util.ControllerHelper;
 
 /**
  * Created by Sarthak on 6/1/2019.
