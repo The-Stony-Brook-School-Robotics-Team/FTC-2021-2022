@@ -5,12 +5,16 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
+import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+
+import java.time.Clock;
+
 @Config
 @TeleOp(name="A - Autonomous Simulator (X)")
 public class AutonSimulator extends LinearOpMode {
@@ -22,7 +26,7 @@ public class AutonSimulator extends LinearOpMode {
     public static double brakingDistance = 7;
     public static double decel = DriveConstants.MAX_ACCEL;
     public static double velMax = DriveConstants.MAX_VEL;
-
+double iniTime;
 
     enum State {
         INIT,
@@ -38,6 +42,7 @@ TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.get
 
     @Override
     public void runOpMode() throws InterruptedException {
+        NanoClock clock = NanoClock.system();
         drive = new SampleMecanumDrive(hardwareMap);
         drive.setPoseEstimate(new Pose2d());
         colorstrip2 = hardwareMap.get(RevBlinkinLedDriver.class,"colorstrip");
@@ -61,10 +66,13 @@ TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.get
         while(opModeIsActive() && !isStopRequested()) {
             state = State.FORWARD;
             colorstrip2.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_FOREST_PALETTE);
+            double iniX = drive.getPoseEstimate().getX();
+            iniTime = clock.seconds();
             goForward();
             state = State.BRAKING;
             if(!instaStop) {
-                goSlower();
+                double distance = drive.getPoseEstimate().getX()-iniX;
+                goSlower(distance);
             }
             state = State.RETURN;
             colorstrip2.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_OCEAN_PALETTE);
@@ -80,11 +88,11 @@ TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.get
                 .build();
         drive.followTrajectory(trajForward);
     }
-    public void goSlower() {
+    public void goSlower(double distance) {
         Trajectory trajForward = drive.trajectoryBuilder(drive.getPoseEstimate())
                 .forward(brakingDistance,velocityConstraint,accelerationConstraint)
                 .build();
-        drive.followTrajectory(trajForward);
+        drive.followTrajectoryTime(trajForward,iniTime);
     }
     public void goHome() {
         Trajectory backHome = drive.trajectoryBuilder(drive.getPoseEstimate())
