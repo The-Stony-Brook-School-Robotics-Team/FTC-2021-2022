@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.sandboxes.William.Util.CustomizedMecanumDrive;
 
 @Config
-@Autonomous(group = "drive", name = "Customized Mecanum Drive Test 1")
+@Autonomous(group = "drive", name = "Customized Mecanum Drive Test")
 public class CustomizedMecanumDriveTest extends LinearOpMode {
 
     @Override
