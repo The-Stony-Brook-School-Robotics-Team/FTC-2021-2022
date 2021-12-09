@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop;
+package org.firstinspires.ftc.teamcode.sandboxes.Dennis.teleop;
 
-import static org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop.TeleOp.blinkinLedDriver;
+import static org.firstinspires.ftc.teamcode.sandboxes.Dennis.teleop.TeleOp.blinkinLedDriver;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
