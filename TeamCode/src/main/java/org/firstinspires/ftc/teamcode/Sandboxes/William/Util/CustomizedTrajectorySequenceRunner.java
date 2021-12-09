@@ -114,6 +114,7 @@ public class CustomizedTrajectorySequenceRunner extends MecanumDrive {
     private final LinkedList<Pose2d> poseHistory = new LinkedList<>();
 
     public CustomizedTrajectorySequenceRunner(TrajectoryFollower follower, PIDCoefficients headingPIDCoefficients) {
+        super();
         this.follower = follower;
 
         turnController = new PIDFController(headingPIDCoefficients);
@@ -360,5 +361,21 @@ public class CustomizedTrajectorySequenceRunner extends MecanumDrive {
         currentTrajectorySequence = null;
     }
 
-    private Pose2d
+    @Override
+    protected double getRawExternalHeading() {
+        return 0;
+    }
+
+    @NonNull
+    @Override
+    public List<Double> getWheelPositions() {
+        return null;
+    }
+
+    @Override
+    public void setMotorPowers(double v, double v1, double v2, double v3) {
+
+    }
+
+//    private Pose2d
 }

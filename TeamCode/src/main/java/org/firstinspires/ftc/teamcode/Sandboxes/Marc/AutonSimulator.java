@@ -23,10 +23,13 @@ public class AutonSimulator extends LinearOpMode {
 
     // Dashboard Configurations
     public static boolean instaStop = false;
-    public static double brakingDistance = 7;
+    public static double brakingDistance = 0;
     public static double decel = DriveConstants.MAX_ACCEL;
     public static double velMax = DriveConstants.MAX_VEL;
-double iniTime;
+    public static double distNormal = 72;
+
+
+    double iniTime;
 
     enum State {
         INIT,
@@ -70,9 +73,11 @@ TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.get
             iniTime = clock.seconds();
             goForward();
             state = State.BRAKING;
-            if(!instaStop) {
-                double distance = drive.getPoseEstimate().getX()-iniX;
-                goSlower(distance);
+            if(brakingDistance != 0) {
+                if(!instaStop) {
+                    double distance = drive.getPoseEstimate().getX()-iniX;
+                    goSlower(distance);
+                }
             }
             state = State.RETURN;
             colorstrip2.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_OCEAN_PALETTE);
@@ -84,7 +89,7 @@ TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.get
     }
     public void goForward() {
         Trajectory trajForward = drive.trajectoryBuilder(new Pose2d())
-                .lineToSplineHeading(new Pose2d(72,0,0))
+                .lineToSplineHeading(new Pose2d(distNormal,0,0))
                 .build();
         drive.followTrajectory(trajForward);
     }
