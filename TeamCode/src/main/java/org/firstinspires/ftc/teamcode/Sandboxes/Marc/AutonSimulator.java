@@ -1,17 +1,41 @@
-package org.firstinspires.ftc.teamcode.sandboxes.Marc;
+package org.firstinspires.ftc.teamcode.Sandboxes.Marc;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-
+@Config
 @TeleOp(name="A - Autonomous Simulator (X)")
 public class AutonSimulator extends LinearOpMode {
     SampleMecanumDrive drive;
     RevBlinkinLedDriver colorstrip2;
+
+    // Dashboard Configurations
+    public static boolean instaStop = false;
+    public static double brakingDistance = 7;
+    public static double decel = DriveConstants.MAX_ACCEL;
+    public static double velMax = DriveConstants.MAX_VEL;
+
+
+    enum State {
+        INIT,
+        FORWARD,
+        BRAKING,
+        RETURN,
+        STOPPED
+    }
+
+    State state = State.INIT;
+    TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(velMax,DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
+TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(decel);
+
     @Override
     public void runOpMode() throws InterruptedException {
         drive = new SampleMecanumDrive(hardwareMap);
@@ -23,8 +47,10 @@ public class AutonSimulator extends LinearOpMode {
             boolean qX = false;
             while(opModeIsActive() && !isStopRequested()) {
                 if(gamepad1.x && !qX) {
-                    colorstrip2.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
-                    drive.trajectorySequenceRunner.cancelTraj();
+                    if(state.equals(State.FORWARD)) {
+                        colorstrip2.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+                        drive.trajectorySequenceRunner.cancelTraj();
+                    }
                     qX = true;
                 }
                 else if(!gamepad1.x && qX) {
@@ -33,14 +59,20 @@ public class AutonSimulator extends LinearOpMode {
             }
         }).start();
         while(opModeIsActive() && !isStopRequested()) {
+            state = State.FORWARD;
             colorstrip2.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_FOREST_PALETTE);
             goForward();
-            goSlower();
+            state = State.BRAKING;
+            if(!instaStop) {
+                goSlower();
+            }
+            state = State.RETURN;
             colorstrip2.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_OCEAN_PALETTE);
             goHome();
 
 
         }
+        state = State.STOPPED;
     }
     public void goForward() {
         Trajectory trajForward = drive.trajectoryBuilder(new Pose2d())
@@ -50,7 +82,7 @@ public class AutonSimulator extends LinearOpMode {
     }
     public void goSlower() {
         Trajectory trajForward = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .forward(7)
+                .forward(brakingDistance,velocityConstraint,accelerationConstraint)
                 .build();
         drive.followTrajectory(trajForward);
     }
