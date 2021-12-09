@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.trajectorysequence;
+package org.firstinspires.ftc.teamcode.Sandboxes.William.Util;
 
 import androidx.annotation.Nullable;
 
@@ -16,11 +16,63 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryMarker;
 import com.acmerobotics.roadrunner.util.NanoClock;
 
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.SequenceSegment;
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.TrajectorySegment;
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.TurnSegment;
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.WaitSegment;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
+
+import com.acmerobotics.roadrunner.drive.DriveSignal;
+import com.acmerobotics.roadrunner.drive.MecanumDrive;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_ACCEL;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_VEL;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_VEL;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MOTOR_VELO_PID;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.TRACK_WIDTH;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kA;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kStatic;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
+
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.acmerobotics.roadrunner.drive.DriveSignal;
+import com.acmerobotics.roadrunner.drive.MecanumDrive;
+import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
+import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
+import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
+import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+
+import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
+import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,7 +80,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Config
-public class TrajectorySequenceRunner {
+public class CustomizedTrajectorySequenceRunner extends MecanumDrive {
+    private boolean needEmergencyStop = false;
+    private boolean hasSetEmergencyStopStartPosition = false;
+    private Pose2d emergencyStopStartPosition;
+
     public static String COLOR_INACTIVE_TRAJECTORY = "#4caf507a";
     public static String COLOR_INACTIVE_TURN = "#7c4dff7a";
     public static String COLOR_INACTIVE_WAIT = "#dd2c007a";
@@ -57,7 +113,7 @@ public class TrajectorySequenceRunner {
     private final FtcDashboard dashboard;
     private final LinkedList<Pose2d> poseHistory = new LinkedList<>();
 
-    public TrajectorySequenceRunner(TrajectoryFollower follower, PIDCoefficients headingPIDCoefficients) {
+    public CustomizedTrajectorySequenceRunner(TrajectoryFollower follower, PIDCoefficients headingPIDCoefficients) {
         this.follower = follower;
 
         turnController = new PIDFController(headingPIDCoefficients);
@@ -87,6 +143,10 @@ public class TrajectorySequenceRunner {
         SequenceSegment currentSegment = null;
 
         if (currentTrajectorySequence != null) {
+            /**
+             * Clear the remaining markers if there is
+             * no remaining segment index in current trajectory sequence.
+             */
             if (currentSegmentIndex >= currentTrajectorySequence.size()) {
                 for (TrajectoryMarker marker : remainingMarkers) {
                     marker.getCallback().onMarkerReached();
@@ -97,30 +157,39 @@ public class TrajectorySequenceRunner {
                 currentTrajectorySequence = null;
             }
 
+            /**
+             * Stop method if current trajectory sequence is empty, or there is
+             * no remaining segment index in current trajectory sequence (changed to null in Line-100).
+             */
             if (currentTrajectorySequence == null)
                 return new DriveSignal();
+
+            //Actual method start from HERE.
 
             double now = clock.seconds();
             boolean isNewTransition = currentSegmentIndex != lastSegmentIndex;
 
             currentSegment = currentTrajectorySequence.get(currentSegmentIndex);
 
+            /**
+             * Change to the next markers segment if the current segment is finished.
+             */
             if (isNewTransition) {
                 currentSegmentStartTime = now;
                 lastSegmentIndex = currentSegmentIndex;
 
                 for (TrajectoryMarker marker : remainingMarkers) {
-                    marker.getCallback().onMarkerReached();
+                    marker.getCallback().onMarkerReached(); //TODO: What does this method do???
                 }
 
                 remainingMarkers.clear();
 
-                remainingMarkers.addAll(currentSegment.getMarkers());
+                remainingMarkers.addAll(currentSegment.getMarkers());   //Switch the new markers to remainingMarkers.
 
                 /**
                  * TrajectoryMarker class has getTime() method.
                  */
-                Collections.sort(remainingMarkers, (t1, t2) -> Double.compare(t1.getTime(), t2.getTime()));
+                Collections.sort(remainingMarkers, (t1, t2) -> Double.compare(t1.getTime(), t2.getTime())); //Sort by time.
             }
 
             double deltaTime = now - currentSegmentStartTime;
@@ -140,7 +209,18 @@ public class TrajectorySequenceRunner {
                     lastPoseError = follower.getLastError();
                 }
 
-                targetPose = currentTrajectory.get(deltaTime);
+                //--------------------------------------------
+                if (needEmergencyStop) {
+                    if (!hasSetEmergencyStopStartPosition) {
+                        emergencyStopStartPosition = currentTrajectory.get(deltaTime);
+                        hasSetEmergencyStopStartPosition = true;
+                    }
+                    getPoseEstimate();
+
+                } else {
+                    targetPose = currentTrajectory.get(deltaTime);
+                }
+                //--------------------------------------------
 
             } else if (currentSegment instanceof TurnSegment) {
                 MotionState targetState = ((TurnSegment) currentSegment).getMotionProfile().get(deltaTime);
@@ -279,4 +359,6 @@ public class TrajectorySequenceRunner {
     public void cancelTraj() {
         currentTrajectorySequence = null;
     }
+
+    private Pose2d
 }

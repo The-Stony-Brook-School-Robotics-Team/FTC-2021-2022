@@ -51,9 +51,10 @@ import java.util.List;
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
 
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(62, 2, 3);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(9, 0, .03);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(10, 0.01, 1);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(5, 0, 0);
 
+    public static boolean isUsingT265 = true;
 
     public static double LATERAL_MULTIPLIER = 1;
     public static double VX_WEIGHT = 1;
@@ -77,7 +78,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
-                new Pose2d(0.5, 0.5, Math.toRadians(0.0)), 0.5);
+                new Pose2d(0, 0, Math.toRadians(0.0)), 0);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -119,13 +120,23 @@ public class SampleMecanumDrive extends MecanumDrive {
         if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
             setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
-
+        if(isUsingT265) {
+            leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+            leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
         // TODO: reverse any motors using DcMotor.setDirection()
-        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        else { // new bot
+            leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+            rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
+
 
         // TODO: if desired, use setLocalizer() to change the localization method
-        setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
+        /*if(!isUsingT265) {
+        setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));}
+        else {
+            setLocalizer(new T265Localizer(hardwareMap));
+        }*/
 
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
     }

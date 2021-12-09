@@ -16,7 +16,9 @@ public class ColorTest extends OpMode {
     @Override
     public void loop() {
         if(gamepad1.x) {
-            colorstrip2.setPattern(RevBlinkinLedDriver.BlinkinPattern.DARK_BLUE);
+            colorstrip2.setPattern(RevBlinkinLedDriver.BlinkinPattern.STROBE_RED);
+            //colorstrip2.setPattern(RevBlinkinLedDriver.BlinkinPattern.);
+
         }
         if(gamepad1.dpad_down) {
             colorstrip2.setPattern(RevBlinkinLedDriver.BlinkinPattern.WHITE);

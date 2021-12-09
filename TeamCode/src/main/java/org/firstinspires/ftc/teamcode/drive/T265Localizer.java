@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.common.util.T265Controller;
 
 public class T265Localizer implements Localizer {
-    T265Controller camCtrl;
+    public T265Controller camCtrl;
 
     public T265Localizer(HardwareMap hardwareMap){
         camCtrl = new T265Controller(hardwareMap,null);
