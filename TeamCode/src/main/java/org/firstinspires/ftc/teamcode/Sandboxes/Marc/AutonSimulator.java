@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Sandboxes.Marc;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
@@ -23,7 +25,7 @@ public class AutonSimulator extends LinearOpMode {
 
     // Dashboard Configurations
     public static boolean instaStop = false;
-    public static double brakingDistance = 0;
+    public static double brakingDistance = 5;
     public static double decel = DriveConstants.MAX_ACCEL;
     public static double velMax = DriveConstants.MAX_VEL;
     public static double distNormal = 72;
@@ -42,6 +44,7 @@ public class AutonSimulator extends LinearOpMode {
     State state = State.INIT;
     TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(velMax,DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
 TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(decel);
+FtcDashboard dashboard;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -50,6 +53,10 @@ TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.get
         drive.setPoseEstimate(new Pose2d());
         colorstrip2 = hardwareMap.get(RevBlinkinLedDriver.class,"colorstrip");
         colorstrip2.setPattern(RevBlinkinLedDriver.BlinkinPattern.DARK_BLUE);
+
+        dashboard = FtcDashboard.getInstance();
+
+
         waitForStart();
         new Thread(()->{
             boolean qX = false;
@@ -88,6 +95,8 @@ TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.get
         state = State.STOPPED;
     }
     public void goForward() {
+        TelemetryPacket pack = new TelemetryPacket();
+
         Trajectory trajForward = drive.trajectoryBuilder(new Pose2d())
                 .lineToSplineHeading(new Pose2d(distNormal,0,0))
                 .build();
