@@ -87,6 +87,13 @@ public class CustomizedTrajectorySequenceRunner {
         lastSegmentIndex = -1;
     }
 
+    public void followTrajectorySequenceAsyncTime(TrajectorySequence trajectorySequence, double time) {
+        currentTrajectorySequence = trajectorySequence;
+        currentSegmentStartTime = time;
+        currentSegmentIndex = 0;
+        lastSegmentIndex = -1;
+    }
+
     public void startEmergencyStop(){
         needEmergencyStop = true;
     }
