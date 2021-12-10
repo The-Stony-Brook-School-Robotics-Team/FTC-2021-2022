@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Sandboxes.Marc;
+package org.firstinspires.ftc.teamcode.sandboxes.Marc;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 /**
  * This OpMode performs the following path using a state machine:
@@ -89,35 +88,7 @@ public class SplineTestAuton extends LinearOpMode {
                 drive.setPoseEstimate(new Pose2d(0,65,0));
                 // prepare spline trajectory
                 // NOTE: we use splines since then the trajectory is smooth and we minimize time
-  /*              Trajectory part1 = drive.trajectoryBuilder(new Pose2d(0,65,0))
-                        .forward(24)
-                        .build();
-                Trajectory part2 = drive.trajectoryBuilder(new Pose2d(24,65,0))
-                        .strafeRight(24)
-                        .build();
-
-*/              /*
-                TrajectorySequence seq = drive.trajectorySequenceBuilder(new Pose2d(0,65,0))
-                        .forward(45)
-                        .strafeRight(32)
-                        .turn(-(Math.PI/2))
-                        .strafeLeft(30)
-                        .forward(30)
-                        .build();
-                drive.followTrajectorySequence(seq);*/
-                traj1 = drive.trajectoryBuilder(new Pose2d(-6,66,0))
-                        .forward(41)
-                        .splineToSplineHeading(new Pose2d(40,38,-Math.PI/4),-Math.PI)
-                        .splineToSplineHeading(new Pose2d(75,34,-Math.PI/2),0)
-                        .build();
-                Trajectory traj2 = drive.trajectoryBuilder(new Pose2d(75,34,-Math.PI/2))
-                        .forward(30)
-                        .build();
-                drive.followTrajectory(traj1);
-                drive.update();
-                drive.followTrajectory(traj2);
-                drive.update();
-                /*traj1 = drive.trajectoryBuilder(new Pose2d(0, 65, 0), false)
+                traj1 = drive.trajectoryBuilder(new Pose2d(0, 65, 0), false)
                         .forward(30)
                         .splineToConstantHeading(new Vector2d(38,58), -Math.PI/4)
                         .splineToSplineHeading(new Pose2d(43.0, 48.0, -Math.PI/ 4.0), -Math.PI / 4.0)
@@ -125,7 +96,7 @@ public class SplineTestAuton extends LinearOpMode {
                         .forward(12)
                         .build();
                 drive.followTrajectory(traj1);
-                drive.update();*/
+                drive.update();
                 synchronized (stateMutex) {
                     state = AutonomousStates2.STOPPED;
                 }
