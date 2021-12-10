@@ -13,8 +13,6 @@ public class OpenCVController {
     static final int STREAM_WIDTH = 1920;
     static final int STREAM_HEIGHT = 1080;
     DuckOpenCVEngine engine;
-    boolean flag = false; // flags for ensuring the time spent analyzing the frames.
-    boolean secondFlag = false;
     OpenCvCamera webcam;
     public OpenCVController(HardwareMap hardwareMap, Telemetry telemetry)
     {
@@ -38,10 +36,12 @@ public class OpenCVController {
                 telemetry.update();
             }
         });
-        // Print analysis
-        telemetry.addData("Rect AY: ", engine.getAYanalysis());
-        telemetry.addData("Rect BY: ", engine.getBYanalysis());
-        telemetry.addData("Rect CY: ", engine.getCYanalysis());
-        telemetry.update();
+    }
+    public int[] getAnalysis() {
+        return new int[]{engine.getAYanalysis(),engine.getBYanalysis(),engine.getCYanalysis()};
+    }
+    public void shutDown() {
+        webcam.stopStreaming();
+        engine = null;
     }
 }
