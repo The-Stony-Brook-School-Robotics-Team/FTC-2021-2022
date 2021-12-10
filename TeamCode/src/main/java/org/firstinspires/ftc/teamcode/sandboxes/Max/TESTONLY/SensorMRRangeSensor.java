@@ -30,7 +30,6 @@
 package org.firstinspires.ftc.teamcode.sandboxes.Max.TESTONLY;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -68,7 +67,10 @@ public class SensorMRRangeSensor extends LinearOpMode {
             telemetry.addData("raw ultrasonic", rangeSensor.rawUltrasonic());
             telemetry.addData("raw optical", rangeSensor.rawOptical());
             telemetry.addData("cm optical", "%.2f cm", rangeSensor.cmOptical());
-            telemetry.addData("cm", "%.2f cm", rangeSensor.getDistance(DistanceUnit.CM));
+            telemetry.addLine()
+                    .addData("cm", "%.2f cm", rangeSensor.getDistance(DistanceUnit.INCH))
+            .addData("cm", "%.2f cm", rangeSensor.getDistance(DistanceUnit.MM))
+            .addData("cm", "%.2f cm", rangeSensor.getDistance(DistanceUnit.CM));
             telemetry.update();
         }
     }

@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.sandboxes.Max.Sensors;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-
 import android.hardware.Sensor;
 
 import com.acmerobotics.dashboard.FtcDashboard;

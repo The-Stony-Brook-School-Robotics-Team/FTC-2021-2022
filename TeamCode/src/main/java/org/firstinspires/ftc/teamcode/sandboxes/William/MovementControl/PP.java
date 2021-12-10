@@ -6,10 +6,9 @@ import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.archive.MotorEncoderController;
-
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 @TeleOp(name = "PP Test by Will", group = "PP")
 public class PP extends OpMode {

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Sandboxes.William.WheelControl;
+package org.firstinspires.ftc.teamcode.sandboxes.William.WheelControl;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;

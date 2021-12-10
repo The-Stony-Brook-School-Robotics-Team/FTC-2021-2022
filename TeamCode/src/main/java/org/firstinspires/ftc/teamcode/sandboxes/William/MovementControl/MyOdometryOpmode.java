@@ -1,11 +1,11 @@
-package org.firstinspires.ftc.teamcode.Sandboxes.William.MovementControl;
+package org.firstinspires.ftc.teamcode.sandboxes.William.MovementControl;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import org.firstinspires.ftc.teamcode.Sandboxes.William.Util.ControllerHelper;
+import org.firstinspires.ftc.teamcode.sandboxes.William.Util.ControllerHelper;
 
 /**
  * Created by Sarthak on 10/4/2019.
