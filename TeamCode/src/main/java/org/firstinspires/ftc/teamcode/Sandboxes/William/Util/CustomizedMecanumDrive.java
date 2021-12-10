@@ -51,6 +51,8 @@ import java.util.List;
 
 @Config
 public class CustomizedMecanumDrive extends MecanumDrive {
+//    private static boolean needEmergencyStop = false;
+
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
 
