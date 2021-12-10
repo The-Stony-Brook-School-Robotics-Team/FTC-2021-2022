@@ -13,11 +13,11 @@ import org.firstinspires.ftc.teamcode.sandboxes.William.Util.CustomizedTrajector
 
 @Config
 @Autonomous(group = "drive", name = "Customized Mecanum Drive Test")
-public class CustomizedMecanumDriveTest extends LinearOpMode {
+public class CustomizedDriveEmergencyStopTest extends LinearOpMode {
     private final PIDFController turnController;
     private final PIDCoefficients PIDCoefficient = new PIDCoefficients();
 
-    public CustomizedMecanumDriveTest(PIDFController turnController) {
+    public CustomizedDriveEmergencyStopTest(PIDFController turnController) {
         this.turnController = turnController;
     }
 
