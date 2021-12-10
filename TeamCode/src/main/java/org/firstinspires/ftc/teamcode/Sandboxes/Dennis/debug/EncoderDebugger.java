@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.sandboxes.Dennis.debug;
+package org.firstinspires.ftc.teamcode.Sandboxes.Dennis.debug;
 
 import androidx.annotation.NonNull;
 
@@ -101,12 +101,12 @@ public class EncoderDebugger extends LinearOpMode {
             appendFlag(DEBUG_FLAGS.INTERNAL_ERROR);
         }
 
-
         // TODO: Add An Actual Worker For Telemetry
         while(!isStopRequested() && opModeIsActive() && !interruptSignal) {
             telemetry.addData("left", DEBUG_ENCODERS[0].getPosition());
             telemetry.addData("right", DEBUG_ENCODERS[1].getPosition());
             telemetry.addData("center", DEBUG_ENCODERS[2].getPosition());
+            telemetry.update();
         }
 
     }
@@ -242,6 +242,9 @@ public class EncoderDebugger extends LinearOpMode {
     }
 }
 
+/**
+ * Wrapper Class for DcMotorEx
+ */
 class EncoderDebugEx {
 
     private DcMotorEx encoder;
