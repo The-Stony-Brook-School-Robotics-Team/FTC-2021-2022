@@ -211,16 +211,22 @@ public class CustomizedMecanumDrive extends MecanumDrive {
         return trajectorySequenceRunner.getLastPoseError();
     }
 
+    /**
+     * ---------------------------------------------------------------------
+     */
     public void update() {
         updatePoseEstimate();
-        DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());
+        DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity()); //<<-------------------------
         if (signal != null) setDriveSignal(signal);
     }
 
     public void waitForIdle() {
         while (!Thread.currentThread().isInterrupted() && isBusy())
-            update();
+            update();   //<<-------------------------
     }
+    /**
+     * ---------------------------------------------------------------------
+     */
 
     public boolean isBusy() {
         return trajectorySequenceRunner.isBusy();
