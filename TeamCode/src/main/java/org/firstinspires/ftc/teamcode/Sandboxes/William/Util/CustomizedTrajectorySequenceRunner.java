@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.trajectorysequence;
+package org.firstinspires.ftc.teamcode.sandboxes.William.Util;
 
 import androidx.annotation.Nullable;
 
@@ -16,19 +16,33 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryMarker;
 import com.acmerobotics.roadrunner.util.NanoClock;
 
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.SequenceSegment;
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.TrajectorySegment;
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.TurnSegment;
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.WaitSegment;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
+import java.util.Collections;
+import java.util.LinkedList;
+
 @Config
-public class TrajectorySequenceRunner {
+public class CustomizedTrajectorySequenceRunner {
+    public static boolean needEmergencyStop = false;
+
+    public static double EMERGENCY_STOP_ACCELERATION = 1;
+    private boolean hasSetEmergencyStopStartPosition = false;
+    private boolean hasSetEmergencyStopStartValues = false;
+    private Pose2d emergencyStopStartPosition;
+    private Pose2d emergencyStopStartVelocity;
+    private double emergencyStopStartTime;
+    private double emergencyStopDeltaTime;
+
     public static String COLOR_INACTIVE_TRAJECTORY = "#4caf507a";
     public static String COLOR_INACTIVE_TURN = "#7c4dff7a";
     public static String COLOR_INACTIVE_WAIT = "#dd2c007a";
@@ -57,14 +71,11 @@ public class TrajectorySequenceRunner {
     private final FtcDashboard dashboard;
     private final LinkedList<Pose2d> poseHistory = new LinkedList<>();
 
-    public TrajectorySequenceRunner(TrajectoryFollower follower, PIDCoefficients headingPIDCoefficients) {
+    public CustomizedTrajectorySequenceRunner(TrajectoryFollower follower, PIDCoefficients headingPIDCoefficients) {
         this.follower = follower;
-
         turnController = new PIDFController(headingPIDCoefficients);
         turnController.setInputBounds(0, 2 * Math.PI);
-
         clock = NanoClock.system();
-
         dashboard = FtcDashboard.getInstance();
         dashboard.setTelemetryTransmissionInterval(25);
     }
@@ -75,11 +86,9 @@ public class TrajectorySequenceRunner {
         currentSegmentIndex = 0;
         lastSegmentIndex = -1;
     }
-    public void followTrajectorySequenceAsyncTime(TrajectorySequence trajectorySequence, double time) {
-        currentTrajectorySequence = trajectorySequence;
-        currentSegmentStartTime = time;
-        currentSegmentIndex = 0;
-        lastSegmentIndex = -1;
+
+    public void startEmergencyStop(){
+        needEmergencyStop = true;
     }
 
     public @Nullable
@@ -93,6 +102,10 @@ public class TrajectorySequenceRunner {
         SequenceSegment currentSegment = null;
 
         if (currentTrajectorySequence != null) {
+            /**
+             * Clear the remaining markers if there is
+             * no remaining segment index in current trajectory sequence.
+             */
             if (currentSegmentIndex >= currentTrajectorySequence.size()) {
                 for (TrajectoryMarker marker : remainingMarkers) {
                     marker.getCallback().onMarkerReached();
@@ -103,30 +116,39 @@ public class TrajectorySequenceRunner {
                 currentTrajectorySequence = null;
             }
 
+            /**
+             * Stop method if current trajectory sequence is empty, or there is
+             * no remaining segment index in current trajectory sequence (changed to null in Line-100).
+             */
             if (currentTrajectorySequence == null)
                 return new DriveSignal();
+
+            //Actual method start from HERE.
 
             double now = clock.seconds();
             boolean isNewTransition = currentSegmentIndex != lastSegmentIndex;
 
             currentSegment = currentTrajectorySequence.get(currentSegmentIndex);
 
+            /**
+             * Change to the next markers segment if the current segment is finished.
+             */
             if (isNewTransition) {
                 currentSegmentStartTime = now;
                 lastSegmentIndex = currentSegmentIndex;
 
                 for (TrajectoryMarker marker : remainingMarkers) {
-                    marker.getCallback().onMarkerReached();
+                    marker.getCallback().onMarkerReached(); //TODO: What does this method do???
                 }
 
                 remainingMarkers.clear();
 
-                remainingMarkers.addAll(currentSegment.getMarkers());
+                remainingMarkers.addAll(currentSegment.getMarkers());   //Switch the new markers to remainingMarkers.
 
                 /**
                  * TrajectoryMarker class has getTime() method.
                  */
-                Collections.sort(remainingMarkers, (t1, t2) -> Double.compare(t1.getTime(), t2.getTime()));
+                Collections.sort(remainingMarkers, (t1, t2) -> Double.compare(t1.getTime(), t2.getTime())); //Sort by time.
             }
 
             double deltaTime = now - currentSegmentStartTime;
@@ -146,7 +168,31 @@ public class TrajectorySequenceRunner {
                     lastPoseError = follower.getLastError();
                 }
 
-                targetPose = currentTrajectory.get(deltaTime);
+                /**
+                 * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                 */
+                if (needEmergencyStop) {
+                    if (!hasSetEmergencyStopStartValues) {
+                        emergencyStopStartPosition = poseEstimate;
+                        emergencyStopStartVelocity = poseVelocity;
+                        emergencyStopStartTime = clock.seconds();
+                        hasSetEmergencyStopStartValues = true;
+                    }
+                    emergencyStopDeltaTime = clock.seconds() - emergencyStopStartTime;
+                    double currentTargetX = emergencyStopStartPosition.getX() + emergencyStopStartVelocity.getX() * emergencyStopDeltaTime + 0.5 * EMERGENCY_STOP_ACCELERATION * Math.pow(emergencyStopDeltaTime, 2);
+                    double currentTargetY = emergencyStopStartPosition.getY() + emergencyStopStartVelocity.getY() * emergencyStopDeltaTime + 0.5 * EMERGENCY_STOP_ACCELERATION * Math.pow(emergencyStopDeltaTime, 2);
+                    targetPose = new Pose2d(currentTargetX, currentTargetY, emergencyStopStartPosition.getHeading());
+                    if (emergencyStopStartVelocity.getX() - EMERGENCY_STOP_ACCELERATION * deltaTime <= 0) {
+                        needEmergencyStop = false;
+                        return new DriveSignal();
+                    }
+                } else {
+                    targetPose = currentTrajectory.get(deltaTime);
+                }
+                /**
+                 * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                 */
+
 
             } else if (currentSegment instanceof TurnSegment) {
                 MotionState targetState = ((TurnSegment) currentSegment).getMotionProfile().get(deltaTime);
@@ -198,10 +244,6 @@ public class TrajectorySequenceRunner {
         packet.put("x", poseEstimate.getX());
         packet.put("y", poseEstimate.getY());
         packet.put("heading (deg)", Math.toDegrees(poseEstimate.getHeading()));
-        packet.put("xvel",poseVelocity.getX());
-        packet.put("yvel",poseVelocity.getY());
-        packet.put("hvel (deg/s)",poseVelocity.getHeading());
-
 
         packet.put("xError", getLastPoseError().getX());
         packet.put("yError", getLastPoseError().getY());
