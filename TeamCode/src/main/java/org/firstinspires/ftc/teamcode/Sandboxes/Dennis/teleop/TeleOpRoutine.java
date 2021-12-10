@@ -1,13 +1,15 @@
-package org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop;
+package org.firstinspires.ftc.teamcode.sandboxes.Dennis.teleop;
 
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -17,6 +19,8 @@ import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 import java.util.HashMap;
 
+@Config
+@TeleOp(name="A - TeleOp", group="default")
 public class TeleOpRoutine extends OpMode {
 
     /**
