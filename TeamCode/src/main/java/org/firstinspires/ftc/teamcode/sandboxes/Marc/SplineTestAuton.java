@@ -88,7 +88,7 @@ public class SplineTestAuton extends LinearOpMode {
                 colorstrip2.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_RED);
                 drive.setPoseEstimate(new Pose2d(0,65,0));
                 // prepare spline trajectory
-                // NOTE: we use splines since then the trajectory is smooth and we minimize time
+
   /*              Trajectory part1 = drive.trajectoryBuilder(new Pose2d(0,65,0))
                         .forward(24)
                         .build();
@@ -96,16 +96,17 @@ public class SplineTestAuton extends LinearOpMode {
                         .strafeRight(24)
                         .build();
 
-*/              /*
-                TrajectorySequence seq = drive.trajectorySequenceBuilder(new Pose2d(0,65,0))
+*/
+                TrajectorySequence seq = drive.trajectorySequenceBuilder(new Pose2d(-6,66,0))
                         .forward(45)
-                        .strafeRight(32)
-                        .turn(-(Math.PI/2))
-                        .strafeLeft(30)
+                        .lineToSplineHeading(new Pose2d(39,34,-Math.PI/2))
+                        //.strafeRight(32)
+                        //.turn(-(Math.PI/2))
+                        .strafeLeft(32)
                         .forward(30)
                         .build();
-                drive.followTrajectorySequence(seq);*/
-                traj1 = drive.trajectoryBuilder(new Pose2d(-6,66,0))
+                drive.followTrajectorySequence(seq);
+                /*traj1 = drive.trajectoryBuilder(new Pose2d(-6,66,0))
                         .forward(41)
                         .splineToSplineHeading(new Pose2d(40,38,-Math.PI/4),-Math.PI)
                         .splineToSplineHeading(new Pose2d(75,34,-Math.PI/2),0)
@@ -124,8 +125,8 @@ public class SplineTestAuton extends LinearOpMode {
                         .splineToSplineHeading(new Pose2d(65.0, 24.0, -Math.PI/2.0), -Math.PI / 2.0)
                         .forward(12)
                         .build();
-                drive.followTrajectory(traj1);
-                drive.update();*/
+                drive.followTrajectory(traj1);*/
+                drive.update();
                 synchronized (stateMutex) {
                     state = AutonomousStates2.STOPPED;
                 }
