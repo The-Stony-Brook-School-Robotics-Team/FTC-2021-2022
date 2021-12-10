@@ -35,7 +35,7 @@ import java.util.LinkedList;
 public class CustomizedTrajectorySequenceRunner {
     public static boolean needEmergencyStop = false;
 
-    private final double EMERGENCY_STOP_ACCELERATION = 1;
+    public static double EMERGENCY_STOP_ACCELERATION = 1;
     private boolean hasSetEmergencyStopStartPosition = false;
     private boolean hasSetEmergencyStopStartValues = false;
     private Pose2d emergencyStopStartPosition;
