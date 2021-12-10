@@ -52,6 +52,8 @@ public class TeleOpRoutine extends OpMode {
     private static SampleMecanumDrive drive;
     private static FtcDashboard dashboard;
 
+    Object stateMutex = new Object();
+
     @Override
     public void init() {
         ROBOT_STATE = TELEOP_ROUTINE_STATES.STOPPED;
@@ -62,11 +64,26 @@ public class TeleOpRoutine extends OpMode {
     public void loop() {
         switch(ROBOT_STATE) {
             case STOPPED:
-                initialize();
-                LIGHT_HANDLER_ROUTINE.start();
-                ROADRUNNER_HANDLER_ROUTINE.start();
+                new Thread(() -> {
+                    initialize();
+                }).start();
+                synchronized (stateMutex) { ROBOT_STATE = TELEOP_ROUTINE_STATES.INITIALIZING; }
+                break;
+
+            case INITIALIZING:
+
+                break;
+
+            case INITIALIZED:
+                synchronized (stateMutex) { ROBOT_STATE = TELEOP_ROUTINE_STATES.RUNNING; }
+                break;
+
+            case RUNNING:
+                ROADRUNNER_HANDLER_INTERNAL();
+                break;
 
         }
+
     }
 
     public void initialize() {
@@ -78,20 +95,21 @@ public class TeleOpRoutine extends OpMode {
         MOTOR_PORTS.put("lb", hardwareMap.get(DcMotorEx.class, "lb"));
         MOTOR_PORTS.put("rf", hardwareMap.get(DcMotorEx.class, "rf"));
         // ODOM
-        MOTOR_PORTS.put("left", hardwareMap.get(DcMotorEx.class, "left"));
-        MOTOR_PORTS.put("right", hardwareMap.get(DcMotorEx.class, "right"));
-        MOTOR_PORTS.put("center", hardwareMap.get(DcMotorEx.class, "center"));
+        //MOTOR_PORTS.put("left", hardwareMap.get(DcMotorEx.class, "left"));
+        //MOTOR_PORTS.put("right", hardwareMap.get(DcMotorEx.class, "right"));
+        //MOTOR_PORTS.put("center", hardwareMap.get(DcMotorEx.class, "center"));
         // ROADRUNNER
         drive = new SampleMecanumDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         dashboard = FtcDashboard.getInstance();
+        synchronized (stateMutex) { ROBOT_STATE = TELEOP_ROUTINE_STATES.INITIALIZED; }
     }
 
 
     /**
      * Roadrunner Handler
      */
-    public Thread ROADRUNNER_HANDLER_ROUTINE = new Thread(() -> {
+    public void ROADRUNNER_HANDLER_INTERNAL() {
         // Set Weighted Power
         drive.setWeightedDrivePower(
                 new Pose2d(
@@ -110,7 +128,7 @@ public class TeleOpRoutine extends OpMode {
         telemetryPacket.put("Estimated Pose X", poseEstimate.getX());
         telemetryPacket.put("Estimated Pose Y", poseEstimate.getY());
         telemetryPacket.put("Estimated Pose Heading", poseEstimate.getHeading());
-    });
+    }
 
     public Thread LIGHT_HANDLER_ROUTINE = new Thread(() -> {
         while(!Thread.interrupted()) {
