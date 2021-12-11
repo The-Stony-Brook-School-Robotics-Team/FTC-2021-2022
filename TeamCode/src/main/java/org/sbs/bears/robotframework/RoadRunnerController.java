@@ -36,7 +36,7 @@ public class RoadRunnerController {
     {
         // TODO implement ShutDown on RR Ctrl
     }
-    public void forwardHaltableTrajectory(double distMax, double brakingDist, double brakeVel, double brakeDecel, Boolean signal, Object mutex)
+    public void doForwardHaltableTrajectory(double distMax, double brakingDist, double brakeVel, double brakeDecel, Boolean signal, Object mutex)
     {
         boolean isRunning = true;
         startInterruptibleTrajVar();
@@ -47,7 +47,7 @@ public class RoadRunnerController {
 
 
         new Thread(()->{Boolean tmpIsRunning = Boolean.getBoolean("true");
-            while(isRunningInterruptibleTraj) {
+            while(getIfInterruptibleTraj()) {
                 synchronized (mutex) {
                     if(signal) {
                         runner.cancelTraj();
@@ -78,11 +78,18 @@ public class RoadRunnerController {
 
     private void startInterruptibleTrajVar()
     {
-        isRunningInterruptibleTraj = true;
+        synchronized (internalMutex)
+        {isRunningInterruptibleTraj = true;}
     }
     private void haltInterruptibleTrajVar()
     {
-        isRunningInterruptibleTraj = false;
+        synchronized (internalMutex){
+        isRunningInterruptibleTraj = false;}
+    }
+    private boolean getIfInterruptibleTraj()
+    {
+        synchronized (internalMutex) {
+        return isRunningInterruptibleTraj;}
     }
 
 
