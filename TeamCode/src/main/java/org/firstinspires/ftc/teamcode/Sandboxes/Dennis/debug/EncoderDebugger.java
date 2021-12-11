@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Sandboxes.Dennis.debug;
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorController;
@@ -17,7 +18,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-
 
 @Config
 @TeleOp(name="U - Encoder Debugger", group="default")
@@ -86,7 +86,10 @@ public class EncoderDebugger extends LinearOpMode {
     /**
      * Array To Access Which Wheels Need To Be Displayed
      */
-    private DEBUG_WHEELS[] DISPLAY_WHEELS = new DEBUG_WHEELS[3];
+    // TODO: When debugging certain wheels, add them into the debug wheels,
+    //  keep in mind adding more than 3 and more than the same class is stupid so don't do it???
+    private DEBUG_WHEELS[] DEBUG_THESE_WHEELS = new DEBUG_WHEELS[] { DEBUG_WHEELS.LEFT, DEBUG_WHEELS.RIGHT };
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -100,6 +103,8 @@ public class EncoderDebugger extends LinearOpMode {
             ex.printStackTrace();
             appendFlag(DEBUG_FLAGS.INTERNAL_ERROR);
         }
+
+        waitForStart();
 
         // TODO: Add An Actual Worker For Telemetry
         while(!isStopRequested() && opModeIsActive() && !interruptSignal) {
@@ -118,19 +123,27 @@ public class EncoderDebugger extends LinearOpMode {
     public void initialize(@NonNull HardwareMap hardwareMap) {
         try {
             // Flood Internal Encoder Arrays For Access
-            DcMotorEx left = hardwareMap.get(DcMotorEx.class, LEFT_ENCODER_NAME);
-            DEBUG_ENCODERS[0] = new EncoderDebugEx(left);
-            REGULAR_ENCODERS[0] = left;
-            DcMotorEx right = hardwareMap.get(DcMotorEx.class, RIGHT_ENCODER_NAME);
-            DEBUG_ENCODERS[1] = new EncoderDebugEx(right);
-            REGULAR_ENCODERS[1] = right;
-            // TODO: ADD WHICH WHEELS TO DISPLAY | DISPLAY_WHEELS
-            if(DEBUG_THREE_WHEEL) {
-                // Flood Internal Encoder Array For Access
-                DcMotorEx center = hardwareMap.get(DcMotorEx.class, CENTER_ENCODER_NAME);
-                DEBUG_ENCODERS[2] = new EncoderDebugEx(center);
-                REGULAR_ENCODERS[3] = center;
-                // TODO: ADD WHICH WHEELS TO DISPLAY | DISPLAY_WHEELS
+            for(DEBUG_WHEELS DEBUG_WHEEL : DEBUG_THESE_WHEELS) {
+                switch (DEBUG_WHEEL) {
+
+                    case LEFT:
+                        DcMotorEx left = hardwareMap.get(DcMotorEx.class, LEFT_ENCODER_NAME);
+                        DEBUG_ENCODERS[0] = new EncoderDebugEx(left);
+                        REGULAR_ENCODERS[0] = left;
+                        break;
+
+                    case RIGHT:
+                        DcMotorEx right = hardwareMap.get(DcMotorEx.class, RIGHT_ENCODER_NAME);
+                        DEBUG_ENCODERS[1] = new EncoderDebugEx(right);
+                        REGULAR_ENCODERS[1] = right;
+                        break;
+
+                    case CENTER:
+                        DcMotorEx center = hardwareMap.get(DcMotorEx.class, CENTER_ENCODER_NAME);
+                        DEBUG_ENCODERS[2] = new EncoderDebugEx(center);
+                        REGULAR_ENCODERS[3] = center;
+
+                }
             }
             initialized = true;
         } catch(Exception ex) {
