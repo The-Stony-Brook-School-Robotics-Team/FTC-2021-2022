@@ -1,7 +1,8 @@
-package org.sbs.bears.robotframework;
+package org.sbs.bears.robotframework.controllers;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
@@ -16,14 +17,16 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
 
+import java.util.Vector;
+
 
 public class RoadRunnerController {
 
     boolean isRunningInterruptibleTraj = false;
 
-    SampleMecanumDrive drive;
-    FtcDashboard dashboard;
-    TrajectorySequenceRunner runner;
+    protected SampleMecanumDrive drive;
+    protected FtcDashboard dashboard;
+    protected TrajectorySequenceRunner runner;
     Object internalMutex = new Object();
 
     public RoadRunnerController(HardwareMap hardwareMap, Telemetry telemetry)
@@ -32,6 +35,97 @@ public class RoadRunnerController {
         this.dashboard = FtcDashboard.getInstance();
         this.runner = drive.trajectorySequenceRunner;
     }
+    public void forward(Pose2d iniPos, double dist)
+    {
+        drive.followTrajectory(
+                drive.trajectoryBuilder(iniPos)
+                        .forward(dist)
+                        .build()
+        );
+    }
+    public void forward(double dist)
+    {
+        forward(drive.getPoseEstimate(),dist);
+    }
+    public void backward(Pose2d iniPos, double dist)
+    {
+        drive.followTrajectory(
+                drive.trajectoryBuilder(iniPos)
+                        .back(dist)
+                        .build()
+        );
+    }
+    public void backward(double dist)
+    {
+        backward(drive.getPoseEstimate(),dist);
+    }
+    public void strafeL(Pose2d iniPos, double dist)
+    {
+        drive.followTrajectory(
+                drive.trajectoryBuilder(iniPos)
+                        .strafeLeft(dist)
+                        .build()
+        );
+    }
+    public void strafeL(double dist)
+    {
+        strafeL(drive.getPoseEstimate(),dist);
+    }
+    public void strafeR(Pose2d iniPos, double dist)
+    {
+        drive.followTrajectory(
+                drive.trajectoryBuilder(iniPos)
+                        .strafeRight(dist)
+                        .build()
+        );
+    }
+    public void strafeR(double dist)
+    {
+        strafeR(drive.getPoseEstimate(),dist);
+    }
+    public void turnR(double deg)
+    {
+        drive.turn(-Math.toRadians(deg));
+    }
+    public void turnL(double deg)
+    {
+        drive.turn(Math.toRadians(deg));
+    }
+    public void followLineToSpline(Pose2d iniPos, Pose2d finalPos)
+    {
+        drive.followTrajectory(
+                drive.trajectoryBuilder(iniPos)
+                    .lineToSplineHeading(finalPos)
+                    .build()
+        );
+    }
+    public void followSplineToSpline(Pose2d iniPos, Pose2d finalPos,double finTang)
+    {
+        drive.followTrajectory(
+                drive.trajectoryBuilder(iniPos)
+                        .splineToSplineHeading(finalPos,finTang)
+                        .build()
+        );
+    }
+    public void followLineToConstant(Pose2d iniPos, Pose2d finalPos)
+    {
+        drive.followTrajectory(
+                drive.trajectoryBuilder(iniPos)
+                        .lineToConstantHeading(convertPose2Vector(finalPos))
+                        .build()
+        );
+    }
+    public void followLineToConstant(Pose2d iniPos, Vector2d finalVec)
+    {
+        drive.followTrajectory(
+                drive.trajectoryBuilder(iniPos)
+                        .lineToConstantHeading(finalVec)
+                        .build()
+        );
+    }
+
+
+
     public void shutDown()
     {
         // TODO implement ShutDown on RR Ctrl
@@ -93,5 +187,17 @@ public class RoadRunnerController {
     }
 
 
+    public static Vector2d convertPose2Vector(Pose2d pose)
+    {
+        return new Vector2d(pose.getX(),pose.getY());
+    }
+    public static Pose2d convertVector2Pose(Vector2d vec)
+    {
+        return convertVector2Pose(vec,0);
+    }
+    public static Pose2d convertVector2Pose(Vector2d vec,double heading)
+    {
+        return new Pose2d(vec.getX(),vec.getY(),heading);
+    }
 
 }

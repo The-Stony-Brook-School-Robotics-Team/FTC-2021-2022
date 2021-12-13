@@ -1,9 +1,5 @@
-<<<<<<< Updated upstream:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/sandboxes/Michael/Unsafe/util/customPath.java
-package org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe.util;
 
-=======
 package org.firstinspires.ftc.teamcode.archive;
->>>>>>> Stashed changes:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/archive/customPath.java
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.command.OdometrySubsystem;

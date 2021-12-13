@@ -1,4 +1,4 @@
-package org.sbs.bears.robotframework;
+package org.sbs.bears.robotframework.controllers;
 
 import com.acmerobotics.dashboard.config.Config;
 
@@ -19,8 +19,9 @@ import java.util.ArrayList;
  * @version 5.1
  */
 @Config
-public class DuckOpenCVEngine extends OpenCvPipeline {
+public class DuckOpenCVEngineBlueSimple extends OpenCvPipeline {
     // MARK - Class Variables
+
 
     /**
      * This variable represents the width of the Camera Stream.

@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.sbs.bears.robotframework.DuckOpenCVEngine;
+import org.sbs.bears.robotframework.controllers.DuckOpenCVEngineBlueSpline;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -23,7 +23,7 @@ public class OpenCVSample extends OpMode {
     // MARK - Class Variables
     static final int STREAM_WIDTH = 1920;
     static final int STREAM_HEIGHT = 1080;
-    DuckOpenCVEngine engine;
+    DuckOpenCVEngineBlueSpline engine;
     boolean flag = false; // flags for ensuring the time spent analyzing the frames.
     boolean secondFlag = false;
     OpenCvCamera webcam;
@@ -36,7 +36,7 @@ public class OpenCVSample extends OpMode {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         WebcamName webcamName = hardwareMap.get(WebcamName.class, "WebcamMain");
         webcam = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
-        engine = new DuckOpenCVEngine();
+        engine = new DuckOpenCVEngineBlueSpline();
         webcam.setPipeline(engine);
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
@@ -65,7 +65,7 @@ public class OpenCVSample extends OpMode {
     public void start() {
         super.start();
         // Start the analysis
-        DuckOpenCVEngine.doAnalysis = true;
+        DuckOpenCVEngineBlueSpline.doAnalysis = true;
         webcam.pauseViewport();
     }
     // MARK - End of OpMode Run
@@ -94,7 +94,7 @@ public class OpenCVSample extends OpMode {
             }
         }
         else if(!secondFlag) {
-            DuckOpenCVEngine.doAnalysis = false; // stop
+            DuckOpenCVEngineBlueSpline.doAnalysis = false; // stop
             webcam.pauseViewport(); // shut down camera
             webcam.stopStreaming();  // shut down camera
             secondFlag = true;
