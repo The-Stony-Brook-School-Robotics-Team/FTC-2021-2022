@@ -2,6 +2,12 @@ package org.firstinspires.ftc.teamcode.sandboxes.Marc;
 
 import androidx.annotation.NonNull;
 
+<<<<<<< HEAD
+=======
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+>>>>>>> new-drivetrain
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
@@ -18,12 +24,43 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 public class AutonSimulator extends LinearOpMode {
     SampleMecanumDrive drive;
     RevBlinkinLedDriver colorstrip2;
+<<<<<<< HEAD
+=======
+
+    // Dashboard Configurations
+    public static boolean instaStop = false;
+    public static double brakingDistance = 5;
+    public static double decel = DriveConstants.MAX_ACCEL;
+    public static double velMax = DriveConstants.MAX_VEL;
+    public static double distNormal = 72;
+
+
+    double iniTime;
+
+    enum State {
+        INIT,
+        FORWARD,
+        BRAKING,
+        RETURN,
+        STOPPED
+    }
+
+    State state = State.INIT;
+    TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(velMax,DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
+TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(decel);
+FtcDashboard dashboard;
+
+>>>>>>> new-drivetrain
     @Override
     public void runOpMode() throws InterruptedException {
         drive = new SampleMecanumDrive(hardwareMap);
         drive.setPoseEstimate(new Pose2d());
         colorstrip2 = hardwareMap.get(RevBlinkinLedDriver.class,"colorstrip");
         colorstrip2.setPattern(RevBlinkinLedDriver.BlinkinPattern.DARK_BLUE);
+
+        dashboard = FtcDashboard.getInstance();
+
+
         waitForStart();
         new Thread(()->{
             boolean qX = false;
@@ -49,6 +86,8 @@ public class AutonSimulator extends LinearOpMode {
         }
     }
     public void goForward() {
+        TelemetryPacket pack = new TelemetryPacket();
+
         Trajectory trajForward = drive.trajectoryBuilder(new Pose2d())
                 .lineToSplineHeading(new Pose2d(72,0,0))
                 .build();

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Sandboxes.William.Util;
+package org.firstinspires.ftc.teamcode.sandboxes.William.Util;
 
 import androidx.annotation.Nullable;
 
@@ -23,15 +23,29 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.TurnSeg
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.WaitSegment;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
+<<<<<<< HEAD
 import java.util.ArrayList;
+=======
+import androidx.annotation.NonNull;
+
+import java.util.ArrayList;
+import java.util.List;
+
+>>>>>>> new-drivetrain
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.List;
 
 @Config
 public class CustomizedTrajectorySequenceRunner {
+<<<<<<< HEAD
     private final double EMERGENCY_STOP_ACCELERATION = 1;
     private boolean needEmergencyStop = false;
+=======
+    public static boolean needEmergencyStop = false;
+
+    public static double EMERGENCY_STOP_ACCELERATION = 1;
+    private boolean hasSetEmergencyStopStartPosition = false;
+>>>>>>> new-drivetrain
     private boolean hasSetEmergencyStopStartValues = false;
     private Pose2d emergencyStopStartPosition;
     private Pose2d emergencyStopStartVelocity;
@@ -68,12 +82,9 @@ public class CustomizedTrajectorySequenceRunner {
 
     public CustomizedTrajectorySequenceRunner(TrajectoryFollower follower, PIDCoefficients headingPIDCoefficients) {
         this.follower = follower;
-
         turnController = new PIDFController(headingPIDCoefficients);
         turnController.setInputBounds(0, 2 * Math.PI);
-
         clock = NanoClock.system();
-
         dashboard = FtcDashboard.getInstance();
         dashboard.setTelemetryTransmissionInterval(25);
     }
@@ -83,6 +94,17 @@ public class CustomizedTrajectorySequenceRunner {
         currentSegmentStartTime = clock.seconds();
         currentSegmentIndex = 0;
         lastSegmentIndex = -1;
+    }
+
+    public void followTrajectorySequenceAsyncTime(TrajectorySequence trajectorySequence, double time) {
+        currentTrajectorySequence = trajectorySequence;
+        currentSegmentStartTime = time;
+        currentSegmentIndex = 0;
+        lastSegmentIndex = -1;
+    }
+
+    public void startEmergencyStop(){
+        needEmergencyStop = true;
     }
 
     public @Nullable
@@ -178,9 +200,13 @@ public class CustomizedTrajectorySequenceRunner {
                     double currentTargetX = emergencyStopStartPosition.getX() + emergencyStopStartVelocity.getX() * emergencyStopDeltaTime + 0.5 * EMERGENCY_STOP_ACCELERATION * Math.pow(emergencyStopDeltaTime, 2);
                     double currentTargetY = emergencyStopStartPosition.getY() + emergencyStopStartVelocity.getY() * emergencyStopDeltaTime + 0.5 * EMERGENCY_STOP_ACCELERATION * Math.pow(emergencyStopDeltaTime, 2);
                     targetPose = new Pose2d(currentTargetX, currentTargetY, emergencyStopStartPosition.getHeading());
+<<<<<<< HEAD
 
                     if(emergencyStopStartVelocity.getX() - EMERGENCY_STOP_ACCELERATION*deltaTime <= 0)
                     {
+=======
+                    if (emergencyStopStartVelocity.getX() - EMERGENCY_STOP_ACCELERATION * deltaTime <= 0) {
+>>>>>>> new-drivetrain
                         needEmergencyStop = false;
                         return new DriveSignal();
                     }
@@ -190,6 +216,11 @@ public class CustomizedTrajectorySequenceRunner {
                 /**
                  * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
                  */
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> new-drivetrain
             } else if (currentSegment instanceof TurnSegment) {
                 System.out.println("CustomizedTrajectorySequenceRunner: ------>Running TurnSegment<------");
 

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Sandboxes.William.Util;
+package org.firstinspires.ftc.teamcode.sandboxes.William.Util;
 
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ACCEL;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_ACCEL;
@@ -39,7 +39,6 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -50,20 +49,17 @@ import java.util.Arrays;
 import java.util.List;
 
 @Config
-public class CustomizedMecanumDrive extends MecanumDrive {
-//    private static boolean needEmergencyStop = false;
+public class OriginalMecanumDrive extends MecanumDrive {
 
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(10, 0.01, 1);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(5, 0, 0);
+
+    public static boolean isUsingT265 = true;
 
     public static double LATERAL_MULTIPLIER = 1;
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
-
-    public static double DEFAULT_ACCEPTABLE_DISTANCE_ERROR = 0.5;
-    public static double DEFAULT_ACCEPTABLE_HEADING_ERROR = 5;
-    public static double DEFAULT_TIMEOUT_VALUE = 0.5;
 
     public CustomizedTrajectorySequenceRunner trajectorySequenceRunner;
 
@@ -78,24 +74,11 @@ public class CustomizedMecanumDrive extends MecanumDrive {
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
 
-    private double acceptableDistanceError_IN;
-    private double acceptableHeadingError_DE;
-    private double timeoutValue_SE;
-
-    public CustomizedMecanumDrive(HardwareMap hardwareMap) {
+    public OriginalMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
-        /**
-         * Set values used by follower.
-         */
-        this.acceptableDistanceError_IN = DEFAULT_ACCEPTABLE_DISTANCE_ERROR;
-        this.acceptableHeadingError_DE = DEFAULT_ACCEPTABLE_HEADING_ERROR;
-        this.timeoutValue_SE = DEFAULT_TIMEOUT_VALUE;
-
-        /**
-         *  CUSTOMIZED HOLONOMIC_PID_VA_FOLLOWER.
-         */
-        refreshFollower(acceptableDistanceError_IN, acceptableHeadingError_DE, timeoutValue_SE);
+        follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
+                new Pose2d(0, 0, Math.toRadians(0.0)), 0);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -137,24 +120,28 @@ public class CustomizedMecanumDrive extends MecanumDrive {
         if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
             setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
-
+        if(isUsingT265) {
+            leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+            leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
         // TODO: reverse any motors using DcMotor.setDirection()
-        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        else { // new bot
+            leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+            rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
+
 
         // TODO: if desired, use setLocalizer() to change the localization method
-        //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
+        /*if(!isUsingT265) {
+        setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));}
+        else {
+            setLocalizer(new T265Localizer(hardwareMap));
+        }*/
 
         trajectorySequenceRunner = new CustomizedTrajectorySequenceRunner(follower, HEADING_PID);
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
-        return new TrajectoryBuilder(startPose, VEL_CONSTRAINT, ACCEL_CONSTRAINT);
-    }
-
-    public TrajectoryBuilder trajectoryBuilderCustomizedTimeout(Pose2d startPose, double timeoutValue_SE) {
-        this.timeoutValue_SE = timeoutValue_SE;
-        refreshFollower();
         return new TrajectoryBuilder(startPose, VEL_CONSTRAINT, ACCEL_CONSTRAINT);
     }
 
@@ -199,6 +186,14 @@ public class CustomizedMecanumDrive extends MecanumDrive {
         followTrajectoryAsync(trajectory);
         waitForIdle();
     }
+    public void followTrajectoryTime(Trajectory trajectory, double time) {
+        trajectorySequenceRunner.followTrajectorySequenceAsyncTime(
+                trajectorySequenceBuilder(trajectory.start())
+                        .addTrajectory(trajectory)
+                        .build(), time
+        );
+        waitForIdle();
+    }
 
     public void followTrajectorySequenceAsync(TrajectorySequence trajectorySequence) {
         trajectorySequenceRunner.followTrajectorySequenceAsync(trajectorySequence);
@@ -213,44 +208,19 @@ public class CustomizedMecanumDrive extends MecanumDrive {
         return trajectorySequenceRunner.getLastPoseError();
     }
 
-    /**
-     * ---------------------------------------------------------------------
-     */
     public void update() {
         updatePoseEstimate();
-        DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity()); //<<-------------------------
+        DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());
         if (signal != null) setDriveSignal(signal);
     }
 
     public void waitForIdle() {
         while (!Thread.currentThread().isInterrupted() && isBusy())
-            update();   //<<-------------------------
+            update();
     }
-    /**
-     * ---------------------------------------------------------------------
-     */
 
     public boolean isBusy() {
         return trajectorySequenceRunner.isBusy();
-    }
-
-    private void refreshFollower() {
-        follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
-                new Pose2d(acceptableDistanceError_IN, acceptableDistanceError_IN, Math.toRadians(acceptableHeadingError_DE)), timeoutValue_SE);
-    }
-
-    public void refreshFollower(double IN_acceptableDistanceError, double DE_acceptableHeadingError, double SE_timeoutValue) {
-        this.acceptableDistanceError_IN = IN_acceptableDistanceError;
-        this.acceptableHeadingError_DE = DE_acceptableHeadingError;
-        this.timeoutValue_SE = SE_timeoutValue;
-        refreshFollower();
-    }
-
-    public void resetFollower() {
-        this.acceptableDistanceError_IN = DEFAULT_ACCEPTABLE_DISTANCE_ERROR;
-        this.acceptableHeadingError_DE = DEFAULT_ACCEPTABLE_HEADING_ERROR;
-        this.timeoutValue_SE = DEFAULT_TIMEOUT_VALUE;
-        refreshFollower();
     }
 
     public void setMode(DcMotor.RunMode runMode) {
@@ -294,36 +264,6 @@ public class CustomizedMecanumDrive extends MecanumDrive {
         }
 
         setDrivePower(vel);
-    }
-
-    /**
-     * Change the value of acceptableDistanceError then Automatically refresh follower.
-     *
-     * @param acceptableDistanceError_IN acceptable distance error measured in inches.
-     */
-    public void setAcceptableDistanceError_IN(double acceptableDistanceError_IN) {
-        this.acceptableDistanceError_IN = acceptableDistanceError_IN;
-        refreshFollower();
-    }
-
-    /**
-     * Change the value of acceptableDistanceError then Automatically refresh follower.
-     *
-     * @param acceptableDistanceError_IN acceptable distance error measured in degrees.
-     */
-    public void setAcceptableHeadingError_DE(double acceptableDistanceError_IN) {
-        this.acceptableHeadingError_DE = acceptableDistanceError_IN;
-        refreshFollower();
-    }
-
-    /**
-     * Change the value of timeoutValue then Automatically refresh follower.
-     *
-     * @param timeoutValue_SE timeout value measured in seconds.
-     */
-    public void setTimeoutValue_SE(double timeoutValue_SE) {
-        this.timeoutValue_SE = timeoutValue_SE;
-        refreshFollower();
     }
 
     @NonNull
@@ -390,17 +330,5 @@ public class CustomizedMecanumDrive extends MecanumDrive {
 
     public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel) {
         return new ProfileAccelerationConstraint(maxAccel);
-    }
-
-    public double getAcceptableDistanceError_IN() {
-        return acceptableDistanceError_IN;
-    }
-
-    public double getAcceptableHeadingError_DE() {
-        return acceptableHeadingError_DE;
-    }
-
-    public double getTimeoutValue_SE() {
-        return timeoutValue_SE;
     }
 }
