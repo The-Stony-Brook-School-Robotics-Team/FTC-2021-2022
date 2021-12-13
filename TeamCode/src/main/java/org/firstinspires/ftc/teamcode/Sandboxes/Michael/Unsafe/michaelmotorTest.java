@@ -28,13 +28,15 @@
  */
 
 package org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp(name="S - Motor Test", group="Linear Opmode")
-//@Disabled
+@Disabled
+@Deprecated
 public class michaelmotorTest extends LinearOpMode {
 
     private DcMotor motor = null;

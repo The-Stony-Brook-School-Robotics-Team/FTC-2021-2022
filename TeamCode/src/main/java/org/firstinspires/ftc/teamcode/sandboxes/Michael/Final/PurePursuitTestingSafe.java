@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 @TeleOp(name="SAFE TRACKING", group="drive")
 @Disabled
+@Deprecated
 public class PurePursuitTestingSafe extends LinearOpMode {
 
 
