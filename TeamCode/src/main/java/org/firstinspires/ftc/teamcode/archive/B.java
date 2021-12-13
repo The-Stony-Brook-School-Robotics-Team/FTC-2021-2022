@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe;
+package org.firstinspires.ftc.teamcode.archive;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe.util.customPath;
+import org.firstinspires.ftc.teamcode.archive.customPath;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 import java.util.function.DoubleSupplier;
