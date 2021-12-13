@@ -1,25 +1,30 @@
 package org.firstinspires.ftc.teamcode.sandboxes.Michael.Final;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 @TeleOp(name="S - LiftProgramFinal", group="Linear Opmode")
 public class LiftProgramFinal extends LinearOpMode {
 
     private Servo scooper = null;
     private DcMotor compliantWheel = null;
+    private Rev2mDistanceSensor rev = null;
 
     /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/
-    private double[] basePos = {.15, 1.0};
-    private double[] dumpPos = {.55, 0.0};
-    private double[] parkPos = {.5, 0.0};
+    private double[] basePos = {.141, 1.0};
+    private double[] dumpPos = {.57, 0.4};
+    private double[] parkPos = {.5, 0.1};
 
+    /** Distance needed to switch states (mm) **/
+    private double distThreshold = 50.0;
 
-
-    volatile LiftStates state = LiftStates.PARK;
-
+    volatile LiftStates state = LiftStates.BASE;
     Object stateMutex = new Object();
 
 
@@ -29,6 +34,7 @@ public class LiftProgramFinal extends LinearOpMode {
 
         scooper = hardwareMap.get(Servo.class, "servo");
         compliantWheel = hardwareMap.get(DcMotor.class, "motor");
+        rev = hardwareMap.get(Rev2mDistanceSensor.class, "2m");
 
         scooper.setDirection(Servo.Direction.FORWARD);
         compliantWheel.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -37,11 +43,13 @@ public class LiftProgramFinal extends LinearOpMode {
 
         waitForStart();
 
-        /** Runs independent of state. **/
+        /** Runs independent of state, for debugging purposes. **/
         new Thread(()->{
             while(opModeIsActive()) {
                 telemetry.addData("Scooper position: ", scooper.getPosition());
                 telemetry.addData("Wheel power: ", compliantWheel.getPower());
+                telemetry.addData("Distance (mm) ", rev.getDistance(DistanceUnit.MM));
+                telemetry.addData("State ", state);
                 telemetry.update();
 
             }
@@ -49,7 +57,7 @@ public class LiftProgramFinal extends LinearOpMode {
 
 
         while (opModeIsActive() && !isStopRequested()) {
-            if (gamepad1.a && !(state == LiftStates.DUMP)) {
+            if (collected() && !(state == LiftStates.DUMP)) {
                 synchronized (stateMutex) {
                     state = LiftStates.DUMP;
                 }
@@ -70,6 +78,8 @@ public class LiftProgramFinal extends LinearOpMode {
 
         }
     }
+    public boolean collected(){return rev.getDistance(DistanceUnit.MM) < distThreshold;}
+
     public void doStates(){
         switch(state){
             case BASE:
@@ -80,10 +90,12 @@ public class LiftProgramFinal extends LinearOpMode {
             case DUMP:
                 scooper.setPosition(dumpPos[0]);
                 compliantWheel.setPower(dumpPos[1]);
+                return;
 
             case PARK:
                 scooper.setPosition(parkPos[0]);
                 compliantWheel.setPower(parkPos[1]);
+                return;
         }
     }
 }
