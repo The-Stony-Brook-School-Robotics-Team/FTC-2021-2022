@@ -2,13 +2,16 @@ package org.sbs.bears.robotframework.controllers;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.checkerframework.checker.units.qual.A;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.archive.B;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
+import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
 
 public class OpenCVController {
     // MARK - Class Variables
@@ -73,8 +76,66 @@ public class OpenCVController {
         }
         return new int[]{-1,-1,-1};
     }
+    public TowerHeightFromDuck getWhichTowerHeight() {
+        /*
+
+        BLUE SIDE
+
+                                    _
+                                  _| |_
+         _      _      _        _|     |_         _      _      _
+        [_]    [_]    [_]      [_________]       [_]    [_]    [_]
+         A      B      C                          A      B      C
+
+
+
+        A1
+        B2
+        C3
+
+        */
+        int[] result = getAnalysis();
+        int Aresult = result[0];
+        int Bresult = result[1];
+        int Cresult = result[2];
+        int bestResult = Math.max(Aresult,Math.max(Bresult,Cresult));
+        DuckPosition pos = DuckPosition.NA;
+        if(bestResult == Aresult)
+        {
+            pos = DuckPosition.A;
+        }
+        else if(bestResult == Bresult)
+        {
+            pos = DuckPosition.B;
+        }
+        else if(bestResult == Cresult)
+        {
+            pos = DuckPosition.C;
+        }
+        if (pos.equals(DuckPosition.NA)) {
+            return TowerHeightFromDuck.NA; // ERROR
+        }
+
+
+        switch(pos) {
+            case A:
+                return TowerHeightFromDuck.ONE;
+            case B:
+                return TowerHeightFromDuck.TWO;
+            case C:
+                return TowerHeightFromDuck.THREE;
+        }
+        return TowerHeightFromDuck.NA;
+    }
     public void shutDown() {
         webcam.stopStreaming();
         engine1 = null;
     }
+    enum DuckPosition {
+        A,
+        B,
+        C,
+        NA
+    }
 }
+
