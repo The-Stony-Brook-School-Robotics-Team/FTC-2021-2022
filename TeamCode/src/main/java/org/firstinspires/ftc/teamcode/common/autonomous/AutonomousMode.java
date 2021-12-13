@@ -1,4 +1,4 @@
-package org.sbs.bears.robotframework;
+package org.firstinspires.ftc.teamcode.common.autonomous;
 
 public enum AutonomousMode {
     BlueSimple,
