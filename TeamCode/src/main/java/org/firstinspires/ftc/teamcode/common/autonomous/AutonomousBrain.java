@@ -126,13 +126,14 @@ public class AutonomousBrain {
                     case BlueSimple:
                         RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
                     case BlueSpline:
-                        RRctrl.followLineToSpline(wareHouseDrivePositionBSpl);
+                        RRctrl.followSplineTrajWarehouse(true);
                         RRctrl.followLineToSpline(wareHousePickupPositionBSpl);
                     case RedSimple:
                         RRctrl.followLineToSpline(wareHousePickupPositionRSimp);
                     case RedSpline:
-                        RRctrl.followLineToSpline(wareHouseDrivePositionRSpl);
+                        RRctrl.followSplineTrajWarehouse(false);
                         RRctrl.followLineToSpline(wareHousePickupPositionRSpl);
+
                 }
                 majorState = AutonomousStates.FIVE_BACK_FORTH;
                 return;
@@ -222,21 +223,19 @@ public class AutonomousBrain {
 
 
 
-    public static Pose2d startPositionBSimp = new Pose2d(0,0,0);
-    public static Pose2d startPositionBSpl = new Pose2d(0,0,0);
-    public static Pose2d startPositionRSimp = new Pose2d(0,0,0);
-    public static Pose2d startPositionRSpl = new Pose2d(0,0,0);
+    public static Pose2d startPositionBSimp = new Pose2d(6.5,65.5,0);
+    public static Pose2d startPositionBSpl = new Pose2d(6.5,65.5,0);
+    public static Pose2d startPositionRSimp = new Pose2d(6.5,-65.5,Math.PI);
+    public static Pose2d startPositionRSpl = new Pose2d(6.5,-65.5,Math.PI);
 
-    public static Pose2d wareHousePickupPositionBSimp = new Pose2d(0,0,0);
-    public static Pose2d wareHouseDrivePositionBSpl = new Pose2d(0,0,0);
-    public static Pose2d wareHousePickupPositionBSpl = new Pose2d(0,0,0);
-    public static Pose2d wareHousePickupPositionRSimp = new Pose2d(0,0,0);
-    public static Pose2d wareHouseDrivePositionRSpl = new Pose2d(0,0,0);
-    public static Pose2d wareHousePickupPositionRSpl = new Pose2d(0,0,0);
+    public static Pose2d wareHousePickupPositionBSimp = new Pose2d(54.5,65.5,0);
+    public static Pose2d wareHousePickupPositionBSpl = new Pose2d(71, 34, -Math.PI/2);
+    public static Pose2d wareHousePickupPositionRSimp = new Pose2d(54.5,-65.5,Math.PI);
+    public static Pose2d wareHousePickupPositionRSpl = new Pose2d(71, -34, Math.PI/2);
 
-    public static Pose2d depositObjectPositionBsimp = new Pose2d(0,0,0);
+    public static Pose2d depositObjectPositionBsimp = new Pose2d(-12.25,65.5,0);
     public static Pose2d depositObjectPositionBspl = new Pose2d(0,0,0);
-    public static Pose2d depositObjectPositionRsimp = new Pose2d(0,0,0);
+    public static Pose2d depositObjectPositionRsimp = new Pose2d(-12.25,-65.5,Math.PI);
     public static Pose2d depositObjectPositionRspl = new Pose2d(0,0,0);
 
 

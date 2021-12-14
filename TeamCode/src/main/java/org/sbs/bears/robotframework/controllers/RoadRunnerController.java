@@ -202,17 +202,22 @@ public class RoadRunnerController {
     public void followSplineTrajWarehouse(boolean qBlue)
     {
         if (qBlue) {
-            followLineToSpline(new Pose2d(-6,66,0));
             TrajectorySequence seq = drive.trajectorySequenceBuilder(new Pose2d(-6,66,0))
                     .forward(45)
                     .lineToSplineHeading(new Pose2d(39,34,-Math.PI/2))
                     .strafeLeft(32)
-                    .forward(30)
                     .build();
             drive.followTrajectorySequence(seq);
+            // final pos is 71, 34, -Math.PI/2
         }
         else {
-            // TODO Implement
+            TrajectorySequence seq = drive.trajectorySequenceBuilder(new Pose2d(-6,-66,0))
+                    .forward(45)
+                    .lineToSplineHeading(new Pose2d(39,-34,Math.PI/2))
+                    .strafeRight(32)
+                    .build();
+            drive.followTrajectorySequence(seq);
+            // final pos is 71, -34, Math.PI/2
         }
     }
     public void followLineToSpline(Pose2d finalPos)
