@@ -43,6 +43,14 @@ public class RoadRunnerController {
                         .build()
         );
     }
+    public Pose2d getPos()
+    {
+        return drive.getPoseEstimate();
+    }
+    public void setPos(Pose2d newPos)
+    {
+        drive.setPoseEstimate(newPos);
+    }
     public void forward(double dist)
     {
         forward(drive.getPoseEstimate(),dist);
@@ -97,6 +105,14 @@ public class RoadRunnerController {
                 drive.trajectoryBuilder(iniPos)
                     .lineToSplineHeading(finalPos)
                     .build()
+        );
+    }
+    public void followLineToSpline(Pose2d finalPos)
+    {
+        drive.followTrajectory(
+                drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .lineToSplineHeading(finalPos)
+                        .build()
         );
     }
     public void followSplineToSpline(Pose2d iniPos, Pose2d finalPos,double finTang)
