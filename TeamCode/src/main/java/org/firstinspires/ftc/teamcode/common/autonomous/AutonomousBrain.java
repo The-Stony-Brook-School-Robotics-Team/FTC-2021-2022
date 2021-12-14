@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.apache.commons.math3.analysis.integration.IterativeLegendreGaussIntegrator;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.sbs.bears.robotframework.Robot;
 import org.sbs.bears.robotframework.controllers.IntakeController;
@@ -147,7 +148,21 @@ public class AutonomousBrain {
                     majorState = AutonomousStates.SIX_PARKING_WAREHOUSE;
                 }
                 return;
-
+            case SIX_PARKING_WAREHOUSE:
+                switch(mode) {
+                    case BlueSimple:
+                        RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
+                    case BlueSpline:
+                        RRctrl.followLineToSpline(wareHousePickupPositionBSpl);
+                    case RedSimple:
+                        RRctrl.followLineToSpline(wareHousePickupPositionRSimp);
+                    case RedSpline:
+                        RRctrl.followLineToSpline(wareHousePickupPositionRSpl);
+                }
+                majorState = AutonomousStates.FINISHED;
+                return;
+            case FINISHED:
+                return;
 
         }
     }
@@ -185,7 +200,21 @@ public class AutonomousBrain {
                         slideHCtrl.setSlideHeight(SlideHeight.THREE_FAR);
                 }
                 slideExtCtrl.extendDropRetract();
-                
+                minorState = AutonomousBackForthSubStates.FOUR_BACKWARD;
+                return;
+            case FOUR_BACKWARD:
+                switch(mode) {
+                    case BlueSimple:
+                        RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
+                    case BlueSpline:
+                        RRctrl.followLineToSpline(wareHousePickupPositionBSpl);
+                    case RedSimple:
+                        RRctrl.followLineToSpline(wareHousePickupPositionRSimp);
+                    case RedSpline:
+                        RRctrl.followLineToSpline(wareHousePickupPositionRSpl);
+                }
+                minorState = AutonomousBackForthSubStates.ONE_INTAKE;
+                return;
 
         }
     }
@@ -209,6 +238,7 @@ public class AutonomousBrain {
     public static Pose2d depositObjectPositionBspl = new Pose2d(0,0,0);
     public static Pose2d depositObjectPositionRsimp = new Pose2d(0,0,0);
     public static Pose2d depositObjectPositionRspl = new Pose2d(0,0,0);
+
 
 
 }

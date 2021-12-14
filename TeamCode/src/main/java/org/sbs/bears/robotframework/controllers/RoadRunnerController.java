@@ -107,6 +107,23 @@ public class RoadRunnerController {
                     .build()
         );
     }
+
+    public void followSplineTrajWarehouse(boolean qB)
+    {
+        if (qB) {
+            followLineToSpline(new Pose2d(-6,66,0));
+            TrajectorySequence seq = drive.trajectorySequenceBuilder(new Pose2d(-6,66,0))
+                    .forward(45)
+                    .lineToSplineHeading(new Pose2d(39,34,-Math.PI/2))
+                    .strafeLeft(32)
+                    .forward(30)
+                    .build();
+            drive.followTrajectorySequence(seq);
+        }
+        else {
+            // TODO Implement
+        }
+    }
     public void followLineToSpline(Pose2d finalPos)
     {
         drive.followTrajectory(
