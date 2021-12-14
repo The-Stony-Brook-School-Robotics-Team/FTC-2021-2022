@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.sandboxes.Dennis.teleop;
+package org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop;
 
 import androidx.annotation.NonNull;
 
@@ -64,10 +64,8 @@ public class TeleOpRoutine extends OpMode {
     public void loop() {
         switch(ROBOT_STATE) {
             case STOPPED:
-                new Thread(() -> {
-                    initialize();
-                }).start();
                 synchronized (stateMutex) { ROBOT_STATE = TELEOP_ROUTINE_STATES.INITIALIZING; }
+                initialize();
                 break;
 
             case INITIALIZING:
@@ -75,6 +73,7 @@ public class TeleOpRoutine extends OpMode {
                 break;
 
             case INITIALIZED:
+                LIGHT_HANDLER_ROUTINE.start();
                 synchronized (stateMutex) { ROBOT_STATE = TELEOP_ROUTINE_STATES.RUNNING; }
                 break;
 
