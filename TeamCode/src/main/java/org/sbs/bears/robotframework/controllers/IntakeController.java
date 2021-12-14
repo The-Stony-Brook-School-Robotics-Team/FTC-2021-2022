@@ -1,16 +1,15 @@
-package org.firstinspires.ftc.teamcode.sandboxes.Michael.Final;
+package org.sbs.bears.robotframework.controllers;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp(name="S - LiftProgramFinal", group="Linear Opmode")
-public class LiftProgramFinal extends LinearOpMode {
+public class IntakeController extends LinearOpMode {
 
     private Servo scooper = null;
     private DcMotor compliantWheel = null;
