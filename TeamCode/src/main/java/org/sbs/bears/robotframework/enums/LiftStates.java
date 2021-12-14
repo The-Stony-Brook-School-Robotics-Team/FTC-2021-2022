@@ -1,4 +1,4 @@
-package org.sbs.bears.robotframework.controllers;
+package org.sbs.bears.robotframework.enums;
 
 public enum LiftStates {
     PARK,
