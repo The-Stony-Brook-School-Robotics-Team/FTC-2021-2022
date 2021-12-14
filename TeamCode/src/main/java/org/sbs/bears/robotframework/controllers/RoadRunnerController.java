@@ -28,21 +28,66 @@ import java.util.Vector;
 public class RoadRunnerController {
 
     /**
-     * This boolean is an internal indicator whether the interruptible trajectory is
+     * This boolean is an internal indicator whether the interuptible trajectory is in progress.
      */
     boolean isRunningInterruptibleTraj = false;
 
+    /**
+     * This is the RR Drive object for use with the API.
+     */
     protected SampleMecanumDrive drive;
+    /**
+     * This is the RR Dashboard object for use with the API.
+     */
     protected FtcDashboard dashboard;
+    /**
+     * This is the RR Trajectory Runner object for use with the API.
+     */
     protected TrajectorySequenceRunner runner;
+
+    /**
+     * This is the controller's internal mutex. Do not use with external synchronizations.
+     * External synchronizations require an external mutex provided as a parameter, such as in doForwardHaltableTrajectory().
+     */
     Object internalMutex = new Object();
 
+    /**
+     * This is the constructor for the RR Ctrller.
+     * @param hardwareMap the FTC HardwareMap given through the OpMode which instantiates Robot, which instantiates this.
+     * @param telemetry the FTC Telemetry object given in the same manner as the hardwareMap.
+     */
     public RoadRunnerController(HardwareMap hardwareMap, Telemetry telemetry)
     {
+        // initialize everyone.
         this.drive = new SampleMecanumDrive(hardwareMap);
         this.dashboard = FtcDashboard.getInstance();
         this.runner = drive.trajectorySequenceRunner;
     }
+
+    /**
+     * This method returns the robot's current position using RoadRunner.
+     * @return the current position of the robot in Pose2d format (RR).
+     */
+    public Pose2d getPos()
+    {
+        // just call API.
+        return drive.getPoseEstimate();
+    }
+    /**
+     * This method sets the robot's position to the specified value.
+     * @param newPos the new position of the robot in Pose2d format (RR).
+     */
+    public void setPos(Pose2d newPos)
+    {
+        // just call API.
+        drive.setPoseEstimate(newPos);
+    }
+
+    /**
+     * This method runs a simple forward trajectory from the given postion to a certain distance forward.
+     * @param iniPos the initial position.
+     * @param dist the distance to travel.
+     */
     public void forward(Pose2d iniPos, double dist)
     {
         drive.followTrajectory(
@@ -51,18 +96,19 @@ public class RoadRunnerController {
                         .build()
         );
     }
-    public Pose2d getPos()
-    {
-        return drive.getPoseEstimate();
-    }
-    public void setPos(Pose2d newPos)
-    {
-        drive.setPoseEstimate(newPos);
-    }
+    /**
+     * This method runs a simple forward trajectory from the current postion to a certain distance forward.
+     * @param dist the distance to travel.
+     */
     public void forward(double dist)
     {
         forward(drive.getPoseEstimate(),dist);
     }
+    /**
+     * This method runs a simple backward trajectory from the given postion to a certain distance backwards.
+     * @param iniPos the initial position.
+     * @param dist the distance to travel.
+     */
     public void backward(Pose2d iniPos, double dist)
     {
         drive.followTrajectory(
@@ -71,10 +117,19 @@ public class RoadRunnerController {
                         .build()
         );
     }
+    /**
+     * This method runs a simple backward trajectory from the current postion to a certain distance backwards.
+     * @param dist the distance to travel.
+     */
     public void backward(double dist)
     {
         backward(drive.getPoseEstimate(),dist);
     }
+    /**
+     * This method runs a simple left strafing trajectory from the given postion to a certain distance to the left.
+     * @param iniPos the initial position.
+     * @param dist the distance to travel.
+     */
     public void strafeL(Pose2d iniPos, double dist)
     {
         drive.followTrajectory(
@@ -83,10 +138,19 @@ public class RoadRunnerController {
                         .build()
         );
     }
+    /**
+     * This method runs a simple left strafing trajectory from the given postion to a certain distance to the left.
+     * @param dist the distance to travel.
+     */
     public void strafeL(double dist)
     {
         strafeL(drive.getPoseEstimate(),dist);
     }
+    /**
+     * This method runs a simple right strafing trajectory from the given postion to a certain distance to the right.
+     * @param iniPos the initial position.
+     * @param dist the distance to travel.
+     */
     public void strafeR(Pose2d iniPos, double dist)
     {
         drive.followTrajectory(
@@ -95,18 +159,37 @@ public class RoadRunnerController {
                         .build()
         );
     }
+    /**
+     * This method runs a simple right strafing trajectory from the given postion to a certain distance to the right.
+     * @param dist the distance to travel.
+     */
     public void strafeR(double dist)
     {
         strafeR(drive.getPoseEstimate(),dist);
     }
+
+    /**
+     * This method turns right the specificied amount of degrees.
+     * @param deg the number of degrees to turn.
+     */
     public void turnR(double deg)
     {
         drive.turn(-Math.toRadians(deg));
     }
+    /**
+     * This method turns left the specificied amount of degrees.
+     * @param deg the number of degrees to turn.
+     */
     public void turnL(double deg)
     {
         drive.turn(Math.toRadians(deg));
     }
+
+    /**
+     * This method follows a LineToSplineHeading trajectory through RoadRunner.
+     * @param iniPos the start position
+     * @param finalPos the end position
+     */
     public void followLineToSpline(Pose2d iniPos, Pose2d finalPos)
     {
         drive.followTrajectory(
