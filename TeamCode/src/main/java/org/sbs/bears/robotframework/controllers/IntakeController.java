@@ -1,15 +1,14 @@
 package org.sbs.bears.robotframework.controllers;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@TeleOp(name="S - LiftProgramFinal", group="Linear Opmode")
-public class IntakeController extends LinearOpMode {
+public class IntakeController {
 
     private Servo scooper = null;
     private DcMotor compliantWheel = null;
@@ -23,14 +22,13 @@ public class IntakeController extends LinearOpMode {
     /** Distance needed to switch states (mm) **/
     private double distThreshold = 50.0;
 
+    private boolean qIsObjectInPayload = false;
+
     volatile LiftStates state = LiftStates.BASE;
     Object stateMutex = new Object();
 
 
-    @Override
-
-    public void runOpMode() throws InterruptedException {
-
+    public IntakeController(HardwareMap hardwareMap, Telemetry telemetry) {
         scooper = hardwareMap.get(Servo.class, "servo");
         compliantWheel = hardwareMap.get(DcMotor.class, "motor");
         rev = hardwareMap.get(Rev2mDistanceSensor.class, "2m");
@@ -39,47 +37,25 @@ public class IntakeController extends LinearOpMode {
         compliantWheel.setDirection(DcMotorSimple.Direction.FORWARD);
 
         compliantWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        waitForStart();
-
-        /** Runs independent of state, for debugging purposes. **/
-        new Thread(()->{
-            while(opModeIsActive()) {
-                telemetry.addData("Scooper position: ", scooper.getPosition());
-                telemetry.addData("Wheel power: ", compliantWheel.getPower());
-                telemetry.addData("Distance (mm) ", rev.getDistance(DistanceUnit.MM));
-                telemetry.addData("State ", state);
-                telemetry.update();
-
-            }
-        }).start();
-
-
-        while (opModeIsActive() && !isStopRequested()) {
-            if (collected() && !(state == LiftStates.DUMP)) {
-                synchronized (stateMutex) {
-                    state = LiftStates.DUMP;
-                }
-            }
-            else if (gamepad1.b && !(state == LiftStates.BASE)){
-                synchronized (stateMutex) {
-                    state = LiftStates.BASE;
-                }
-            }
-            else if (gamepad1.x && !(state == LiftStates.PARK)) {
-                synchronized (stateMutex) {
-                    state = LiftStates.PARK;
-                }
-            }
-
-
-            doStates();
-
-        }
     }
-    public boolean collected(){return rev.getDistance(DistanceUnit.MM) < distThreshold;}
 
-    public void doStates(){
+    public boolean isObjectInPayload()
+    {
+        qIsObjectInPayload = rev.getDistance(DistanceUnit.MM) < distThreshold;
+        return qIsObjectInPayload;
+    }
+
+    public void setState(LiftStates liftState) {
+        synchronized (stateMutex) {
+            state = liftState;
+        }
+        doStateAction();
+    }
+
+
+
+
+    private void doStateAction(){
         switch(state){
             case BASE:
                 scooper.setPosition(basePos[0]);
@@ -99,8 +75,3 @@ public class IntakeController extends LinearOpMode {
     }
 }
 
-enum LiftStates {
-    PARK,
-    DUMP,
-    BASE
-}
