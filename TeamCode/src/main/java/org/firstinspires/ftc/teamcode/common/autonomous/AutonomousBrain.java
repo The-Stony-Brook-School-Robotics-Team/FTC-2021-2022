@@ -234,9 +234,9 @@ public class AutonomousBrain {
     public static Pose2d wareHousePickupPositionRSpl = new Pose2d(71, -34, Math.PI/2);
 
     public static Pose2d depositObjectPositionBsimp = new Pose2d(-12.25,65.5,0);
-    public static Pose2d depositObjectPositionBspl = new Pose2d(0,0,0);
+    public static Pose2d depositObjectPositionBspl = new Pose2d(71,19,-Math.PI/2);
     public static Pose2d depositObjectPositionRsimp = new Pose2d(-12.25,-65.5,Math.PI);
-    public static Pose2d depositObjectPositionRspl = new Pose2d(0,0,0);
+    public static Pose2d depositObjectPositionRspl = new Pose2d(71,-10,Math.PI/2);
 
 
 
