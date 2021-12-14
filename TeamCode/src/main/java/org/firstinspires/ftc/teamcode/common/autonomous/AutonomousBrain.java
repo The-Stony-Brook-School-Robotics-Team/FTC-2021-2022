@@ -157,7 +157,7 @@ public class AutonomousBrain {
         switch(minorState)
         {
             case ONE_INTAKE:
-                intakeCtrl.intakeOne();
+                intakeCtrl.waitForIntake();
                 minorState = AutonomousBackForthSubStates.TWO_FORWARD;
                 return;
             case TWO_FORWARD:

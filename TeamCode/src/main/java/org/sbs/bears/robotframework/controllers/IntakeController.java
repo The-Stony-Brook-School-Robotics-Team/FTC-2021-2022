@@ -45,7 +45,7 @@ public class IntakeController {
         return qIsObjectInPayload;
     }
 
-    public void intakeOne() {
+    public void waitForIntake() {
         if(state != LiftStates.BASE){setState(LiftStates.BASE);}
         while(!isObjectInPayload()){
             try {
