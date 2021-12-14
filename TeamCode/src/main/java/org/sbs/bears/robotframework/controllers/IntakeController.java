@@ -27,7 +27,6 @@ public class IntakeController {
     volatile LiftStates state = LiftStates.BASE;
     Object stateMutex = new Object();
 
-
     public IntakeController(HardwareMap hardwareMap, Telemetry telemetry) {
         scooper = hardwareMap.get(Servo.class, "servo");
         compliantWheel = hardwareMap.get(DcMotor.class, "motor");
@@ -45,12 +44,17 @@ public class IntakeController {
         return qIsObjectInPayload;
     }
 
+    public void intakeOne(){
+        
+    }
+
     public void setState(LiftStates liftState) {
         synchronized (stateMutex) {
             state = liftState;
         }
         doStateAction();
     }
+
 
 
 
