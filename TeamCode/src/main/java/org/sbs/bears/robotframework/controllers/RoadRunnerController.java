@@ -19,9 +19,17 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunne
 
 import java.util.Vector;
 
-
+/**
+ * This class is a wrapper controller for the RoadRunner Library.
+ * Please use this controller as a part of the Robot class and do not instantiate it separately.
+ * @author Marc D Nichitiu
+ * @version 1.0
+ */
 public class RoadRunnerController {
 
+    /**
+     * This boolean is an internal indicator whether the interruptible trajectory is
+     */
     boolean isRunningInterruptibleTraj = false;
 
     protected SampleMecanumDrive drive;
@@ -108,9 +116,9 @@ public class RoadRunnerController {
         );
     }
 
-    public void followSplineTrajWarehouse(boolean qB)
+    public void followSplineTrajWarehouse(boolean qBlue)
     {
-        if (qB) {
+        if (qBlue) {
             followLineToSpline(new Pose2d(-6,66,0));
             TrajectorySequence seq = drive.trajectorySequenceBuilder(new Pose2d(-6,66,0))
                     .forward(45)
@@ -163,6 +171,7 @@ public class RoadRunnerController {
     {
         // TODO implement ShutDown on RR Ctrl
     }
+
     public void doForwardHaltableTrajectory(double distMax, double brakingDist, double brakeVel, double brakeDecel, Boolean signal, Object mutex)
     {
         boolean isRunning = true;
