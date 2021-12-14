@@ -1,13 +1,11 @@
 package org.sbs.bears.robotframework.controllers;
 
 
-import android.text.method.TextKeyListener;
-
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.sbs.bears.robotframework.enums.SlideHeight;
 
 public class SlideHeightController {
 
@@ -26,8 +24,10 @@ public class SlideHeightController {
                 worker.setPosition(slideHeightONE);
             case TWO:
                 worker.setPosition(slideHeightTWO);
-            case THREE:
-                worker.setPosition(slideHeightTHREE);
+            case THREE_CLOSE:
+                worker.setPosition(slideHeightTHREECLOSE);
+            case THREE_FAR:
+                worker.setPosition(slideHeightTHREEFAR);
             case FOUR_CAP:
                 worker.setPosition(slideHeightFOUR);
             case ZERO_FLOOR:
@@ -40,7 +40,8 @@ public class SlideHeightController {
     public static double slideHeightZERO = 0;
     public static double slideHeightONE = 0;
     public static double slideHeightTWO = 0;
-    public static double slideHeightTHREE = 0;
+    public static double slideHeightTHREECLOSE = 0;
+    public static double slideHeightTHREEFAR = 0;
     public static double slideHeightFOUR = 0;
 
 }

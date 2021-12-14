@@ -45,11 +45,21 @@ public class IntakeController {
         return qIsObjectInPayload;
     }
 
-    public void intakeOne() throws InterruptedException {
+    public void intakeOne() {
         if(state != LiftStates.BASE){setState(LiftStates.BASE);}
-        while(!isObjectInPayload()){Thread.sleep(50);}
+        while(!isObjectInPayload()){
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         setState(LiftStates.DUMP);
-        Thread.sleep(1000);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         setState(LiftStates.BASE);
     }
 

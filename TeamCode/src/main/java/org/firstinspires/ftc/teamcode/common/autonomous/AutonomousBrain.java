@@ -5,13 +5,12 @@ import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.Robot;
 import org.sbs.bears.robotframework.controllers.IntakeController;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 import org.sbs.bears.robotframework.controllers.RoadRunnerController;
 import org.sbs.bears.robotframework.controllers.SlideExtensionController;
-import org.sbs.bears.robotframework.controllers.SlideHeight;
+import org.sbs.bears.robotframework.enums.SlideHeight;
 import org.sbs.bears.robotframework.controllers.SlideHeightController;
 import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
 
@@ -104,7 +103,7 @@ public class AutonomousBrain {
                         slideHCtrl.setSlideHeight(SlideHeight.TWO);
                         break;
                     default:
-                        slideHCtrl.setSlideHeight(SlideHeight.THREE);
+                        slideHCtrl.setSlideHeight(SlideHeight.THREE_CLOSE);
                 }
                 majorState = AutonomousStates.THREE_DEPOSIT_BOX;
                 return;
@@ -118,7 +117,7 @@ public class AutonomousBrain {
                 }
                 return;
             case FOUR_B_SET_SLIDE_HEIGHT_3:
-                slideHCtrl.setSlideHeight(SlideHeight.THREE);
+                slideHCtrl.setSlideHeight(SlideHeight.THREE_CLOSE);
                 majorState = AutonomousStates.FOUR_DRIVE_TO_WAREHOUSE;
                 return;
             case FOUR_DRIVE_TO_WAREHOUSE:
@@ -175,6 +174,16 @@ public class AutonomousBrain {
                 minorState = AutonomousBackForthSubStates.THREE_SLIDE_OUT_IN;
                 return;
             case THREE_SLIDE_OUT_IN:
+                switch(mode)
+                {
+                    case BlueSimple:
+                    case RedSimple:
+                        slideHCtrl.setSlideHeight(SlideHeight.THREE_CLOSE);
+                        break;
+                    case RedSpline:
+                    case BlueSpline:
+                        slideHCtrl.setSlideHeight(SlideHeight.THREE_FAR);
+                }
                 slideExtCtrl.extendDropRetract();
                 
 
