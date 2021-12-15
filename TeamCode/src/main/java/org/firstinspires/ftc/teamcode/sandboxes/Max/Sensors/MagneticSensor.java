@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.sandboxes.Max.Sensors;
+package org.firstinspires.ftc.teamcode.Sandboxes.Max.Sensors;
 
 import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;

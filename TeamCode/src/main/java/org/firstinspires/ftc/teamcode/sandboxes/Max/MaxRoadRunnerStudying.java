@@ -1,5 +1,5 @@
 
-package org.firstinspires.ftc.teamcode.sandboxes.Max;
+package org.firstinspires.ftc.teamcode.Sandboxes.Max;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;

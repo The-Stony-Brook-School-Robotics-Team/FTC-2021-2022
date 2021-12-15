@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.sandboxes.Max.OfficialSensorsProgram;
+package org.firstinspires.ftc.teamcode.Sandboxes.Max.OfficialSensorsProgram;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.I2cAddr;
