@@ -14,11 +14,10 @@ public class IntakeController {
     private Servo scooper;
     private DcMotor compliantWheel;
     private Rev2mDistanceSensor rev;
-
     /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/
     private double[] basePos = {.141, 0.7};
-    private double[] dumpPos = {.57, 0.4};
-    private double[] parkPos = {.5, 0.1};
+    private double[] dumpPos = {.56, 0.4};
+    private double[] parkPos = {.53, 0.4};
 
     /** Distance needed to switch states (mm) **/
     private double distThreshold = 50.0;
@@ -40,13 +39,14 @@ public class IntakeController {
         compliantWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    /** If the distance sensor reads less than distThreshold **/
+    /** Returns if the distance sensor reads less than distThreshold **/
     public boolean isObjectInPayload() {
         qIsObjectInPayload = rev.getDistance(DistanceUnit.MM) < distThreshold;
         return qIsObjectInPayload;
     }
 
-    /** Autonomous method-- waits until object is seen, dumps, then sets to base. **/
+
+    /** Autonomous method-- waits until object is seen, dumps, then sets to park. **/
     public void waitForIntake() {
         if(state != LiftStates.BASE){setState(LiftStates.BASE);}
         while(!isObjectInPayload()){
@@ -62,17 +62,27 @@ public class IntakeController {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        setState(LiftStates.BASE);
+        setState(LiftStates.PARK);
     }
 
-    /** TeleOp method-- checks if object is seen, and dumps if so. **/
+    /** TeleOp method-- checks if object is seen. If so, dumps and sets to park. **/
     public void checkIntake(){
         if(state == LiftStates.BASE && isObjectInPayload()){
             setState(LiftStates.DUMP);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            setState(LiftStates.PARK);
+
         }
     }
 
-    /** State setter. **/
+    /**
+     State setter.
+     @param liftState The desired intake state to set to the robot.
+     **/
     public void setState(LiftStates liftState) {
         synchronized (stateMutex) {
             state = liftState;
@@ -82,6 +92,7 @@ public class IntakeController {
 
     /** Accessor for current state **/
     public LiftStates getState(){return state;}
+
 
     /** Assigns position and motor power to their respective states **/
     private void doStateAction(){
