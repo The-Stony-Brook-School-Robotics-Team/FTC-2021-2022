@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.sandboxes.William.MovementControl;
+package org.firstinspires.ftc.teamcode.Sandboxes.William.MovementControl;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.sandboxes.William.Util.ControllerHelper;
+import org.firstinspires.ftc.teamcode.Sandboxes.William.Util.ControllerHelper;
 
 public class JoySticksControlDriver extends OpMode implements Runnable {
 
