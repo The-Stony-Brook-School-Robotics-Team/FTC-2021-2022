@@ -11,12 +11,12 @@ import org.sbs.bears.robotframework.enums.LiftStates;
 
 public class IntakeController {
 
-    private Servo scooper = null;
-    private DcMotor compliantWheel = null;
-    private Rev2mDistanceSensor rev = null;
+    private Servo scooper;
+    private DcMotor compliantWheel;
+    private Rev2mDistanceSensor rev;
 
     /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/
-    private double[] basePos = {.141, 1.0};
+    private double[] basePos = {.141, 0.7};
     private double[] dumpPos = {.57, 0.4};
     private double[] parkPos = {.5, 0.1};
 
@@ -28,6 +28,7 @@ public class IntakeController {
     volatile LiftStates state = LiftStates.BASE;
     Object stateMutex = new Object();
 
+    /** Initialization **/
     public IntakeController(HardwareMap hardwareMap, Telemetry telemetry) {
         scooper = hardwareMap.get(Servo.class, "servo");
         compliantWheel = hardwareMap.get(DcMotor.class, "motor");
@@ -39,12 +40,13 @@ public class IntakeController {
         compliantWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    public boolean isObjectInPayload()
-    {
+    /** If the distance sensor reads less than distThreshold **/
+    public boolean isObjectInPayload() {
         qIsObjectInPayload = rev.getDistance(DistanceUnit.MM) < distThreshold;
         return qIsObjectInPayload;
     }
 
+    /** Autonomous method-- waits until object is seen, dumps, then sets to base. **/
     public void waitForIntake() {
         if(state != LiftStates.BASE){setState(LiftStates.BASE);}
         while(!isObjectInPayload()){
@@ -63,6 +65,14 @@ public class IntakeController {
         setState(LiftStates.BASE);
     }
 
+    /** TeleOp method-- checks if object is seen, and dumps if so. **/
+    public void checkIntake(){
+        if(state == LiftStates.BASE && isObjectInPayload()){
+            setState(LiftStates.DUMP);
+        }
+    }
+
+    /** State setter. **/
     public void setState(LiftStates liftState) {
         synchronized (stateMutex) {
             state = liftState;
@@ -70,10 +80,10 @@ public class IntakeController {
         doStateAction();
     }
 
+    /** Accessor for current state **/
+    public LiftStates getState(){return state;}
 
-
-
-
+    /** Assigns position and motor power to their respective states **/
     private void doStateAction(){
         switch(state){
             case BASE:
