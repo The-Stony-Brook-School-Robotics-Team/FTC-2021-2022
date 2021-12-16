@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -16,7 +15,6 @@ import org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop.enums.TeleOpRobotS
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
-@Config
 @TeleOp(name="A - TeleOp", group="default")
 public class TeleOpRoutine extends OpMode {
 
@@ -37,7 +35,7 @@ public class TeleOpRoutine extends OpMode {
 
     /** Roadrunner Items */
     public static SampleMecanumDrive drive;
-    private static FtcDashboard dashboard;
+    public static FtcDashboard dashboard;
 
     @Override
     public void init() {
@@ -47,7 +45,13 @@ public class TeleOpRoutine extends OpMode {
          * Roadrunner initialization
          * */
         drive = new SampleMecanumDrive(hardwareMap);
+        dashboard = FtcDashboard.getInstance();
         gamepad = new GamepadEx(gamepad1);
+        /**
+         * Gamepad Controller Initialization
+         */
+        buttonHandlerRuntime.start();
+
 
         currentState = TeleOpRobotStates.RUNNING;
         telemetry.addLine("Robot Ready");
@@ -105,6 +109,8 @@ public class TeleOpRoutine extends OpMode {
                     // Y
                     if(gamepad.isDown(GamepadKeys.Button.Y)) {
                         // TODO: Add duck spinner function
+                        telemetry.addData("button down!", 1);
+                        telemetry.update();
                     }
                     // RT
                     // TODO: TALK WITH TIGER ABT THIS ONE
@@ -168,6 +174,7 @@ public class TeleOpRoutine extends OpMode {
         telemetryPacket.put("Estimated Pose X", poseEstimate.getX());
         telemetryPacket.put("Estimated Pose Y", poseEstimate.getY());
         telemetryPacket.put("Estimated Pose Heading", poseEstimate.getHeading());
+        dashboard.sendTelemetryPacket(telemetryPacket);
         drive.update();
     }
 }
