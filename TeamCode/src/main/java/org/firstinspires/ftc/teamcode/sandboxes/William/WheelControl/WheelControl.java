@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Sandboxes.William.WheelControl;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 /**
  * Created by William Tao on 10/18/2021.
@@ -28,30 +29,31 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class WheelControl extends OpMode {
 
     private boolean isPressingA = false;
-    private boolean isPressingX = false;
     private boolean isPressingB = false;
+    private boolean isPressingX = false;
+    private boolean isPressingY = false;
     private boolean isPressingDpadUp = false;
     private boolean isPressingDpadDown = false;
     private boolean hasStarted = false;
 
-    private boolean emergencyStop = false;
+    private boolean NEED_EMERGENCY_STOP = false;
 
     DcMotor wheelMover;
     private double FIRST_STAGE_TIME;
     private double SECOND_STAGE_TIME;
-    private double THIRD_STAGE_TIME;
 
-    private double MAGICAL_CONSTANT = 0.45;
-    private double FIRST_STAGE_TIME_INTERVAL = 0.46;
-    private final double THIRD_STAGE_TIME_INTERVAL = 0.025;
+    private double MAGICAL_CONSTANT = 0.44;
+    private double FIRST_STAGE_TIME_INTERVAL = 1.3;
+    private final double SECOND_STAGE_TIME_INTERVAL = 0.03;
 
     private double timer;
     private double runTime;
 
     @Override
     public void init() {
-        wheelMover = hardwareMap.get(DcMotor.class, "m1");
-        WheelControlInitializer();
+        wheelMover = hardwareMap.get(DcMotor.class, "duck");
+        wheelMover.setDirection(DcMotorSimple.Direction.REVERSE);
+        initializeVariables();
     }
 
     @Override
@@ -62,25 +64,32 @@ public class WheelControl extends OpMode {
         telemetry.addData("MAGICAL_CONSTANT", "--%.3f--", MAGICAL_CONSTANT);
 
         //Detect keys on the game pad.
-        PressingA();            //Start spinning.
-        PressingX();            //Add 0.01 second to Stage 2 time.
-        PressingB();            //Subtract 0.01 second to Stage 2 time.
-        PressingDpadUp();       //Add 0.01 second to Stage 1 time.
-        PressingDpadDown();     //Subtract 0.01 second to Stage 1 time.
+        checkKeyA();        //Start spinning.
+        checkKeyB();        //Check if need emergency Stop.
+        checkKeyX();        //Add 0.01 second to Stage 2 time.
+        checkKeyY();        //Subtract 0.01 second to Stage 2 time.
+        checkDpadUp();      //Add 0.01 second to Stage 1 time.
+        checkDpadDown();    //Subtract 0.01 second to Stage 1 time.
 
         enableEmergencyStop();
 
         //Control the movement of the wheel.
-        MovementHelper();
+        updateMotorSpeed();
     }
 
-    private void MovementHelper() {
+    private void updateMotorSpeed() {
         if (hasStarted) {
-            runTime = getRuntime() - timer;
+            if (NEED_EMERGENCY_STOP) {
+                wheelMover.setPower(0);
+                hasStarted = false;
+                NEED_EMERGENCY_STOP = false;
+            }
+
+            updateRunTime();
             if (runTime >= 0 && runTime < FIRST_STAGE_TIME) {
                 //First Stage
-                wheelMover.setPower(getFirstStageMotorSpeed());
-            } else if (runTime >= FIRST_STAGE_TIME && runTime < THIRD_STAGE_TIME) {   //Third Stage
+                wheelMover.setPower(getFirstStageMotorSpeed(runTime));
+            } else if (runTime >= FIRST_STAGE_TIME && runTime < SECOND_STAGE_TIME) {   //Third Stage
                 wheelMover.setPower(-1);
             } else {
                 //Ending
@@ -88,13 +97,17 @@ public class WheelControl extends OpMode {
                 hasStarted = false;
             }
         } else {
-            WheelControlInitializer();
+            initializeVariables();
         }
     }
 
-    private void WheelControlInitializer() {
+    private void updateRunTime() {
+        runTime = getRuntime() - timer;
+    }
+
+    private void initializeVariables() {
         FIRST_STAGE_TIME = FIRST_STAGE_TIME_INTERVAL;
-        THIRD_STAGE_TIME = FIRST_STAGE_TIME + THIRD_STAGE_TIME_INTERVAL;
+        SECOND_STAGE_TIME = FIRST_STAGE_TIME + SECOND_STAGE_TIME_INTERVAL;
         timer = getRuntime();
     }
 
@@ -107,26 +120,39 @@ public class WheelControl extends OpMode {
         return MAGICAL_CONSTANT * runTime;
     }
 
-    private void PressingA() {
+    private double getFirstStageMotorSpeed(double runTime) {
+        return MAGICAL_CONSTANT * runTime;
+    }
+
+    private void enableEmergencyStop() {
+        if (NEED_EMERGENCY_STOP) {
+            NEED_EMERGENCY_STOP = false;
+        }
+    }
+
+    private void checkKeyA() {
         if (gamepad1.a && !isPressingA) {
             isPressingA = true;
         } else if (!gamepad1.a && isPressingA) {
             if (!hasStarted) {
                 hasStarted = true;
             } else {
-                emergencyStop = true;
+                NEED_EMERGENCY_STOP = true;
             }
             isPressingA = false;
         }
     }
 
-    private void enableEmergencyStop() {
-        if (emergencyStop) {
-            emergencyStop = false;
+    private void checkKeyB() {
+        if (gamepad1.b && !isPressingB) {
+            isPressingB = true;
+        } else if (!gamepad1.b && isPressingB) {
+            NEED_EMERGENCY_STOP = true;
         }
+        isPressingB = false;
     }
 
-    private void PressingX() {
+    private void checkKeyX() {
         if (gamepad1.x && !isPressingX) {
             isPressingX = true;
         } else if (!gamepad1.x && isPressingX) {
@@ -135,16 +161,16 @@ public class WheelControl extends OpMode {
         }
     }
 
-    private void PressingB() {
-        if (gamepad1.b && !isPressingB) {
-            isPressingB = true;
-        } else if (!gamepad1.b && isPressingB) {
+    private void checkKeyY() {
+        if (gamepad1.y && !isPressingY) {
+            isPressingY = true;
+        } else if (!gamepad1.y && isPressingY) {
             MAGICAL_CONSTANT -= 0.002;
-            isPressingB = false;
+            isPressingY = false;
         }
     }
 
-    private void PressingDpadUp() {
+    private void checkDpadUp() {
         if (gamepad1.dpad_up && !isPressingDpadUp) {
             isPressingDpadUp = true;
         } else if (!gamepad1.dpad_up && isPressingDpadUp) {
@@ -153,7 +179,7 @@ public class WheelControl extends OpMode {
         }
     }
 
-    private void PressingDpadDown() {
+    private void checkDpadDown() {
         if (gamepad1.dpad_down && !isPressingDpadDown) {
             isPressingDpadDown = true;
         } else if (!gamepad1.dpad_down && isPressingDpadDown) {

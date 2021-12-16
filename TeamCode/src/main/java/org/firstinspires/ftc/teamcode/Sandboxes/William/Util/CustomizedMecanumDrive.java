@@ -60,7 +60,7 @@ public class CustomizedMecanumDrive extends MecanumDrive {
     public static double OMEGA_WEIGHT = 1;
 
     public static double DEFAULT_ACCEPTABLE_DISTANCE_ERROR = 0.5;
-    public static double DEFAULT_ACCEPTABLE_HEADING_ERROR = 5;
+    public static double DEFAULT_ACCEPTABLE_HEADING_ERROR = 0;
     public static double DEFAULT_TIMEOUT_VALUE = 0.5;
 
     public CustomizedTrajectorySequenceRunner trajectorySequenceRunner;
@@ -93,7 +93,7 @@ public class CustomizedMecanumDrive extends MecanumDrive {
         /**
          *  CUSTOMIZED HOLONOMIC_PID_VA_FOLLOWER.
          */
-        refreshFollower(acceptableDistanceError_IN, acceptableHeadingError_DE, timeoutValue_SE);
+        setFollower(acceptableDistanceError_IN, acceptableHeadingError_DE, timeoutValue_SE);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -152,7 +152,8 @@ public class CustomizedMecanumDrive extends MecanumDrive {
 
     public TrajectoryBuilder trajectoryBuilderCustomizedTimeout(Pose2d startPose, double timeoutValue_SE) {
         this.timeoutValue_SE = timeoutValue_SE;
-        refreshFollower();
+        setFollower();
+        trajectorySequenceRunner = new CustomizedTrajectorySequenceRunner(follower, HEADING_PID);
         return new TrajectoryBuilder(startPose, VEL_CONSTRAINT, ACCEL_CONSTRAINT);
     }
 
@@ -232,23 +233,23 @@ public class CustomizedMecanumDrive extends MecanumDrive {
         return trajectorySequenceRunner.isBusy();
     }
 
-    private void refreshFollower() {
+    private void setFollower() {
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(acceptableDistanceError_IN, acceptableDistanceError_IN, Math.toRadians(acceptableHeadingError_DE)), timeoutValue_SE);
     }
 
-    public void refreshFollower(double IN_acceptableDistanceError, double DE_acceptableHeadingError, double SE_timeoutValue) {
+    public void setFollower(double IN_acceptableDistanceError, double DE_acceptableHeadingError, double SE_timeoutValue) {
         this.acceptableDistanceError_IN = IN_acceptableDistanceError;
         this.acceptableHeadingError_DE = DE_acceptableHeadingError;
         this.timeoutValue_SE = SE_timeoutValue;
-        refreshFollower();
+        setFollower();
     }
 
     public void resetFollower() {
         this.acceptableDistanceError_IN = DEFAULT_ACCEPTABLE_DISTANCE_ERROR;
         this.acceptableHeadingError_DE = DEFAULT_ACCEPTABLE_HEADING_ERROR;
         this.timeoutValue_SE = DEFAULT_TIMEOUT_VALUE;
-        refreshFollower();
+        setFollower();
     }
 
     public void setMode(DcMotor.RunMode runMode) {
@@ -301,7 +302,7 @@ public class CustomizedMecanumDrive extends MecanumDrive {
      */
     public void setAcceptableDistanceError_IN(double acceptableDistanceError_IN) {
         this.acceptableDistanceError_IN = acceptableDistanceError_IN;
-        refreshFollower();
+        setFollower();
     }
 
     /**
@@ -311,7 +312,7 @@ public class CustomizedMecanumDrive extends MecanumDrive {
      */
     public void setAcceptableHeadingError_DE(double acceptableDistanceError_IN) {
         this.acceptableHeadingError_DE = acceptableDistanceError_IN;
-        refreshFollower();
+        setFollower();
     }
 
     /**
@@ -321,7 +322,7 @@ public class CustomizedMecanumDrive extends MecanumDrive {
      */
     public void setTimeoutValue_SE(double timeoutValue_SE) {
         this.timeoutValue_SE = timeoutValue_SE;
-        refreshFollower();
+        setFollower();
     }
 
     @NonNull
