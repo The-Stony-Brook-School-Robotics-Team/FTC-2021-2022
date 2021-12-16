@@ -33,6 +33,7 @@
 
                 telemetry.addData("Front State: ", frontIntake.getState());
                 telemetry.addData("Back State: ", backIntake.getState());
+
                 telemetry.update();
             }
 
