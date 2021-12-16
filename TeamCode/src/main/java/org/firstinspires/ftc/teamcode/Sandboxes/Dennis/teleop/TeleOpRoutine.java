@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop;
 
-import static java.lang.String.valueOf;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -11,15 +9,13 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop.enums.ControllerModes;
 import org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop.enums.TeleOpRobotStates;
 import org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop.misc.Beta;
+import org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop.samples.DashboardInterface;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 
 @TeleOp(name="A - TeleOp", group="default")
 public class TeleOpRoutine extends OpMode {
@@ -54,12 +50,6 @@ public class TeleOpRoutine extends OpMode {
         gamepad = new GamepadEx(gamepad1);
 
         /**
-         * Runtime Initialization
-         */
-        buttonHandlerRuntime.start();
-        roadrunnerHandlerRuntime.start();
-        dashboardHandler.start();
-        /**
          * Update current state to continue
          */
         currentState = TeleOpRobotStates.RUNNING;
@@ -67,6 +57,19 @@ public class TeleOpRoutine extends OpMode {
 
     @Override
     public void loop() {
+        /**
+         * Runtime Initialization
+         */
+        if(!buttonHandlerRuntime.isAlive()) {
+            buttonHandlerRuntime.start();
+        }
+        if(!roadrunnerHandlerRuntime.isAlive()) {
+            roadrunnerHandlerRuntime.start();
+        }
+        if(!dashboardHandler.isAlive()) {
+            dashboardHandler.start();
+        }
+
         switch(currentState) {
             case STOPPED:
                 telemetry.clearAll();
@@ -75,8 +78,6 @@ public class TeleOpRoutine extends OpMode {
                 break;
 
             case RUNNING:
-                synchronized (stateMutex) { currentState = TeleOpRobotStates.RUNNING; }
-                handleRoadrunner();
                 telemetry.addLine("robot running, runtime: " + this.getRuntime());
                 telemetry.update();
                 break;
@@ -88,9 +89,6 @@ public class TeleOpRoutine extends OpMode {
 
 
     public Thread buttonHandlerRuntime = new Thread(() -> {
-        // button states
-
-
         // checks if robot is running or not
         while(currentState == TeleOpRobotStates.RUNNING) {
             // check left bumper state +
@@ -162,7 +160,7 @@ public class TeleOpRoutine extends OpMode {
 
 
     /**
-     * Roadrunner Handler
+     * Working Roadrunner Handler Runtime
      */
     @Beta
     public Thread roadrunnerHandlerRuntime = new Thread(() -> {
@@ -176,22 +174,24 @@ public class TeleOpRoutine extends OpMode {
                     )
             );
 
-            Pose2d poseEstimate = drive.getPoseEstimate();
-            TelemetryPacket telemetryPacket = new TelemetryPacket();
-            Canvas ftcField = telemetryPacket.fieldOverlay();
-            DashboardUtil.drawRobot(ftcField, poseEstimate);
-            // Telemetry Packet Update
-            telemetryPacket.put("Estimated Pose X", poseEstimate.getX());
-            telemetryPacket.put("Estimated Pose Y", poseEstimate.getY());
-            telemetryPacket.put("Estimated Pose Heading", poseEstimate.getHeading());
-            dashboard.sendTelemetryPacket(telemetryPacket);
+//            Pose2d poseEstimate = drive.getPoseEstimate();
+//            TelemetryPacket telemetryPacket = new TelemetryPacket();
+//            Canvas ftcField = telemetryPacket.fieldOverlay();
+//            DashboardUtil.drawRobot(ftcField, poseEstimate);
+//            // Telemetry Packet Update
+//            telemetryPacket.put("Estimated Pose X", poseEstimate.getX());
+//            telemetryPacket.put("Estimated Pose Y", poseEstimate.getY());
+//            telemetryPacket.put("Estimated Pose Heading", poseEstimate.getHeading());
+//            dashboard.sendTelemetryPacket(telemetryPacket);
+
             drive.update();
         }
     });
 
     /**
-     * Current Working Roadrunner Runtime
+     * Old TeleOp Roadrunner Handler
      */
+    @Deprecated
     public void handleRoadrunner() {
         // Set Weighted Power
         drive.setWeightedDrivePower(
@@ -203,21 +203,40 @@ public class TeleOpRoutine extends OpMode {
         );
 
         Pose2d poseEstimate = drive.getPoseEstimate();
-//        TelemetryPacket telemetryPacket = new TelemetryPacket();
-//        Canvas ftcField = telemetryPacket.fieldOverlay();
-//        DashboardUtil.drawRobot(ftcField, poseEstimate);
-//        // Telemetry Packet Update
-//        telemetryPacket.put("Estimated Pose X", poseEstimate.getX());
-//        telemetryPacket.put("Estimated Pose Y", poseEstimate.getY());
-//        telemetryPacket.put("Estimated Pose Heading", poseEstimate.getHeading());
-//        dashboard.sendTelemetryPacket(telemetryPacket);
+        TelemetryPacket telemetryPacket = new TelemetryPacket();
+        Canvas ftcField = telemetryPacket.fieldOverlay();
+        DashboardUtil.drawRobot(ftcField, poseEstimate);
+        // Telemetry Packet Update
+        telemetryPacket.put("Estimated Pose X", poseEstimate.getX());
+        telemetryPacket.put("Estimated Pose Y", poseEstimate.getY());
+        telemetryPacket.put("Estimated Pose Heading", poseEstimate.getHeading());
+        dashboard.sendTelemetryPacket(telemetryPacket);
 
-        writeLine("X: " + poseEstimate.getX());
-        writeLine("Y: " + poseEstimate.getY());
-        writeLine("R: " + poseEstimate.getHeading());
         drive.update();
     }
 
+
+    /**
+     * The actual handler thats writing the data into the dashboard
+     */
+    @Beta
+    public Thread dashboardHandler = new Thread(() -> {
+        /**
+         * Handle the telemetry interface
+         */
+        while(currentState.equals(TeleOpRobotStates.RUNNING) || currentState.equals(TeleOpRobotStates.AUTONOMOUS)) {
+            /**
+             * Generate the robots relative position on the map
+             */
+            TelemetryPacket telemetryPacket = new TelemetryPacket();
+            Canvas ftcField = telemetryPacket.fieldOverlay();
+            DashboardUtil.drawRobot(ftcField, drive.getPoseEstimate());
+            /**
+             * Go through every telemetry line and add it to the packet
+             */
+
+        }
+    });
 
 
 }
