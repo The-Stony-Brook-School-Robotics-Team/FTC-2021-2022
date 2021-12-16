@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.sandboxes.Max;
+package org.firstinspires.ftc.teamcode.Sandboxes.Max;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.bosch.BNO055IMU;

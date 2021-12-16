@@ -27,14 +27,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe;
+package org.firstinspires.ftc.teamcode.Sandboxes.Michael.Unsafe;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="S - Cont Servo", group="Linear Opmode")
-//@Disabled
+@Disabled
+@Deprecated
 public class servoTestCont extends LinearOpMode {
     // you should treat yourself NOW
     boolean pressingUp = false;
@@ -47,6 +49,7 @@ public class servoTestCont extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private Servo servo = null;
     private Servo servo2 = null;
+
 
     @Override
     public void runOpMode() throws InterruptedException {

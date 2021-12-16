@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.sandboxes.Michael.Sensors;
+package org.firstinspires.ftc.teamcode.Sandboxes.Michael.Sensors;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
@@ -45,6 +45,7 @@ import java.util.Locale;
 
 @TeleOp(name = "Michael Gyro Test")
 @Disabled
+@Deprecated
 public class SensorBNO055IMU extends LinearOpMode
     {
 

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.sandboxes.Max;
+package org.firstinspires.ftc.teamcode.Sandboxes.Max;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Servo;

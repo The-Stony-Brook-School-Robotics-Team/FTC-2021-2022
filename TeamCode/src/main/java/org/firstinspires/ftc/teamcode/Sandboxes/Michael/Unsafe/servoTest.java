@@ -27,14 +27,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe;
+package org.firstinspires.ftc.teamcode.Sandboxes.Michael.Unsafe;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="S - servoTestDouble", group="Linear Opmode")
-
+@Deprecated
 public class servoTest extends LinearOpMode {
     boolean pressingUp = false;
     boolean pressingDown = false;
@@ -69,31 +69,6 @@ public class servoTest extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
-            if(servoPos > MIN){
-                servoPos = MIN;
-            }
-            if(servoPos < MAX ){
-                servoPos = MAX;
-            }
-            if(gamepad1.dpad_up && !pressingUp){
-                pressingUp = true;
-            }
-            else if(!gamepad1.dpad_up && pressingUp){
-                servoPos-=.05;
-                servo.setPosition(servoPos);
-                servo2.setPosition(servoPos);
-                pressingUp = false;
-            }
-            if(gamepad1.dpad_down && !pressingDown){
-                pressingDown = true;
-            }
-            else if(!gamepad1.dpad_down && pressingDown){
-                servoPos+=.05;
-                servo.setPosition(servoPos);
-                servo2.setPosition(servoPos);
-                pressingDown = false;
-            }
             if(gamepad1.a && !pressingA){
                 pressingA = true;
             }

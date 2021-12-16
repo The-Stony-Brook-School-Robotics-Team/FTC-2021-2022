@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.sandboxes.Michael.Final;
+package org.firstinspires.ftc.teamcode.Sandboxes.Michael.Final;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 @TeleOp(name="SAFE TRACKING", group="drive")
 @Disabled
+@Deprecated
 public class PurePursuitTestingSafe extends LinearOpMode {
 
 

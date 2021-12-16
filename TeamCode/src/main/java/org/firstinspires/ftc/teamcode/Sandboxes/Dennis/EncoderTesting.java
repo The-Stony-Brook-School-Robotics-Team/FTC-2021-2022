@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.sandboxes.Dennis;
+package org.firstinspires.ftc.teamcode.Sandboxes.Dennis;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -23,7 +23,7 @@ public class EncoderTesting extends LinearOpMode {
         rb = hardwareMap.get(DcMotorEx.class, "rb");
 
         lb.setDirection(DcMotorSimple.Direction.REVERSE);
-        rf.setDirection(DcMotorSimple.Direction.REVERSE);
+        lf.setDirection(DcMotorSimple.Direction.REVERSE);
 
         lf.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         rf.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -32,10 +32,10 @@ public class EncoderTesting extends LinearOpMode {
 
         leftodom = hardwareMap.get(DcMotorEx.class, "leftodom");
         rightodom = hardwareMap.get(DcMotorEx.class, "rightodom");
-        centerodom = hardwareMap.get(DcMotorEx.class, "centerodom");
+        //centerodom = hardwareMap.get(DcMotorEx.class, "centerodom");
 
         rightodom.setDirection(DcMotorSimple.Direction.REVERSE);
-        centerodom.setDirection(DcMotorSimple.Direction.REVERSE);
+        //centerodom.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         // Pre-Runtime
@@ -96,7 +96,7 @@ public class EncoderTesting extends LinearOpMode {
             } else if(!gamepad1.dpad_left && pLD) {
                 leftodom.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 rightodom.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                centerodom.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                //centerodom.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 pLD = false;
             }
 
@@ -145,7 +145,7 @@ public class EncoderTesting extends LinearOpMode {
                 telemetry.addLine("-------------------------------------");
                 telemetry.addData("left odo: ", leftodom.getCurrentPosition());
                 telemetry.addData("right odo: ", rightodom.getCurrentPosition());
-                telemetry.addData("center odo: ", centerodom.getCurrentPosition());
+                //telemetry.addData("center odo: ", centerodom.getCurrentPosition());
                 telemetry.addLine("-------------------------------------");
             }
 
