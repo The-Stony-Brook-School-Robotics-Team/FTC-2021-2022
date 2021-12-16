@@ -10,6 +10,7 @@ import org.sbs.bears.robotframework.controllers.OpenCVController;
 import org.sbs.bears.robotframework.controllers.RoadRunnerController;
 import org.sbs.bears.robotframework.controllers.SlideExtensionController;
 import org.sbs.bears.robotframework.controllers.SlideHeightController;
+import org.sbs.bears.robotframework.enums.IntakeSide;
 
 public class Robot {
     protected OpenCVController CVctrl;
@@ -23,7 +24,7 @@ public class Robot {
         this.RRctrl = new RoadRunnerController(hardwareMap,telemetry);
         this.SlideHCtrl = new SlideHeightController(hardwareMap,telemetry);
         this.SlideExtCtrl = new SlideExtensionController(hardwareMap,telemetry);
-        this.IntakeCtrl = new IntakeController(hardwareMap,telemetry);
+        this.IntakeCtrl = new IntakeController(hardwareMap,telemetry, IntakeSide.FRONT);
     }
     public OpenCVController getCVctrl()
     {

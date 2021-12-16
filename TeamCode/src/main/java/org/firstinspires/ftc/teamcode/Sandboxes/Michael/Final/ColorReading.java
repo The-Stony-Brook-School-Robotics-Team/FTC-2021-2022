@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Sandboxes.Michael.Final;
+package org.firstinspires.ftc.teamcode.sandboxes.Michael.Final;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;

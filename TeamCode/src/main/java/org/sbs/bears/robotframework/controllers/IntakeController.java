@@ -1,4 +1,6 @@
 package org.sbs.bears.robotframework.controllers;
+import static org.sbs.bears.robotframework.enums.IntakeSide.FRONT;
+
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -7,48 +9,62 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.sbs.bears.robotframework.enums.LiftStates;
+import org.sbs.bears.robotframework.enums.IntakeState;
+import org.sbs.bears.robotframework.enums.IntakeSide;
 
 public class IntakeController {
 
     private Servo scooper;
     private DcMotor compliantWheel;
-    private Rev2mDistanceSensor rev;
+    private Rev2mDistanceSensor distanceSensor;
+
     /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/
     private double[] basePos = {.141, 0.7};
     private double[] dumpPos = {.56, 0.4};
-    private double[] parkPos = {.53, 0.4};
+    private double[] parkPos = {.477, 0.4};
 
     /** Distance needed to switch states (mm) **/
     private double distThreshold = 50.0;
 
     private boolean qIsObjectInPayload = false;
 
-    volatile LiftStates state = LiftStates.BASE;
+    volatile IntakeState state = IntakeState.BASE;
     Object stateMutex = new Object();
 
     /** Initialization **/
-    public IntakeController(HardwareMap hardwareMap, Telemetry telemetry) {
-        scooper = hardwareMap.get(Servo.class, "servo");
-        compliantWheel = hardwareMap.get(DcMotor.class, "motor");
-        rev = hardwareMap.get(Rev2mDistanceSensor.class, "2m");
-
-        scooper.setDirection(Servo.Direction.FORWARD);
-        compliantWheel.setDirection(DcMotorSimple.Direction.FORWARD);
-
+    public IntakeController(HardwareMap hardwareMap, Telemetry telemetry, IntakeSide side) {
+        /** Different hardwareMap depending on the intake side. **/
+        switch(side){
+            case FRONT:
+                scooper = hardwareMap.get(Servo.class, "servo");
+                compliantWheel = hardwareMap.get(DcMotor.class, "motor");
+                distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "2m");
+                scooper.setDirection(Servo.Direction.FORWARD);
+                compliantWheel.setDirection(DcMotorSimple.Direction.FORWARD);
+                break;
+            case BACK:
+                scooper = hardwareMap.get(Servo.class, "servoBack");
+                compliantWheel = hardwareMap.get(DcMotor.class, "motorBack");
+                distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "2mBack");
+                scooper.setDirection(Servo.Direction.REVERSE);
+                compliantWheel.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
         compliantWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
+
+
     /** Returns if the distance sensor reads less than distThreshold **/
     public boolean isObjectInPayload() {
-        qIsObjectInPayload = rev.getDistance(DistanceUnit.MM) < distThreshold;
+
+        qIsObjectInPayload = distanceSensor.getDistance(DistanceUnit.MM) < distThreshold;
         return qIsObjectInPayload;
     }
 
 
     /** Autonomous method-- waits until object is seen, dumps, then sets to park. **/
     public void waitForIntake() {
-        if(state != LiftStates.BASE){setState(LiftStates.BASE);}
+        if(state != IntakeState.BASE){setState(IntakeState.BASE);}
         while(!isObjectInPayload()){
             try {
                 Thread.sleep(50);
@@ -56,42 +72,44 @@ public class IntakeController {
                 e.printStackTrace();
             }
         }
-        setState(LiftStates.DUMP);
+        setState(IntakeState.DUMP);
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        setState(LiftStates.PARK);
+        setState(IntakeState.PARK);
     }
 
     /** TeleOp method-- checks if object is seen. If so, dumps and sets to park. **/
     public void checkIntake(){
-        if(state == LiftStates.BASE && isObjectInPayload()){
-            setState(LiftStates.DUMP);
+        if(state == IntakeState.BASE && isObjectInPayload()){
+            setState(IntakeState.DUMP);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            setState(LiftStates.PARK);
+            setState(IntakeState.PARK);
 
         }
     }
 
     /**
      State setter.
-     @param liftState The desired intake state to set to the robot.
+     @param intakeState The desired intake state to set to the robot.
      **/
-    public void setState(LiftStates liftState) {
+
+    public void setState(IntakeState intakeState) {
         synchronized (stateMutex) {
-            state = liftState;
+            state = intakeState;
         }
         doStateAction();
     }
 
     /** Accessor for current state **/
-    public LiftStates getState(){return state;}
+    public IntakeState getState(){return state;}
+
 
 
     /** Assigns position and motor power to their respective states **/
