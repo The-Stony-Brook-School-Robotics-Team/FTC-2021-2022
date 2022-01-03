@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Sandboxes.William.WheelControl;
+package org.firstinspires.ftc.teamcode.sandboxes.William.WheelControl;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -44,7 +44,7 @@ public class WheelControl extends OpMode {
 
     private double MAGICAL_CONSTANT = 0.44;
     private double FIRST_STAGE_TIME_INTERVAL = 1.3;
-    private final double SECOND_STAGE_TIME_INTERVAL = 0.03;
+    private final double SECOND_STAGE_TIME_INTERVAL = 0.1;
 
     private double timer;
     private double runTime;
