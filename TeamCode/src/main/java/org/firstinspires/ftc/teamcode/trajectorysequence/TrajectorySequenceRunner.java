@@ -192,6 +192,10 @@ public class TrajectorySequenceRunner {
         packet.put("x", poseEstimate.getX());
         packet.put("y", poseEstimate.getY());
         packet.put("heading (deg)", Math.toDegrees(poseEstimate.getHeading()));
+        packet.put("xvel",poseVelocity.getX());
+        packet.put("yvel",poseVelocity.getY());
+        packet.put("hvel (deg/s)",poseVelocity.getHeading());
+
 
         packet.put("xError", getLastPoseError().getX());
         packet.put("yError", getLastPoseError().getY());

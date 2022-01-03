@@ -45,6 +45,7 @@ import java.util.Locale;
 
 @TeleOp(name = "Michael Gyro Test")
 @Disabled
+@Deprecated
 public class SensorBNO055IMU extends LinearOpMode
     {
 

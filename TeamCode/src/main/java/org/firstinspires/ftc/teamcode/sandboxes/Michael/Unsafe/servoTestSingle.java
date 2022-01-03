@@ -28,11 +28,13 @@
  */
 
 package org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
+@Deprecated
+@Disabled
 @TeleOp(name="S - Single Servo", group="Linear Opmode")
 //@Disabled
 public class servoTestSingle extends LinearOpMode {

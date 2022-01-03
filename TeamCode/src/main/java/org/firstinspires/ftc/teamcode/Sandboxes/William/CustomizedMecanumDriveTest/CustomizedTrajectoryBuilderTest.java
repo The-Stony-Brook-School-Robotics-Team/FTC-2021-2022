@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 package org.firstinspires.ftc.teamcode.Sandboxes.William.CustomizedMecanumDriveTest;
+=======
+package org.firstinspires.ftc.teamcode.sandboxes.William.CustomizedMecanumDriveTest;
+>>>>>>> new-drivetrain
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -12,7 +16,11 @@ import org.firstinspires.ftc.teamcode.drive.timeout.CustomTimeoutTuningDrive;
 
 @Config
 @Autonomous(group = "drive", name = "Customized Trajectory Builder Test")
+<<<<<<< HEAD
 public class CustomizedTrajectoryBuilderTest extends LinearOpMode{
+=======
+public class CustomizedTrajectoryBuilderTest extends LinearOpMode {
+>>>>>>> new-drivetrain
 
     @Override
     public void runOpMode() throws InterruptedException {

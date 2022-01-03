@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.common.util;
 
+import com.acmerobotics.dashboard.config.Config;
+
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
  * @author Marc N
  * @version 5.1
  */
+@Config
 public class DuckOpenCVEngine extends OpenCvPipeline {
     // MARK - Class Variables
 
@@ -80,41 +83,65 @@ public class DuckOpenCVEngine extends OpenCvPipeline {
     /**
      * This variable represents the WIDTH of the rectangle about barcode A.
      */
-    static final int WidthRectA = 130;
+    public static int WidthRectA = 130;
     /**
      * This variable represents the HEIGHT of the rectangle about barcode A.
      */
-    static final int HeightRectA = 110;
+    public static int HeightRectA = 110;
+    /**
+     * This variable represents the XOffset of the rectangle about barcode A.
+     */
+    public static int XOffsetA = -800;
+    /**
+     * This variable represents the YOffset of the rectangle about barcode A.
+     */
+    public static int YOffsetA = 250;
     /**
      * This variable represents the Top Left Anchor of the rectangle about barcode A.
      */
-    static final Point RectATopLeftAnchor = new Point((STREAM_WIDTH - WidthRectA) / 2 + 300, ((STREAM_HEIGHT - HeightRectA) / 2) - 100);
+    static final Point RectATopLeftAnchor = new Point((STREAM_WIDTH - WidthRectA) / 2 + XOffsetA, ((STREAM_HEIGHT - HeightRectA) / 2) + YOffsetA);
 
     /**
      * This variable represents the WIDTH of the rectangle about barcode B.
      */
-    static final int WidthRectB = 130;
+    public static int WidthRectB = 130;
     /**
      * This variable represents the HEIGHT of the rectangle about barcode B.
      */
-    static final int HeightRectB = 110;
+    public static int HeightRectB = 110;
+    /**
+     * This variable represents the XOffset of the rectangle about barcode B.
+     */
+    public static int XOffsetB = -250;
+    /**
+     * This variable represents the YOffset of the rectangle about barcode B.
+     */
+    public static int YOffsetB = 250;
     /**
      * This variable represents the Top Left Anchor of the rectangle about barcode B.
      */
-    static final Point RectBTopLeftAnchor = new Point((STREAM_WIDTH - WidthRectB) / 2 + 200, ((STREAM_HEIGHT - HeightRectA) / 2) - 100);
+    static final Point RectBTopLeftAnchor = new Point((STREAM_WIDTH - WidthRectB) / 2 + XOffsetB, ((STREAM_HEIGHT - HeightRectA) / 2) + YOffsetB);
 
     /**
      * This variable represents the WIDTH of the rectangle about barcode C.
      */
-    static final int WidthRectC = 130;
+    public static  int WidthRectC = 130;
     /**
      * This variable represents the HEIGHT of the rectangle about barcode C.
      */
-    static final int HeightRectC = 110;
+    public static  int HeightRectC = 110;
+    /**
+     * This variable represents the XOffset of the rectangle about barcode C.
+     */
+    public static int XOffsetC = 225;
+    /**
+     * This variable represents the YOffset of the rectangle about barcode C.
+     */
+    public static int YOffsetC = 250;
     /**
      * This variable represents the Top Left Anchor of the rectangle about barcode C.
      */
-    static final Point RectCTopLeftAnchor = new Point((STREAM_WIDTH - WidthRectB) / 2 + 100, ((STREAM_HEIGHT - HeightRectA) / 2) - 100);
+    static final Point RectCTopLeftAnchor = new Point((STREAM_WIDTH - WidthRectB) / 2 + XOffsetC, ((STREAM_HEIGHT - HeightRectA) / 2) + YOffsetC);
 
     /**
      * This variable represents the Top Left Corner of the rectangle about barcode A.

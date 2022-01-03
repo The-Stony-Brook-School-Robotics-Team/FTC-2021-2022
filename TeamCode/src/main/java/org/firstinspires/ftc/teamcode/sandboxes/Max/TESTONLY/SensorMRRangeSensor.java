@@ -68,10 +68,7 @@ public class SensorMRRangeSensor extends LinearOpMode {
             telemetry.addData("raw ultrasonic", rangeSensor.rawUltrasonic());
             telemetry.addData("raw optical", rangeSensor.rawOptical());
             telemetry.addData("cm optical", "%.2f cm", rangeSensor.cmOptical());
-            telemetry.addLine()
-                    .addData("cm", "%.2f cm", rangeSensor.getDistance(DistanceUnit.INCH))
-            .addData("cm", "%.2f cm", rangeSensor.getDistance(DistanceUnit.MM))
-            .addData("cm", "%.2f cm", rangeSensor.getDistance(DistanceUnit.CM));
+            telemetry.addData("cm", "%.2f cm", rangeSensor.getDistance(DistanceUnit.CM));
             telemetry.update();
         }
     }
