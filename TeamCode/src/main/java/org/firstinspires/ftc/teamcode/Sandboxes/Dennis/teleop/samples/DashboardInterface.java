@@ -27,7 +27,6 @@ public class DashboardInterface {
      * Add a line into the dashboard telemetry
      */
     @Beta
-    @Deprecated
     public static void writeLine(@NotNull Integer index, @NotNull String message) {
         if(dashboardTelemetry.containsValue(message)) {
             dashboardTelemetry.forEach((identifier, string) -> {
@@ -41,7 +40,6 @@ public class DashboardInterface {
     }
 
     @Beta
-    @Deprecated
     public static void deleteLine(@NotNull Integer index, @NotNull String line) {
 
     }
