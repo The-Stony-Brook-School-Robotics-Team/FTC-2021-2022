@@ -44,7 +44,7 @@ public class WheelControl extends OpMode {
 
     private double MAGICAL_CONSTANT = 0.44;
     private double FIRST_STAGE_TIME_INTERVAL = 1.3;
-    private final double SECOND_STAGE_TIME_INTERVAL = 0.03;
+    private final double SECOND_STAGE_TIME_INTERVAL = 0.1;
 
     private double timer;
     private double runTime;
