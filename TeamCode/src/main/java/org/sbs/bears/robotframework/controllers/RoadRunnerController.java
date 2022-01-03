@@ -64,6 +64,11 @@ public class RoadRunnerController {
         this.runner = drive.trajectorySequenceRunner;
     }
 
+    public SampleMecanumDrive getDrive()
+    {
+        return drive;
+    }
+
     /**
      * This method returns the robot's current position using RoadRunner.
      * @return the current position of the robot in Pose2d format (RR).
@@ -259,6 +264,8 @@ public class RoadRunnerController {
     {
         // TODO implement ShutDown on RR Ctrl
     }
+
+
 
     public void doForwardHaltableTrajectory(double distMax, double brakingDist, double brakeVel, double brakeDecel, Boolean signal, Object mutex)
     {

@@ -1,6 +1,6 @@
 package org.sbs.bears.robotframework.enums;
 
-public enum LiftStates {
+public enum IntakeState {
     PARK,
     DUMP,
     BASE
