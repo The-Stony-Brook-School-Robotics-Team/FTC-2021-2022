@@ -10,8 +10,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop.misc.Converter;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-@TeleOp(name="Duckmovement Testing", group="default")
-public class DuckMovement extends LinearOpMode {
+@TeleOp(name="AAA - Qualifier One", group="default")
+public class Qualifier extends LinearOpMode {
 
     private static SampleMecanumDrive drive;
     private static DcMotor duckSpinner;
