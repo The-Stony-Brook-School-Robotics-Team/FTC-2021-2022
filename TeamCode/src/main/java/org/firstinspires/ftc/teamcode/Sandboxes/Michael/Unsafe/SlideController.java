@@ -108,7 +108,7 @@ public class SlideController {
         values.put(SlideComponents.SLIDE_MOTOR_POWER_MOVING, 0.3);
         values.put(SlideComponents.SLIDE_MOTOR_POWER_REST, 0.0);
         values.put(SlideComponents.SLIDE_MOTOR_POSITION_EXTENDED, 0.5);
-        values.put()
+        //values.put()
     }
 }
 
