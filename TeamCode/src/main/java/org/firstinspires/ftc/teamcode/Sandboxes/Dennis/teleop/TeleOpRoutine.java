@@ -49,6 +49,8 @@ public class TeleOpRoutine extends OpMode {
         dashboard = FtcDashboard.getInstance();
         gamepad = new GamepadEx(gamepad1);
 
+
+
         /**
          * Update current state to continue
          */
@@ -66,9 +68,12 @@ public class TeleOpRoutine extends OpMode {
         if(!roadrunnerHandlerRuntime.isAlive()) {
             roadrunnerHandlerRuntime.start();
         }
+
+        /**
         if(!dashboardHandler.isAlive()) {
             dashboardHandler.start();
         }
+        */
 
         switch(currentState) {
             case STOPPED:
