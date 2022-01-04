@@ -41,7 +41,7 @@ public class WheelControl {
      * Start the program for spinning the wheel.
      * @param wheelMover
      */
-    public void start(DcMotor wheelMover) {
+    public static void start(DcMotor wheelMover) {
         initializeEnvironment(wheelMover);
 
         if (wheelMover.getPower() > MAX_WHEEL_SPEED)
@@ -51,7 +51,7 @@ public class WheelControl {
         while (updateMotorSpeed() != 2) ;
     }
 
-    private void initializeEnvironment(DcMotor wheelMover) {
+    private static void initializeEnvironment(DcMotor wheelMover) {
         wheelMover.setDirection(DcMotorSimple.Direction.REVERSE);
         initializeVariables();
         WheelControl.wheelMover = wheelMover;
