@@ -13,8 +13,8 @@ public class DriveConstants {
     public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(0, 0, 0,
             0);
 
-    public static double WHEEL_RADIUS = 1.47638; // in
-    public static double GEAR_RATIO = 1.5; // 14.0 / 8; // output (wheel) speed / input (motor) speed 8/14
+    public static double WHEEL_RADIUS = 1.47638; // in  (75mm/2)
+    public static double GEAR_RATIO = 1.5; // 16:24; // output (wheel) speed / input (motor)
     public static double TRACK_WIDTH = 10; // in
 
     public static double kV = 0.0099;
