@@ -20,7 +20,7 @@ public class Qualifier extends LinearOpMode {
     /**
      * Duck Spinner Movement
      */
-    private static Pose2d startPose = new Pose2d(-38.665, 52.4085, 0);
+    private static Pose2d startPose = new Pose2d(-39.24, 51.95, 0);
     private static Pose2d duckPose = new Pose2d(-52.102, 48.591, 1.3487);
     private static Pose2d blueDropOff = new Pose2d(-9.94, 51.812, 0);
 
@@ -39,6 +39,7 @@ public class Qualifier extends LinearOpMode {
         duckSpinner = hardwareMap.get(DcMotor.class, "duck");
         rgb = hardwareMap.get(RevBlinkinLedDriver.class,"rgb");
         drive.setPoseEstimate(startPose);
+        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         drive.update();
 
         /**
