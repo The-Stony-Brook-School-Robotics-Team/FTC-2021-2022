@@ -4,11 +4,13 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop.misc.Converter;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
+@TeleOp(name="Duckmovement Testing", group="default")
 public class DuckMovement extends LinearOpMode {
 
     private static SampleMecanumDrive drive;
@@ -18,18 +20,13 @@ public class DuckMovement extends LinearOpMode {
     /**
      * Duck Spinner Movement
      */
-    private static Pose2d startPose = new Pose2d(-48, 66);
-    private static Pose2d duckPose = new Pose2d(-60, 61, Math.toRadians(40));
-    private static Pose2d blueDropOff = new Pose2d(-12.5, 65, 0);
+    private static Pose2d startPose = new Pose2d(-38.665, 52.4085, 0);
+    private static Pose2d duckPose = new Pose2d(-52.102, 48.591, 1.3487);
+    private static Pose2d blueDropOff = new Pose2d(-9.94, 51.812, 0);
+
     /**
-     * Factory Movement
+     * Convert Units (Pose2d to Vector2d)
      */
-    private static Pose2d factoryPose1 = new Pose2d(37, 65, 0);
-    private static Pose2d factoryPose2 = new Pose2d(37, 40, -90);
-    private static Pose2d factoryPose3 = new Pose2d(65, 40, -90);
-    private static Pose2d factoryPose4 = new Pose2d(65, 40, -90);
-
-
     private static Converter converter = new Converter();
 
 
@@ -42,73 +39,48 @@ public class DuckMovement extends LinearOpMode {
         duckSpinner = hardwareMap.get(DcMotor.class, "duck");
         rgb = hardwareMap.get(RevBlinkinLedDriver.class,"rgb");
         drive.setPoseEstimate(startPose);
+        drive.update();
 
         /**
          * Movement Trajectory
          */
         Trajectory traj = drive.trajectoryBuilder(drive.getPoseEstimate())
                 .lineToSplineHeading(duckPose)
-                .addDisplacementMarker(() -> {
-                    /**
-                     * Start the duck spinner
-                     */
-                    duckSpinner.setPower(1);
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    /**
-                     * Stop the duck spinner
-                     */
-                    duckSpinner.setPower(0);
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                })
-                .lineToSplineHeading(blueDropOff)
-                /**
-                 * Wait 5 seconds cause why not TODO: LOLLOP
-                 */
-                .addDisplacementMarker(() -> {
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                })
-                /**
-                 * Go through the **silky** factory
-                 */
-                .lineToConstantHeading(converter.convertPose2d(factoryPose1))
-                .lineToSplineHeading(factoryPose2)
-                .lineToSplineHeading(factoryPose3)
-                .lineToSplineHeading(factoryPose4)
-                /**
-                 * Yeah Yeah Yeah Yeah Yeah
-                 */
                 .build();
 
-        /**
-         * Set Pattern To Ready
-         */
+        Trajectory traj2 = drive.trajectoryBuilder(traj.end())
+                .lineToSplineHeading(blueDropOff)
+                .build();
+
+
+
         rgb.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
 
-        /**
-         * "Pre-Op-Mode"
-         */
         waitForStart();
 
-        /**
-         * Set the scanner color
-         */
         rgb.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_RED);
-        /**
-         * Run Trajectory
-         */
+
+        // go to spinner
         drive.followTrajectory(traj);
+        drive.update();
+        // spin
+        duckSpinner.setPower(.3);
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        duckSpinner.setPower(0);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // follow second
+        drive.followTrajectory(traj2);
+        drive.update();
+
+
         drive.update();
         /**
          * Set the green color

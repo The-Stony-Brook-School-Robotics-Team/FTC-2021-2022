@@ -9,32 +9,32 @@
         private Servo savox;
         boolean pressingUp = false;
         boolean pressingDown = false;
+
         public void runOpMode() throws InterruptedException {
 
             savox = hardwareMap.get(Servo.class, "vt");
 
             waitForStart();
 
-            while(opModeIsActive()){
-                if(gamepad1.dpad_up && !pressingUp){
+            while (opModeIsActive()) {
+                if (gamepad1.dpad_up && !pressingUp) {
                     pressingUp = true;
-                }
-                else if(!gamepad1.dpad_up && pressingUp){
-                    savox.setPosition(savox.getPosition()+.05);
+                } else if (!gamepad1.dpad_up && pressingUp) {
+                    savox.setPosition(savox.getPosition() + .05);
                     pressingUp = false;
                 }
-                if(gamepad1.dpad_down && !pressingDown){
+                if (gamepad1.dpad_down && !pressingDown) {
                     pressingDown = true;
-                }
-                else if(!gamepad1.dpad_down && pressingDown){
-                    savox.setPosition(savox.getPosition()-.05);
+                } else if (!gamepad1.dpad_down && pressingDown) {
+                    savox.setPosition(savox.getPosition() - .05);
                     pressingDown = false;
                 }
-                if(gamepad1.a){
-                telemetry.addData("pos: ", savox.getPosition());
-                telemetry.update();
+                if (gamepad1.a) {
+                    telemetry.addData("pos: ", savox.getPosition());
+                    telemetry.update();
+                }
+
+
             }
-
-
         }
     }
