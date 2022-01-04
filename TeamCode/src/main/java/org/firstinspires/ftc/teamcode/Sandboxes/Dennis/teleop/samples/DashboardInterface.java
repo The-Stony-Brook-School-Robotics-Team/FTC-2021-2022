@@ -63,31 +63,89 @@ public class DashboardInterface {
     }
 
 
-    public static void start() {
-
+    /**
+     * Starts the updater thread
+     * @return DASHBOARD_INTERFACE_UPDATER_FLAGS FLAG
+     */
+    public static DASHBOARD_INTERFACE_UPDATER_FLAGS start() {
+        if (initialized && !dashboardInterfaceUpdater.isAlive()) {
+            try {
+                dashboardInterfaceUpdater.checkAccess();
+            } catch (Exception ex) {
+                return DASHBOARD_INTERFACE_UPDATER_FLAGS.NO_ACCESS;
+            }
+            dashboardInterfaceUpdater.start();
+            return DASHBOARD_INTERFACE_UPDATER_FLAGS.RUNNING;
+        } else if(initialized && dashboardInterfaceUpdater.isAlive()) {
+            return DASHBOARD_INTERFACE_UPDATER_FLAGS.RUNNING;
+        }
+        return DASHBOARD_INTERFACE_UPDATER_FLAGS.COULD_NOT_START;
     }
 
-    public static void stop() {
-
+    /**
+     * Stops the updater thread
+     * @return DASHBOARD_INTERFACE_UPDATER_FLAGS FLAG
+     */
+    public static DASHBOARD_INTERFACE_UPDATER_FLAGS stop() {
+        if (initialized && dashboardInterfaceUpdater.isAlive()) {
+            try {
+                dashboardInterfaceUpdater.checkAccess();
+            } catch (Exception ex) {
+                return DASHBOARD_INTERFACE_UPDATER_FLAGS.NO_ACCESS;
+            }
+            dashboardInterfaceUpdater.stop();
+            return DASHBOARD_INTERFACE_UPDATER_FLAGS.STOPPED;
+        } else if(initialized && !dashboardInterfaceUpdater.isAlive()) {
+            return DASHBOARD_INTERFACE_UPDATER_FLAGS.STOPPED;
+        }
+        return DASHBOARD_INTERFACE_UPDATER_FLAGS.COULD_NOT_STOP;
     }
 
+    /**
+     * Toggle the dashboard telemetry for position
+     * @return
+     */
     public static boolean togglePositionTelemety() {
-        return true;
+        displayRobotPosition = !displayRobotPosition;
+        return displayRobotPosition;
+    }
+
+
+    public enum DASHBOARD_INTERFACE_UPDATER_FLAGS {
+        STOPPED,
+        RUNNING,
+        ERROR,
+        COULD_NOT_START,
+        COULD_NOT_STOP,
+        NO_ACCESS
     }
 
     private static Thread dashboardInterfaceUpdater = new Thread(() -> {
+            // Gets last pose
             Pose2d poseEstimate = internalDrive.getPoseEstimate();
+
+            // Crafts a new packet
             TelemetryPacket telemetryPacket = new TelemetryPacket();
+
+            // Draws the robot field and cavas
             Canvas ftcField = telemetryPacket.fieldOverlay();
             DashboardUtil.drawRobot(ftcField, poseEstimate);
 
+            // Display robot position in dashboard telemetry
+            if(displayRobotPosition) {
+                telemetryPacket.put("Estimated Pose X", poseEstimate.getX());
+                telemetryPacket.put("Estimated Pose Y", poseEstimate.getY());
+                telemetryPacket.put("Estimated Pose Heading", poseEstimate.getHeading());
+            }
 
-            telemetryPacket.put("Estimated Pose X", poseEstimate.getX());
-            telemetryPacket.put("Estimated Pose Y", poseEstimate.getY());
-            telemetryPacket.put("Estimated Pose Heading", poseEstimate.getHeading());
+            for(int i = 0; i < maxLines; i++) {
+                if(lines[i] != null) {
+                    telemetryPacket.put(String.format("%i", i), lines[i]);
+                }
+            }
+
+            // Send the packet
             internalDashboard.sendTelemetryPacket(telemetryPacket);
-
-
     });
 
 }
