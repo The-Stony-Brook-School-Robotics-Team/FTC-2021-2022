@@ -72,7 +72,7 @@ public class DashboardInterface {
     }
 
     public static boolean togglePositionTelemety() {
-
+        return true;
     }
 
     private static Thread dashboardInterfaceUpdater = new Thread(() -> {
