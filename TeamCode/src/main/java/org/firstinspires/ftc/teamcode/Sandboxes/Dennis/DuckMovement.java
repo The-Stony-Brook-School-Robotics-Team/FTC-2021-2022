@@ -18,16 +18,16 @@ public class DuckMovement extends LinearOpMode {
     /**
      * Duck Spinner Movement
      */
-    private static Pose2d startPose = new Pose2d(-48, 66);
-    private static Pose2d duckPose = new Pose2d(-60, 61, Math.toRadians(40));
+    private static Pose2d startPose = new Pose2d(-43, 55);
+    private static Pose2d duckPose = new Pose2d(-52, 50, Math.toRadians(40));
     private static Pose2d blueDropOff = new Pose2d(-12.5, 65, 0);
     /**
      * Factory Movement
      */
-    private static Pose2d factoryPose1 = new Pose2d(37, 65, 0);
-    private static Pose2d factoryPose2 = new Pose2d(37, 40, -90);
-    private static Pose2d factoryPose3 = new Pose2d(65, 40, -90);
-    private static Pose2d factoryPose4 = new Pose2d(65, 40, -90);
+    // private static Pose2d factoryPose1 = new Pose2d(37, 65, 0);
+    // private static Pose2d factoryPose2 = new Pose2d(37, 40, -90);
+    // private static Pose2d factoryPose3 = new Pose2d(65, 40, -90);
+    // private static Pose2d factoryPose4 = new Pose2d(65, 40, -90);
 
 
     private static Converter converter = new Converter();
@@ -79,13 +79,6 @@ public class DuckMovement extends LinearOpMode {
                         e.printStackTrace();
                     }
                 })
-                /**
-                 * Go through the **silky** factory
-                 */
-                .lineToConstantHeading(converter.convertPose2d(factoryPose1))
-                .lineToSplineHeading(factoryPose2)
-                .lineToSplineHeading(factoryPose3)
-                .lineToSplineHeading(factoryPose4)
                 /**
                  * Yeah Yeah Yeah Yeah Yeah
                  */
