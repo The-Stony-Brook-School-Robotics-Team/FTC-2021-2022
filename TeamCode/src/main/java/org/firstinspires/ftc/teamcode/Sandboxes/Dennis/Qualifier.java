@@ -9,9 +9,16 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop.misc.Converter;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe.SlideController;
+import org.sbs.bears.robotframework.controllers.*;
+import org.sbs.bears.robotframework.enums.*;
 
 @TeleOp(name="AAA - Qualifier One", group="default")
 public class Qualifier extends LinearOpMode {
+    //TODO: ahahha stinky add rest of controllers
+    private IntakeController frontIntake = new IntakeController(hardwareMap, telemetry, IntakeSide.FRONT);
+
+
 
     private static SampleMecanumDrive drive;
     private static DcMotor duckSpinner;
@@ -35,6 +42,7 @@ public class Qualifier extends LinearOpMode {
         /**
          * Robot Initialization
          */
+
         drive = new SampleMecanumDrive(hardwareMap);
         duckSpinner = hardwareMap.get(DcMotor.class, "duck");
         rgb = hardwareMap.get(RevBlinkinLedDriver.class,"rgb");
