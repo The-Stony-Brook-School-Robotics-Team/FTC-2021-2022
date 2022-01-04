@@ -19,9 +19,9 @@ public class IntakeController {
     private Rev2mDistanceSensor distanceSensor;
 
     /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/
-    private double[] basePos = {.141, 0.7};
-    private double[] dumpPos = {.56, 0.4};
-    private double[] parkPos = {.477, 0.4};
+    private double[] basePos = {.04, 0.7}; //.141
+    private double[] dumpPos = {.87, 0.4};
+    private double[] parkPos = {.75, 0.4};
 
     /** Distance needed to switch states (mm) **/
     private double distThreshold = 50.0;
@@ -39,14 +39,14 @@ public class IntakeController {
                 scooper = hardwareMap.get(Servo.class, "servo");
                 compliantWheel = hardwareMap.get(DcMotor.class, "motor");
                 distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "2m");
-                scooper.setDirection(Servo.Direction.FORWARD);
+                scooper.setDirection(Servo.Direction.REVERSE);
                 compliantWheel.setDirection(DcMotorSimple.Direction.FORWARD);
                 break;
             case BACK:
                 scooper = hardwareMap.get(Servo.class, "servoBack");
                 compliantWheel = hardwareMap.get(DcMotor.class, "motorBack");
                 distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "2mBack");
-                scooper.setDirection(Servo.Direction.REVERSE);
+                scooper.setDirection(Servo.Direction.FORWARD);
                 compliantWheel.setDirection(DcMotorSimple.Direction.REVERSE);
         }
         compliantWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -86,7 +86,7 @@ public class IntakeController {
         if(state == IntakeState.BASE && isObjectInPayload()){
             setState(IntakeState.DUMP);
             try {
-                Thread.sleep(1000);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
