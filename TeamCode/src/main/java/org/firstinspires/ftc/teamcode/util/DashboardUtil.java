@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.util;
 
+import android.graphics.Color;
+
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -12,10 +14,12 @@ import java.util.List;
  */
 public class DashboardUtil {
     private static final double DEFAULT_RESOLUTION = 2.0; // distance units; presumed inches
-    private static final double ROBOT_RADIUS = 9; // in
+    private static final double ROBOT_RADIUS = 6; // in
 
 
     public static void drawPoseHistory(Canvas canvas, List<Pose2d> poseHistory) {
+        canvas.setStroke("RED");
+        canvas.setFill("GREEN");
         double[] xPoints = new double[poseHistory.size()];
         double[] yPoints = new double[poseHistory.size()];
         for (int i = 0; i < poseHistory.size(); i++) {
