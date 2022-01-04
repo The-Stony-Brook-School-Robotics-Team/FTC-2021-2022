@@ -1,4 +1,4 @@
-    package org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe;
+    package org.firstinspires.ftc.teamcode.Sandboxes.Michael.Unsafe;
 
     import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
     import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -10,29 +10,19 @@
     @TeleOp(name="Controller Tester", group="Linear Opmode")
     public class ControllerTester extends LinearOpMode {
         private IntakeController frontIntake;
-        private IntakeController backIntake;
 
         public void runOpMode() throws InterruptedException {
             frontIntake = new IntakeController(hardwareMap, telemetry, IntakeSide.FRONT);
-            backIntake = new IntakeController(hardwareMap, telemetry, IntakeSide.BACK);
             frontIntake.setState(IntakeState.BASE);
-            backIntake.setState(IntakeState.BASE);
             waitForStart();
 
             while(opModeIsActive()){
-
+                frontIntake.checkIntake();
                 if(gamepad1.a){
                     frontIntake.setState(IntakeState.BASE);}
-                if(gamepad1.b){
-                    backIntake.setState(IntakeState.BASE);}
-                if(gamepad1.x){
-                    frontIntake.setState(IntakeState.DUMP);}
-                if(gamepad1.y){
-                    backIntake.setState(IntakeState.DUMP);}
 
 
                 telemetry.addData("Front State: ", frontIntake.getState());
-                telemetry.addData("Back State: ", backIntake.getState());
 
                 telemetry.update();
             }

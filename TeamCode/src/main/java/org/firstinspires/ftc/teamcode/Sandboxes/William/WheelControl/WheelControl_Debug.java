@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.sandboxes.William.WheelControl;
+package org.firstinspires.ftc.teamcode.Sandboxes.William.WheelControl;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -25,8 +25,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
  * --------With MAGICAL_CONSTANT--------
  */
 
-@TeleOp(name = "Wheel Control (Final)", group = "WC")
-public class WheelControl extends OpMode {
+@TeleOp(name = "Wheel Control (Debug)", group = "-WC")
+public class WheelControl_Debug extends OpMode {
 
     private boolean isPressingA = false;
     private boolean isPressingB = false;
@@ -40,11 +40,15 @@ public class WheelControl extends OpMode {
 
     DcMotor wheelMover;
     private double FIRST_STAGE_TIME;
-    private double SECOND_STAGE_TIME;
 
-    private double MAGICAL_CONSTANT = 0.44;
-    private double FIRST_STAGE_TIME_INTERVAL = 1.3;
-    private final double SECOND_STAGE_TIME_INTERVAL = 0.1;
+    /**
+     * MAGICAL_CONSTANT should be between 0.39 to 0.41. Because of the lack of enough torque, the wheel actually never achieve the ideal acceleration.
+     */
+    private double MAGICAL_CONSTANT = 0.39;
+
+    private double FIRST_STAGE_TIME_INTERVAL = 1.43;
+
+    private double MAX_WHEEL_SPEED = 0;
 
     private double timer;
     private double runTime;
@@ -58,10 +62,15 @@ public class WheelControl extends OpMode {
 
     @Override
     public void loop() {
+        if (wheelMover.getPower() > MAX_WHEEL_SPEED)
+            MAX_WHEEL_SPEED = wheelMover.getPower();
+
         //Print data to the phone.
         telemetry.update();
         telemetry.addData("FIRST_STAGE_TIME_INTERVAL", "%.3f", FIRST_STAGE_TIME_INTERVAL);
         telemetry.addData("MAGICAL_CONSTANT", "--%.3f--", MAGICAL_CONSTANT);
+        telemetry.addData("Current Speed", "--%.5f--", wheelMover.getPower());
+        telemetry.addData("Max Speed", "--%.5f--", MAX_WHEEL_SPEED);
 
         //Detect keys on the game pad.
         checkKeyA();        //Start spinning.
@@ -89,8 +98,6 @@ public class WheelControl extends OpMode {
             if (runTime >= 0 && runTime < FIRST_STAGE_TIME) {
                 //First Stage
                 wheelMover.setPower(getFirstStageMotorSpeed(runTime));
-            } else if (runTime >= FIRST_STAGE_TIME && runTime < SECOND_STAGE_TIME) {   //Third Stage
-                wheelMover.setPower(-1);
             } else {
                 //Ending
                 wheelMover.setPower(0);
@@ -107,7 +114,6 @@ public class WheelControl extends OpMode {
 
     private void initializeVariables() {
         FIRST_STAGE_TIME = FIRST_STAGE_TIME_INTERVAL;
-        SECOND_STAGE_TIME = FIRST_STAGE_TIME + SECOND_STAGE_TIME_INTERVAL;
         timer = getRuntime();
     }
 
