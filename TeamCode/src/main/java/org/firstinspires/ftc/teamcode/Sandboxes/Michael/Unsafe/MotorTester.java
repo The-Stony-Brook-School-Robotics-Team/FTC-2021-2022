@@ -14,6 +14,8 @@ import org.sbs.bears.robotframework.enums.SlideState;
 public class MotorTester extends LinearOpMode {
     private DcMotor motor;
     private int ticks = 100;
+    boolean pressingA = false;
+    boolean pressingB = false;
 
     public void runOpMode() throws InterruptedException {
         motor = hardwareMap.get(DcMotor.class, "spool");
@@ -21,10 +23,17 @@ public class MotorTester extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()){
-            if(gamepad1.a){
-                ticks--;}
-            if(gamepad1.b){
-                ticks++;
+            if(gamepad1.a && !pressingA){
+                pressingA = true;}
+            else if(!gamepad1.a && pressingA){
+                ticks += 10;
+                pressingA = false;
+            }
+            if(gamepad1.b && !pressingB){
+                pressingB = true;}
+            else if(!gamepad1.b && pressingB){
+                ticks -= 10;
+                pressingB = false;
             }
             if(gamepad1.x){
                 motor.setTargetPosition(ticks);
