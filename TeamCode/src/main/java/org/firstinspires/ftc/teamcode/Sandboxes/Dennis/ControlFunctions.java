@@ -1,4 +1,5 @@
-package org.firstinspires.ftc.teamcode.Sandboxes.Dennis;
+package org.firstinspires.ftc.teamcode.sandboxes.Dennis;
 
-public class ControlFunctions {
+public class ControlFunctions extends  Qualifier {
+
 }
