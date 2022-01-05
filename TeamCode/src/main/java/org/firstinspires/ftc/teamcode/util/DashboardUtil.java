@@ -71,59 +71,22 @@ public class DashboardUtil {
             internalColorIndex = 1;
         }
         if(internalColorIndex < 5) {
-            canvas.setStroke("Red");
+            canvas.setStroke("RED");
         } else if(internalColorIndex < 9) {
-            canvas.setStroke("Light Red");
+            canvas.setStroke("ORANGE");
         } else if(internalColorIndex < 13) {
-            canvas.setStroke("Very Light Red");
+            canvas.setStroke("YELLOW");
         } else if(internalColorIndex < 17) {
-            canvas.setStroke("Very Light Orange");
+            canvas.setStroke("GREEN");
         } else if(internalColorIndex < 21) {
-            canvas.setStroke("Light Orange");
+            canvas.setStroke("CYAN");
         } else if(internalColorIndex < 25) {
-            canvas.setStroke("Orange");
+            canvas.setStroke("BLUE");
         } else if(internalColorIndex < 29) {
-            canvas.setStroke("Yellow");
+            canvas.setStroke("PINK");
         } else if(internalColorIndex < 29) {
-            canvas.setStroke("Light Yellow");
-        } else if(internalColorIndex < 29) {
-            canvas.setStroke("Very Light Yellow");
-        } else if(internalColorIndex < 29) {
-            canvas.setStroke("Very Light Green");
-        } else if(internalColorIndex < 29) {
-            canvas.setStroke("Light Green");
-        } else if(internalColorIndex < 29) {
-            canvas.setStroke("Green");
-        } else if(internalColorIndex < 29) {
-            canvas.setStroke("Cyan");
-        } else if(internalColorIndex < 29) {
-            canvas.setStroke("Light Cyan");
-        } else if(internalColorIndex < 29) {
-            canvas.setStroke("Very Light Cyan");
-        } else if(internalColorIndex < 29) {
-            canvas.setStroke("Very Light Blue");
-        } else if(internalColorIndex < 29) {
-            canvas.setStroke("Light Blue");
-        } else if(internalColorIndex < 29) {
-            canvas.setStroke("Blue");
-        } else if(internalColorIndex < 29) {
-            canvas.setStroke("Pink");
-        } else if(internalColorIndex < 29) {
-            canvas.setStroke("Light Pink");
-        } else if(internalColorIndex < 29) {
-            canvas.setStroke("Very Light Pink");
-        } else if(internalColorIndex < 29) {
-            canvas.setStroke("Very Light Magenta");
-        } else if(internalColorIndex < 29) {
-            canvas.setStroke("Light Magenta");
-        } else if(internalColorIndex < 29) {
-            canvas.setStroke("Magenta");
+            canvas.setStroke("MAGENTA");
         }
-
-
-
-
-
         canvas.strokeRect(-72, -72, 144, 144);
 
 
