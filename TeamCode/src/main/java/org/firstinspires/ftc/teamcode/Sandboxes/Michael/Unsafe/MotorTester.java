@@ -19,7 +19,7 @@ public class MotorTester extends LinearOpMode {
 
     public void runOpMode() throws InterruptedException {
         motor = hardwareMap.get(DcMotor.class, "spool");
-        motor.setDirection(DcMotorSimple.Direction.REVERSE);
+        motor.setDirection(DcMotorSimple.Direction.FORWARD);
         waitForStart();
 
         while(opModeIsActive()){
