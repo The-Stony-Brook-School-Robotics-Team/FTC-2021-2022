@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.sandboxes.William.CustomizedMecanumDriveTest;
+package org.firstinspires.ftc.teamcode.Sandboxes.William.CustomizedMecanumDriveTest;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
@@ -8,8 +8,8 @@ import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.sandboxes.William.Util.CustomizedMecanumDrive;
-import org.firstinspires.ftc.teamcode.sandboxes.William.Util.CustomizedTrajectorySequenceRunner;
+import org.firstinspires.ftc.teamcode.Sandboxes.William.Util.CustomizedMecanumDrive;
+import org.firstinspires.ftc.teamcode.Sandboxes.William.Util.CustomizedTrajectorySequenceRunner;
 
 @Config
 @Autonomous(group = "drive", name = "Customized Drive Emergency Stop Test")
