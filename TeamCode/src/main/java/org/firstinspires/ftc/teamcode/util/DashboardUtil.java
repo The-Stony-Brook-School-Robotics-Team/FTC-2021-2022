@@ -16,9 +16,25 @@ public class DashboardUtil {
     private static final double DEFAULT_RESOLUTION = 2.0; // distance units; presumed inches
     private static final double ROBOT_RADIUS = 6; // in
 
-
     public static void drawPoseHistory(Canvas canvas, List<Pose2d> poseHistory) {
-        canvas.setStroke("RED");
+        if(internalColorIndex < 5) {
+            canvas.setStroke("RED");
+        } else if(internalColorIndex < 9) {
+            canvas.setStroke("ORANGE");
+        } else if(internalColorIndex < 13) {
+            canvas.setStroke("YELLOW");
+        } else if(internalColorIndex < 17) {
+            canvas.setStroke("GREEN");
+        } else if(internalColorIndex < 21) {
+            canvas.setStroke("CYAN");
+        } else if(internalColorIndex < 25) {
+            canvas.setStroke("BLUE");
+        } else if(internalColorIndex < 29) {
+            canvas.setStroke("PINK");
+        } else if(internalColorIndex < 29) {
+            canvas.setStroke("MAGENTA");
+        }
+
         canvas.setFill("GREEN");
         double[] xPoints = new double[poseHistory.size()];
         double[] yPoints = new double[poseHistory.size()];
@@ -48,11 +64,75 @@ public class DashboardUtil {
         drawSampledPath(canvas, path, DEFAULT_RESOLUTION);
     }
 
+
+    private static int internalColorIndex = 0;
     public static void drawRobot(Canvas canvas, Pose2d pose) {
+        if(internalColorIndex > 29) {
+            internalColorIndex = 1;
+        }
+        if(internalColorIndex < 5) {
+            canvas.setStroke("Red");
+        } else if(internalColorIndex < 9) {
+            canvas.setStroke("Light Red");
+        } else if(internalColorIndex < 13) {
+            canvas.setStroke("Very Light Red");
+        } else if(internalColorIndex < 17) {
+            canvas.setStroke("Very Light Orange");
+        } else if(internalColorIndex < 21) {
+            canvas.setStroke("Light Orange");
+        } else if(internalColorIndex < 25) {
+            canvas.setStroke("Orange");
+        } else if(internalColorIndex < 29) {
+            canvas.setStroke("Yellow");
+        } else if(internalColorIndex < 29) {
+            canvas.setStroke("Light Yellow");
+        } else if(internalColorIndex < 29) {
+            canvas.setStroke("Very Light Yellow");
+        } else if(internalColorIndex < 29) {
+            canvas.setStroke("Very Light Green");
+        } else if(internalColorIndex < 29) {
+            canvas.setStroke("Light Green");
+        } else if(internalColorIndex < 29) {
+            canvas.setStroke("Green");
+        } else if(internalColorIndex < 29) {
+            canvas.setStroke("Cyan");
+        } else if(internalColorIndex < 29) {
+            canvas.setStroke("Light Cyan");
+        } else if(internalColorIndex < 29) {
+            canvas.setStroke("Very Light Cyan");
+        } else if(internalColorIndex < 29) {
+            canvas.setStroke("Very Light Blue");
+        } else if(internalColorIndex < 29) {
+            canvas.setStroke("Light Blue");
+        } else if(internalColorIndex < 29) {
+            canvas.setStroke("Blue");
+        } else if(internalColorIndex < 29) {
+            canvas.setStroke("Pink");
+        } else if(internalColorIndex < 29) {
+            canvas.setStroke("Light Pink");
+        } else if(internalColorIndex < 29) {
+            canvas.setStroke("Very Light Pink");
+        } else if(internalColorIndex < 29) {
+            canvas.setStroke("Very Light Magenta");
+        } else if(internalColorIndex < 29) {
+            canvas.setStroke("Light Magenta");
+        } else if(internalColorIndex < 29) {
+            canvas.setStroke("Magenta");
+        }
+
+
+
+
+
+        canvas.strokeRect(-72, -72, 144, 144);
+
+
         canvas.strokeCircle(pose.getX(), pose.getY(), ROBOT_RADIUS);
         Vector2d v = pose.headingVec().times(ROBOT_RADIUS);
         double x1 = pose.getX() + v.getX() / 2, y1 = pose.getY() + v.getY() / 2;
         double x2 = pose.getX() + v.getX(), y2 = pose.getY() + v.getY();
         canvas.strokeLine(x1, y1, x2, y2);
+
+        internalColorIndex++;
     }
 }
