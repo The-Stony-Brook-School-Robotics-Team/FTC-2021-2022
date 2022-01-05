@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop.misc.Converter;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe.SlideController;
 import org.sbs.bears.robotframework.controllers.*;
 import org.sbs.bears.robotframework.enums.*;
 
