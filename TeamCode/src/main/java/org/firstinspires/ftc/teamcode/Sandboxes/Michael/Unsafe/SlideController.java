@@ -97,7 +97,7 @@ public class SlideController {
 
         values.put(SlideComponents.VERTICAL_SERVO_TOP, 0.812);
         values.put(SlideComponents.VERTICAL_SERVO_MIDDLE, 0.41);
-        values.put(SlideComponents.VERTICAL_SERVO_BOTTOM, 0.0);
+        values.put(SlideComponents.VERTICAL_SERVO_BOTTOM, 0.1);
 
         values.put(SlideComponents.HORIZONTAL_SERVO_POSITION, 0.5);
 
