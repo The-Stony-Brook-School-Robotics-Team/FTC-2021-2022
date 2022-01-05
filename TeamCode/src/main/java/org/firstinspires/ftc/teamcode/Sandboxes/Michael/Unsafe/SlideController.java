@@ -43,6 +43,7 @@ public class SlideController {
         slideMotor = hardwareMap.get(DcMotor.class, "spool");
 
         slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         populateValues();
 
