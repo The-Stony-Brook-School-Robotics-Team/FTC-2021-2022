@@ -8,7 +8,7 @@
     import org.sbs.bears.robotframework.enums.IntakeState;
     import org.sbs.bears.robotframework.enums.SlideState;
 
-    @TeleOp(name="Intake Controller Tester", group="Linear Opmode")
+    @TeleOp(name="Slide Controller Tester", group="Linear Opmode")
     public class SlideControllerTester extends LinearOpMode {
         private SlideController slideController;
 

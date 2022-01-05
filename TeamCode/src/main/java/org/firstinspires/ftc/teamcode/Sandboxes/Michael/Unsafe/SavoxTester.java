@@ -29,12 +29,8 @@
                     savox.setPosition(savox.getPosition() - .05);
                     pressingDown = false;
                 }
-                if (gamepad1.a) {
-                    telemetry.addData("pos: ", savox.getPosition());
-                    telemetry.update();
-                }
-
-
+                telemetry.addData("pos: ", savox.getPosition());
+                telemetry.update();
             }
         }
     }
