@@ -37,7 +37,7 @@ public class SlideController {
     Object stateMutex = new Object();
 
     /** Initialization **/
-    public SlideController(HardwareMap hardwareMap, Telemetry telemetry, IntakeSide side) {
+    public SlideController(HardwareMap hardwareMap, Telemetry telemetry) {
         verticalServo = hardwareMap.get(Servo.class, "vt");
         horizontalServo = hardwareMap.get(Servo.class, "hz");
         dumperServo = hardwareMap.get(Servo.class, "du");
@@ -73,18 +73,15 @@ public class SlideController {
 
         switch(state){
             case BOTTOM:
-                verticalServo.setPosition(bottomPos[0]);
-                horizontalServo.setPosition(bottomPos[1]);
+                verticalServo.setPosition(values.get(SlideComponents.VERTICAL_SERVO_BOTTOM));
                 return;
 
             case MIDDLE:
-                verticalServo.setPosition(middlePos[0]);
-                horizontalServo.setPosition(middlePos[1]);
+                verticalServo.setPosition(values.get(SlideComponents.VERTICAL_SERVO_MIDDLE));
                 return;
 
             case TOP:
-                verticalServo.setPosition(topPos[0]);
-                horizontalServo.setPosition(topPos[1]);
+                verticalServo.setPosition(values.get(SlideComponents.VERTICAL_SERVO_TOP));
                 return;
 
             case IN:
@@ -96,8 +93,8 @@ public class SlideController {
     private void populateValues(){
         //TODO: Record actual values.
 
-        values.put(SlideComponents.VERTICAL_SERVO_TOP, 1.0);
-        values.put(SlideComponents.VERTICAL_SERVO_MIDDLE, 0.5);
+        values.put(SlideComponents.VERTICAL_SERVO_TOP, 0.819);
+        values.put(SlideComponents.VERTICAL_SERVO_MIDDLE, 0.41);
         values.put(SlideComponents.VERTICAL_SERVO_BOTTOM, 0.0);
 
         values.put(SlideComponents.HORIZONTAL_SERVO_POSITION, 0.5);

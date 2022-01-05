@@ -7,7 +7,7 @@
     import org.sbs.bears.robotframework.enums.IntakeSide;
     import org.sbs.bears.robotframework.enums.IntakeState;
 
-    @TeleOp(name="Controller Tester", group="Linear Opmode")
+    @TeleOp(name="Intake Controller Tester", group="Linear Opmode")
     public class ControllerTester extends LinearOpMode {
         private IntakeController frontIntake;
 
