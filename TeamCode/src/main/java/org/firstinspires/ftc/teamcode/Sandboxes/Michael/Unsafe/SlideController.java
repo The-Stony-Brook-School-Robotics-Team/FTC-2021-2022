@@ -66,6 +66,8 @@ public class SlideController {
     /** Accessor for current state **/
     public SlideState getState(){return state;}
 
+    public double getServoPosition(){return verticalServo.getPosition();}
+
 
 
     /** Assigns position and motor power to their respective states **/

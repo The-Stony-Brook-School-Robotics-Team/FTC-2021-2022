@@ -29,6 +29,7 @@
 
 
                 telemetry.addData("State: ", slideController.getState());
+                telemetry.addData("Degrees: ", slideController.getServoPosition() * 110);
 
                 telemetry.update();
             }
