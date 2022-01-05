@@ -48,18 +48,119 @@ public class DashboardInterface {
     /**
      * Add a line into the dashboard telemetry
      */
-    @Beta
-    public static void writeLine(@NotNull Integer index, @NotNull String message) {
+    /**
+     * Finds the next null in an string linesay
+     * @param lines The string linesay to iterate
+     * @return Index of the null object
+     */
+    public static int findNull(String[] lines) {
+        boolean flag = false;
+        int index = -1;
+        int i = 0;
+        while (!flag) {
+            if(i > lines.length - 1) {
+                flag = !flag;
+            } else {
+                if(lines[i] == null) {
+                    System.out.println(String.format("flag at index %s, object: %s", i, lines[i]));
+                    index = i;
+                    flag = !flag;
+                }
+            }
+            i++;
+        }
+        return index;
     }
 
-    @Beta
-    public static void deleteLine(@NotNull Integer index, @NotNull String line) {
+    /**
+     * Finds the value in an linesay
+     * @param value The string value to find
+     * @param lines The string linesay to iterate
+     * @return Index of the string object
+     */
+    public static int findValue(String value, String[] lines) {
+        boolean flag = false;
+        int index = -1;
+        int i = 0;
+        while(!flag) {
+            if(i > lines.length - 1) {
+                flag = !flag;
+            } else {
+                if(lines[i] == value) {
+                    System.out.println(String.format("flag at index %s, object: %s", i, lines[i]));
+                    index = i;
+                    flag = !flag;
+                }
+            }
+            i++;
+        }
+        return index;
+    }
 
+    /**
+     * Writes a line to the string linesay
+     * @param line The string value to write
+     * @return Final string linesay
+     */
+    public static String[] writeLine(String line) {
+        // Check for short string
+        if(line == "") {
+            return lines;
+        }
+        // Find null index
+        int index = findNull(lines);
+        if(index != -1) {
+            lines[index] = line;
+            return lines;
+        } else {
+            return lines;
+        }
+    }
+
+    /**
+     * Writes a line to the string linesay
+     * @param index The index of the string (starts at 1)
+     * @param line The string value to write
+     * @return Final string linesay
+     */
+    public static String[] writeLine(Integer index, String line) {
+        // Check for short string or invalid index
+        if(line == "" || index > lines.length) {
+            return lines;
+        }
+        lines[index - 1] = line;
+        return lines;
     }
 
 
-    public static void deleteLine(@NotNull Integer index) {
+    /**
+     * Deletes a line from the string linesay
+     * @param line The string value to delete
+     * @return Final string linesay
+     */
+    public static String[] deleteLine(String line) {
+        // Check for short string
+        if(line == "") {
+            return lines;
+        }
+        // Find null index
+        int index = findValue(line, lines);
+        lines[index] = null;
+        return lines;
+    }
 
+    /**
+     * Deletes a line from the string linesay
+     * @param index The index of the string
+     * @return Final string linesay
+     */
+    public static String[] deleteLine(Integer index) {
+        // Check for short string or invalid index
+        if(index > lines.length) {
+            return lines;
+        }
+        lines[index] = null;
+        return lines;
     }
 
 
