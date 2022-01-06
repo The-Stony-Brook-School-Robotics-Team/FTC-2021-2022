@@ -39,8 +39,6 @@ public class TeleOpQual1 extends OpMode{
     volatile TeleOpState state = TeleOpState.STOPPED;
     public static Object stateMutex = new Object();
 
-    double multiplier = 1;
-
 
 
 
@@ -122,10 +120,7 @@ public class TeleOpQual1 extends OpMode{
                 else{LINEAR_SLIDE.setState(SlideState.MIDDLE);}
 
            }
-           if(gamepad.wasJustPressed(GamepadKeys.Button.X)){
-               if(multiplier == 1){multiplier = .3;}
-               else{multiplier = 1;}
-           }
+
 
 
 

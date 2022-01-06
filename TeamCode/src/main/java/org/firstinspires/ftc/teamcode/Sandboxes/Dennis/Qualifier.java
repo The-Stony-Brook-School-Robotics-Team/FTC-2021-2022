@@ -28,9 +28,9 @@ public class Qualifier extends LinearOpMode {
     /**
      * Duck Spinner Movement
      */
-    public static Pose2d startPose = new Pose2d(-66, 42, 0);
-    public static Pose2d duckPose = new Pose2d(-63.98, 61.74, Math.toRadians(72.3));
-    public static Pose2d redHubDropoff = new Pose2d(-5.6, 64.6, 0);
+    public static Pose2d startPose = new Pose2d(-42, 66, 0);
+    public static Pose2d duckPose = new Pose2d(-58.75, 62.28, Math.toRadians(74.79));
+    public static Pose2d redHubDropoff = new Pose2d(-12.14, 66.52, 0);
 
     /**
      * Convert Units (Pose2d to Vector2d)
@@ -55,11 +55,11 @@ public class Qualifier extends LinearOpMode {
          * Movement Trajectory
          */
         Trajectory traj = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .lineToSplineHeading(duckPose)
+                .strafeRight(6)
                 .build();
 
         Trajectory traj2 = drive.trajectoryBuilder(traj.end())
-                .lineToSplineHeading(redHubDropoff)
+                .back(12)
                 .build();
 
 
@@ -72,6 +72,7 @@ public class Qualifier extends LinearOpMode {
 
         // go to spinner
         drive.followTrajectory(traj);
+        drive.turn(45);
         drive.update();
         // spin
         duckSpinner.setPower(.3);
@@ -87,7 +88,7 @@ public class Qualifier extends LinearOpMode {
             e.printStackTrace();
         }
         // follow second
-        // drive.followTrajectory(traj2);
+        drive.followTrajectory(traj2);
         drive.update();
 
 
