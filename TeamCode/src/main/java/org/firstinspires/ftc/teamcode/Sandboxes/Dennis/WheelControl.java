@@ -27,13 +27,15 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 public class WheelControl {
 
     //MAGICAL_CONSTANT should be between 0.39 to 0.41. Because of the lack of enough torque, the wheel actually never achieve the ideal acceleration.
-    private static double MAGICAL_CONSTANT = 0.39;
+    private static double MAGICAL_CONSTANT = 0.3;
 
     private static double FIRST_STAGE_TIME;
-    private static double FIRST_STAGE_TIME_INTERVAL = 1.43;
+    private static double FIRST_STAGE_TIME_INTERVAL = 1.5;
     private static double MAX_WHEEL_SPEED = 0;
     private static double timer;
     private static double runTime;
+
+    public static int signal = 0;
 
     private static DcMotor wheelMover;
 
@@ -47,11 +49,9 @@ public class WheelControl {
         if (wheelMover.getPower() > MAX_WHEEL_SPEED)
             MAX_WHEEL_SPEED = wheelMover.getPower();
 
-        //Control the movement of the wheel.
-        while (updateMotorSpeed() != 2) ;
     }
 
-    private static void initializeEnvironment(DcMotor wheelMover) {
+    public static void initializeEnvironment(DcMotor wheelMover) {
         wheelMover.setDirection(DcMotorSimple.Direction.REVERSE);
         initializeVariables();
         WheelControl.wheelMover = wheelMover;
@@ -71,7 +71,7 @@ public class WheelControl {
     }
 
 
-    private static void updateRunTime() {
+    public static void updateRunTime() {
         runTime = getCurrentSystemSecond() - timer;
     }
 

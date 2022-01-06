@@ -55,7 +55,7 @@ public class Qualifier extends LinearOpMode {
          * Movement Trajectory
          */
         Trajectory traj = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .strafeRight(6)
+                .lineToSplineHeading(duckPose)
                 .build();
 
         Trajectory traj2 = drive.trajectoryBuilder(traj.end())
@@ -72,24 +72,13 @@ public class Qualifier extends LinearOpMode {
 
         // go to spinner
         drive.followTrajectory(traj);
-        drive.turn(45);
         drive.update();
         // spin
-        duckSpinner.setPower(.3);
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        duckSpinner.setPower(0);
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // follow second
-        drive.followTrajectory(traj2);
-        drive.update();
+        do {
+
+        } while(WheelControl.signal!=2);
+
+
 
 
         /**
