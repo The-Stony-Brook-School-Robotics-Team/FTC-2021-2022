@@ -39,6 +39,8 @@ public class TeleOpQual1 extends OpMode{
     volatile TeleOpState state = TeleOpState.STOPPED;
     public static Object stateMutex = new Object();
 
+    double multiplier = 1;
+
 
 
 
@@ -119,6 +121,11 @@ public class TeleOpQual1 extends OpMode{
                 else{LINEAR_SLIDE.setState(SlideState.MIDDLE);}
 
            }
+           if(gamepad.wasJustPressed(GamepadKeys.Button.X)){
+               if(multiplier == 1){multiplier = .3;}
+               else{multiplier = 1;}
+           }
+
 
 
 
@@ -132,9 +139,9 @@ public class TeleOpQual1 extends OpMode{
             Canvas ftcField = telemetryPacket.fieldOverlay();
             DashboardUtil.drawRobot(ftcField, poseEstimate);
 
-            telemetryPacket.put("Estimated Pose X", poseEstimate.getX());
-            telemetryPacket.put("Estimated Pose Y", poseEstimate.getY());
-            telemetryPacket.put("Estimated Pose Heading", poseEstimate.getHeading());
+            //telemetryPacket.put("Estimated Pose X", poseEstimate.getX());
+            //telemetryPacket.put("Estimated Pose Y", poseEstimate.getY());
+            //telemetryPacket.put("Estimated Pose Heading", poseEstimate.getHeading());
             telemetryPacket.put("TeleOp State ", state);
             dashboard.sendTelemetryPacket(telemetryPacket);
         }
