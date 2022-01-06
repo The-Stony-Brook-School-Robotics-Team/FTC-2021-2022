@@ -107,19 +107,13 @@ public class TeleOpQual1 extends OpMode{
     public Thread buttonHandlerRuntime = new Thread(() -> {
 
         while(state.equals(TeleOpState.RUNNING)){
-           FRONT_INTAKE.checkIntake();
-           if(gamepad.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
-                if(LINEAR_SLIDE.getState() != SlideState.IN){
-                    LINEAR_SLIDE.setState(SlideState.IN);
-                }
-                if(gamepad.isDown(GamepadKeys.Button.DPAD_UP)){
-                    LINEAR_SLIDE.setState(SlideState.TOP);
-                }
-                else if(gamepad.isDown(GamepadKeys.Button.DPAD_DOWN)) {
-                    LINEAR_SLIDE.setState(SlideState.BOTTOM);
-                }
-                else{LINEAR_SLIDE.setState(SlideState.MIDDLE);}
-
+            FRONT_INTAKE.checkIntake();
+           if(gamepad.isDown(GamepadKeys.Button.B)){
+               if(gamepad.isDown(GamepadKeys.Button.DPAD_UP)){
+                   LINEAR_SLIDE.setState(SlideState.TOP);
+               }
+               else if(gamepad.isDown(GamepadKeys.Button.DPAD_DOWN)){LINEAR_SLIDE.setState(SlideState.BOTTOM);}
+               else{LINEAR_SLIDE.setState(SlideState.MIDDLE);}
            }
 
 
