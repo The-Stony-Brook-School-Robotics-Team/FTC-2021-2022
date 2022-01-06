@@ -105,7 +105,8 @@ public class TeleOpQual1 extends OpMode{
     });
 
     public Thread buttonHandlerRuntime = new Thread(() -> {
-       while(state.equals(TeleOpState.RUNNING)){
+
+        while(state.equals(TeleOpState.RUNNING)){
            FRONT_INTAKE.checkIntake();
            if(gamepad.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
                 if(LINEAR_SLIDE.getState() != SlideState.IN){
@@ -139,6 +140,10 @@ public class TeleOpQual1 extends OpMode{
             //telemetryPacket.put("Estimated Pose Y", poseEstimate.getY());
             //telemetryPacket.put("Estimated Pose Heading", poseEstimate.getHeading());
             telemetryPacket.put("TeleOp State ", state);
+
+            telemetry.addData("Slide state ", LINEAR_SLIDE.getState());
+            telemetry.update();
+
             dashboard.sendTelemetryPacket(telemetryPacket);
         }
     });
