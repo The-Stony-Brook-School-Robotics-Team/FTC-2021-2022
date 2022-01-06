@@ -77,19 +77,31 @@ public class SlideController {
         switch(state){
             case BOTTOM:
                 verticalServo.setPosition(values.get(SlideComponents.VERTICAL_SERVO_BOTTOM));
+
+                slideMotor.setTargetPosition(values.get(SlideComponents.SLIDE_MOTOR_POSITION_EXTENDED).intValue());
+                slideMotor.setPower(values.get(SlideComponents.SLIDE_MOTOR_POWER_MOVING));
                 return;
 
             case MIDDLE:
                 verticalServo.setPosition(values.get(SlideComponents.VERTICAL_SERVO_MIDDLE));
+
+                slideMotor.setTargetPosition(values.get(SlideComponents.SLIDE_MOTOR_POSITION_EXTENDED).intValue());
+                slideMotor.setPower(values.get(SlideComponents.SLIDE_MOTOR_POWER_MOVING));
                 return;
 
             case TOP:
                 verticalServo.setPosition(values.get(SlideComponents.VERTICAL_SERVO_TOP));
+
+                slideMotor.setTargetPosition(values.get(SlideComponents.SLIDE_MOTOR_POSITION_EXTENDED).intValue());
+                slideMotor.setPower(values.get(SlideComponents.SLIDE_MOTOR_POWER_MOVING));
                 return;
 
             case IN:
-                slideMotor.setPower(-.3);
-                slideMotor.setTargetPosition(0);
+                verticalServo.setPosition(values.get(SlideComponents.VERTICAL_SERVO_MIDDLE));
+
+                slideMotor.setTargetPosition(values.get(SlideComponents.SLIDE_MOTOR_POSITION_IN).intValue());
+                slideMotor.setPower(-values.get(SlideComponents.SLIDE_MOTOR_POWER_MOVING));
+
 
         }
     }
@@ -107,8 +119,8 @@ public class SlideController {
 
         values.put(SlideComponents.SLIDE_MOTOR_POWER_MOVING, 0.3);
         values.put(SlideComponents.SLIDE_MOTOR_POWER_REST, 0.0);
-        values.put(SlideComponents.SLIDE_MOTOR_POSITION_EXTENDED, 0.5);
-        //values.put()
+        values.put(SlideComponents.SLIDE_MOTOR_POSITION_EXTENDED, 10.0);
+        values.put(SlideComponents.SLIDE_MOTOR_POSITION_IN, 0.0);
     }
 }
 
