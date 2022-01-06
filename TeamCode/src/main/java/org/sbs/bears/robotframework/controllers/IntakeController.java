@@ -86,7 +86,7 @@ public class IntakeController {
         if(state == IntakeState.BASE && isObjectInPayload()){
             setState(IntakeState.DUMP);
             try {
-                Thread.sleep(500);
+                Thread.sleep(1250);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
