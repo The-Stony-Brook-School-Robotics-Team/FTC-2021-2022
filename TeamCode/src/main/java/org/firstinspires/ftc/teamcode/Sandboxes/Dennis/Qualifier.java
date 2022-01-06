@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Sandboxes.Dennis;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
@@ -9,9 +10,16 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop.misc.Converter;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.sbs.bears.robotframework.controllers.*;
+import org.sbs.bears.robotframework.enums.*;
 
-@TeleOp(name="AAA - Qualifier One", group="default")
+@Config
+@TeleOp(name="A - Auton Qualifier One", group="default")
 public class Qualifier extends LinearOpMode {
+    //TODO: ahahha stinky add rest of controllers
+    // private IntakeController frontIntake = new IntakeController(hardwareMap, telemetry, IntakeSide.FRONT);
+
+
 
     private static SampleMecanumDrive drive;
     private static DcMotor duckSpinner;
@@ -20,9 +28,9 @@ public class Qualifier extends LinearOpMode {
     /**
      * Duck Spinner Movement
      */
-    private static Pose2d startPose = new Pose2d(-38.665, 52.4085, 0);
-    private static Pose2d duckPose = new Pose2d(-52.102, 48.591, 1.3487);
-    private static Pose2d blueDropOff = new Pose2d(-9.94, 51.812, 0);
+    public static Pose2d startPose = new Pose2d(-42, 66, 0);
+    public static Pose2d duckPose = new Pose2d(-58.75, 62.28, Math.toRadians(74.79));
+    public static Pose2d redHubDropoff = new Pose2d(-12.14, 66.52, 0);
 
     /**
      * Convert Units (Pose2d to Vector2d)
@@ -35,21 +43,23 @@ public class Qualifier extends LinearOpMode {
         /**
          * Robot Initialization
          */
+
         drive = new SampleMecanumDrive(hardwareMap);
         duckSpinner = hardwareMap.get(DcMotor.class, "duck");
         rgb = hardwareMap.get(RevBlinkinLedDriver.class,"rgb");
         drive.setPoseEstimate(startPose);
+        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         drive.update();
 
         /**
          * Movement Trajectory
          */
         Trajectory traj = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .lineToSplineHeading(duckPose)
+                .strafeRight(6)
                 .build();
 
         Trajectory traj2 = drive.trajectoryBuilder(traj.end())
-                .lineToSplineHeading(blueDropOff)
+                .back(12)
                 .build();
 
 
@@ -62,6 +72,7 @@ public class Qualifier extends LinearOpMode {
 
         // go to spinner
         drive.followTrajectory(traj);
+        drive.turn(45);
         drive.update();
         // spin
         duckSpinner.setPower(.3);
@@ -81,11 +92,11 @@ public class Qualifier extends LinearOpMode {
         drive.update();
 
 
-        drive.update();
         /**
          * Set the green color
          */
         rgb.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+        drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         /**
          * Main Runtime

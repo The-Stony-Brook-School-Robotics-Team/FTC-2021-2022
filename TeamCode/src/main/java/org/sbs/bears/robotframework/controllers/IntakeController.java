@@ -36,16 +36,16 @@ public class IntakeController {
         /** Different hardwareMap depending on the intake side. **/
         switch(side){
             case FRONT:
-                scooper = hardwareMap.get(Servo.class, "servo");
-                compliantWheel = hardwareMap.get(DcMotor.class, "motor");
-                distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "2m");
+                scooper = hardwareMap.get(Servo.class, "ri");
+                compliantWheel = hardwareMap.get(DcMotor.class, "rightodom");
+                distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "rd");
                 scooper.setDirection(Servo.Direction.REVERSE);
                 compliantWheel.setDirection(DcMotorSimple.Direction.FORWARD);
                 break;
             case BACK:
-                scooper = hardwareMap.get(Servo.class, "servoBack");
-                compliantWheel = hardwareMap.get(DcMotor.class, "motorBack");
-                distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "2mBack");
+                scooper = hardwareMap.get(Servo.class, "bi");
+                compliantWheel = hardwareMap.get(DcMotor.class, "leftodom");
+                distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "bd");
                 scooper.setDirection(Servo.Direction.FORWARD);
                 compliantWheel.setDirection(DcMotorSimple.Direction.REVERSE);
         }
@@ -86,7 +86,7 @@ public class IntakeController {
         if(state == IntakeState.BASE && isObjectInPayload()){
             setState(IntakeState.DUMP);
             try {
-                Thread.sleep(500);
+                Thread.sleep(1250);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

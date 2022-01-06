@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe;
+package org.firstinspires.ftc.teamcode.Sandboxes.Michael.Unsafe;
 
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -27,9 +27,7 @@ public class SlideController {
     /** Vertical Servo, then Horizontal Servo, then Dumper Servo, then Slide Motor, */
     private HashMap<SlideComponents, Double> values = new HashMap<>();
 
-    private double[] bottomPos = {0.0, 0.0}; //.141
-    private double[] middlePos = {.5, 0.0};
-    private double[] topPos = {1.0, 0.0};
+
 
 
     //set to random duck, then keep highest for auton
@@ -37,7 +35,7 @@ public class SlideController {
     Object stateMutex = new Object();
 
     /** Initialization **/
-    public SlideController(HardwareMap hardwareMap, Telemetry telemetry, IntakeSide side) {
+    public SlideController(HardwareMap hardwareMap, Telemetry telemetry) {
         verticalServo = hardwareMap.get(Servo.class, "vt");
         horizontalServo = hardwareMap.get(Servo.class, "hz");
         dumperServo = hardwareMap.get(Servo.class, "du");
@@ -45,6 +43,9 @@ public class SlideController {
         slideMotor = hardwareMap.get(DcMotor.class, "spool");
 
         slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        populateValues();
 
     }
 
@@ -53,7 +54,7 @@ public class SlideController {
 
     /**
      State setter.
-     @param slideState The desired intake state to set to the robot.
+     @param slideState The desired slide state to set to the robot.
      **/
 
     public void setState(SlideState slideState) {
@@ -66,39 +67,50 @@ public class SlideController {
     /** Accessor for current state **/
     public SlideState getState(){return state;}
 
+    public double getServoPosition(){return verticalServo.getPosition();}
+
 
 
     /** Assigns position and motor power to their respective states **/
     private void doStateAction(){
-
+        //TODO: get a motor encoder oh my god
         switch(state){
             case BOTTOM:
-                verticalServo.setPosition(bottomPos[0]);
-                horizontalServo.setPosition(bottomPos[1]);
+                verticalServo.setPosition(values.get(SlideComponents.VERTICAL_SERVO_BOTTOM));
+
+                //slideMotor.setTargetPosition(values.get(SlideComponents.SLIDE_MOTOR_POSITION_EXTENDED).intValue());
+                slideMotor.setPower(values.get(SlideComponents.SLIDE_MOTOR_POWER_MOVING));
                 return;
 
             case MIDDLE:
-                verticalServo.setPosition(middlePos[0]);
-                horizontalServo.setPosition(middlePos[1]);
+                verticalServo.setPosition(values.get(SlideComponents.VERTICAL_SERVO_MIDDLE));
+
+                //slideMotor.setTargetPosition(values.get(SlideComponents.SLIDE_MOTOR_POSITION_EXTENDED).intValue());
+                slideMotor.setPower(values.get(SlideComponents.SLIDE_MOTOR_POWER_MOVING));
                 return;
 
             case TOP:
-                verticalServo.setPosition(topPos[0]);
-                horizontalServo.setPosition(topPos[1]);
+                verticalServo.setPosition(values.get(SlideComponents.VERTICAL_SERVO_TOP));
+
+                //slideMotor.setTargetPosition(values.get(SlideComponents.SLIDE_MOTOR_POSITION_EXTENDED).intValue());
+                slideMotor.setPower(values.get(SlideComponents.SLIDE_MOTOR_POWER_MOVING));
                 return;
 
             case IN:
-                slideMotor.setPower(-.3);
-                slideMotor.setTargetPosition(0);
+                verticalServo.setPosition(values.get(SlideComponents.VERTICAL_SERVO_MIDDLE));
+
+                //slideMotor.setTargetPosition(values.get(SlideComponents.SLIDE_MOTOR_POSITION_IN).intValue());
+                slideMotor.setPower(-values.get(SlideComponents.SLIDE_MOTOR_POWER_MOVING));
+
 
         }
     }
     private void populateValues(){
         //TODO: Record actual values.
 
-        values.put(SlideComponents.VERTICAL_SERVO_TOP, 1.0);
-        values.put(SlideComponents.VERTICAL_SERVO_MIDDLE, 0.5);
-        values.put(SlideComponents.VERTICAL_SERVO_BOTTOM, 0.0);
+        values.put(SlideComponents.VERTICAL_SERVO_TOP, 0.812);
+        values.put(SlideComponents.VERTICAL_SERVO_MIDDLE, 0.41);
+        values.put(SlideComponents.VERTICAL_SERVO_BOTTOM, 0.1);
 
         values.put(SlideComponents.HORIZONTAL_SERVO_POSITION, 0.5);
 
@@ -107,8 +119,8 @@ public class SlideController {
 
         values.put(SlideComponents.SLIDE_MOTOR_POWER_MOVING, 0.3);
         values.put(SlideComponents.SLIDE_MOTOR_POWER_REST, 0.0);
-        values.put(SlideComponents.SLIDE_MOTOR_POSITION_EXTENDED, 0.5);
-        //values.put()
+        values.put(SlideComponents.SLIDE_MOTOR_POSITION_EXTENDED, 10.0);
+        values.put(SlideComponents.SLIDE_MOTOR_POSITION_IN, 0.0);
     }
 }
 
