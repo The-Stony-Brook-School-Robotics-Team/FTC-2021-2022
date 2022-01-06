@@ -142,8 +142,8 @@ public class TeleOpQual1 extends OpMode{
             telemetryPacket.put("TeleOp State ", state);
 
             telemetry.addData("Slide state ", LINEAR_SLIDE.getState());
-            telemetry.update();
 
+            telemetry.update();
             dashboard.sendTelemetryPacket(telemetryPacket);
         }
     });
