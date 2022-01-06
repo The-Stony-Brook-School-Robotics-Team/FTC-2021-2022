@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Sandboxes.Dennis;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
@@ -12,10 +13,11 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.controllers.*;
 import org.sbs.bears.robotframework.enums.*;
 
-@TeleOp(name="AAA - Qualifier One", group="default")
+@Config
+@TeleOp(name="A - Auton Qualifier One", group="default")
 public class Qualifier extends LinearOpMode {
     //TODO: ahahha stinky add rest of controllers
-    private IntakeController frontIntake = new IntakeController(hardwareMap, telemetry, IntakeSide.FRONT);
+    // private IntakeController frontIntake = new IntakeController(hardwareMap, telemetry, IntakeSide.FRONT);
 
 
 
@@ -26,9 +28,9 @@ public class Qualifier extends LinearOpMode {
     /**
      * Duck Spinner Movement
      */
-    private static Pose2d startPose = new Pose2d(-39.24, 51.95, 0);
-    private static Pose2d duckPose = new Pose2d(-52.102, 48.591, 1.3487);
-    private static Pose2d blueDropOff = new Pose2d(-9.94, 51.812, 0);
+    public static Pose2d startPose = new Pose2d(-66, 42, 0);
+    public static Pose2d duckPose = new Pose2d(-63.98, 61.74, Math.toRadians(72.3));
+    public static Pose2d redHubDropoff = new Pose2d(-5.6, 64.6, 0);
 
     /**
      * Convert Units (Pose2d to Vector2d)
@@ -57,7 +59,7 @@ public class Qualifier extends LinearOpMode {
                 .build();
 
         Trajectory traj2 = drive.trajectoryBuilder(traj.end())
-                .lineToSplineHeading(blueDropOff)
+                .lineToSplineHeading(redHubDropoff)
                 .build();
 
 
@@ -85,15 +87,15 @@ public class Qualifier extends LinearOpMode {
             e.printStackTrace();
         }
         // follow second
-        drive.followTrajectory(traj2);
+        // drive.followTrajectory(traj2);
         drive.update();
 
 
-        drive.update();
         /**
          * Set the green color
          */
         rgb.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+        drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         /**
          * Main Runtime

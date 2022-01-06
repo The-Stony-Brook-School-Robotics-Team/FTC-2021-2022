@@ -25,9 +25,9 @@ import java.util.HashMap;
 
 @TeleOp(name="TeleOp Qualifier One", group="default")
 public class TeleOpQual1 extends OpMode{
-    private IntakeController FRONT_INTAKE = new IntakeController(hardwareMap, telemetry, IntakeSide.FRONT);
-    private IntakeController BACK_INTAKE = new IntakeController(hardwareMap, telemetry, IntakeSide.BACK);
-    private SlideController LINEAR_SLIDE = new SlideController(hardwareMap, telemetry);
+    private IntakeController FRONT_INTAKE;
+    private IntakeController BACK_INTAKE;
+    private SlideController LINEAR_SLIDE;
 
     //private HashMap<Enum, GamepadKeys.Button> gamepadValues = new HashMap<>();
 
@@ -45,6 +45,9 @@ public class TeleOpQual1 extends OpMode{
 
     @Override
     public void init() {
+        FRONT_INTAKE = new IntakeController(hardwareMap, telemetry, IntakeSide.FRONT);
+        BACK_INTAKE = new IntakeController(hardwareMap, telemetry, IntakeSide.BACK);
+        LINEAR_SLIDE = new SlideController(hardwareMap, telemetry);
 
         drive = new SampleMecanumDrive(hardwareMap);
         dashboard = FtcDashboard.getInstance();
@@ -84,7 +87,7 @@ public class TeleOpQual1 extends OpMode{
             // Set Weighted Power
             drive.setWeightedDrivePower(
                     new Pose2d(
-                            -gamepad.getLeftY(),
+                            gamepad.getLeftY(),
                             -gamepad.getLeftX(),
                             -gamepad.getRightX()
                     )
@@ -127,8 +130,6 @@ public class TeleOpQual1 extends OpMode{
             telemetryPacket.put("Estimated Pose Heading", poseEstimate.getHeading());
             telemetryPacket.put("TeleOp State ", state);
             dashboard.sendTelemetryPacket(telemetryPacket);
-
-            drive.update();
         }
     });
 
