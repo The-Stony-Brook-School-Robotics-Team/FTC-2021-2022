@@ -13,12 +13,12 @@ public class SlideHeightController {
 
     public SlideHeightController(HardwareMap hardwareMap, Telemetry telemetry)
     {
-        //worker = hardwareMap.get(Servo.class, "slideLifter"); // TODO Make on the robot
+        worker = hardwareMap.get(Servo.class, "vt");
     }
 
     public void setSlideHeight(SlideHeight height)
     {
-        /*switch(height)
+        switch(height)
         {
             case ONE:
                 worker.setPosition(slideHeightONE);
@@ -32,7 +32,7 @@ public class SlideHeightController {
                 worker.setPosition(slideHeightFOUR);
             case ZERO_FLOOR:
                 worker.setPosition(slideHeightZERO);
-        }*/
+        }
 
     }
 
