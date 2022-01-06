@@ -39,40 +39,31 @@ public class WheelControl {
 
     private static DcMotor wheelMover;
 
-    /**
-     * Start the program for spinning the wheel.
-     * @param wheelMover
-     */
-    public static void start(DcMotor wheelMover) {
-        initializeEnvironment(wheelMover);
-
-        if (wheelMover.getPower() > MAX_WHEEL_SPEED)
-            MAX_WHEEL_SPEED = wheelMover.getPower();
-
-    }
-
-    public static void initializeEnvironment(DcMotor wheelMover) {
+    public static void initializeEnvironment(DcMotor wheelMover, double currentTime_s) {
         wheelMover.setDirection(DcMotorSimple.Direction.REVERSE);
         initializeVariables();
         WheelControl.wheelMover = wheelMover;
+
+        if (wheelMover.getPower() > MAX_WHEEL_SPEED)
+            MAX_WHEEL_SPEED = wheelMover.getPower();
     }
 
-    private static int updateMotorSpeed() {
-        updateRunTime();
+    public static void updateMotorSpeed(double currentTime_s) {
+        updateRunTime(currentTime_s);
         if (runTime >= 0 && runTime < FIRST_STAGE_TIME) {
             //First Stage
             wheelMover.setPower(getFirstStageMotorSpeed(runTime));
-            return 1;
+            signal = 1;
         } else {
             //Ending
             wheelMover.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            return 2;
+            signal = 2;
         }
     }
 
 
-    public static void updateRunTime() {
-        runTime = getCurrentSystemSecond() - timer;
+    private static void updateRunTime(double currentTime_s) {
+        runTime = currentTime_s - timer;
     }
 
     private static void initializeVariables() {

@@ -73,9 +73,10 @@ public class Qualifier extends LinearOpMode {
         // go to spinner
         drive.followTrajectory(traj);
         drive.update();
+        WheelControl.initializeEnvironment(duckSpinner,getRuntime());
         // spin
         do {
-
+            WheelControl.updateMotorSpeed(getRuntime());
         } while(WheelControl.signal!=2);
 
 
