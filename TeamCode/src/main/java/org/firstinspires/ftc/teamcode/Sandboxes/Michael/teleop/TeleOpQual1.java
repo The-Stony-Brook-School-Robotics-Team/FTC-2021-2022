@@ -76,6 +76,13 @@ public class TeleOpQual1 extends OpMode{
         }
     }
 
+    @Override
+    public void stop(){
+        roadrunnerHandlerRuntime.interrupt();
+        buttonHandlerRuntime.interrupt();
+        writingHandler.interrupt();
+    }
+
     public void setState(TeleOpState state){
         synchronized (stateMutex) {
             this.state = state;
