@@ -80,6 +80,7 @@ public class TeleOpQual1 extends OpMode{
 
     @Override
     public void stop(){
+        setState(TeleOpState.STOPPED);
         roadrunnerHandlerRuntime.interrupt();
         buttonHandlerRuntime.interrupt();
         writingHandler.interrupt();
