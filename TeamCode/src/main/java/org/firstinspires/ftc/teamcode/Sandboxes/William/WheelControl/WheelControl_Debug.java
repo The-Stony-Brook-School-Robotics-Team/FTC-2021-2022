@@ -25,7 +25,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
  * --------With MAGICAL_CONSTANT--------
  */
 
-@TeleOp(name = "Wheel Control (Debug)", group = "-WC")
+@TeleOp(name = "Wheel Control (Tuning)", group = "-WC")
 public class WheelControl_Debug extends OpMode {
 
     private boolean isPressingA = false;
@@ -34,12 +34,15 @@ public class WheelControl_Debug extends OpMode {
     private boolean isPressingY = false;
     private boolean isPressingDpadUp = false;
     private boolean isPressingDpadDown = false;
+    private boolean isPressingDpadLeft = false;
+    private boolean isPressingDpadRight = false;
     private boolean hasStarted = false;
 
     private boolean NEED_EMERGENCY_STOP = false;
 
     DcMotor wheelMover;
     private double FIRST_STAGE_TIME;
+    private double SECOND_STAGE_TIME;
 
     /**
      * MAGICAL_CONSTANT should be between 0.39 to 0.41. Because of the lack of enough torque, the wheel actually never achieve the ideal acceleration.
@@ -47,6 +50,7 @@ public class WheelControl_Debug extends OpMode {
     private double MAGICAL_CONSTANT = 0.39;
 
     private double FIRST_STAGE_TIME_INTERVAL = 1.43;
+    private double SECOND_STAGE_TIME_INTERVAL = 0.5;
 
     private double MAX_WHEEL_SPEED = 0;
 
@@ -68,6 +72,7 @@ public class WheelControl_Debug extends OpMode {
         //Print data to the phone.
         telemetry.update();
         telemetry.addData("FIRST_STAGE_TIME_INTERVAL", "%.3f", FIRST_STAGE_TIME_INTERVAL);
+        telemetry.addData("SECOND_STAGE_TIME_INTERVAL", "%.3f", SECOND_STAGE_TIME_INTERVAL);
         telemetry.addData("MAGICAL_CONSTANT", "--%.3f--", MAGICAL_CONSTANT);
         telemetry.addData("Current Speed", "--%.5f--", wheelMover.getPower());
         telemetry.addData("Max Speed", "--%.5f--", MAX_WHEEL_SPEED);
@@ -75,10 +80,12 @@ public class WheelControl_Debug extends OpMode {
         //Detect keys on the game pad.
         checkKeyA();        //Start spinning.
         checkKeyB();        //Check if need emergency Stop.
-        checkKeyX();        //Add 0.01 second to Stage 2 time.
-        checkKeyY();        //Subtract 0.01 second to Stage 2 time.
+        checkKeyX();        //Add 0.01 second to MAGICAL_CONSTANT.
+        checkKeyY();        //Subtract 0.01 second to MAGICAL_CONSTANT.
         checkDpadUp();      //Add 0.01 second to Stage 1 time.
         checkDpadDown();    //Subtract 0.01 second to Stage 1 time.
+        checkDpadLeft();    //Add 0.05 second to Stage 2 time.
+        checkDpadRight();   //Add 0.05 second to Stage 2 time.
 
         enableEmergencyStop();
 
@@ -191,6 +198,24 @@ public class WheelControl_Debug extends OpMode {
         } else if (!gamepad1.dpad_down && isPressingDpadDown) {
             FIRST_STAGE_TIME_INTERVAL -= 0.005;
             isPressingDpadDown = false;
+        }
+    }
+
+    private void checkDpadLeft() {
+        if (gamepad1.dpad_left && !isPressingDpadLeft) {
+            isPressingDpadUp = true;
+        } else if (!gamepad1.dpad_left && isPressingDpadLeft) {
+            SECOND_STAGE_TIME_INTERVAL += 0.05;
+            isPressingDpadLeft = false;
+        }
+    }
+
+    private void checkDpadRight() {
+        if (gamepad1.dpad_right && !isPressingDpadRight) {
+            isPressingDpadRight = true;
+        } else if (!gamepad1.dpad_right && isPressingDpadRight) {
+            SECOND_STAGE_TIME_INTERVAL -= 0.05;
+            isPressingDpadRight = false;
         }
     }
 }
