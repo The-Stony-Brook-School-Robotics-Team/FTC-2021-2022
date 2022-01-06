@@ -7,7 +7,9 @@ import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop.misc.Converter;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.controllers.*;
@@ -29,13 +31,17 @@ public class Qualifier extends LinearOpMode {
      * Duck Spinner Movement
      */
     public static Pose2d startPose = new Pose2d(-42, 66, 0);
-    public static Pose2d duckPose = new Pose2d(-58.75, 62.28, Math.toRadians(74.79));
-    public static Pose2d redHubDropoff = new Pose2d(-12.14, 66.52, 0);
+    public static Pose2d duckPoseOne = new Pose2d(-60.5, 63.4, Math.toRadians(45));
+    public static Pose2d duckPoseTwo = new Pose2d(-60.5, 63.4, Math.toRadians(46.398));
+    public static Pose2d duckPoseThree = new Pose2d(-60.5, 63.4, Math.toRadians(36.28));
+
+
 
     /**
      * Convert Units (Pose2d to Vector2d)
      */
     private static Converter converter = new Converter();
+
 
 
     @Override
@@ -51,36 +57,41 @@ public class Qualifier extends LinearOpMode {
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         drive.update();
 
+        duckSpinner.setDirection(DcMotorSimple.Direction.REVERSE);
+
         /**
          * Movement Trajectory
          */
-        Trajectory traj = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .lineToSplineHeading(duckPose)
+        Trajectory duckTrajOne = drive.trajectoryBuilder(drive.getPoseEstimate())
+                .lineToSplineHeading(duckPoseOne)
                 .build();
 
-        Trajectory traj2 = drive.trajectoryBuilder(traj.end())
-                .back(12)
+        Trajectory duckTrajTwo = drive.trajectoryBuilder(drive.getPoseEstimate())
+                .lineToSplineHeading(duckPoseTwo)
                 .build();
 
-
-
-        rgb.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
+        Trajectory duckTrajThree = drive.trajectoryBuilder(drive.getPoseEstimate())
+                .lineToSplineHeading(duckPoseThree)
+                .build();
+        /** end of trajectories */
 
         waitForStart();
 
-        rgb.setPattern(RevBlinkinLedDriver.BlinkinPattern.LARSON_SCANNER_RED);
 
-        // go to spinner
-        drive.followTrajectory(traj);
-        drive.update();
-        WheelControl.initializeEnvironment(duckSpinner,getRuntime());
+        drive.followTrajectory(duckTrajOne);
+        spinDuck();
+        //goHome(drive.getPoseEstimate());
+        //drive.followTrajectory(duckTrajTwo);
+        //spinDuck();
+        //goHome(drive.getPoseEstimate());
+        //drive.followTrajectory(duckTrajThree);
+        //spinDuck();
+        //goHome(drive.getPoseEstimate());
+
+
         // spin
-        do {
-            WheelControl.updateMotorSpeed(getRuntime());
-        } while(WheelControl.signal!=2);
 
-
-
+        // end spin
 
         /**
          * Set the green color
@@ -92,6 +103,8 @@ public class Qualifier extends LinearOpMode {
          * Main Runtime
          */
         while(!isStopRequested()) {
+
+
             telemetry.addData("runtime: ", getRuntime());
             telemetry.addData("x: ", drive.getPoseEstimate().getX());
             telemetry.addData("y: ", drive.getPoseEstimate().getY());
@@ -102,7 +115,19 @@ public class Qualifier extends LinearOpMode {
 
     }
 
+    public static void goHome(Pose2d currentPose) {
+        Trajectory returnHome = drive.trajectoryBuilder(currentPose)
+                .lineToSplineHeading(startPose)
+                .build();
+        drive.followTrajectory(returnHome);
+    }
 
-
+    public static void spinDuck() {
+        duckSpinner.setPower(.33);
+        try {
+            Thread.sleep(2500);
+        } catch (Exception ex) { return; }
+        duckSpinner.setPower(0);
+    }
 }
 
