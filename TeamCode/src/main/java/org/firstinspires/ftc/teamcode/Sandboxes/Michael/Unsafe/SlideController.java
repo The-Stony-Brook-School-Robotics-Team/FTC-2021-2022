@@ -73,33 +73,33 @@ public class SlideController {
 
     /** Assigns position and motor power to their respective states **/
     private void doStateAction(){
-
+        //TODO: get a motor encoder oh my god
         switch(state){
             case BOTTOM:
                 verticalServo.setPosition(values.get(SlideComponents.VERTICAL_SERVO_BOTTOM));
 
-                slideMotor.setTargetPosition(values.get(SlideComponents.SLIDE_MOTOR_POSITION_EXTENDED).intValue());
+                //slideMotor.setTargetPosition(values.get(SlideComponents.SLIDE_MOTOR_POSITION_EXTENDED).intValue());
                 slideMotor.setPower(values.get(SlideComponents.SLIDE_MOTOR_POWER_MOVING));
                 return;
 
             case MIDDLE:
                 verticalServo.setPosition(values.get(SlideComponents.VERTICAL_SERVO_MIDDLE));
 
-                slideMotor.setTargetPosition(values.get(SlideComponents.SLIDE_MOTOR_POSITION_EXTENDED).intValue());
+                //slideMotor.setTargetPosition(values.get(SlideComponents.SLIDE_MOTOR_POSITION_EXTENDED).intValue());
                 slideMotor.setPower(values.get(SlideComponents.SLIDE_MOTOR_POWER_MOVING));
                 return;
 
             case TOP:
                 verticalServo.setPosition(values.get(SlideComponents.VERTICAL_SERVO_TOP));
 
-                slideMotor.setTargetPosition(values.get(SlideComponents.SLIDE_MOTOR_POSITION_EXTENDED).intValue());
+                //slideMotor.setTargetPosition(values.get(SlideComponents.SLIDE_MOTOR_POSITION_EXTENDED).intValue());
                 slideMotor.setPower(values.get(SlideComponents.SLIDE_MOTOR_POWER_MOVING));
                 return;
 
             case IN:
                 verticalServo.setPosition(values.get(SlideComponents.VERTICAL_SERVO_MIDDLE));
 
-                slideMotor.setTargetPosition(values.get(SlideComponents.SLIDE_MOTOR_POSITION_IN).intValue());
+                //slideMotor.setTargetPosition(values.get(SlideComponents.SLIDE_MOTOR_POSITION_IN).intValue());
                 slideMotor.setPower(-values.get(SlideComponents.SLIDE_MOTOR_POWER_MOVING));
 
 

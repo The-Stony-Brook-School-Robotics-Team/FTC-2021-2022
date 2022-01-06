@@ -114,7 +114,7 @@ public class TeleOpQual1 extends OpMode{
                 if(LINEAR_SLIDE.getState() != SlideState.IN){
                     LINEAR_SLIDE.setState(SlideState.IN);
                 }
-                else if(gamepad.isDown(GamepadKeys.Button.DPAD_UP)){
+                if(gamepad.isDown(GamepadKeys.Button.DPAD_UP)){
                     LINEAR_SLIDE.setState(SlideState.TOP);
                 }
                 else if(gamepad.isDown(GamepadKeys.Button.DPAD_DOWN)) {
