@@ -9,6 +9,8 @@ configurations {
 }
 
 buildscript {
+    ext.checkstyle_version = '8.18'
+
     repositories {
         mavenCentral()
         google()
