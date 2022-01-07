@@ -129,6 +129,7 @@ public class TeleOpQual1 extends OpMode{
             Pose2d poseEstimate = drive.getPoseEstimate();
             TelemetryPacket telemetryPacket = new TelemetryPacket();
             Canvas ftcField = telemetryPacket.fieldOverlay();
+
             DashboardUtil.drawRobot(ftcField, poseEstimate);
 
             telemetryPacket.put("TeleOp State ", state);

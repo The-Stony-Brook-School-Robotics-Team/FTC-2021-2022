@@ -20,8 +20,8 @@ public class IntakeController {
 
     /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/
     private double[] basePos = {.025, 0.7}; //.141
-    private double[] dumpPos = {.48, 0.4}; //.87
-    private double[] parkPos = {.42, 0.0}; //75
+    private double[] dumpPos = {.42, 0.4}; //.87
+    private double[] parkPos = {.36, 0.0}; //75
 
     /** Distance needed to switch states (mm) **/
     private double distThreshold = 50.0;
