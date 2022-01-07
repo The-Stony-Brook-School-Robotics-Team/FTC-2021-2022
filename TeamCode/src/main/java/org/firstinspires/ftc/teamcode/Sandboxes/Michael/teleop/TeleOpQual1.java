@@ -24,35 +24,35 @@ public class TeleOpQual1 extends OpMode{
     private IntakeController RED_INTAKE;
     private SlideController LINEAR_SLIDE;
 
-    //private HashMap<Enum, GamepadKeys.Button> gamepadValues = new HashMap<>();
-
     private GamepadEx gamepad;
     private SampleMecanumDrive drive;
     private static FtcDashboard dashboard;
 
-
     volatile TeleOpState state = TeleOpState.STOPPED;
     public static Object stateMutex = new Object();
 
-
-
-
-
     @Override
     public void init() {
+        /** Two Intake objects, one for each side. Linear Slide controller subject to change, TBD */
+
         BLUE_INTAKE = new IntakeController(hardwareMap, telemetry, IntakeSide.BLUE);
         RED_INTAKE = new IntakeController(hardwareMap, telemetry, IntakeSide.RED);
         LINEAR_SLIDE = new SlideController(hardwareMap, telemetry);
 
+
         drive = new SampleMecanumDrive(hardwareMap);
         dashboard = FtcDashboard.getInstance();
+        /** Wrapper of the gamepad class */
         gamepad = new GamepadEx(gamepad1);
 
+        /** Starting states */
         BLUE_INTAKE.setState(IntakeState.PARK);
         LINEAR_SLIDE.setState(SlideState.IN);
 
+        /** Set this Teleop state after initializing the hardware in order to avoid null references */
         setState(TeleOpState.IDLE);
 
+        /** Start the threads that should be running once robot is initialized */
         if(!writingHandler.isAlive()){
             writingHandler.start();
         }
@@ -63,6 +63,7 @@ public class TeleOpQual1 extends OpMode{
     public void loop() {
         setState(TeleOpState.RUNNING);
 
+        /** Start the threads that should be running once robot is running */
         if(!roadrunnerHandlerRuntime.isAlive()){
             roadrunnerHandlerRuntime.start();
         }
@@ -74,20 +75,24 @@ public class TeleOpQual1 extends OpMode{
     @Override
     public void stop(){
         setState(TeleOpState.STOPPED);
+
+        /** Stop all the threads */
         roadrunnerHandlerRuntime.interrupt();
         buttonHandlerRuntime.interrupt();
         writingHandler.interrupt();
     }
 
+    /** Sets the robot to the desired state, synchronized to lock to one thread
+     * @param state The desired state to set the robot to. */
     public void setState(TeleOpState state){
         synchronized (stateMutex) {
             this.state = state;
         }
     }
 
+    /** Thread that handles driving via Roadrunner weighted drive power */
     public Thread roadrunnerHandlerRuntime = new Thread(() -> {
         while(state.equals(TeleOpState.RUNNING)) {
-            // Set Weighted Power
             drive.setWeightedDrivePower(
                     new Pose2d(
                             gamepad.getLeftY(),
@@ -99,6 +104,7 @@ public class TeleOpQual1 extends OpMode{
         }
     });
 
+    /** Thread that handles all actions bound to user input. */
     public Thread buttonHandlerRuntime = new Thread(() -> {
         while(state.equals(TeleOpState.RUNNING)){
             BLUE_INTAKE.checkIntake();
@@ -117,6 +123,7 @@ public class TeleOpQual1 extends OpMode{
        }
     });
 
+    /** Thread that handles all writing of information to both the dashboard and telemetry. */
     public Thread writingHandler = new Thread(() -> {
         while(!state.equals(TeleOpState.STOPPED)){
             Pose2d poseEstimate = drive.getPoseEstimate();
@@ -124,14 +131,8 @@ public class TeleOpQual1 extends OpMode{
             Canvas ftcField = telemetryPacket.fieldOverlay();
             DashboardUtil.drawRobot(ftcField, poseEstimate);
 
-            //telemetryPacket.put("Estimated Pose X", poseEstimate.getX());
-            //telemetryPacket.put("Estimated Pose Y", poseEstimate.getY());
-            //telemetryPacket.put("Estimated Pose Heading", poseEstimate.getHeading());
             telemetryPacket.put("TeleOp State ", state);
 
-            telemetry.addData("Slide state ", LINEAR_SLIDE.getState());
-
-            telemetry.update();
             dashboard.sendTelemetryPacket(telemetryPacket);
         }
     });
