@@ -24,12 +24,14 @@
                     slideController.setState(SlideState.BOTTOM);
                 }
                 if(gamepad1.x){
-                    slideController.setState(SlideState.MIDDLE);
+                    slideController.setState(SlideState.IN);
                 }
 
 
                 telemetry.addData("State: ", slideController.getState());
                 telemetry.addData("Degrees: ", slideController.getServoPosition() * 110);
+                telemetry.addData("desired pos: ", slideController.getMotorPosition());
+                telemetry.addData("desired pow: ", slideController.getMotorPower());
 
                 telemetry.update();
             }

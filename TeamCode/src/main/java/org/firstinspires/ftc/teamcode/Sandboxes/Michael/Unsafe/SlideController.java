@@ -42,11 +42,13 @@ public class SlideController {
 
         slideMotor = hardwareMap.get(DcMotor.class, "spool");
 
+        populateValues();
+
         slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        slideMotor.setTargetPosition(values.get(SlideComponents.SLIDE_MOTOR_POSITION_IN).intValue());
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        populateValues();
 
     }
 
@@ -69,6 +71,8 @@ public class SlideController {
     public SlideState getState(){return state;}
 
     public double getServoPosition(){return verticalServo.getPosition();}
+    public int getMotorPosition(){return slideMotor.getCurrentPosition();}
+    public double getMotorPower(){return slideMotor.getPower();}
 
 
 
@@ -118,10 +122,10 @@ public class SlideController {
         values.put(SlideComponents.DUMPER_SERVO_DUMPED, 0.0);
         values.put(SlideComponents.DUMPER_SERVO_UP, 1.0);
 
-        values.put(SlideComponents.SLIDE_MOTOR_POWER_MOVING, 0.3);
+        values.put(SlideComponents.SLIDE_MOTOR_POWER_MOVING, 1.0);
         values.put(SlideComponents.SLIDE_MOTOR_POWER_REST, 0.0);
-        values.put(SlideComponents.SLIDE_MOTOR_POSITION_EXTENDED, 50.0);
-        values.put(SlideComponents.SLIDE_MOTOR_POSITION_IN, 0.0);
+        values.put(SlideComponents.SLIDE_MOTOR_POSITION_EXTENDED, 500.0);
+        values.put(SlideComponents.SLIDE_MOTOR_POSITION_IN, 25.0);
     }
 }
 
