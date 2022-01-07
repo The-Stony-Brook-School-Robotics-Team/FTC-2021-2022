@@ -196,6 +196,7 @@ class OpModeView extends Component<OpModeViewProps, OpModeViewState> {
             }
             onChange={this.onChange}
           >
+            opModeList.push("test");
             {opModeList.length === 0 ? (
               <option>Loading...</option>
             ) : (

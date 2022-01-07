@@ -30,8 +30,8 @@ class Dashboard extends Component {
         className="flex flex-col"
         style={{ width: '100vw', height: '100vh' }}
       >
-        <header className="flex justify-between items-center bg-blue-600 px-3 py-1 text-white">
-          <h1 className="text-2xl font-medium">FTC Dashboard</h1>
+        <header className="flex justify-between items-center bg-red-600 px-3 py-1 text-white" style={{backgroundColor: 'rgb(26,61,130)'}}>
+          <h1 className="text-2xl font-medium">Stony Brook School Bears Dashboard</h1>
           <div className="flex-center">
             <select
               className="text-black text-sm rounded mx-2 py-1 bg-blue-100 border-blue-300 focus:border-blue-100 focus:ring-2 focus:ring-white focus:ring-opacity-40"

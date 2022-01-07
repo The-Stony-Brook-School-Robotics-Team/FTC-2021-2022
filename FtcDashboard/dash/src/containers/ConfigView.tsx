@@ -42,8 +42,8 @@ const ConfigView = ({
   sortedKeys.sort();
 
   return (
-    <BaseView isUnlocked={isUnlocked}>
-      <div className="flex">
+    <BaseView isUnlocked={isUnlocked} style={{backgroundColor: "rgba(38, 38, 38)"}}>
+      <div className="flex" style={{color: "rgb(245, 245, 245"}}>
         <BaseViewHeading isDraggable={isDraggable}>
           Configuration
         </BaseViewHeading>
