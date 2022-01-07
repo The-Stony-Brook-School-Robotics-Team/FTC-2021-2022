@@ -24,7 +24,11 @@ dependencies {
     implementation 'org.tensorflow:tensorflow-lite-task-vision:0.2.0'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'org.firstinspires.ftc:gameAssets-FreightFrenzy:1.0.0'
+
+
     implementation (name: 'FtcDashboard', ext:'aar')
+
+
     implementation 'org.ftclib.ftclib:core:1.2.0'
 
 }

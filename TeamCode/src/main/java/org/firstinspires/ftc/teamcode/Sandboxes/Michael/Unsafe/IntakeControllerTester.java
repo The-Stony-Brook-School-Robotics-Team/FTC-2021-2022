@@ -17,9 +17,14 @@
             waitForStart();
 
             while(opModeIsActive()){
-                frontIntake.checkIntake();
+                if(gamepad1.b){
+                    frontIntake.setState(IntakeState.DUMP);
+                }
                 if(gamepad1.a){
                     frontIntake.setState(IntakeState.BASE);}
+                if(gamepad1.y){
+                    frontIntake.setState(IntakeState.PARK);
+                }
 
 
 
