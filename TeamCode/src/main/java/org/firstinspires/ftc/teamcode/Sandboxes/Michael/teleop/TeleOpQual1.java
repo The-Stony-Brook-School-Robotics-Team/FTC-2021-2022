@@ -6,12 +6,9 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.arcrobotics.ftclib.gamepad.KeyReader;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop.enums.TeleOpRobotStates;
 import org.firstinspires.ftc.teamcode.Sandboxes.Michael.Unsafe.SlideController;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
@@ -20,13 +17,11 @@ import org.sbs.bears.robotframework.enums.IntakeSide;
 import org.sbs.bears.robotframework.enums.IntakeState;
 import org.sbs.bears.robotframework.enums.SlideState;
 
-import java.util.HashMap;
-
 
 @TeleOp(name="TeleOp Qualifier One", group="default")
 public class TeleOpQual1 extends OpMode{
-    private IntakeController FRONT_INTAKE;
-    private IntakeController BACK_INTAKE;
+    private IntakeController BLUE_INTAKE;
+    private IntakeController RED_INTAKE;
     private SlideController LINEAR_SLIDE;
 
     //private HashMap<Enum, GamepadKeys.Button> gamepadValues = new HashMap<>();
@@ -45,15 +40,15 @@ public class TeleOpQual1 extends OpMode{
 
     @Override
     public void init() {
-        FRONT_INTAKE = new IntakeController(hardwareMap, telemetry, IntakeSide.FRONT);
-        BACK_INTAKE = new IntakeController(hardwareMap, telemetry, IntakeSide.BACK);
+        BLUE_INTAKE = new IntakeController(hardwareMap, telemetry, IntakeSide.BLUE);
+        RED_INTAKE = new IntakeController(hardwareMap, telemetry, IntakeSide.RED);
         LINEAR_SLIDE = new SlideController(hardwareMap, telemetry);
 
         drive = new SampleMecanumDrive(hardwareMap);
         dashboard = FtcDashboard.getInstance();
         gamepad = new GamepadEx(gamepad1);
 
-        FRONT_INTAKE.setState(IntakeState.PARK);
+        BLUE_INTAKE.setState(IntakeState.PARK);
         LINEAR_SLIDE.setState(SlideState.IN);
 
         setState(TeleOpState.IDLE);
@@ -105,9 +100,8 @@ public class TeleOpQual1 extends OpMode{
     });
 
     public Thread buttonHandlerRuntime = new Thread(() -> {
-
         while(state.equals(TeleOpState.RUNNING)){
-            FRONT_INTAKE.checkIntake();
+            BLUE_INTAKE.checkIntake();
            if(gamepad.isDown(GamepadKeys.Button.B)){
                if(gamepad.isDown(GamepadKeys.Button.DPAD_UP)){
                    LINEAR_SLIDE.setState(SlideState.TOP);

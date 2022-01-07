@@ -24,7 +24,7 @@ public class Robot {
         this.RRctrl = new RoadRunnerController(hardwareMap,telemetry);
         this.SlideHCtrl = new SlideHeightController(hardwareMap,telemetry);
         this.SlideExtCtrl = new SlideExtensionController(hardwareMap,telemetry);
-        this.IntakeCtrl = new IntakeController(hardwareMap,telemetry, IntakeSide.FRONT);
+        this.IntakeCtrl = new IntakeController(hardwareMap,telemetry, IntakeSide.BLUE);
     }
     public OpenCVController getCVctrl()
     {

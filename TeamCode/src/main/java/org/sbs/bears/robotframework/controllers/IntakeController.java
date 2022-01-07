@@ -1,5 +1,5 @@
 package org.sbs.bears.robotframework.controllers;
-import static org.sbs.bears.robotframework.enums.IntakeSide.FRONT;
+import static org.sbs.bears.robotframework.enums.IntakeSide.*;
 
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -19,9 +19,9 @@ public class IntakeController {
     private Rev2mDistanceSensor distanceSensor;
 
     /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/
-    private double[] basePos = {.04, 0.7}; //.141
-    private double[] dumpPos = {.87, 0.4};
-    private double[] parkPos = {.75, 0.4};
+    private double[] basePos = {.025, 0.7}; //.141
+    private double[] dumpPos = {.48, 0.4}; //.87
+    private double[] parkPos = {.42, 0.0}; //75
 
     /** Distance needed to switch states (mm) **/
     private double distThreshold = 50.0;
@@ -35,19 +35,19 @@ public class IntakeController {
     public IntakeController(HardwareMap hardwareMap, Telemetry telemetry, IntakeSide side) {
         /** Different hardwareMap depending on the intake side. **/
         switch(side){
-            case FRONT:
+            case RED:
                 scooper = hardwareMap.get(Servo.class, "ri");
                 compliantWheel = hardwareMap.get(DcMotor.class, "rightodom");
                 distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "rd");
-                scooper.setDirection(Servo.Direction.REVERSE);
+                scooper.setDirection(Servo.Direction.FORWARD);
                 compliantWheel.setDirection(DcMotorSimple.Direction.FORWARD);
                 break;
-            case BACK:
+            case BLUE:
                 scooper = hardwareMap.get(Servo.class, "bi");
                 compliantWheel = hardwareMap.get(DcMotor.class, "leftodom");
                 distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "bd");
                 scooper.setDirection(Servo.Direction.FORWARD);
-                compliantWheel.setDirection(DcMotorSimple.Direction.REVERSE);
+                compliantWheel.setDirection(DcMotorSimple.Direction.FORWARD);
         }
         compliantWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }

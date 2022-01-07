@@ -19,6 +19,7 @@ public class DashboardUtil {
     private static final double ROBOT_RADIUS = 6; // in
 
     public static void drawPoseHistory(Canvas canvas, List<Pose2d> poseHistory) {
+
         if(internalColorIndex < 5) {
             canvas.setStroke("RED");
         } else if(internalColorIndex < 9) {
@@ -90,6 +91,8 @@ public class DashboardUtil {
         } else if(internalColorIndex < 29) {
             canvas.setStroke("MAGENTA");
         }
+
+
 
         // Border
         canvas.strokeRect(-72, -72, 144, 144);
