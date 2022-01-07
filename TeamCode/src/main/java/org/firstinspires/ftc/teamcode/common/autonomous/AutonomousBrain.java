@@ -207,7 +207,7 @@ public class AutonomousBrain {
                     return;
                 }
                 double currentTime = NanoClock.system().seconds();
-                if(currentTime-iniTime > 25) {
+                if(currentTime-iniTime > 25) { 
                     majorState = AutonomousStates.SIX_PARKING_WAREHOUSE;
                 }
                 return;
