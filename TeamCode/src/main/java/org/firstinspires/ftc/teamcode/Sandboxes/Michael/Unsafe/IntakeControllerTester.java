@@ -12,7 +12,7 @@
         private IntakeController frontIntake;
 
         public void runOpMode() throws InterruptedException {
-            frontIntake = new IntakeController(hardwareMap, telemetry, IntakeSide.BLUE);
+            frontIntake = new IntakeController(hardwareMap, telemetry, IntakeSide.RED);
             frontIntake.setState(IntakeState.BASE);
             waitForStart();
 

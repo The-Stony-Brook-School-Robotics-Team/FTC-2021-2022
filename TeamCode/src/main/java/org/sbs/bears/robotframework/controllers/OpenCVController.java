@@ -88,6 +88,11 @@ public class OpenCVController {
         int Bresult = result[1];
         int Cresult = result[2];
         int bestResult = Math.max(Aresult,Math.max(Bresult,Cresult));
+        System.out.println(result[0]);
+        System.out.println(result[1]);
+        System.out.println(result[2]);
+        System.out.println(bestResult);
+
         DuckPosition pos = DuckPosition.NA;
         if(bestResult == Aresult)
         {

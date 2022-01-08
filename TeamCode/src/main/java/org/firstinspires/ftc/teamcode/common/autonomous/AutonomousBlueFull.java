@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.common.autonomous;
 
+import static java.lang.Thread.sleep;
+
 import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -9,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp(name = "A - Auton (Blue Full)")
 public class AutonomousBlueFull extends OpMode {
     AutonomousBrain brain;
+    boolean qA = false;
     boolean qContinue = false;
     @Override
     public void init() {
@@ -24,13 +27,26 @@ public class AutonomousBlueFull extends OpMode {
 
     @Override
     public void loop() {
+
+        telemetry.addData("majorState", brain.majorState);
+        telemetry.update();
         if(qContinue) {
             brain.doAutonAction();
-        }
-        if(!gamepad1.a) {
+            try {
+                sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             qContinue = false;
+        }
+        if(gamepad1.a && !qA) {
+            qA = true;
+            qContinue = true;
             return;
         }
-        qContinue = true;
+        else if (!gamepad1.a && qA) {
+            qA = false;
+        }
+
     }
 }
