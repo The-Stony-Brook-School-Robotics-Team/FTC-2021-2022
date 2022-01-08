@@ -21,6 +21,8 @@ public class OpenCVController {
     DuckOpenCVEngineBlueSimple engine2;
     DuckOpenCVEngineRedSpline engine3;
     DuckOpenCVEngineRedSimple engine4;
+    DuckOpenCVEngineBlueFull engine5;
+    DuckOpenCVEngineRedFull engine6;
     OpenCvPipeline currentEngine;
     OpenCvCamera webcam;
     AutonomousMode mode;
@@ -47,6 +49,14 @@ public class OpenCVController {
                 engine1 = new DuckOpenCVEngineBlueSpline();
                 webcam.setPipeline(engine1);
                 currentEngine = engine1;
+            case BlueFull:
+                engine5 = new DuckOpenCVEngineBlueFull();
+                webcam.setPipeline(engine5);
+                currentEngine = engine5;
+            case RedFull:
+                engine6 = new DuckOpenCVEngineRedFull();
+                webcam.setPipeline(engine6);
+                currentEngine = engine6;
         }
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {

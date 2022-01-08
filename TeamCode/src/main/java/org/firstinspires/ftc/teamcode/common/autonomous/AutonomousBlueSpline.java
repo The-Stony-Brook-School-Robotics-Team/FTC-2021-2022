@@ -4,7 +4,7 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.har
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-@Autonomous(name = "A - Auton (Blue Spline)")
+//@Autonomous(name = "A - Auton (Blue Spline)")
 public class AutonomousBlueSpline extends OpMode {
     AutonomousBrain brain;
 

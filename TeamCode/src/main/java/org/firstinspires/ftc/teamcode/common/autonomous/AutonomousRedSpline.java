@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.common.autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-@Autonomous(name="A - Auton (Red Spline)")
+//@Autonomous(name="A - Auton (Red Spline)")
 public class AutonomousRedSpline extends OpMode {
     AutonomousBrain brain;
 

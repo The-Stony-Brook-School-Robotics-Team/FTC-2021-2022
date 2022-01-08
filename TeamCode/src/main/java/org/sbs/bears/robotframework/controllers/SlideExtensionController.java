@@ -14,29 +14,30 @@ public class SlideExtensionController {
     public SlideExtensionController(HardwareMap hardwareMap, Telemetry telemetry)
     {
 
-        this.slideMotor = hardwareMap.get(DcMotor.class,"spool");
+        /*this.slideMotor = hardwareMap.get(DcMotor.class,"spool");
         slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         this.cubeDropper = hardwareMap.get(Servo.class,"du");
-        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideMotor.setTargetPosition(slideMotorRetractPosition);
+        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);*/
 
     }
     public void extendSlide()
     {
-        slideMotor.setTargetPosition(slideMotorExtendPosition);
+        //slideMotor.setTargetPosition(slideMotorExtendPosition);
     }
     public void retractSlide()
     {
-        slideMotor.setTargetPosition(slideMotorRetractPosition);
+        //slideMotor.setTargetPosition(slideMotorRetractPosition);
     }
     public void dropCube()
     {
-        cubeDropper.setPosition(cubeDropPosition);
+       /* cubeDropper.setPosition(cubeDropPosition);
         try {
             Thread.sleep(200);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        cubeDropper.setPosition(cubeBackPosition);
+        cubeDropper.setPosition(cubeBackPosition);*/
     }
     public void extendDropRetract()
     {
