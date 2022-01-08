@@ -28,7 +28,7 @@ class Dashboard extends Component {
     return (
       <div
         className="flex flex-col"
-        style={{ width: '100vw', height: '100vh' }}
+        style={{ width: '100vw', height: '100vh'}}
       >
         <header className="flex justify-between items-center bg-red-600 px-3 py-1 text-white" style={{backgroundColor: 'rgb(26,61,130)'}}>
           <h1 className="text-2xl font-medium">Stony Brook School Bears Dashboard</h1>

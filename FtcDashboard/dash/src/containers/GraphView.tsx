@@ -156,6 +156,7 @@ class GraphView extends Component<GraphViewProps, GraphViewState> {
         className="flex flex-col overflow-auto"
         isUnlocked={this.props.isUnlocked}
         ref={this.containerRef}
+        style={{backgroundColor: "rgba(38, 38, 38)", color: "rgb(254, 254, 254)"}}
         tabIndex={0}
       >
         <div className="flex">

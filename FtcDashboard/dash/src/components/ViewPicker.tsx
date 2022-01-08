@@ -100,7 +100,7 @@ const listContent = [
 
 const ViewPicker = (props: ViewPickerProps) => {
   return (
-    <Container {...props}>
+    <Container {...props} style={{backgroundColor: "rgba(38, 38, 38)", color: "rgb(254, 254, 254)"}}>
       {listContent.map((item, index) => (
         <CardButton
           key={item.title}

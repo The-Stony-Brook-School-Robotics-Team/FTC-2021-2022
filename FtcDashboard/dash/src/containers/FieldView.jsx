@@ -33,7 +33,7 @@ class FieldView extends React.Component {
 
   render() {
     return (
-      <BaseView isUnlocked={this.props.isUnlocked}>
+      <BaseView isUnlocked={this.props.isUnlocked} style={{backgroundColor: "rgba(38, 38, 38)", color: "rgb(254, 254, 254)"}}>
         <BaseViewHeading isDraggable={this.props.isDraggable}>
           Field
         </BaseViewHeading>

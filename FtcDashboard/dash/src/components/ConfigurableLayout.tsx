@@ -506,6 +506,7 @@ export default function ConfigurableLayout() {
       ref={containerRef}
       isLayoutLocked={isLayoutLocked}
       bgGridSize={gridBgSize}
+      style={{backgroundColor: "rgba(38, 38, 38)", color: "rgb(254, 254, 254)"}}
     >
       {gridItems.length === 0 && (
         <div

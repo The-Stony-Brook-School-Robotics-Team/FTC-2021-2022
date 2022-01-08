@@ -8,7 +8,7 @@ import './index.css';
 const store = configureStore();
 
 ReactDOM.render(
-  <Provider store={store}>
+  <Provider store={store} style={{backgroundColor: "rgba(38, 38, 38)", color: "rgb(254, 254, 254)"}}>
     <Dashboard />
   </Provider>,
   document.getElementById('root'),

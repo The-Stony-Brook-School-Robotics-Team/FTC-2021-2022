@@ -45,7 +45,7 @@ class GraphCanvas extends React.Component {
 
   render() {
     return (
-      <div className="h-full flex-center">
+      <div className="h-full flex-center" style={{backgroundColor: "rgba(38, 38, 38)", color: "rgb(254, 254, 254)"}}>
         <div
           className={`${
             this.graph === null || !this.graph?.hasGraphableContent

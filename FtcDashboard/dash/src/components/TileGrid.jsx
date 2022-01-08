@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const TileGrid = ({ gridTemplate, children }) => (
-  <div className="tile-grid" style={{ gridTemplate }}>
+  <div className="tile-grid" style={{ gridTemplate, backgroundColor: "rgba(38, 38, 38)" }}>
     {children}
   </div>
 );

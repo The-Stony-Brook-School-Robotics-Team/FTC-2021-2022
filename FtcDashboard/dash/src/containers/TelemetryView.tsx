@@ -33,7 +33,7 @@ const TelemetryView = ({
   ));
 
   return (
-    <BaseView isUnlocked={isUnlocked}>
+    <BaseView isUnlocked={isUnlocked} style={{backgroundColor: "rgba(38, 38, 38)", color: "rgb(254, 254, 254)"}}>
       <BaseViewHeading isDraggable={isDraggable}>Telemetry</BaseViewHeading>
       <BaseViewBody>
         <p>{telemetryLines}</p>

@@ -149,7 +149,7 @@ class OpModeView extends Component<OpModeViewProps, OpModeViewState> {
 
     if (!available) {
       return (
-        <BaseView isUnlocked={this.props.isUnlocked}>
+        <BaseView isUnlocked={this.props.isUnlocked} style={{backgroundColor: "rgba(38, 38, 38)", color: "rgb(254, 254, 254)"}}>
           <BaseViewHeading isDraggable={this.props.isDraggable}>
             Op Mode
           </BaseViewHeading>
@@ -163,7 +163,7 @@ class OpModeView extends Component<OpModeViewProps, OpModeViewState> {
     }
 
     return (
-      <BaseView isUnlocked={this.props.isUnlocked}>
+      <BaseView isUnlocked={this.props.isUnlocked} style={{backgroundColor: "rgba(38, 38, 38)", color: "rgb(254, 254, 254)"}}>
         <div className="flex">
           <BaseViewHeading isDraggable={this.props.isDraggable}>
             Op Mode
@@ -196,7 +196,6 @@ class OpModeView extends Component<OpModeViewProps, OpModeViewState> {
             }
             onChange={this.onChange}
           >
-            opModeList.push("test");
             {opModeList.length === 0 ? (
               <option>Loading...</option>
             ) : (
