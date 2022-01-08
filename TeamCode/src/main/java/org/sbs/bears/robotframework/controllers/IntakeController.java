@@ -19,7 +19,7 @@ public class IntakeController {
     private Rev2mDistanceSensor distanceSensor;
 
     /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/
-    private double[] basePos = {.028, 0.7}; //.141
+    private double[] basePos = {.025, 0.7}; //.141
     private double[] dumpPos = {.45, 0.4}; //.87
     private double[] parkPos = {.39, 0.0}; //75
 

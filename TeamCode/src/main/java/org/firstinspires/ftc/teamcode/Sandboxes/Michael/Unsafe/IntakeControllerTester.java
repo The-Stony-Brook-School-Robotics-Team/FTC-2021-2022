@@ -17,6 +17,7 @@
             waitForStart();
 
             while(opModeIsActive()){
+                frontIntake.checkIntake();
                 if(gamepad1.b){
                     frontIntake.setState(IntakeState.DUMP);
                 }
