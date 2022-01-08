@@ -92,11 +92,11 @@ public class DuckOpenCVEngineBlueFull extends OpenCvPipeline {
     /**
      * This variable represents the XOffset of the rectangle about barcode A.
      */
-    public static int XOffsetA = -800;
+    public static int XOffsetA = -500;
     /**
      * This variable represents the YOffset of the rectangle about barcode A.
      */
-    public static int YOffsetA = 250;
+    public static int YOffsetA = 100;
     /**
      * This variable represents the Top Left Anchor of the rectangle about barcode A.
      */
