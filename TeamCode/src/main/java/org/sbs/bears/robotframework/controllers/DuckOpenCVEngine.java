@@ -1,5 +1,7 @@
 package org.sbs.bears.robotframework.controllers;
 
+import android.util.Log;
+
 import com.acmerobotics.dashboard.config.Config;
 
 import org.opencv.core.Core;
@@ -20,7 +22,7 @@ import java.util.ArrayList;
  * @version 5.1
  */
 @Config
-public class DuckOpenCVEngineBlueSimple extends DuckOpenCVEngine {
+public abstract class DuckOpenCVEngine extends OpenCvPipeline {
     // MARK - Class Variables
 
 
@@ -81,11 +83,11 @@ public class DuckOpenCVEngineBlueSimple extends DuckOpenCVEngine {
     /**
      * This variable represents the XOffset of the rectangle about barcode A.
      */
-    public static int XOffsetA = -800;
+    public static int XOffsetA = -600; // -500
     /**
      * This variable represents the YOffset of the rectangle about barcode A.
      */
-    public static int YOffsetA = 250;
+    public static int YOffsetA = 400; // 250
     /**
      * This variable represents the Top Left Anchor of the rectangle about barcode A.
      */
@@ -102,11 +104,11 @@ public class DuckOpenCVEngineBlueSimple extends DuckOpenCVEngine {
     /**
      * This variable represents the XOffset of the rectangle about barcode B.
      */
-    public static int XOffsetB = -250;
+    public static int XOffsetB = -150;
     /**
      * This variable represents the YOffset of the rectangle about barcode B.
      */
-    public static int YOffsetB = 250;
+    public static int YOffsetB = 400;
     /**
      * This variable represents the Top Left Anchor of the rectangle about barcode B.
      */
@@ -123,11 +125,11 @@ public class DuckOpenCVEngineBlueSimple extends DuckOpenCVEngine {
     /**
      * This variable represents the XOffset of the rectangle about barcode C.
      */
-    public static int XOffsetC = 225;
+    public static int XOffsetC = 325;
     /**
      * This variable represents the YOffset of the rectangle about barcode C.
      */
-    public static int YOffsetC = 250;
+    public static int YOffsetC = 400;
     /**
      * This variable represents the Top Left Anchor of the rectangle about barcode C.
      */
@@ -136,39 +138,39 @@ public class DuckOpenCVEngineBlueSimple extends DuckOpenCVEngine {
     /**
      * This variable represents the Top Left Corner of the rectangle about barcode A.
      */
-    Point RectATLCorner = new Point(
+    public Point RectATLCorner = new Point(
             RectATopLeftAnchor.x,
             RectATopLeftAnchor.y);
     /**
      * This variable represents the Bottom Right Corner of the rectangle about barcode A.
      */
-    Point RectABRCorner = new Point(
+    public Point RectABRCorner = new Point(
             RectATopLeftAnchor.x + WidthRectA,
             RectATopLeftAnchor.y + HeightRectA);
 
     /**
      * This variable represents the Top Left Corner of the rectangle about barcode B.
      */
-    Point RectBTLCorner = new Point(
+    public Point RectBTLCorner = new Point(
             RectBTopLeftAnchor.x,
             RectBTopLeftAnchor.y);
     /**
      * This variable represents the Bottom Right Corner of the rectangle about barcode B.
      */
-    Point RectBBRCorner = new Point(
+    public Point RectBBRCorner = new Point(
             RectBTopLeftAnchor.x + WidthRectB,
             RectBTopLeftAnchor.y + HeightRectB);
 
     /**
      * This variable represents the Top Left Corner of the rectangle about barcode C.
      */
-    Point RectCTLCorner = new Point(
+    public Point RectCTLCorner = new Point(
             RectCTopLeftAnchor.x,
             RectCTopLeftAnchor.y);
     /**
      * This variable represents the Bottom Right Corner of the rectangle about barcode C.
      */
-    Point RectCBRCorner = new Point(
+    public Point RectCBRCorner = new Point(
             RectCTopLeftAnchor.x + WidthRectC,
             RectCTopLeftAnchor.y + HeightRectC);
 
@@ -179,51 +181,51 @@ public class DuckOpenCVEngineBlueSimple extends DuckOpenCVEngine {
      *
      * NOTE: it must be freed every time after it is used in order to save memory and prevent leakage.
      */
-    Mat YCrCb = new Mat();
+    public Mat YCrCb = new Mat();
     /**
      * This variable contains only the Y component of the image that the camera takes of its view
      * in the YCrCb color space.
      *
      * NOTE: it must be freed every time after it is used in order to save memory and prevent leakage.
      */
-    Mat Y = new Mat();
+    public Mat Y = new Mat();
     /**
      * This variable contains the sub-image that the camera takes of the rectangle about barcode A (Y component only).
      *
      * NOTE: it must be freed every time after it is used in order to save memory and prevent leakage.
      */
-    Mat RectA_Y;
+    public Mat RectA_Y;
     /**
      * This variable contains the sub-image that the camera takes of the rectangle about barcode B (Y component only).
      *
      * NOTE: it must be freed every time after it is used in order to save memory and prevent leakage.
      */
-    Mat RectB_Y;
+    public Mat RectB_Y;
     /**
      * This variable contains the sub-image that the camera takes of the rectangle about barcode C (Y component only).
      *
      * NOTE: it must be freed every time after it is used in order to save memory and prevent leakage.
      */
-    Mat RectC_Y;
+    public Mat RectC_Y;
 
     /**
      * This variable contains the average value of Y in the rectangle about barcode A.
      *
      * NOTE: it must be freed every time after it is used in order to save memory and prevent leakage.
      */
-    volatile int avgAY;
+    volatile public int avgAY;
     /**
      * This variable contains the average value of Y in the rectangle about barcode B.
      *
      * NOTE: it must be freed every time after it is used in order to save memory and prevent leakage.
      */
-    volatile int avgBY;
+    volatile public int avgBY;
     /**
      * This variable contains the average value of Y in the rectangle about barcode C.
      *
      * NOTE: it must be freed every time after it is used in order to save memory and prevent leakage.
      */
-    volatile int avgCY;
+    volatile public int avgCY;
 
     /**
      * This function takes the RGB frame, converts to YCrCb,
@@ -231,15 +233,7 @@ public class DuckOpenCVEngineBlueSimple extends DuckOpenCVEngine {
      * and also creates the submats of each rectangle (A,B,C).
      * @param input the Mat that is provided by the OpenCV subsystem.
      */
-    public void convertY(Mat input) {
-        Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb); // convert to YCrCb
-        ArrayList<Mat> yCrCbChannels = new ArrayList<Mat>(3);
-        Core.split(YCrCb, yCrCbChannels); // split into Y, Cr, and Cb
-        Y = yCrCbChannels.get(0);
-        RectA_Y = Y.submat(new Rect(RectATLCorner, RectABRCorner));
-        RectB_Y = Y.submat(new Rect(RectBTLCorner, RectBBRCorner));
-        RectC_Y = Y.submat(new Rect(RectCTLCorner, RectCBRCorner));
-    }
+    abstract public void convertY(Mat input);
 
 
     /**
@@ -249,9 +243,7 @@ public class DuckOpenCVEngineBlueSimple extends DuckOpenCVEngine {
      * @param firstFrame the Mat that is provided by the OpenCV subsystem.
      */
     @Override
-    public void init(Mat firstFrame) {
-       convertY(firstFrame);
-    }
+    abstract public void init(Mat firstFrame);
 
     /**
      * This function takes the RGB frame, converts to YCrCb,
@@ -265,102 +257,33 @@ public class DuckOpenCVEngineBlueSimple extends DuckOpenCVEngine {
      * @return the input mat with rectangles representing the three barcode areas drawn on it.
      */
     @Override
-    public Mat processFrame(Mat input) {
-       if(doAnalysis) {
-           convertY(input);
-           synchronized (semaphore) {
-               avgAY = (int) Core.mean(RectA_Y).val[0];
-               avgBY = (int) Core.mean(RectB_Y).val[0];
-               avgCY = (int) Core.mean(RectC_Y).val[0];
-           }
-           // Release the mats! Otherwise there are memory leaks and it crashes.
-           RectA_Y.release();
-           RectB_Y.release();
-           RectC_Y.release();
-           Y.release();
-           YCrCb.release();
-       }
-        Imgproc.rectangle( // rings
-                input, // Buffer to draw on
-                RectATLCorner, // First point which defines the rectangle
-                RectABRCorner, // Second point which defines the rectangle
-                BLUE, // The color the rectangle is drawn in
-                2); // Thickness of the rectangle lines
-
-        Imgproc.rectangle( // rings
-                input, // Buffer to draw on
-                RectBTLCorner, // First point which defines the rectangle
-                RectBBRCorner, // Second point which defines the rectangle
-                GREEN, // The color the rectangle is drawn in
-                2); // Thickness of the rectangle lines
-        Imgproc.rectangle( // rings
-                input, // Buffer to draw on
-                RectCTLCorner, // First point which defines the rectangle
-                RectCBRCorner, // Second point which defines the rectangle
-                RED, // The color the rectangle is drawn in
-                2); // Thickness of the rectangle lines
-
-       if(doAnalysis) {
-           int dAB = Math.abs(avgAY-avgBY);
-           int dAC = Math.abs(avgAY-avgCY);
-           int dBC = Math.abs(avgBY-avgCY);
-
-           if (dAB <= 2) {
-               synchronized (semaphore) {
-                   position = DuckPosition.C;
-               }
-               System.out.println("Found the duck: C");
-           }
-           else {
-               if (dAC <= 2) {
-                   synchronized (semaphore) {
-                       position = DuckPosition.B;
-                   }
-                   System.out.println("Found the duck: B");
-               }
-               else if (dBC <= 2) {
-                   synchronized (semaphore) {
-                       position = DuckPosition.A;
-                   }
-                   System.out.println("Found the duck: A");
-               }
-           }
-       }
-        return input;
-    }
+    abstract public Mat processFrame(Mat input);
 
     /**
      * This method returns the average 'Y' value on barcode A using a semaphore to make sure
      * concurrent threads don't overwrite each other.
      * @return the average 'Y' value on barcode A
      */
-    public int getAYanalysis() {
-        synchronized (semaphore) {return avgAY;}
-    }
+    abstract public int getAYanalysis();
+
     /**
      * This method returns the average 'Y' value on barcode B using a semaphore to make sure
      * concurrent threads don't overwrite each other.
      * @return the average 'Y' value on barcode B
      */
-    public int getBYanalysis() {
-         synchronized (semaphore) {return avgBY;}
-    }
+    abstract public int getBYanalysis();
     /**
      * This method returns the average 'Y' value on barcode C using a semaphore to make sure
      * concurrent threads don't overwrite each other.
      * @return the average 'Y' value on barcode C
      */
-    public int getCYanalysis() {
-         synchronized (semaphore) {return avgCY;}
-    }
+    abstract public int getCYanalysis();
     /**
      * This method returns the position of the duck on the barcode
      * using a semaphore to make sure concurrent threads don't
      * overwrite each other.
      * @return the duck position on the barcode
      */
-    public DuckPosition getPosition() {
-        synchronized (semaphore) {return position;}
-    }
+    abstract public DuckPosition getPosition();
 
 }
