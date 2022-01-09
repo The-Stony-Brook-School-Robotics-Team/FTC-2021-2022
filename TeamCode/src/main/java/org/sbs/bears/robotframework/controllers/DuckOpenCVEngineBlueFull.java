@@ -1,5 +1,7 @@
 package org.sbs.bears.robotframework.controllers;
 
+import static org.sbs.bears.robotframework.controllers.OpenCVController.doAnalysisMaster;
+
 import android.util.Log;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -10,7 +12,6 @@ import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
-import org.openftc.easyopencv.OpenCvPipeline;
 import org.sbs.bears.robotframework.enums.DuckPosition;
 
 import java.util.ArrayList;
@@ -45,13 +46,6 @@ public class DuckOpenCVEngineBlueFull extends DuckOpenCVEngine {
      */
     static volatile Object semaphore = new Object();
 
-
-    /**
-     * This variable represents whether an analysis should be performed or not.
-     * This variable is made to be read/written from outside, hence the volatile keyword.
-     * The "volatile" keyword makes it better suited for use with multithreading.
-     */
-    public static volatile boolean doAnalysis = false;
 
     /**
      * This variable represents the Duck's Position on the barcode.
@@ -272,7 +266,7 @@ public class DuckOpenCVEngineBlueFull extends DuckOpenCVEngine {
     @Override
     public Mat processFrame(Mat input) {
         Log.d("BlueFullDuckOpenCVController","Start ProcessFrame");
-        if(doAnalysis) {
+        if(doAnalysisMaster) {
            convertY(input);
            synchronized (semaphore) {
                avgAY = (int) Core.mean(RectA_Y).val[0];
@@ -306,7 +300,7 @@ public class DuckOpenCVEngineBlueFull extends DuckOpenCVEngine {
                 RED, // The color the rectangle is drawn in
                 2); // Thickness of the rectangle lines
 
-       if(doAnalysis) {
+       if(doAnalysisMaster) {
            int dAB = Math.abs(avgAY-avgBY);
            int dAC = Math.abs(avgAY-avgCY);
            int dBC = Math.abs(avgBY-avgCY);
@@ -333,7 +327,11 @@ public class DuckOpenCVEngineBlueFull extends DuckOpenCVEngine {
            }
        }
         Log.d("BlueFullDuckOpenCVController","End ProcessFrame");
+        Log.d("BlueFullDuckOpenCVController","A: " + avgAY + " B: " + avgBY + " C: " +  avgCY);
 
+        if(avgAY != 0 && avgBY != 0 && avgCY != 0) {
+            doAnalysisMaster = false;
+        }
         return input;
     }
 

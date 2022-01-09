@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.sbs.bears.robotframework.controllers.DuckOpenCVEngineBlueFull;
-import org.sbs.bears.robotframework.controllers.DuckOpenCVEngineBlueSpline;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -66,7 +65,6 @@ public class OpenCVSample extends OpMode {
     public void start() {
         super.start();
         // Start the analysis
-        DuckOpenCVEngineBlueSpline.doAnalysis = true;
         //webcam.pauseViewport();
     }
     // MARK - End of OpMode Run

@@ -1,5 +1,7 @@
 package org.sbs.bears.robotframework.controllers;
 
+import android.util.Log;
+
 import com.acmerobotics.dashboard.config.Config;
 
 import org.opencv.core.Core;
@@ -8,8 +10,8 @@ import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
-import org.openftc.easyopencv.OpenCvPipeline;
 import org.sbs.bears.robotframework.enums.DuckPosition;
+import static org.sbs.bears.robotframework.controllers.OpenCVController.doAnalysisMaster;
 
 import java.util.ArrayList;
 
@@ -20,9 +22,13 @@ import java.util.ArrayList;
  * @version 5.1
  */
 @Config
-public class DuckOpenCVEngineBlueSimple extends DuckOpenCVEngine {
+public class CapstoneOpenCVEngineBlueFull extends DuckOpenCVEngine {
     // MARK - Class Variables
 
+    public CapstoneOpenCVEngineBlueFull() {
+        super();
+        Log.d("BlueFullDuckOpenCVController","Init req");
+    }
 
     /**
      * This variable represents the width of the Camera Stream.
@@ -40,12 +46,6 @@ public class DuckOpenCVEngineBlueSimple extends DuckOpenCVEngine {
     static volatile Object semaphore = new Object();
 
 
-    /**
-     * This variable represents whether an analysis should be performed or not.
-     * This variable is made to be read/written from outside, hence the volatile keyword.
-     * The "volatile" keyword makes it better suited for use with multithreading.
-     */
-    public static volatile boolean doAnalysis = false;
 
     /**
      * This variable represents the Duck's Position on the barcode.
@@ -53,8 +53,6 @@ public class DuckOpenCVEngineBlueSimple extends DuckOpenCVEngine {
      * The "volatile" keyword makes it better suited for use with multithreading.
      */
     protected static volatile DuckPosition position = DuckPosition.NA;
-
-
 
 
     /**
@@ -81,11 +79,11 @@ public class DuckOpenCVEngineBlueSimple extends DuckOpenCVEngine {
     /**
      * This variable represents the XOffset of the rectangle about barcode A.
      */
-    public static int XOffsetA = -800;
+    public static int XOffsetA = -600; // -500
     /**
      * This variable represents the YOffset of the rectangle about barcode A.
      */
-    public static int YOffsetA = 250;
+    public static int YOffsetA = 400; // 250
     /**
      * This variable represents the Top Left Anchor of the rectangle about barcode A.
      */
@@ -102,11 +100,11 @@ public class DuckOpenCVEngineBlueSimple extends DuckOpenCVEngine {
     /**
      * This variable represents the XOffset of the rectangle about barcode B.
      */
-    public static int XOffsetB = -250;
+    public static int XOffsetB = -150;
     /**
      * This variable represents the YOffset of the rectangle about barcode B.
      */
-    public static int YOffsetB = 250;
+    public static int YOffsetB = 400;
     /**
      * This variable represents the Top Left Anchor of the rectangle about barcode B.
      */
@@ -123,11 +121,11 @@ public class DuckOpenCVEngineBlueSimple extends DuckOpenCVEngine {
     /**
      * This variable represents the XOffset of the rectangle about barcode C.
      */
-    public static int XOffsetC = 225;
+    public static int XOffsetC = 325;
     /**
      * This variable represents the YOffset of the rectangle about barcode C.
      */
-    public static int YOffsetC = 250;
+    public static int YOffsetC = 400;
     /**
      * This variable represents the Top Left Anchor of the rectangle about barcode C.
      */
@@ -235,7 +233,7 @@ public class DuckOpenCVEngineBlueSimple extends DuckOpenCVEngine {
         Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb); // convert to YCrCb
         ArrayList<Mat> yCrCbChannels = new ArrayList<Mat>(3);
         Core.split(YCrCb, yCrCbChannels); // split into Y, Cr, and Cb
-        Y = yCrCbChannels.get(0);
+        Y = yCrCbChannels.get(1);
         RectA_Y = Y.submat(new Rect(RectATLCorner, RectABRCorner));
         RectB_Y = Y.submat(new Rect(RectBTLCorner, RectBBRCorner));
         RectC_Y = Y.submat(new Rect(RectCTLCorner, RectCBRCorner));
@@ -251,6 +249,7 @@ public class DuckOpenCVEngineBlueSimple extends DuckOpenCVEngine {
     @Override
     public void init(Mat firstFrame) {
        convertY(firstFrame);
+        Log.d("BlueFullDuckOpenCVController","Init complete");
     }
 
     /**
@@ -266,7 +265,8 @@ public class DuckOpenCVEngineBlueSimple extends DuckOpenCVEngine {
      */
     @Override
     public Mat processFrame(Mat input) {
-       if(doAnalysis) {
+        Log.d("BlueFullDuckOpenCVController","Start ProcessFrame");
+        if(doAnalysisMaster) {
            convertY(input);
            synchronized (semaphore) {
                avgAY = (int) Core.mean(RectA_Y).val[0];
@@ -300,7 +300,7 @@ public class DuckOpenCVEngineBlueSimple extends DuckOpenCVEngine {
                 RED, // The color the rectangle is drawn in
                 2); // Thickness of the rectangle lines
 
-       if(doAnalysis) {
+       if(doAnalysisMaster) {
            int dAB = Math.abs(avgAY-avgBY);
            int dAC = Math.abs(avgAY-avgCY);
            int dBC = Math.abs(avgBY-avgCY);
@@ -326,6 +326,12 @@ public class DuckOpenCVEngineBlueSimple extends DuckOpenCVEngine {
                }
            }
        }
+        Log.d("BlueFullDuckOpenCVController","End ProcessFrame");
+        Log.d("BlueFullDuckOpenCVController","A: " + avgAY + " B: " + avgBY + " C: " +  avgCY);
+
+        if(avgAY != 0 && avgBY != 0 && avgCY != 0) {
+            doAnalysisMaster = false;
+        }
         return input;
     }
 

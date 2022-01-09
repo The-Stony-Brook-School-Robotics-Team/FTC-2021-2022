@@ -1,13 +1,13 @@
 package org.sbs.bears.robotframework.controllers;
 
+import static java.lang.Thread.sleep;
+
 import android.util.Log;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.checkerframework.checker.units.qual.A;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.archive.B;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -22,6 +22,11 @@ public class OpenCVController {
     static final int STREAM_HEIGHT = 1080;
     DuckOpenCVEngine engine;
 
+    public static volatile boolean doAnalysisMaster = true;
+
+
+    public static boolean isDuck = true;
+
     OpenCvPipeline currentEngine;
     OpenCvCamera webcam;
     AutonomousMode mode;
@@ -33,7 +38,7 @@ public class OpenCVController {
         webcam = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
         Log.d("OpenCVController","Init Engine");
         // TODO switch for all autonomous types only on constructor
-        engine = new DuckOpenCVEngineBlueFull();
+        engine = isDuck ? new DuckOpenCVEngineBlueFull() : new CapstoneOpenCVEngineBlueFull();
         webcam.setPipeline(engine);
         currentEngine = engine;
         Log.d("OpenCVController","Init Complete");
@@ -83,11 +88,20 @@ public class OpenCVController {
         C3
 
         */
+        while(doAnalysisMaster) {
+            try {
+                sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         int[] result = getAnalysis();
+
         int Aresult = result[0];
         int Bresult = result[1];
         int Cresult = result[2];
         int bestResult = Math.max(Aresult,Math.max(Bresult,Cresult));
+        System.out.println();
         System.out.println(result[0]);
         System.out.println(result[1]);
         System.out.println(result[2]);
@@ -121,9 +135,12 @@ public class OpenCVController {
         }
         return TowerHeightFromDuck.NA;
     }
+
+
     public void shutDown() {
         webcam.stopStreaming();
         engine = null;
+
     }
 }
 

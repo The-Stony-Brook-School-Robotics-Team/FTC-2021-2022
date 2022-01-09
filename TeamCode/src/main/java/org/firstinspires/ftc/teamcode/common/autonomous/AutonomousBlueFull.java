@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.sbs.bears.robotframework.controllers.OpenCVController;
+
 @TeleOp(name = "A - Auton (Blue Full)")
 public class AutonomousBlueFull extends OpMode {
     AutonomousBrain brain;
@@ -15,6 +17,7 @@ public class AutonomousBlueFull extends OpMode {
     boolean qContinue = false;
     @Override
     public void init() {
+        OpenCVController.isDuck = false;
         brain = new AutonomousBrain(hardwareMap,telemetry,AutonomousMode.BlueFull);
         Log.d("Auton BF","Init Complete");
         msStuckDetectLoop = Integer.MAX_VALUE;
@@ -39,6 +42,7 @@ public class AutonomousBlueFull extends OpMode {
             }
             qContinue = false;
         }
+        qContinue = true;/*
         if(gamepad1.a && !qA) {
             qA = true;
             qContinue = true;
@@ -47,6 +51,6 @@ public class AutonomousBlueFull extends OpMode {
         else if (!gamepad1.a && qA) {
             qA = false;
         }
-
+*/
     }
 }

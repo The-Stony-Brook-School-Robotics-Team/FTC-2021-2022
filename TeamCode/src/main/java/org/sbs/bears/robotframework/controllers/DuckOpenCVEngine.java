@@ -43,13 +43,6 @@ public abstract class DuckOpenCVEngine extends OpenCvPipeline {
 
 
     /**
-     * This variable represents whether an analysis should be performed or not.
-     * This variable is made to be read/written from outside, hence the volatile keyword.
-     * The "volatile" keyword makes it better suited for use with multithreading.
-     */
-    public static volatile boolean doAnalysis = false;
-
-    /**
      * This variable represents the Duck's Position on the barcode.
      * This variable is made to be read from outside (hence its "protected" state).
      * The "volatile" keyword makes it better suited for use with multithreading.
