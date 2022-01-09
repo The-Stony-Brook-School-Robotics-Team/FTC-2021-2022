@@ -265,6 +265,12 @@ public class RoadRunnerController {
         // TODO implement ShutDown on RR Ctrl
     }
 
+    public void stopRobot()
+    {
+        runner.cancelTraj();
+        drive.setWeightedDrivePower(new Pose2d()); // set zero power forced.
+    }
+
 
 
     public void doForwardHaltableTrajectory(double distMax, double brakingDist, double brakeVel, double brakeDecel, Boolean signal, Object mutex)

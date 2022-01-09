@@ -7,10 +7,8 @@ import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.apache.commons.math3.analysis.integration.IterativeLegendreGaussIntegrator;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.sbs.bears.robotframework.Robot;
-import org.sbs.bears.robotframework.controllers.DuckOpenCVEngineBlueFull;
 import org.sbs.bears.robotframework.controllers.IntakeController;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 import org.sbs.bears.robotframework.controllers.RoadRunnerController;
@@ -19,6 +17,8 @@ import org.sbs.bears.robotframework.enums.SlideHeight;
 import org.sbs.bears.robotframework.controllers.SlideHeightController;
 import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
 import static org.sbs.bears.robotframework.controllers.OpenCVController.doAnalysisMaster;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 
 public class AutonomousBrain {
@@ -31,7 +31,6 @@ public class AutonomousBrain {
     IntakeController intakeCtrl;
 
     Telemetry tel;
-
     HardwareMap hwMap;
 
     public  AutonomousStates majorState = AutonomousStates.STOPPED;
@@ -183,8 +182,8 @@ public class AutonomousBrain {
                         RRctrl.followLineToSpline(wareHousePickupPositionRSpl);
 */
                 }
-                majorState = AutonomousStates.FINISHED;
-                //majorState = AutonomousStates.FIVE_BACK_FORTH;
+                //majorState = AutonomousStates.FINISHED;
+                majorState = AutonomousStates.FIVE_BACK_FORTH;
                 return;
             case FIVE_BACK_FORTH:
                 doBackForth();
@@ -222,7 +221,15 @@ public class AutonomousBrain {
         switch(minorState)
         {
             case ONE_INTAKE:
-                intakeCtrl.waitForIntake();
+                Object externMutex = new Object();
+                AtomicReference<Boolean> stopSignal = new AtomicReference<>(Boolean.getBoolean("false"));
+                RRctrl.doForwardHaltableTrajectory(20,4,50,40, stopSignal.get(),externMutex);
+                new Thread(()->{
+                    intakeCtrl.waitForIntake();
+                    synchronized (externMutex) {
+                        stopSignal.set(Boolean.getBoolean("true"));} // will halt trajectory in separate thread
+                }).start();
+                RRctrl.stopRobot(); // make sure robot is stopped.
                 minorState = AutonomousBackForthSubStates.TWO_FORWARD;
                 return;
             case TWO_FORWARD:
@@ -239,7 +246,7 @@ public class AutonomousBrain {
                 minorState = AutonomousBackForthSubStates.THREE_SLIDE_OUT_IN;
                 return;
             case THREE_SLIDE_OUT_IN:
-                switch(mode)
+                switch(mode) // should have already set slide height before.
                 {
                     case BlueSimple:
                     case RedSimple:
