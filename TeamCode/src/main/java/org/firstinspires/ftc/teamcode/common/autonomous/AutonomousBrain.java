@@ -105,7 +105,7 @@ public class AutonomousBrain {
                 majorState = AutonomousStates.ONE_READ_DUCK;
                 return;
             case ONE_READ_DUCK:
-
+                CVctrl.enableAnalysis();
                 heightFromDuck = CVctrl.getWhichTowerHeight();
                 Log.d("height: ",heightFromDuck.toString());
                 tel.addData("height: ",heightFromDuck);

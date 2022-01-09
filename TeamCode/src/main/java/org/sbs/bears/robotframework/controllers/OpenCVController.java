@@ -122,8 +122,15 @@ public class OpenCVController {
         return TowerHeightFromDuck.NA;
     }
     public void shutDown() {
+        DuckOpenCVEngineBlueFull.doAnalysis = true;
         webcam.stopStreaming();
         engine = null;
+    }
+
+    public void enableAnalysis() {
+
+            DuckOpenCVEngineBlueFull.doAnalysis = true;
+
     }
 }
 

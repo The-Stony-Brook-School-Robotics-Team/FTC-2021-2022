@@ -18,7 +18,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
  * @author Marc N.
  * @version 5.1
  */
-@Autonomous(name="A - OpenCV Duck Analysis")
+@Autonomous(name="****A - OpenCV Duck Analysis")
 public class OpenCVSample extends OpMode {
 
     // MARK - Class Variables
@@ -66,7 +66,7 @@ public class OpenCVSample extends OpMode {
     public void start() {
         super.start();
         // Start the analysis
-        DuckOpenCVEngineBlueSpline.doAnalysis = true;
+        DuckOpenCVEngineBlueFull.doAnalysis = true;
         //webcam.pauseViewport();
     }
     // MARK - End of OpMode Run
