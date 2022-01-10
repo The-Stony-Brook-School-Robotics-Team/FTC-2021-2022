@@ -9,10 +9,10 @@
 
     @TeleOp(name="Intake Controller Tester", group="Linear Opmode")
     public class IntakeControllerTester extends LinearOpMode {
-        private IntakeController frontIntake;
+        private IntakeControllerSlow frontIntake;
 
         public void runOpMode() throws InterruptedException {
-            frontIntake = new IntakeController(hardwareMap, telemetry, IntakeSide.RED);
+            frontIntake = new IntakeControllerSlow(hardwareMap, telemetry, IntakeSide.RED);
             frontIntake.setState(IntakeState.BASE);
             waitForStart();
 
