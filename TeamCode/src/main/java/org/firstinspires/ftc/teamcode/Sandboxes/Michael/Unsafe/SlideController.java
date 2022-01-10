@@ -25,6 +25,7 @@ public class SlideController {
 
 
     /** Vertical Servo, then Horizontal Servo, then Dumper Servo, then Slide Motor, */
+    private int currentEncoderPosition = 0;
     private HashMap<SlideComponents, Double> values = new HashMap<>();
 
 
@@ -48,6 +49,8 @@ public class SlideController {
         slideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         slideMotor.setTargetPosition(values.get(SlideComponents.SLIDE_MOTOR_POSITION_IN).intValue());
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        currentEncoderPosition = slideMotor.getCurrentPosition();
 
 
     }
@@ -73,6 +76,13 @@ public class SlideController {
     public double getServoPosition(){return verticalServo.getPosition();}
     public int getMotorPosition(){return slideMotor.getCurrentPosition();}
     public double getMotorPower(){return slideMotor.getPower();}
+
+    public void setMotorIncrement(int x){
+        currentEncoderPosition = slideMotor.getCurrentPosition();
+        currentEncoderPosition += x;
+        slideMotor.setTargetPosition(currentEncoderPosition);
+
+    }
 
 
 
