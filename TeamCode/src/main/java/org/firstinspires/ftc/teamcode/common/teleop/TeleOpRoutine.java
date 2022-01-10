@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop;
+package org.firstinspires.ftc.teamcode.common.teleop;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
@@ -9,15 +9,14 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop.enums.ControllerModes;
-import org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop.enums.TeleOpRobotStates;
-import org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop.misc.Beta;
-import org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop.samples.DashboardInterface;
+import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
+import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
+import org.firstinspires.ftc.teamcode.common.teleop.misc.Beta;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 
-//@TeleOp(name="A - TeleOp", group="default")
+@TeleOp(name="A - TeleOp", group="default")
 public class TeleOpRoutine extends OpMode {
 
     /**
