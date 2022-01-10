@@ -201,6 +201,7 @@ public class AutonomousBrain {
                     minorState = AutonomousBackForthSubStates.ONE_INTAKE;
                     return;
                 }
+                // time check
                /* double currentTime = NanoClock.system().seconds();
                 if(currentTime-iniTime > 25) {
                     majorState = AutonomousStates.SIX_PARKING_WAREHOUSE;
@@ -270,9 +271,13 @@ public class AutonomousBrain {
                     e.printStackTrace();
                 }
                 RRctrl.forward(20,10);
+                if(!didIScoopAnItem) {
+                    return; // try again
+                }
+
 
                 //RRctrl.doForwardHaltableTrajectory(30,3,50,40, stopSignal.get(),externMutex);
-                if(!didIScoopAnItem) {
+                /*if(!didIScoopAnItem) {
                     RRctrl.followLineToSpline(wareHousePickupPositionBSimp2);
                     RRctrl.strafeR(5);
                     counterDidntFind++;
@@ -281,7 +286,7 @@ public class AutonomousBrain {
                 }
                 synchronized (externMutex) {
                     didIScoopAnItem = false;
-                }
+                }*/
                 RRctrl.stopRobot(); // make sure robot is stopped.
 
                 minorState = AutonomousBackForthSubStates.TWO_DEPOSIT;
