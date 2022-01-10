@@ -274,6 +274,8 @@ public class AutonomousBrain {
                 if(!didIScoopAnItem) {
                     return; // try again
                 }
+                RRctrl.stopRobot(); // make sure robot is stopped.
+
 
 
                 //RRctrl.doForwardHaltableTrajectory(30,3,50,40, stopSignal.get(),externMutex);
@@ -287,7 +289,6 @@ public class AutonomousBrain {
                 synchronized (externMutex) {
                     didIScoopAnItem = false;
                 }*/
-                RRctrl.stopRobot(); // make sure robot is stopped.
 
                 minorState = AutonomousBackForthSubStates.TWO_DEPOSIT;
                 return;
