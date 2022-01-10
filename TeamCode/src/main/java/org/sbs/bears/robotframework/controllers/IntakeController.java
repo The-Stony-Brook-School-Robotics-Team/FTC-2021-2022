@@ -19,7 +19,10 @@ public class IntakeController {
     private Rev2mDistanceSensor distanceSensor;
 
     /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/
-    private double[] basePos = {.025, 0.7}; //.141
+//    private double[] basePos = {.025, 0.7}; //.141 // COMMENTED OUT BY MARC ON SUN JAN 9 2022 AT 22h12m54s
+
+    private double[] basePos = {.03, 0.7}; //.141 // CHANGED BY MARC ON SUN JAN 9 2022 AT 22h12m54s
+
     private double[] dumpPos = {.45, 0.4}; //.87
     private double[] parkPos = {.39, 0.0}; //75
 
@@ -61,6 +64,16 @@ public class IntakeController {
         return qIsObjectInPayload;
     }
 
+    /** Marc's autonomous adjusted method: do not touch or use outside of the auton brain pls.*/
+    public void loadItemIntoSlideForAutonomousOnly() {
+        setState(IntakeState.DUMP);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        setState(IntakeState.PARK);
+    }
 
     /** Autonomous method-- waits until object is seen, dumps, then sets to park. **/
     public void waitForIntake() {

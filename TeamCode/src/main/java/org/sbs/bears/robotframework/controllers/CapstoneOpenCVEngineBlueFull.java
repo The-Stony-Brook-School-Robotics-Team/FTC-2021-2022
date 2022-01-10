@@ -3,7 +3,6 @@ package org.sbs.bears.robotframework.controllers;
 import android.util.Log;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -11,8 +10,8 @@ import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
-import org.openftc.easyopencv.OpenCvPipeline;
 import org.sbs.bears.robotframework.enums.DuckPosition;
+import static org.sbs.bears.robotframework.controllers.OpenCVController.doAnalysisMaster;
 
 import java.util.ArrayList;
 
@@ -23,13 +22,13 @@ import java.util.ArrayList;
  * @version 5.1
  */
 @Config
-<<<<<<<< HEAD:TeamCode/src/main/java/org/sbs/bears/robotframework/controllers/DuckOpenCVEngine.java
-public abstract class DuckOpenCVEngine extends OpenCvPipeline {
-========
-public class DuckOpenCVEngineRedFull extends DuckOpenCVEngine {
->>>>>>>> 09e1cadca62f6e5cc33ee5ed6287929389635e0d:TeamCode/src/main/java/org/sbs/bears/robotframework/controllers/DuckOpenCVEngineRedFull.java
+public class CapstoneOpenCVEngineBlueFull extends DuckOpenCVEngine {
     // MARK - Class Variables
 
+    public CapstoneOpenCVEngineBlueFull() {
+        super();
+        Log.d("BlueFullDuckOpenCVController","Init req");
+    }
 
     /**
      * This variable represents the width of the Camera Stream.
@@ -47,6 +46,7 @@ public class DuckOpenCVEngineRedFull extends DuckOpenCVEngine {
     static volatile Object semaphore = new Object();
 
 
+
     /**
      * This variable represents the Duck's Position on the barcode.
      * This variable is made to be read from outside (hence its "protected" state).
@@ -54,11 +54,6 @@ public class DuckOpenCVEngineRedFull extends DuckOpenCVEngine {
      */
     protected static volatile DuckPosition position = DuckPosition.NA;
 
-
-<<<<<<<< HEAD:TeamCode/src/main/java/org/sbs/bears/robotframework/controllers/DuckOpenCVEngine.java
-
-========
->>>>>>>> 09e1cadca62f6e5cc33ee5ed6287929389635e0d:TeamCode/src/main/java/org/sbs/bears/robotframework/controllers/DuckOpenCVEngineRedFull.java
 
     /**
      * This variable represents a Blue color.
@@ -139,39 +134,39 @@ public class DuckOpenCVEngineRedFull extends DuckOpenCVEngine {
     /**
      * This variable represents the Top Left Corner of the rectangle about barcode A.
      */
-    public Point RectATLCorner = new Point(
+    Point RectATLCorner = new Point(
             RectATopLeftAnchor.x,
             RectATopLeftAnchor.y);
     /**
      * This variable represents the Bottom Right Corner of the rectangle about barcode A.
      */
-    public Point RectABRCorner = new Point(
+    Point RectABRCorner = new Point(
             RectATopLeftAnchor.x + WidthRectA,
             RectATopLeftAnchor.y + HeightRectA);
 
     /**
      * This variable represents the Top Left Corner of the rectangle about barcode B.
      */
-    public Point RectBTLCorner = new Point(
+    Point RectBTLCorner = new Point(
             RectBTopLeftAnchor.x,
             RectBTopLeftAnchor.y);
     /**
      * This variable represents the Bottom Right Corner of the rectangle about barcode B.
      */
-    public Point RectBBRCorner = new Point(
+    Point RectBBRCorner = new Point(
             RectBTopLeftAnchor.x + WidthRectB,
             RectBTopLeftAnchor.y + HeightRectB);
 
     /**
      * This variable represents the Top Left Corner of the rectangle about barcode C.
      */
-    public Point RectCTLCorner = new Point(
+    Point RectCTLCorner = new Point(
             RectCTopLeftAnchor.x,
             RectCTopLeftAnchor.y);
     /**
      * This variable represents the Bottom Right Corner of the rectangle about barcode C.
      */
-    public Point RectCBRCorner = new Point(
+    Point RectCBRCorner = new Point(
             RectCTopLeftAnchor.x + WidthRectC,
             RectCTopLeftAnchor.y + HeightRectC);
 
@@ -182,51 +177,51 @@ public class DuckOpenCVEngineRedFull extends DuckOpenCVEngine {
      *
      * NOTE: it must be freed every time after it is used in order to save memory and prevent leakage.
      */
-    public Mat YCrCb = new Mat();
+    Mat YCrCb = new Mat();
     /**
      * This variable contains only the Y component of the image that the camera takes of its view
      * in the YCrCb color space.
      *
      * NOTE: it must be freed every time after it is used in order to save memory and prevent leakage.
      */
-    public Mat Y = new Mat();
+    Mat Y = new Mat();
     /**
      * This variable contains the sub-image that the camera takes of the rectangle about barcode A (Y component only).
      *
      * NOTE: it must be freed every time after it is used in order to save memory and prevent leakage.
      */
-    public Mat RectA_Y;
+    Mat RectA_Y;
     /**
      * This variable contains the sub-image that the camera takes of the rectangle about barcode B (Y component only).
      *
      * NOTE: it must be freed every time after it is used in order to save memory and prevent leakage.
      */
-    public Mat RectB_Y;
+    Mat RectB_Y;
     /**
      * This variable contains the sub-image that the camera takes of the rectangle about barcode C (Y component only).
      *
      * NOTE: it must be freed every time after it is used in order to save memory and prevent leakage.
      */
-    public Mat RectC_Y;
+    Mat RectC_Y;
 
     /**
      * This variable contains the average value of Y in the rectangle about barcode A.
      *
      * NOTE: it must be freed every time after it is used in order to save memory and prevent leakage.
      */
-    volatile public int avgAY;
+    volatile int avgAY;
     /**
      * This variable contains the average value of Y in the rectangle about barcode B.
      *
      * NOTE: it must be freed every time after it is used in order to save memory and prevent leakage.
      */
-    volatile public int avgBY;
+    volatile int avgBY;
     /**
      * This variable contains the average value of Y in the rectangle about barcode C.
      *
      * NOTE: it must be freed every time after it is used in order to save memory and prevent leakage.
      */
-    volatile public int avgCY;
+    volatile int avgCY;
 
     /**
      * This function takes the RGB frame, converts to YCrCb,
@@ -234,19 +229,15 @@ public class DuckOpenCVEngineRedFull extends DuckOpenCVEngine {
      * and also creates the submats of each rectangle (A,B,C).
      * @param input the Mat that is provided by the OpenCV subsystem.
      */
-<<<<<<<< HEAD:TeamCode/src/main/java/org/sbs/bears/robotframework/controllers/DuckOpenCVEngine.java
-    abstract public void convertY(Mat input);
-========
     public void convertY(Mat input) {
         Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb); // convert to YCrCb
         ArrayList<Mat> yCrCbChannels = new ArrayList<Mat>(3);
         Core.split(YCrCb, yCrCbChannels); // split into Y, Cr, and Cb
-        Y = yCrCbChannels.get(0);
+        Y = yCrCbChannels.get(1);
         RectA_Y = Y.submat(new Rect(RectATLCorner, RectABRCorner));
         RectB_Y = Y.submat(new Rect(RectBTLCorner, RectBBRCorner));
         RectC_Y = Y.submat(new Rect(RectCTLCorner, RectCBRCorner));
     }
->>>>>>>> 09e1cadca62f6e5cc33ee5ed6287929389635e0d:TeamCode/src/main/java/org/sbs/bears/robotframework/controllers/DuckOpenCVEngineRedFull.java
 
 
     /**
@@ -256,7 +247,10 @@ public class DuckOpenCVEngineRedFull extends DuckOpenCVEngine {
      * @param firstFrame the Mat that is provided by the OpenCV subsystem.
      */
     @Override
-    abstract public void init(Mat firstFrame);
+    public void init(Mat firstFrame) {
+       convertY(firstFrame);
+        Log.d("BlueFullDuckOpenCVController","Init complete");
+    }
 
     /**
      * This function takes the RGB frame, converts to YCrCb,
@@ -270,33 +264,109 @@ public class DuckOpenCVEngineRedFull extends DuckOpenCVEngine {
      * @return the input mat with rectangles representing the three barcode areas drawn on it.
      */
     @Override
-    abstract public Mat processFrame(Mat input);
+    public Mat processFrame(Mat input) {
+        Log.d("BlueFullDuckOpenCVController","Start ProcessFrame");
+        if(doAnalysisMaster) {
+           convertY(input);
+           synchronized (semaphore) {
+               avgAY = (int) Core.mean(RectA_Y).val[0];
+               avgBY = (int) Core.mean(RectB_Y).val[0];
+               avgCY = (int) Core.mean(RectC_Y).val[0];
+           }
+           // Release the mats! Otherwise there are memory leaks and it crashes.
+           RectA_Y.release();
+           RectB_Y.release();
+           RectC_Y.release();
+           Y.release();
+           YCrCb.release();
+       }
+        Imgproc.rectangle( // rings
+                input, // Buffer to draw on
+                RectATLCorner, // First point which defines the rectangle
+                RectABRCorner, // Second point which defines the rectangle
+                BLUE, // The color the rectangle is drawn in
+                2); // Thickness of the rectangle lines
+
+        Imgproc.rectangle( // rings
+                input, // Buffer to draw on
+                RectBTLCorner, // First point which defines the rectangle
+                RectBBRCorner, // Second point which defines the rectangle
+                GREEN, // The color the rectangle is drawn in
+                2); // Thickness of the rectangle lines
+        Imgproc.rectangle( // rings
+                input, // Buffer to draw on
+                RectCTLCorner, // First point which defines the rectangle
+                RectCBRCorner, // Second point which defines the rectangle
+                RED, // The color the rectangle is drawn in
+                2); // Thickness of the rectangle lines
+
+       if(doAnalysisMaster) {
+           int dAB = Math.abs(avgAY-avgBY);
+           int dAC = Math.abs(avgAY-avgCY);
+           int dBC = Math.abs(avgBY-avgCY);
+
+           if (dAB <= 2) {
+               synchronized (semaphore) {
+                   position = DuckPosition.C;
+               }
+               System.out.println("Found the duck: C");
+           }
+           else {
+               if (dAC <= 2) {
+                   synchronized (semaphore) {
+                       position = DuckPosition.B;
+                   }
+                   System.out.println("Found the duck: B");
+               }
+               else if (dBC <= 2) {
+                   synchronized (semaphore) {
+                       position = DuckPosition.A;
+                   }
+                   System.out.println("Found the duck: A");
+               }
+           }
+       }
+        Log.d("BlueFullDuckOpenCVController","End ProcessFrame");
+        Log.d("BlueFullDuckOpenCVController","A: " + avgAY + " B: " + avgBY + " C: " +  avgCY);
+
+        if(avgAY != 0 && avgBY != 0 && avgCY != 0) {
+            doAnalysisMaster = false;
+        }
+        return input;
+    }
 
     /**
      * This method returns the average 'Y' value on barcode A using a semaphore to make sure
      * concurrent threads don't overwrite each other.
      * @return the average 'Y' value on barcode A
      */
-    abstract public int getAYanalysis();
-
+    public int getAYanalysis() {
+        synchronized (semaphore) {return avgAY;}
+    }
     /**
      * This method returns the average 'Y' value on barcode B using a semaphore to make sure
      * concurrent threads don't overwrite each other.
      * @return the average 'Y' value on barcode B
      */
-    abstract public int getBYanalysis();
+    public int getBYanalysis() {
+         synchronized (semaphore) {return avgBY;}
+    }
     /**
      * This method returns the average 'Y' value on barcode C using a semaphore to make sure
      * concurrent threads don't overwrite each other.
      * @return the average 'Y' value on barcode C
      */
-    abstract public int getCYanalysis();
+    public int getCYanalysis() {
+         synchronized (semaphore) {return avgCY;}
+    }
     /**
      * This method returns the position of the duck on the barcode
      * using a semaphore to make sure concurrent threads don't
      * overwrite each other.
      * @return the duck position on the barcode
      */
-    abstract public DuckPosition getPosition();
+    public DuckPosition getPosition() {
+        synchronized (semaphore) {return position;}
+    }
 
 }
