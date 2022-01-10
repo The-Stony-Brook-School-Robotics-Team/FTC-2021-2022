@@ -14,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
  * Turns out this code worked, but the dashboard alreadt has handling for multiple packets
  */
 @Beta
-@Deprecated
 public class DashboardInterface {
 
     private static boolean initialized = false;
@@ -27,7 +26,6 @@ public class DashboardInterface {
 
     public static final int maxLines = 20;
     public static volatile String[] lines = new String[maxLines];
-    public static boolean handlerCraftingPacket = false;
 
     /**
      * Items for drawing the robot
@@ -191,7 +189,7 @@ public class DashboardInterface {
             } catch (Exception ex) {
                 return DASHBOARD_INTERFACE_UPDATER_FLAGS.NO_ACCESS;
             }
-            dashboardInterfaceUpdater.stop();
+            dashboardInterfaceUpdater.interrupt();
             return DASHBOARD_INTERFACE_UPDATER_FLAGS.STOPPED;
         } else if(initialized && !dashboardInterfaceUpdater.isAlive()) {
             return DASHBOARD_INTERFACE_UPDATER_FLAGS.STOPPED;
@@ -218,7 +216,7 @@ public class DashboardInterface {
         NO_ACCESS
     }
 
-    private static Thread dashboardInterfaceUpdater = new Thread(() -> {
+    public static Thread dashboardInterfaceUpdater = new Thread(() -> {
             // Gets last pose
             Pose2d poseEstimate = internalDrive.getPoseEstimate();
 
