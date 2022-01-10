@@ -106,8 +106,8 @@ public class RoadRunnerController {
     }
 
     public void forwardAsync(double dist,double vel) {
-    TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(vel, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
-    TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
+        TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(vel, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
+        TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
 
         drive.followTrajectoryAsync(
                 drive.trajectoryBuilder(drive.getPoseEstimate())
@@ -227,8 +227,8 @@ public class RoadRunnerController {
     {
         drive.followTrajectory(
                 drive.trajectoryBuilder(iniPos)
-                    .lineToSplineHeading(finalPos)
-                    .build()
+                        .lineToSplineHeading(finalPos)
+                        .build()
         );
     }
 
@@ -365,12 +365,12 @@ public class RoadRunnerController {
     private void haltInterruptibleTrajVar()
     {
         synchronized (internalMutex){
-        isRunningInterruptibleTraj = false;}
+            isRunningInterruptibleTraj = false;}
     }
     private boolean getIfInterruptibleTraj()
     {
         synchronized (internalMutex) {
-        return isRunningInterruptibleTraj;}
+            return isRunningInterruptibleTraj;}
     }
 
 

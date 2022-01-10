@@ -13,6 +13,7 @@ import org.sbs.bears.robotframework.controllers.IntakeController;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 import org.sbs.bears.robotframework.controllers.RoadRunnerController;
 import org.sbs.bears.robotframework.controllers.SlideExtensionController;
+import org.sbs.bears.robotframework.enums.IntakeSide;
 import org.sbs.bears.robotframework.enums.IntakeState;
 import org.sbs.bears.robotframework.enums.SlideHeight;
 import org.sbs.bears.robotframework.controllers.SlideHeightController;
@@ -30,6 +31,7 @@ public class AutonomousBrain {
     SlideHeightController slideHCtrl;
     SlideExtensionController slideExtCtrl;
     IntakeController intakeCtrl;
+    IntakeController intakeCtrl2;
 
     Telemetry tel;
     HardwareMap hwMap;
@@ -77,6 +79,7 @@ public class AutonomousBrain {
         this.slideHCtrl = robot.getSlideHCtrl();
         this.slideExtCtrl = robot.getSlideExtCtrl();
         this.intakeCtrl = robot.getIntakeCtrl();
+        this.intakeCtrl2 = new IntakeController(hardwareMap,telemetry, IntakeSide.RED);
     }
     public void launch() // call this method before loop, so start method.
     {
@@ -88,6 +91,8 @@ public class AutonomousBrain {
         {
             case STOPPED:
                 doAnalysisMaster = true;
+                intakeCtrl.setState(IntakeState.PARK);
+                intakeCtrl2.setState(IntakeState.PARK); // to prevent from moving around
                 switch(mode) {
                     case BlueSimple:
                         RRctrl.setPos(startPositionBSimp);
@@ -196,10 +201,10 @@ public class AutonomousBrain {
                     minorState = AutonomousBackForthSubStates.ONE_INTAKE;
                     return;
                 }
-                double currentTime = NanoClock.system().seconds();
+               /* double currentTime = NanoClock.system().seconds();
                 if(currentTime-iniTime > 25) {
                     majorState = AutonomousStates.SIX_PARKING_WAREHOUSE;
-                }
+                }*/
                 return;
             case SIX_PARKING_WAREHOUSE:
                 /*switch(mode) {
@@ -229,40 +234,7 @@ public class AutonomousBrain {
             case STOPPED:
                 // do nothing
                 return;
-
             case ONE_INTAKE:
-               intakeCtrl.setState(IntakeState.BASE); // prepare
-                try {
-                    Thread.sleep(750);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                // STAGE 0: P0 M1 S0 I0
-                AtomicReference<Boolean> foundBlock = new AtomicReference<>(Boolean.getBoolean("false")); // is there a block inside the payload
-                AtomicReference<Boolean> aborted = new AtomicReference<>(Boolean.getBoolean("false")); // did I halt the search because my trajectory finished
-                new Thread(()->{
-                    intakeCtrl.waitForObjectForAutonomousOnly(aborted,foundBlock); // loop until either I found a block or aborted,
-                    // and I set foundblock to true if I stopped because of it
-                    if(!aborted.get()) { // found a block because didnt stop from aborted.
-                        RRctrl.haltTrajectory();
-                        RRctrl.stopRobot();
-                        intakeCtrl.loadItemIntoSlideForAutonomousOnly();
-                    }
-                }).start();
-                // start haltable forward trajectory
-                RRctrl.forward(12,10);  // STAGE 1: P0 M0 S0 I0
-
-                aborted.set(true); // abort the thread once traj is complete, doesnt matter whether found or not.
-                if(foundBlock.get()) {
-                    minorState = AutonomousBackForthSubStates.TWO_DEPOSIT; // If i have it lets continue
-                }
-                else {
-                    intakeCtrl.compliantWheel.setPower(0); // stop wheels to not absorb when not looking
-                    RRctrl.followLineToSpline(wareHousePickupPositionBSimp2); // if i dont lets realign position
-                    RRctrl.strafeR(5); // turn to have better luck
-                }
-                return;
-            /*case ONE_INTAKE:
                 Object externMutex = new Object();
                 AtomicReference<Boolean> stopSignal = new AtomicReference<>(Boolean.getBoolean("false"));
                 intakeCtrl.setState(IntakeState.BASE);
@@ -286,6 +258,8 @@ public class AutonomousBrain {
                         Log.d("AutonBrain","didIScoopAnItem: " + didIScoopAnItem);
                         if(didIScoopAnItem) {
                             stopSignal.set(Boolean.getBoolean("true"));
+                            RRctrl.haltTrajectory();
+                            RRctrl.stopRobot();
                         }
                     } // will halt trajectory in separate thread
                     intakeCtrl.loadItemIntoSlideForAutonomousOnly(); // approved usage
@@ -295,7 +269,9 @@ public class AutonomousBrain {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                RRctrl.doForwardHaltableTrajectory(30,3,50,40, stopSignal.get(),externMutex);
+                RRctrl.forward(20,10);
+
+                //RRctrl.doForwardHaltableTrajectory(30,3,50,40, stopSignal.get(),externMutex);
                 if(!didIScoopAnItem) {
                     RRctrl.followLineToSpline(wareHousePickupPositionBSimp2);
                     RRctrl.strafeR(5);
@@ -310,7 +286,7 @@ public class AutonomousBrain {
 
                 minorState = AutonomousBackForthSubStates.TWO_DEPOSIT;
                 return;
-            */case TWO_DEPOSIT: // TODO implement go forward and then turn
+            case TWO_DEPOSIT: // TODO implement go forward and then turn
                 /*switch(mode) {
                     case BlueSimple:
                     case BlueFull:
