@@ -1,6 +1,9 @@
 package org.sbs.bears.robotframework.controllers;
 
+import android.util.Log;
+
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.roadrunner.drive.Drive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -275,40 +278,56 @@ public class RoadRunnerController {
 
     public void doForwardHaltableTrajectory(double distMax, double brakingDist, double brakeVel, double brakeDecel, Boolean signal, Object mutex)
     {
+        Log.d("HaltableTrajectoryRunner","init");
         boolean isRunning = true;
         startInterruptibleTrajVar();
         boolean isForwarding = false;
         boolean isBraking = false;
         TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(brakeVel, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
+        TrajectoryVelocityConstraint velocityConstraint2 = SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
         TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(brakeDecel);
+        TrajectoryAccelerationConstraint accelerationConstraint2 = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
 
+        Log.d("HaltableTrajectoryRunner","start halting thread");
 
         new Thread(()->{Boolean tmpIsRunning = Boolean.getBoolean("true");
             while(getIfInterruptibleTraj()) {
                 synchronized (mutex) {
                     if(signal) {
                         runner.cancelTraj();
+                        Log.d("HaltableTrajectoryRunner","traj halted by signal");
                         return;
                     }
                 }
             }
         }).start();
 
-        double iniX = drive.getPoseEstimate().getX();
+        Log.d("HaltableTrajectoryRunner","prepare traj");
+
+        Pose2d iniPos = drive.getPoseEstimate();
+        double iniX = iniPos.getX();
+        Log.d("HaltableTrajectoryRunner","start traj");
+        Log.d("HaltableTrajectoryRunner","iniPos: " + iniPos.toString());
+
         double iniTime = NanoClock.system().seconds();
-        Trajectory trajForward = drive.trajectoryBuilder(new Pose2d())
-                .lineToSplineHeading(new Pose2d(distMax,0,0))
+        Trajectory trajForward = drive.trajectoryBuilder(iniPos)
+                //.lineToSplineHeading(new Pose2d(distMax+iniX,iniPos.getY(),iniPos.getHeading()))
+                .forward(distMax,velocityConstraint2,accelerationConstraint2)
                 .build();
         isForwarding = true;
         drive.followTrajectory(trajForward); // interruptible
         isForwarding = false;
         haltInterruptibleTrajVar();
+        Log.d("HaltableTrajectoryRunner","traj halted");
         isBraking = true;
-        double currentX = drive.getPoseEstimate().getX();
+        Log.d("HaltableTrajectoryRunner","braking traj start");
+        /*double currentX = drive.getPoseEstimate().getX();
         Trajectory trajBrake = drive.trajectoryBuilder(drive.getPoseEstimate())
                 .forward(brakingDist+currentX-iniX,velocityConstraint,accelerationConstraint)
                 .build();
-        drive.followTrajectoryTime(trajBrake,iniTime);
+        drive.followTrajectoryTime(trajBrake,iniTime);*/
+        Log.d("HaltableTrajectoryRunner","braking traj end");
+        Log.d("HaltableTrajectoryRunner","done");
         isRunning = false;
         isBraking = false;
     }

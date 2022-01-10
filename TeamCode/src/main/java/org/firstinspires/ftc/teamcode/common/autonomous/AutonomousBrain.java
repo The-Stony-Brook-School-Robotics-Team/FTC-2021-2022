@@ -13,6 +13,7 @@ import org.sbs.bears.robotframework.controllers.IntakeController;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 import org.sbs.bears.robotframework.controllers.RoadRunnerController;
 import org.sbs.bears.robotframework.controllers.SlideExtensionController;
+import org.sbs.bears.robotframework.enums.IntakeState;
 import org.sbs.bears.robotframework.enums.SlideHeight;
 import org.sbs.bears.robotframework.controllers.SlideHeightController;
 import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
@@ -32,6 +33,9 @@ public class AutonomousBrain {
 
     Telemetry tel;
     HardwareMap hwMap;
+     int counter = 0;
+     int counterDidntFind = 0;
+     boolean didIScoopAnItem = false;
 
     public  AutonomousStates majorState = AutonomousStates.STOPPED;
     public  AutonomousBackForthSubStates minorState = AutonomousBackForthSubStates.STOPPED;
@@ -55,7 +59,7 @@ public class AutonomousBrain {
     enum AutonomousBackForthSubStates {
         STOPPED,
         ONE_INTAKE,
-        TWO_FORWARD,
+        TWO_DEPOSIT,
         THREE_SLIDE_OUT_IN,
         FOUR_BACKWARD
     }
@@ -198,7 +202,7 @@ public class AutonomousBrain {
                 }
                 return;
             case SIX_PARKING_WAREHOUSE:
-                switch(mode) {
+                /*switch(mode) {
                     case BlueSimple:
                         RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
                     case BlueSpline:
@@ -207,7 +211,9 @@ public class AutonomousBrain {
                         RRctrl.followLineToSpline(wareHousePickupPositionRSimp);
                     case RedSpline:
                         RRctrl.followLineToSpline(wareHousePickupPositionRSpl);
-                }
+                }*/
+                intakeCtrl.setState(IntakeState.PARK);
+                RRctrl.followLineToSpline(wareHousePickupPositionBSimp2);
                 majorState = AutonomousStates.FINISHED;
                 return;
             case FINISHED:
@@ -220,21 +226,61 @@ public class AutonomousBrain {
     {
         switch(minorState)
         {
+            case STOPPED:
+                // do nothing
+                return;
             case ONE_INTAKE:
                 Object externMutex = new Object();
                 AtomicReference<Boolean> stopSignal = new AtomicReference<>(Boolean.getBoolean("false"));
-                RRctrl.doForwardHaltableTrajectory(20,4,50,40, stopSignal.get(),externMutex);
+                intakeCtrl.setState(IntakeState.BASE);
                 new Thread(()->{
-                    intakeCtrl.waitForIntake();
+                    boolean isInState = true;
                     synchronized (externMutex) {
-                        stopSignal.set(Boolean.getBoolean("true"));} // will halt trajectory in separate thread
+                        isInState = minorState.equals(AutonomousBackForthSubStates.ONE_INTAKE);
+                    }
+                    while(!intakeCtrl.isObjectInPayload() && isInState) {
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        synchronized (externMutex) {
+                            isInState = minorState.equals(AutonomousBackForthSubStates.ONE_INTAKE);
+                        }
+                    }
+                    synchronized (externMutex) {
+                        didIScoopAnItem = intakeCtrl.isObjectInPayload();
+                        Log.d("AutonBrain","didIScoopAnItem: " + didIScoopAnItem);
+                        if(didIScoopAnItem) {
+                            stopSignal.set(Boolean.getBoolean("true"));
+                        }
+                    } // will halt trajectory in separate thread
+                    intakeCtrl.loadItemIntoSlideForAutonomousOnly(); // approved usage
                 }).start();
+                try {
+                    Thread.sleep(750);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                RRctrl.doForwardHaltableTrajectory(30,3,50,40, stopSignal.get(),externMutex);
+                if(!didIScoopAnItem) {
+                    RRctrl.followLineToSpline(wareHousePickupPositionBSimp2);
+                    RRctrl.strafeR(5);
+                    counterDidntFind++;
+                    Log.d("AutonBrain","Didnt find item, " + counterDidntFind + "th time");
+                    return;
+                }
+                synchronized (externMutex) {
+                    didIScoopAnItem = false;
+                }
                 RRctrl.stopRobot(); // make sure robot is stopped.
-                minorState = AutonomousBackForthSubStates.TWO_FORWARD;
+
+                minorState = AutonomousBackForthSubStates.TWO_DEPOSIT;
                 return;
-            case TWO_FORWARD:
-                switch(mode) {
+            case TWO_DEPOSIT: // TODO implement go forward and then turn
+                /*switch(mode) {
                     case BlueSimple:
+                    case BlueFull:
                         RRctrl.followLineToSpline(depositObjectPositionBsimp);
                     case BlueSpline:
                         RRctrl.followLineToSpline(depositObjectPositionBspl);
@@ -242,8 +288,24 @@ public class AutonomousBrain {
                         RRctrl.followLineToSpline(depositObjectPositionRsimp);
                     case RedSpline:
                         RRctrl.followLineToSpline(depositObjectPositionRspl);
-                }
+                }*/
+                RRctrl.followLineToSpline(depositObjectPositionBsimp); // TODO reput switch for all possible autonomi
+                //minorState = AutonomousBackForthSubStates.THREE_SLIDE_OUT_IN;
                 minorState = AutonomousBackForthSubStates.THREE_SLIDE_OUT_IN;
+                counter++; // 1 after first run, 2 after second.
+                while(!AutonomousBlueFull.gamepad.b) {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                /*if (counter == 2) {
+                    minorState = AutonomousBackForthSubStates.STOPPED;
+                    majorState = AutonomousStates.STOPPED;
+                    return;
+                }*/
+                //majorState = AutonomousStates.FINISHED; // stop.
                 return;
             case THREE_SLIDE_OUT_IN:
                 switch(mode) // should have already set slide height before.
@@ -260,7 +322,7 @@ public class AutonomousBrain {
                 minorState = AutonomousBackForthSubStates.FOUR_BACKWARD;
                 return;
             case FOUR_BACKWARD:
-                switch(mode) {
+                /*switch(mode) {
                     case BlueSimple:
                         RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
                     case BlueSpline:
@@ -269,7 +331,8 @@ public class AutonomousBrain {
                         RRctrl.followLineToSpline(wareHousePickupPositionRSimp);
                     case RedSpline:
                         RRctrl.followLineToSpline(wareHousePickupPositionRSpl);
-                }
+                }*/
+                RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
                 minorState = AutonomousBackForthSubStates.ONE_INTAKE;
                 return;
 
@@ -313,16 +376,19 @@ public class AutonomousBrain {
 
     public static Pose2d wareHousePickupPositionBSimpIntermediate = new Pose2d(-45,66,0);
     public static Pose2d wareHousePickupPositionRSimpIntermediate = new Pose2d(-45,-66,0);
-
-    public static Pose2d wareHousePickupPositionBSimp = new Pose2d(35,65.5,0);
-
+    public static Pose2d wareHousePickupPositionBSimp = new Pose2d(30,65.5,0);
+    public static Pose2d wareHousePickupPositionBSimp2 = new Pose2d(38,65.5,0);
 
 
     public static Pose2d wareHousePickupPositionBSpl = new Pose2d(71, 34, -Math.PI/2);
     public static Pose2d wareHousePickupPositionRSimp = new Pose2d(54.5,-65.5,Math.PI);
     public static Pose2d wareHousePickupPositionRSpl = new Pose2d(71, -34, Math.PI/2);
 
-    public static Pose2d depositObjectPositionBsimp = new Pose2d(-12.25,65.5,0);
+    public static Pose2d depositObjectPositionBsimp = new Pose2d(-19,65.5,0);
+
+
+
+
     public static Pose2d depositObjectPositionBspl = new Pose2d(71,19,-Math.PI/2);
     public static Pose2d depositObjectPositionRsimp = new Pose2d(-12.25,-65.5,Math.PI);
     public static Pose2d depositObjectPositionRspl = new Pose2d(71,-10,Math.PI/2);
