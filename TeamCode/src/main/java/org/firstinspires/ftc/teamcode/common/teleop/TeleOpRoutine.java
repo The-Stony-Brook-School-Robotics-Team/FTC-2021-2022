@@ -20,7 +20,7 @@ import org.sbs.bears.robotframework.enums.IntakeSide;
 import org.sbs.bears.robotframework.enums.IntakeState;
 
 
-@TeleOp(name="A - TeleOp", group="default")
+@TeleOp(name="A - TeleOp Qualifier One", group="default")
 public class TeleOpRoutine extends OpMode {
 
     /**
