@@ -9,6 +9,7 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
+import org.sbs.bears.robotframework.enums.DuckPosition;
 
 import java.util.ArrayList;
 
@@ -19,7 +20,7 @@ import java.util.ArrayList;
  * @version 5.1
  */
 @Config
-public class DuckOpenCVEngineBlueSimple extends OpenCvPipeline {
+public class DuckOpenCVEngineBlueSimple extends DuckOpenCVEngine {
     // MARK - Class Variables
 
 
@@ -54,19 +55,7 @@ public class DuckOpenCVEngineBlueSimple extends OpenCvPipeline {
     protected static volatile DuckPosition position = DuckPosition.NA;
 
 
-    /**
-     * This enum describes the Duck Position.
-     * NA represents "Not yet calculated"
-     * A,B,C represent the Barcode Positions.
-     * @author Marc N
-     * @version 2.0
-     */
-    enum DuckPosition {
-        NA,
-        A,
-        B,
-        C
-    }
+
 
     /**
      * This variable represents a Blue color.
@@ -242,7 +231,7 @@ public class DuckOpenCVEngineBlueSimple extends OpenCvPipeline {
      * and also creates the submats of each rectangle (A,B,C).
      * @param input the Mat that is provided by the OpenCV subsystem.
      */
-    void convertY(Mat input) {
+    public void convertY(Mat input) {
         Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb); // convert to YCrCb
         ArrayList<Mat> yCrCbChannels = new ArrayList<Mat>(3);
         Core.split(YCrCb, yCrCbChannels); // split into Y, Cr, and Cb

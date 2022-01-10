@@ -17,13 +17,13 @@ public class Increment extends LinearOpMode {
 
 
     public void runOpMode() throws InterruptedException {
-        Servo scooper = hardwareMap.get(Servo.class, "vt");
+        Servo scooper = hardwareMap.get(Servo.class, "ri");
         //DcMotor compliantWheel = hardwareMap.get(DcMotor.class, "motor");
         //Rev2mDistanceSensor distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "2m");
 
         scooper.setDirection(Servo.Direction.FORWARD);
         //compliantWheel.setDirection(DcMotorSimple.Direction.FORWARD);
-        double pos = 0;
+        double pos = .2;
         boolean pressingB = false;
         boolean pressingA = false;
         waitForStart();

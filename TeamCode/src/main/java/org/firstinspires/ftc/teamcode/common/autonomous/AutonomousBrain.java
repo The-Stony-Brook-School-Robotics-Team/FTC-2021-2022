@@ -27,10 +27,12 @@ public class AutonomousBrain {
     SlideExtensionController slideExtCtrl;
     IntakeController intakeCtrl;
 
+    Telemetry tel;
+
     HardwareMap hwMap;
 
-    AutonomousStates majorState = AutonomousStates.STOPPED;
-    AutonomousBackForthSubStates minorState = AutonomousBackForthSubStates.STOPPED;
+    public  AutonomousStates majorState = AutonomousStates.STOPPED;
+    public  AutonomousBackForthSubStates minorState = AutonomousBackForthSubStates.STOPPED;
     TowerHeightFromDuck heightFromDuck = TowerHeightFromDuck.NOT_YET_SET;
 
 
@@ -40,7 +42,7 @@ public class AutonomousBrain {
         ONE_READ_DUCK,
         TWO_SET_SLIDE_HEIGHT,
         THREE_DEPOSIT_BOX,
-        THREE_OPT_CAROUSEL,
+        THREE_CAROUSEL,
         FOUR_DRIVE_TO_WAREHOUSE,
         FOUR_SPLINE_THROUGH_WAREHOUSE,
         FOUR_B_SET_SLIDE_HEIGHT_3,
@@ -62,6 +64,7 @@ public class AutonomousBrain {
     {
         this.mode = mode;
         this.hwMap = hardwareMap;
+        this.tel = telemetry;
         this.robot = new Robot(hardwareMap,telemetry,mode);
         this.CVctrl = robot.getCVctrl();
         this.RRctrl = robot.getRRctrl();
@@ -102,24 +105,31 @@ public class AutonomousBrain {
                 majorState = AutonomousStates.ONE_READ_DUCK;
                 return;
             case ONE_READ_DUCK:
+                CVctrl.enableAnalysis();
                 heightFromDuck = CVctrl.getWhichTowerHeight();
+                Log.d("height: ",heightFromDuck.toString());
+                tel.addData("height: ",heightFromDuck);
+                tel.update();
                 majorState = AutonomousStates.TWO_SET_SLIDE_HEIGHT;
+                CVctrl.shutDown();
                 return;
             case TWO_SET_SLIDE_HEIGHT:
+
                 switch(heightFromDuck)
                 {
                     case ONE:
-                        slideHCtrl.setSlideHeight(SlideHeight.ONE);
+                        slideHCtrl.setSlideHeight(SlideHeight.ONE_CAROUSEL);
                         break;
                     case TWO:
-                        slideHCtrl.setSlideHeight(SlideHeight.TWO);
+                        slideHCtrl.setSlideHeight(SlideHeight.TWO_CAROUSEL);
                         break;
                     default:
-                        slideHCtrl.setSlideHeight(SlideHeight.THREE_CLOSE);
+                        slideHCtrl.setSlideHeight(SlideHeight.THREE_CAROUSEL);
                 }
-                majorState = AutonomousStates.THREE_DEPOSIT_BOX;
+
+                majorState = AutonomousStates.THREE_CAROUSEL;
                 return;
-            case THREE_DEPOSIT_BOX:
+            /*case THREE_DEPOSIT_BOX:
                 slideExtCtrl.extendDropRetract();
                 if(mode.equals(AutonomousMode.RedSimple) || mode.equals(AutonomousMode.BlueSimple)) {
                     slideHCtrl.setSlideHeight(SlideHeight.THREE_CLOSE);
@@ -131,63 +141,36 @@ public class AutonomousBrain {
                 if(mode.equals(AutonomousMode.BlueFull) || mode.equals(AutonomousMode.RedFull)) {
                     majorState = AutonomousStates.THREE_OPT_CAROUSEL;
                 }
-                return;
-            case THREE_OPT_CAROUSEL:
+                return;*/
+            case THREE_CAROUSEL:
+
                 if(mode.equals(AutonomousMode.BlueFull)) {
                     RRctrl.followLineToSpline(duckSpinningPositionB);
-                    try {
-                        DcMotor duckSpinner = hwMap.get(DcMotor.class, "duck");
-                        duckSpinner.setPower(.3);
-                        try {
-                            Thread.sleep(5000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        duckSpinner.setPower(0);
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    catch(Exception e) {
-                        Log.d("AutonomousBrain","DuckSpinner Failed");
-                    }
+                    new Thread(()->{slideExtCtrl.extendDropRetract();}).start();
+                    spinDuck(true);
+
                     mode = AutonomousMode.BlueSimple;
                 }
                 if(mode.equals(AutonomousMode.RedFull)) {
                     RRctrl.followLineToSpline(duckSpinningPositionR);
-                    try {
-                        DcMotor duckSpinner = hwMap.get(DcMotor.class, "duck");
-                        duckSpinner.setPower(-.3);
-                        try {
-                            Thread.sleep(5000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        duckSpinner.setPower(0);
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    catch(Exception e) {
-                        Log.d("AutonomousBrain","DuckSpinner Failed");
-                    }
+                    new Thread(()->{slideExtCtrl.extendDropRetract();}).start();
+                    spinDuck(true);
+                    slideExtCtrl.extendDropRetract();
                     mode = AutonomousMode.RedSimple;
                 }
+
                 majorState = AutonomousStates.FOUR_DRIVE_TO_WAREHOUSE;
                 return;
             case FOUR_B_SET_SLIDE_HEIGHT_3:
                 slideHCtrl.setSlideHeight(SlideHeight.THREE_FAR);
-                majorState = AutonomousStates.FOUR_DRIVE_TO_WAREHOUSE;
+                //majorState = AutonomousStates.FOUR_DRIVE_TO_WAREHOUSE;
+                majorState = AutonomousStates.FINISHED;
                 return;
             case FOUR_DRIVE_TO_WAREHOUSE:
-                switch(mode) {
+                /*switch(mode) {
                     case BlueSimple:
-                        RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
-                    case BlueSpline:
+                        */RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
+                    /*case BlueSpline:
                         RRctrl.followSplineTrajWarehouse(true);
                         RRctrl.followLineToSpline(wareHousePickupPositionBSpl);
                     case RedSimple:
@@ -196,7 +179,7 @@ public class AutonomousBrain {
                         RRctrl.followSplineTrajWarehouse(false);
                         RRctrl.followLineToSpline(wareHousePickupPositionRSpl);
 
-                }
+                }*/
                 majorState = AutonomousStates.FIVE_BACK_FORTH;
                 return;
             case FIVE_BACK_FORTH:
@@ -283,17 +266,39 @@ public class AutonomousBrain {
     }
 
 
+    public void spinDuck(boolean qBlue)
+    {
+        try {
+            DcMotor duckSpinner = hwMap.get(DcMotor.class, "duck");
+            duckSpinner.setPower(qBlue ? -.3 : .3);
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            duckSpinner.setPower(0);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        catch(Exception e) {
+            Log.d("AutonomousBrain","DuckSpinner Failed");
+        }
+    }
+
 
 
     public static Pose2d startPositionBSimp = new Pose2d(6.5,65.5,0);
     public static Pose2d startPositionBSpl = new Pose2d(6.5,65.5,0);
-    public static Pose2d startPositionBFull = new Pose2d(6.5,65.5,0);
+    public static Pose2d startPositionBFull = new Pose2d(-42,66,0);
     public static Pose2d startPositionRSimp = new Pose2d(6.5,-65.5,Math.PI);
     public static Pose2d startPositionRSpl = new Pose2d(6.5,-65.5,Math.PI);
-    public static Pose2d startPositionRFull = new Pose2d(6.5,-65.5,Math.PI);
+    public static Pose2d startPositionRFull = new Pose2d(-42,-66,Math.PI);
 
-    public static Pose2d duckSpinningPositionB = new Pose2d(-58.75, 62.28, Math.toRadians(74.79));
-    public static Pose2d duckSpinningPositionR = new Pose2d(-58.75, -62.28, Math.toRadians(74.79));
+    public static Pose2d duckSpinningPositionB = new Pose2d(-60, 63, Math.toRadians(55.058));
+    public static Pose2d duckSpinningPositionR = new Pose2d(-58.75, -62.28, Math.toRadians(-55.058));
 
     public static Pose2d wareHousePickupPositionBSimp = new Pose2d(54.5,65.5,0);
     public static Pose2d wareHousePickupPositionBSpl = new Pose2d(71, 34, -Math.PI/2);
