@@ -12,7 +12,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop.enums.ControllerModes;
 import org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop.enums.TeleOpRobotStates;
 import org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop.misc.Beta;
-import org.firstinspires.ftc.teamcode.Sandboxes.Dennis.teleop.samples.DashboardInterface;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
@@ -221,27 +220,6 @@ public class TeleOpRoutine extends OpMode {
     }
 
 
-    /**
-     * The actual handler thats writing the data into the dashboard
-     */
-    @Beta
-    public Thread dashboardHandler = new Thread(() -> {
-        /**
-         * Handle the telemetry interface
-         */
-        while(currentState.equals(TeleOpRobotStates.RUNNING) || currentState.equals(TeleOpRobotStates.AUTONOMOUS)) {
-            /**
-             * Generate the robots relative position on the map
-             */
-            TelemetryPacket telemetryPacket = new TelemetryPacket();
-            Canvas ftcField = telemetryPacket.fieldOverlay();
-            DashboardUtil.drawRobot(ftcField, drive.getPoseEstimate());
-            /**
-             * Go through every telemetry line and add it to the packet
-             */
-
-        }
-    });
 
 
 }
