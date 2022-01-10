@@ -7,25 +7,38 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.sbs.bears.robotframework.Sleep;
 
 public class ColorStripController {
 
     RevBlinkinLedDriver colorstrip2;
-    RevSPARKMini brightLights;
+    DcMotor brightLights;
 
     public ColorStripController(HardwareMap hardwareMap, Telemetry telemetry)
     {
 
-        brightLights = hardwareMap.get(RevSPARKMini.class,"vout");
+        brightLights = hardwareMap.get(DcMotor.class,"vout");
         colorstrip2 = hardwareMap.get(RevBlinkinLedDriver.class,"rgb");
 
     }
     public void setColorBright()
     {
-        //brightLights;
+        brightLights.setPower(1);
+        Sleep.sleep(200);
+        brightLights.setPower(0);
+        Sleep.sleep(200);
+        brightLights.setPower(1);
+        Sleep.sleep(200);
+        brightLights.setPower(0);
+        Sleep.sleep(200);
+        brightLights.setPower(1);
+        Sleep.sleep(200);
+        brightLights.setPower(0);
+        Sleep.sleep(200);
     }
     public void setColor()
     {
         colorstrip2.setPattern(RevBlinkinLedDriver.BlinkinPattern.STROBE_RED);
     }
+
 }
