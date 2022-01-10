@@ -7,17 +7,25 @@ import android.util.Log;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Gamepad;
+
+import org.sbs.bears.robotframework.controllers.OpenCVController;
 
 @TeleOp(name = "A - Auton (Blue Full)")
 public class AutonomousBlueFull extends OpMode {
     AutonomousBrain brain;
     boolean qA = false;
     boolean qContinue = false;
+
+
+    public static Gamepad gamepad;
     @Override
     public void init() {
+        OpenCVController.isDuck = false;
         brain = new AutonomousBrain(hardwareMap,telemetry,AutonomousMode.BlueFull);
         Log.d("Auton BF","Init Complete");
         msStuckDetectLoop = Integer.MAX_VALUE;
+        gamepad = gamepad1;
     }
 
     @Override
@@ -29,6 +37,7 @@ public class AutonomousBlueFull extends OpMode {
     public void loop() {
 
         telemetry.addData("majorState", brain.majorState);
+        telemetry.addData("minorState", brain.minorState);
         telemetry.update();
         if(qContinue) {
             brain.doAutonAction();
@@ -39,14 +48,15 @@ public class AutonomousBlueFull extends OpMode {
             }
             qContinue = false;
         }
-        if(gamepad1.a && !qA) {
+qContinue = true;
+        /*if(gamepad1.a && !qA) {
             qA = true;
             qContinue = true;
             return;
         }
         else if (!gamepad1.a && qA) {
             qA = false;
-        }
+        }*/
 
     }
 }

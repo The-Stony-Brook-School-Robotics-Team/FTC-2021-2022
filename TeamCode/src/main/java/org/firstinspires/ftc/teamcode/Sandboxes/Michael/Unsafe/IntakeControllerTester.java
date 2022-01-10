@@ -3,16 +3,17 @@
     import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
     import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+
     import org.sbs.bears.robotframework.controllers.IntakeController;
     import org.sbs.bears.robotframework.enums.IntakeSide;
     import org.sbs.bears.robotframework.enums.IntakeState;
 
     @TeleOp(name="Intake Controller Tester", group="Linear Opmode")
     public class IntakeControllerTester extends LinearOpMode {
-        private IntakeControllerSlow frontIntake;
+        private IntakeController frontIntake;
 
         public void runOpMode() throws InterruptedException {
-            frontIntake = new IntakeControllerSlow(hardwareMap, telemetry, IntakeSide.RED);
+            frontIntake = new IntakeController(hardwareMap, telemetry, IntakeSide.BLUE);
             frontIntake.setState(IntakeState.BASE);
             waitForStart();
 

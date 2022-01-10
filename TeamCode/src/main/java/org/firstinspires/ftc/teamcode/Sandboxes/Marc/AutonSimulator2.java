@@ -11,17 +11,20 @@ import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import org.sbs.bears.robotframework.Robot;
 
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-
-import java.time.Clock;
+import org.sbs.bears.robotframework.controllers.RoadRunnerController;
 
 @Config
-@TeleOp(name="A - Autonomous Simulator (X)")
-public class AutonSimulator extends LinearOpMode {
+@TeleOp(name="A - Autonomous Simulator2 (X)")
+public class AutonSimulator2 extends LinearOpMode {
     SampleMecanumDrive drive;
     RevBlinkinLedDriver colorstrip2;
+
+    RoadRunnerController RRctrl;
+    Robot robot;
 
     // Dashboard Configurations
     public static boolean instaStop = false;
@@ -48,6 +51,7 @@ FtcDashboard dashboard;
 
     @Override
     public void runOpMode() throws InterruptedException {
+
         NanoClock clock = NanoClock.system();
         drive = new SampleMecanumDrive(hardwareMap);
         drive.setPoseEstimate(new Pose2d());

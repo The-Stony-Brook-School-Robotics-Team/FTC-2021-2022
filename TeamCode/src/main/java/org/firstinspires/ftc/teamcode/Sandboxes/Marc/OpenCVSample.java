@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.sbs.bears.robotframework.controllers.DuckOpenCVEngineBlueFull;
-import org.sbs.bears.robotframework.controllers.DuckOpenCVEngineBlueSpline;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -18,7 +17,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
  * @author Marc N.
  * @version 5.1
  */
-@Autonomous(name="****A - OpenCV Duck Analysis")
+@Autonomous(name="A - OpenCV Duck Analysis")
 public class OpenCVSample extends OpMode {
 
     // MARK - Class Variables
@@ -66,7 +65,6 @@ public class OpenCVSample extends OpMode {
     public void start() {
         super.start();
         // Start the analysis
-        DuckOpenCVEngineBlueFull.doAnalysis = true;
         //webcam.pauseViewport();
     }
     // MARK - End of OpMode Run
