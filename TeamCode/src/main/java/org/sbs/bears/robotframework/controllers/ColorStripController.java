@@ -24,17 +24,10 @@ public class ColorStripController {
     public void setColorBright()
     {
         brightLights.setPower(1);
-        Sleep.sleep(200);
+        Sleep.sleep(500);
         brightLights.setPower(0);
-        Sleep.sleep(200);
-        brightLights.setPower(1);
-        Sleep.sleep(200);
-        brightLights.setPower(0);
-        Sleep.sleep(200);
-        brightLights.setPower(1);
-        Sleep.sleep(200);
-        brightLights.setPower(0);
-        Sleep.sleep(200);
+        Sleep.sleep(500);
+
     }
     public void setColor()
     {
