@@ -3,7 +3,6 @@ package org.sbs.bears.robotframework.controllers;
 import android.util.Log;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -23,11 +22,7 @@ import java.util.ArrayList;
  * @version 5.1
  */
 @Config
-<<<<<<<< HEAD:TeamCode/src/main/java/org/sbs/bears/robotframework/controllers/DuckOpenCVEngine.java
 public abstract class DuckOpenCVEngine extends OpenCvPipeline {
-========
-public class DuckOpenCVEngineRedFull extends DuckOpenCVEngine {
->>>>>>>> 09e1cadca62f6e5cc33ee5ed6287929389635e0d:TeamCode/src/main/java/org/sbs/bears/robotframework/controllers/DuckOpenCVEngineRedFull.java
     // MARK - Class Variables
 
 
@@ -55,10 +50,7 @@ public class DuckOpenCVEngineRedFull extends DuckOpenCVEngine {
     protected static volatile DuckPosition position = DuckPosition.NA;
 
 
-<<<<<<<< HEAD:TeamCode/src/main/java/org/sbs/bears/robotframework/controllers/DuckOpenCVEngine.java
 
-========
->>>>>>>> 09e1cadca62f6e5cc33ee5ed6287929389635e0d:TeamCode/src/main/java/org/sbs/bears/robotframework/controllers/DuckOpenCVEngineRedFull.java
 
     /**
      * This variable represents a Blue color.
@@ -234,19 +226,7 @@ public class DuckOpenCVEngineRedFull extends DuckOpenCVEngine {
      * and also creates the submats of each rectangle (A,B,C).
      * @param input the Mat that is provided by the OpenCV subsystem.
      */
-<<<<<<<< HEAD:TeamCode/src/main/java/org/sbs/bears/robotframework/controllers/DuckOpenCVEngine.java
     abstract public void convertY(Mat input);
-========
-    public void convertY(Mat input) {
-        Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb); // convert to YCrCb
-        ArrayList<Mat> yCrCbChannels = new ArrayList<Mat>(3);
-        Core.split(YCrCb, yCrCbChannels); // split into Y, Cr, and Cb
-        Y = yCrCbChannels.get(0);
-        RectA_Y = Y.submat(new Rect(RectATLCorner, RectABRCorner));
-        RectB_Y = Y.submat(new Rect(RectBTLCorner, RectBBRCorner));
-        RectC_Y = Y.submat(new Rect(RectCTLCorner, RectCBRCorner));
-    }
->>>>>>>> 09e1cadca62f6e5cc33ee5ed6287929389635e0d:TeamCode/src/main/java/org/sbs/bears/robotframework/controllers/DuckOpenCVEngineRedFull.java
 
 
     /**
