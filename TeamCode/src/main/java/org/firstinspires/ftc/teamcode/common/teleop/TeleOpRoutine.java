@@ -84,7 +84,6 @@ public class TeleOpRoutine extends OpMode {
         if(!DashboardInterface.dashboardInterfaceUpdater.isAlive()) {
             DashboardInterface.dashboardInterfaceUpdater.start();
         }
-        slide.setMotorIncrement();
 
         /**
         if(!dashboardHandler.isAlive()) {
