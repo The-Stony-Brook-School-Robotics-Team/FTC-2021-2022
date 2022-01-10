@@ -12,10 +12,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.sbs.bears.robotframework.enums.IntakeState;
 import org.sbs.bears.robotframework.enums.IntakeSide;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 public class IntakeController {
 
     private Servo scooper;
-    private DcMotor compliantWheel;
+    public DcMotor compliantWheel;
     private Rev2mDistanceSensor distanceSensor;
 
     /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/
@@ -75,7 +77,20 @@ public class IntakeController {
         setState(IntakeState.PARK);
     }
 
-    /** Autonomous method-- waits until object is seen, dumps, then sets to park. **/
+    /** Marc's autonomous adjusted method: do not touch or use outside of the auton brain pls.*/
+    public void waitForObjectForAutonomousOnly(AtomicReference<Boolean> aborted,AtomicReference<Boolean> foundBlock) {
+        while(!isObjectInPayload() && !aborted.get()){
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        foundBlock.set(isObjectInPayload());
+
+    }
+
+        /** Autonomous method-- waits until object is seen, dumps, then sets to park. **/
     public void waitForIntake() {
         if(state != IntakeState.BASE){setState(IntakeState.BASE);}
         while(!isObjectInPayload()){

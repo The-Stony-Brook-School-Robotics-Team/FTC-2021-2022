@@ -229,7 +229,40 @@ public class AutonomousBrain {
             case STOPPED:
                 // do nothing
                 return;
+
             case ONE_INTAKE:
+               intakeCtrl.setState(IntakeState.BASE); // prepare
+                try {
+                    Thread.sleep(750);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                // STAGE 0: P0 M1 S0 I0
+                AtomicReference<Boolean> foundBlock = new AtomicReference<>(Boolean.getBoolean("false")); // is there a block inside the payload
+                AtomicReference<Boolean> aborted = new AtomicReference<>(Boolean.getBoolean("false")); // did I halt the search because my trajectory finished
+                new Thread(()->{
+                    intakeCtrl.waitForObjectForAutonomousOnly(aborted,foundBlock); // loop until either I found a block or aborted,
+                    // and I set foundblock to true if I stopped because of it
+                    if(!aborted.get()) { // found a block because didnt stop from aborted.
+                        RRctrl.haltTrajectory();
+                        RRctrl.stopRobot();
+                        intakeCtrl.loadItemIntoSlideForAutonomousOnly();
+                    }
+                }).start();
+                // start haltable forward trajectory
+                RRctrl.forward(12,10);  // STAGE 1: P0 M0 S0 I0
+
+                aborted.set(true); // abort the thread once traj is complete, doesnt matter whether found or not.
+                if(foundBlock.get()) {
+                    minorState = AutonomousBackForthSubStates.TWO_DEPOSIT; // If i have it lets continue
+                }
+                else {
+                    intakeCtrl.compliantWheel.setPower(0); // stop wheels to not absorb when not looking
+                    RRctrl.followLineToSpline(wareHousePickupPositionBSimp2); // if i dont lets realign position
+                    RRctrl.strafeR(5); // turn to have better luck
+                }
+                return;
+            /*case ONE_INTAKE:
                 Object externMutex = new Object();
                 AtomicReference<Boolean> stopSignal = new AtomicReference<>(Boolean.getBoolean("false"));
                 intakeCtrl.setState(IntakeState.BASE);
@@ -277,7 +310,7 @@ public class AutonomousBrain {
 
                 minorState = AutonomousBackForthSubStates.TWO_DEPOSIT;
                 return;
-            case TWO_DEPOSIT: // TODO implement go forward and then turn
+            */case TWO_DEPOSIT: // TODO implement go forward and then turn
                 /*switch(mode) {
                     case BlueSimple:
                     case BlueFull:
