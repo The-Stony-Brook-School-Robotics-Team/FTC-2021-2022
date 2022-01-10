@@ -9,6 +9,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Sandboxes.Michael.Unsafe.SlideController;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
 import org.firstinspires.ftc.teamcode.common.teleop.misc.Beta;
@@ -46,6 +47,8 @@ public class TeleOpRoutine extends OpMode {
     public IntakeController redIntake;
     public IntakeController blueIntake;
 
+    public SlideController slide;
+
 
     @Override
     public void init() {
@@ -59,6 +62,7 @@ public class TeleOpRoutine extends OpMode {
 
         redIntake = new IntakeController(hardwareMap, telemetry, IntakeSide.RED);
         blueIntake = new IntakeController(hardwareMap, telemetry, IntakeSide.BLUE);
+        slide = new SlideController(hardwareMap, telemetry);
 
         /**
          * Update current state to continue
@@ -80,6 +84,7 @@ public class TeleOpRoutine extends OpMode {
         if(!DashboardInterface.dashboardInterfaceUpdater.isAlive()) {
             DashboardInterface.dashboardInterfaceUpdater.start();
         }
+        slide.setMotorIncrement();
 
         /**
         if(!dashboardHandler.isAlive()) {
