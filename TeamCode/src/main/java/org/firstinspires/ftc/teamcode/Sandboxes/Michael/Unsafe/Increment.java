@@ -17,7 +17,7 @@ public class Increment extends LinearOpMode {
 
 
     public void runOpMode() throws InterruptedException {
-        Servo scooper = hardwareMap.get(Servo.class, "bi");
+        Servo scooper = hardwareMap.get(Servo.class, "servo");
         //DcMotor compliantWheel = hardwareMap.get(DcMotor.class, "motor");
         //Rev2mDistanceSensor distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "2m");
 
@@ -42,6 +42,12 @@ public class Increment extends LinearOpMode {
                 pos-=.02;
                 scooper.setPosition(pos);
                 pressingB = false;
+            }
+            if(gamepad1.a){
+                scooper.setPosition(0);
+            }
+            if(gamepad1.b){
+                scooper.setPosition(1);
             }
 //BASE .4 DUMP .87  PARK .787
 
