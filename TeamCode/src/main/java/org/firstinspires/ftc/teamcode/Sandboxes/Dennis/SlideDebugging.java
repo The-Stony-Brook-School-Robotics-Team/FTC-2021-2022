@@ -10,7 +10,7 @@ public class SlideDebugging extends LinearOpMode {
 
     private static int limitMin = 0;
     private static double PosLimitThreshold = 0.05;
-    private static double NegLimitThreshold = 0.05;
+    private static double NegLimitThreshold = -0.05;
     private SlideController slideController;
 
 
