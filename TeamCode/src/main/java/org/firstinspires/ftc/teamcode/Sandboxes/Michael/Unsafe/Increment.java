@@ -32,14 +32,14 @@ public class Increment extends LinearOpMode {
             if(gamepad1.dpad_up && !pressingA){
                 pressingA = true;}
             if(!gamepad1.dpad_up && pressingA){
-                pos+=.05;
+                pos+=.02;
                 scooper.setPosition(pos);
                 pressingA = false;
             }
             if(gamepad1.dpad_down && !pressingB){
                 pressingB = true;}
             if(!gamepad1.dpad_down && pressingB){
-                pos-=.05;
+                pos-=.02;
                 scooper.setPosition(pos);
                 pressingB = false;
             }
