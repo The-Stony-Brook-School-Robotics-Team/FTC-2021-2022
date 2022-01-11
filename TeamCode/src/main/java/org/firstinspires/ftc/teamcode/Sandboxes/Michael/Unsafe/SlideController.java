@@ -77,13 +77,16 @@ public class SlideController {
     public int getMotorPosition(){return slideMotor.getCurrentPosition();}
     public double getMotorPower(){return slideMotor.getPower();}
 
+    /**
+     * Adds a number of ticks to the current position.
+     * @param x The number to increase the motor position by in ticks.
+     */
     public void setMotorIncrement(int x){
         currentEncoderPosition = slideMotor.getCurrentPosition();
         currentEncoderPosition += x;
         slideMotor.setTargetPosition(currentEncoderPosition);
 
     }
-
 
 
     /** Assigns position and motor power to their respective states **/

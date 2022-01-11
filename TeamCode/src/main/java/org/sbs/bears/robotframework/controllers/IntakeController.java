@@ -120,6 +120,25 @@ public class IntakeController {
         doStateAction();
     }
 
+    /**
+     * Changes the position of the servo at a given state.
+     * @param x The new state positiion, expressed 0-1 as the servo's range.
+     * @param intakeState The state that's position is getting altered.
+     */
+    public void changeStatePosiiton(IntakeState intakeState, double x){
+        switch(intakeState){
+            case BASE:
+                basePos[0] = x;
+                break;
+            case DUMP:
+                dumpPos[0] = x;
+                break;
+            case PARK:
+                parkPos[0] = x;
+                break;
+        }
+    }
+
     /** Accessor for current state **/
     public IntakeState getState(){return state;}
 

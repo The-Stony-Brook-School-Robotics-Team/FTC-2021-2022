@@ -11,6 +11,8 @@
     @TeleOp(name="Intake Controller Tester", group="Linear Opmode")
     public class IntakeControllerTester extends LinearOpMode {
         private IntakeController frontIntake;
+        private boolean check = false;
+        private double position = .2;
 
         public void runOpMode() throws InterruptedException {
             frontIntake = new IntakeController(hardwareMap, telemetry, IntakeSide.BLUE);
@@ -18,20 +20,32 @@
             waitForStart();
 
             while(opModeIsActive()){
-                frontIntake.checkIntake();
+                if(check){
+                    frontIntake.checkIntake();
+                }
+                if(gamepad1.x){
+                    frontIntake.changeStatePosiiton(IntakeState.BASE, position);
+                }
                 if(gamepad1.b){
                     frontIntake.setState(IntakeState.DUMP);
                 }
-                if(gamepad1.a){
+                else if(gamepad1.a){
                     frontIntake.setState(IntakeState.BASE);}
-                if(gamepad1.y){
+                else if(gamepad1.y){
                     frontIntake.setState(IntakeState.PARK);
+                }
+                else if(gamepad1.dpad_up){
+                    position += .01;
+                }
+                else if(gamepad1.dpad_down){
+                    position -= .01;
                 }
 
 
 
 
                 telemetry.addData("red State: ", frontIntake.getState());
+                telemetry.addData("Desired Position: ", position);
 
                 telemetry.update();
             }

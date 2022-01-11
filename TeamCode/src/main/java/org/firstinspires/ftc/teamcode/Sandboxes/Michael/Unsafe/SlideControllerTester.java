@@ -27,6 +27,13 @@
                     slideController.setState(SlideState.IN);
                 }
 
+                if(gamepad1.dpad_up){
+                    slideController.setMotorIncrement(20);
+                }
+                if(gamepad1.dpad_down){
+                    slideController.setMotorIncrement(-20);
+                }
+
 
                 telemetry.addData("State: ", slideController.getState());
                 telemetry.addData("Degrees: ", slideController.getServoPosition() * 110);
