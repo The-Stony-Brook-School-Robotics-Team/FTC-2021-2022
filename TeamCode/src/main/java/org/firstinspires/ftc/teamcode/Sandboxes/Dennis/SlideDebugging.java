@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Sandboxes.Michael.Unsafe.SlideController;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 @TeleOp(name = "T - Slide Debugger", group = "default")
 public class SlideDebugging extends LinearOpMode {
 
@@ -12,7 +14,6 @@ public class SlideDebugging extends LinearOpMode {
     private static double PosLimitThreshold = 0.05;
     private static double NegLimitThreshold = -0.05;
     private SlideController slideController;
-
 
     @Override
     public void runOpMode() throws InterruptedException {
