@@ -23,6 +23,10 @@
                 if(check){
                     frontIntake.checkIntake();
                 }
+                if(gamepad1.left_bumper){
+                    check = true;
+                }
+                else{check = false;}
                 if(gamepad1.x){
                     frontIntake.changeStatePosiiton(IntakeState.BASE, position);
                 }

@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -52,6 +53,8 @@ public class SlideController {
 
         currentEncoderPosition = slideMotor.getCurrentPosition();
 
+        verticalServo.setPosition(values.get(SlideComponents.VERTICAL_SERVO_MIDDLE));
+
 
     }
 
@@ -91,20 +94,36 @@ public class SlideController {
 
     /** Assigns position and motor power to their respective states **/
     private void doStateAction(){
-        //TODO: get a motor encoder oh my god
         switch(state){
             case BOTTOM:
-                //verticalServo.setPosition(values.get(SlideComponents.VERTICAL_SERVO_BOTTOM));
-
                 slideMotor.setTargetPosition(values.get(SlideComponents.SLIDE_MOTOR_POSITION_EXTENDED).intValue());
                 slideMotor.setPower(values.get(SlideComponents.SLIDE_MOTOR_POWER_MOVING));
+                try{
+                    Thread.sleep(1000);
+                }
+                catch (Exception e){
+
+                }
+
+                for(double i = verticalServo.getPosition(); i > values.get(SlideComponents.VERTICAL_SERVO_BOTTOM); i-=.0001){
+                    verticalServo.setPosition(Range.clip(i, values.get(SlideComponents.VERTICAL_SERVO_BOTTOM), 1));
+                    if()
+                }
                 return;
 
             case MIDDLE:
-                verticalServo.setPosition(values.get(SlideComponents.VERTICAL_SERVO_MIDDLE));
-
                 slideMotor.setTargetPosition(values.get(SlideComponents.SLIDE_MOTOR_POSITION_EXTENDED).intValue());
                 slideMotor.setPower(values.get(SlideComponents.SLIDE_MOTOR_POWER_MOVING));
+                try{
+                    Thread.sleep(1000);
+                }
+                catch (Exception e){
+
+                }
+
+                for(double i = verticalServo.getPosition(); i > values.get(SlideComponents.VERTICAL_SERVO_BOTTOM); i-=.0001){
+                    verticalServo.setPosition(Range.clip(i, values.get(SlideComponents.VERTICAL_SERVO_BOTTOM), 1));
+                }
                 return;
 
             case TOP:
@@ -139,6 +158,8 @@ public class SlideController {
         values.put(SlideComponents.SLIDE_MOTOR_POWER_REST, 0.0);
         values.put(SlideComponents.SLIDE_MOTOR_POSITION_EXTENDED, 500.0);
         values.put(SlideComponents.SLIDE_MOTOR_POSITION_IN, 25.0);
+
+        values.put(SlideComponents.VERTICAL_SERVO_MAX, )
     }
 }
 

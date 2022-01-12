@@ -17,7 +17,7 @@ public class Increment extends LinearOpMode {
 
 
     public void runOpMode() throws InterruptedException {
-        Servo scooper = hardwareMap.get(Servo.class, "servo");
+        Servo scooper = hardwareMap.get(Servo.class, "vt");
         //DcMotor compliantWheel = hardwareMap.get(DcMotor.class, "motor");
         //Rev2mDistanceSensor distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "2m");
 
@@ -51,7 +51,7 @@ public class Increment extends LinearOpMode {
             }
 //BASE .4 DUMP .87  PARK .787
 
-            telemetry.addData("Front State: ", scooper.getPosition());
+            telemetry.addData("Posiiton: ", scooper.getPosition());
 
             telemetry.update();
         }
