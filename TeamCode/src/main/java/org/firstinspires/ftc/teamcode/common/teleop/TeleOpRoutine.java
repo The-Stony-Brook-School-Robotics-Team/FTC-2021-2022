@@ -28,26 +28,26 @@ public class TeleOpRoutine extends OpMode {
      * Teleop States
      * */
     public static volatile TeleOpRobotStates currentState = TeleOpRobotStates.STOPPED;
-    public static Object stateMutex = new Object();
+    private static Object stateMutex = new Object();
 
     /** Controller Modes */
-    public static GamepadEx gamepad;
+    private static GamepadEx gamepad;
     ControllerModes controllerMode = ControllerModes.PRIMARY;
 
     /** Toggle Indicators */
-    private boolean slowmodeToggled = false; // TODO: Add slowmode code reader in the teleop
-    private boolean linearslideToggled = false; // TODO: Add a handler to handle this function if toggled
-    private boolean autonomousToggled = false; // TODO: Add handler to determine if this is enabled
+    private static boolean slowmodeToggled = false; // TODO: Add slowmode code reader in the teleop
+    private static boolean linearslideToggled = false; // TODO: Add a handler to handle this function if toggled
+    private static boolean autonomousToggled = false; // TODO: Add handler to determine if this is enabled
 
     /** Roadrunner Items */
     public static SampleMecanumDrive drive;
     public static FtcDashboard dashboard;
 
     /** Stupid Michael MIT License: Open Source For Everyone */
-    public IntakeController redIntake;
-    public IntakeController blueIntake;
+    private static IntakeController redIntake;
+    private static IntakeController blueIntake;
+    private static SlideController slideController;
 
-    public SlideController slide;
 
 
     @Override
@@ -62,7 +62,7 @@ public class TeleOpRoutine extends OpMode {
 
         redIntake = new IntakeController(hardwareMap, telemetry, IntakeSide.RED);
         blueIntake = new IntakeController(hardwareMap, telemetry, IntakeSide.BLUE);
-        slide = new SlideController(hardwareMap, telemetry);
+        slideController = new SlideController(hardwareMap, telemetry);
 
         /**
          * Update current state to continue
@@ -117,9 +117,7 @@ public class TeleOpRoutine extends OpMode {
 
 
     public Thread buttonHandlerRuntime = new Thread(() -> {
-        // checks if robot is running or not
         while(currentState == TeleOpRobotStates.RUNNING) {
-            // check left bumper state +
             if(gamepad.isDown(GamepadKeys.Button.LEFT_BUMPER)) {
                 controllerMode = ControllerModes.SECONDARY;
             } else if(gamepad.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
@@ -134,9 +132,6 @@ public class TeleOpRoutine extends OpMode {
                     } else {
                         // TODO: Add ensure claw is closed function
                     }
-                    // B
-                    // TODO: TBD
-
                     // X
                     if(gamepad.wasJustPressed(GamepadKeys.Button.X)) {
                         slowmodeToggled = !slowmodeToggled;
@@ -147,8 +142,6 @@ public class TeleOpRoutine extends OpMode {
                         telemetry.addData("button down!", 1);
                         telemetry.update();
                     }
-                    // RT
-                    // TODO: TALK WITH TIGER ABT THIS ONE
                     // RB
                     if(gamepad.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
                         // TODO: Add toggle linear slide modes {IN, OUT}
@@ -173,27 +166,9 @@ public class TeleOpRoutine extends OpMode {
 
                     break;
                 case SECONDARY:
-                    if(gamepad.wasJustPressed(GamepadKeys.Button.A)) {
-                        // start teleop auton
+                    if(gamepad.getRightX() > Configuration.rightStickXLimitTrigger || gamepad.getRightX() < Configuration.rightStickXLimitTrigger * -1) {
+                        slideMotionControl();
                     }
-
-                    if(gamepad.wasJustPressed(GamepadKeys.Button.DPAD_LEFT)) {
-                        // strafe left
-                    }
-
-                    if(gamepad.wasJustPressed(GamepadKeys.Button.DPAD_RIGHT)) {
-                        // strafe right
-                    }
-
-                    if(gamepad.wasJustPressed(GamepadKeys.Button.DPAD_UP)) {
-                        // forward
-                    }
-
-                    if(gamepad.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)) {
-                        // back
-                    }
-
-
                     break;
             }
         }
@@ -205,7 +180,7 @@ public class TeleOpRoutine extends OpMode {
      * Working Roadrunner Handler Runtime
      */
     @Beta
-    public Thread roadrunnerHandlerRuntime = new Thread(() -> {
+    private static Thread roadrunnerHandlerRuntime = new Thread(() -> {
         while(currentState.equals(TeleOpRobotStates.RUNNING)) {
             // Set Weighted Power
             drive.setWeightedDrivePower(
@@ -219,7 +194,14 @@ public class TeleOpRoutine extends OpMode {
         }
     });
 
-
+    private static void slideMotionControl() {
+        double joystickPosition = gamepad.getRightY();
+        if(joystickPosition > Configuration.rightStickXLimitThreshold || joystickPosition < Configuration.rightStickXLimitThreshold * -1) {
+            if (joystickPosition > 0 || joystickPosition < 0) {
+                slideController.setMotorIncrement((int)joystickPosition * (int)Configuration.slideAdjustmentMultiplier);
+            }
+        }
+    }
 
 
 
