@@ -105,10 +105,9 @@ public class SlideController {
 
                 }
 
-                for(double i = verticalServo.getPosition(); i > values.get(SlideComponents.VERTICAL_SERVO_BOTTOM); i-=.0001){
+               /** for(double i = verticalServo.getPosition(); i > values.get(SlideComponents.VERTICAL_SERVO_BOTTOM); i-=.0001){
                     verticalServo.setPosition(Range.clip(i, values.get(SlideComponents.VERTICAL_SERVO_BOTTOM), 1));
-                    if()
-                }
+                } */
                 return;
 
             case MIDDLE:
@@ -159,7 +158,7 @@ public class SlideController {
         values.put(SlideComponents.SLIDE_MOTOR_POSITION_EXTENDED, 500.0);
         values.put(SlideComponents.SLIDE_MOTOR_POSITION_IN, 25.0);
 
-        values.put(SlideComponents.VERTICAL_SERVO_MAX, )
+        values.put(SlideComponents.SLIDE_MOTOR_MIN_TICKS, 700.0);
     }
 }
 
