@@ -36,12 +36,6 @@ public class SlideHeightController {
 
     }
 
-    // TODO configure
-    public static double slideHeightZERO = 0;
-    public static double slideHeightONE = 0;
-    public static double slideHeightTWO = 0;
-    public static double slideHeightTHREECLOSE = 0;
-    public static double slideHeightTHREEFAR = 0;
-    public static double slideHeightFOUR = 0;
+
 
 }
