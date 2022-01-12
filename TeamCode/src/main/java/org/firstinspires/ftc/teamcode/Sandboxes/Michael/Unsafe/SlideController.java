@@ -91,6 +91,10 @@ public class SlideController {
 
     }
 
+    public void setMotorPosition(int x){
+        slideMotor.setTargetPosition(x);
+    }
+
 
     /** Assigns position and motor power to their respective states **/
     private void doStateAction(){
