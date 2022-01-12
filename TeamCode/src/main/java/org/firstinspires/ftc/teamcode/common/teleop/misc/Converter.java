@@ -12,8 +12,19 @@ public class Converter {
      * @param pose
      * @return
      */
-    public Vector2d convertPose2d(@NotNull Pose2d pose) {
+    public static Vector2d convertPose2d(@NotNull Pose2d pose) {
         return new Vector2d(pose.getX(), pose.getY());
     }
+
+    /**
+     * Inches to Ticks
+     */
+    public static double InchesToTicks(@NotNull double inches) {
+        double lower = 2 * Math.PI * 0.785;
+        double div = 145.1 / lower;
+        return div * inches;
+    }
+
+
 
 }
