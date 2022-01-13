@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.sbs.bears.robotframework.controllers.ColorStripController;
+import org.sbs.bears.robotframework.controllers.DuckCarouselController;
 import org.sbs.bears.robotframework.controllers.IntakeController;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 import org.sbs.bears.robotframework.controllers.RoadRunnerController;
@@ -20,6 +21,7 @@ public class Robot {
     protected SlideController slideCtrl;
     protected IntakeController IntakeCtrl;
     protected ColorStripController colorCtrl;
+    protected DuckCarouselController duckCtrl;
     // TODO add other controllers here.
     public Robot(HardwareMap hardwareMap, Telemetry telemetry, AutonomousMode mode) {
         this.CVctrl = new OpenCVController(hardwareMap,telemetry,mode);
@@ -27,6 +29,7 @@ public class Robot {
         this.slideCtrl = new SlideController(hardwareMap,telemetry);
         this.IntakeCtrl = new IntakeController(hardwareMap,telemetry, IntakeSide.BLUE);
         this.colorCtrl = new ColorStripController(hardwareMap, telemetry);
+        this.duckCtrl = new DuckCarouselController(hardwareMap,telemetry);
     }
     public OpenCVController getCVctrl()
     {
@@ -45,6 +48,9 @@ public class Robot {
     }
     public ColorStripController getColorCtrl() {
         return colorCtrl;
+    }
+    public DuckCarouselController getDuckCtrl() {
+        return duckCtrl;
     }
 
 }
