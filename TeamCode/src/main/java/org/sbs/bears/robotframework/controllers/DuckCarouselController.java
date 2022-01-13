@@ -33,7 +33,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class DuckCarouselController {
 
     //MAGICAL_CONSTANT should be between 0.30 to 0.40. Because of the lack of enough torque, the wheel actually never achieve the ideal acceleration.
-    private static double MAGICAL_CONSTANT = 0.3;
+    private static final double MAGICAL_CONSTANT = 0.3;
 
     private  double FIRST_STAGE_TIME;
     private  double FIRST_STAGE_TIME_INTERVAL = 1.5;
@@ -58,10 +58,26 @@ public class DuckCarouselController {
         }
         wheelMover.setPower(0);
 */
+        //cleanup();
+        initializeEnvironment();
         Log.d("DuckCtrller","start");
-       while (updateMotorSpeed()) ;
+        while(true)
+        {
+            if(updateMotorSpeed())
+            {
+                wheelMover.setPower(0);
+                return;
+            }
+        }
     }
 
+    private void cleanup()
+    {
+        iniTime = 0;
+        runTime = 0;
+        FIRST_STAGE_TIME = 0;
+        FIRST_STAGE_TIME_INTERVAL = 1.5;
+    }
     //------------------------------------------------------------
    /* public static void spinWheel(DcMotor wheelMover) {          //
         initializeEnvironment(wheelMover);                      //
@@ -76,6 +92,7 @@ public class DuckCarouselController {
     public void initializeEnvironment() {
         wheelMover.setDirection(DcMotorSimple.Direction.REVERSE);
        // initializeVariables();
+        Log.d("DuckCtrller","initd");
         initializeVariables();
     }
 

@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.Sandboxes.Dennis.WheelControl;
 import org.sbs.bears.robotframework.controllers.DuckCarouselController;
 @TeleOp
 public class DuckTester extends LinearOpMode {
@@ -12,6 +13,7 @@ public class DuckTester extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         DuckCarouselController ctrl = new DuckCarouselController(hardwareMap,telemetry);
+        //DcMotor duckMotor = hardwareMap.get(DcMotor.class,"duck");
         waitForStart();
         boolean qA = false;
         while(opModeIsActive() && !isStopRequested())
@@ -21,6 +23,7 @@ public class DuckTester extends LinearOpMode {
                 qA = true;
                 telemetry.addData("init","yes i said init");
                 telemetry.update();
+              //  ctrl.initializeEnvironment();
                 ctrl.spinOneDuck(true);
                /* DcMotor duckSpinner = hardwareMap.get(DcMotor.class, "duck");
                 duckSpinner.setPower(true ? -.3 : .3);
