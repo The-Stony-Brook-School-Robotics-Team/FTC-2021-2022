@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.common.teleop;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.canvas.Canvas;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -14,10 +12,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
 import org.firstinspires.ftc.teamcode.common.teleop.misc.Beta;
-import org.firstinspires.ftc.teamcode.common.teleop.samples.DashboardInterface;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.util.DashboardUtil;
-import org.sbs.bears.robotframework.controllers.IntakeController;
+import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
+import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
 import org.sbs.bears.robotframework.controllers.SlideController;
 import org.sbs.bears.robotframework.enums.IntakeSide;
 import org.sbs.bears.robotframework.enums.IntakeState;
@@ -46,8 +43,8 @@ public class TeleOpRoutine extends OpMode {
     public static FtcDashboard dashboard;
 
     /** Stupid Michael MIT License: Open Source For Everyone */
-    private static IntakeController redIntake;
-    private static IntakeController blueIntake;
+    private static IntakeControllerRed redIntake;
+    private static IntakeControllerBlue blueIntake;
     private static SlideController slideController;
 
     /** Internal Usage */
@@ -68,8 +65,8 @@ public class TeleOpRoutine extends OpMode {
         spoolMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         gamepad = new GamepadEx(gamepad1);
 
-        redIntake = new IntakeController(hardwareMap, telemetry, IntakeSide.RED);
-        blueIntake = new IntakeController(hardwareMap, telemetry, IntakeSide.BLUE);
+        redIntake = new IntakeControllerRed(hardwareMap, telemetry);
+        blueIntake = new IntakeControllerBlue(hardwareMap, telemetry);
         slideController = new SlideController(hardwareMap, telemetry);
 
         /**

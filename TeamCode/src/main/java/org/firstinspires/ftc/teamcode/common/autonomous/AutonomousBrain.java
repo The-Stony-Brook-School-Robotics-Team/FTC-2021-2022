@@ -10,7 +10,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.sbs.bears.robotframework.Robot;
 import org.sbs.bears.robotframework.controllers.DuckCarouselController;
-import org.sbs.bears.robotframework.controllers.IntakeController;
+import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
+import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 import org.sbs.bears.robotframework.controllers.RoadRunnerController;
 import org.sbs.bears.robotframework.controllers.SlideController;
@@ -29,8 +30,8 @@ public class AutonomousBrain {
     OpenCVController CVctrl;
     RoadRunnerController RRctrl;
     SlideController slideCtrl;
-    IntakeController intakeCtrl;
-    IntakeController intakeCtrl2;
+    IntakeControllerBlue intakeCtrlBlue;
+    IntakeControllerRed intakeCtrlRed;
     DuckCarouselController duckCtrl;
 
     Telemetry tel;
@@ -79,8 +80,8 @@ public class AutonomousBrain {
         this.CVctrl = robot.getCVctrl();
         this.RRctrl = robot.getRRctrl();
         this.slideCtrl = robot.getSlideCtrl();
-        this.intakeCtrl = robot.getIntakeCtrl();
-        this.intakeCtrl2 = new IntakeController(hardwareMap,telemetry, IntakeSide.RED);
+        this.intakeCtrlBlue = robot.getIntakeCtrlBlue();
+        this.intakeCtrlRed = robot.getIntakeCtrlRed();
         this.duckCtrl = robot.getDuckCtrl();
     }
     public void launch() // call this method before loop, so start method.
@@ -93,8 +94,8 @@ public class AutonomousBrain {
         {
             case STOPPED:
                 doAnalysisMaster = true;
-                intakeCtrl.setState(IntakeState.PARK);
-                intakeCtrl2.setState(IntakeState.PARK); // to prevent from moving around
+                intakeCtrlBlue.setState(IntakeState.PARK);
+                intakeCtrlRed.setState(IntakeState.PARK); // to prevent from moving around
                 switch(mode) {
                     case BlueSimple:
                         RRctrl.setPos(startPositionBSimp);
@@ -216,7 +217,7 @@ public class AutonomousBrain {
                     case RedSpline:
                         RRctrl.followLineToSpline(wareHousePickupPositionRSpl);
                 }*/
-                intakeCtrl.setState(IntakeState.PARK);
+                intakeCtrlBlue.setState(IntakeState.PARK);
                 RRctrl.followLineToSpline(wareHousePickupPositionBSimp2);
                 majorState = AutonomousStates.FINISHED;
                 return;
@@ -236,13 +237,13 @@ public class AutonomousBrain {
             case ONE_INTAKE:
                 Object externMutex = new Object();
                 AtomicReference<Boolean> stopSignal = new AtomicReference<>(Boolean.getBoolean("false"));
-                intakeCtrl.setState(IntakeState.BASE);
+                intakeCtrlBlue.setState(IntakeState.BASE);
                 new Thread(()->{
                     boolean isInState = true;
                     synchronized (externMutex) {
                         isInState = minorState.equals(AutonomousBackForthSubStates.ONE_INTAKE);
                     }
-                    while(!intakeCtrl.isObjectInPayload() && isInState) {
+                    while(!intakeCtrlBlue.isObjectInPayload() && isInState) {
                         try {
                             Thread.sleep(10);
                         } catch (InterruptedException e) {
@@ -253,7 +254,7 @@ public class AutonomousBrain {
                         }
                     }
                     synchronized (externMutex) {
-                        didIScoopAnItem = intakeCtrl.isObjectInPayload();
+                        didIScoopAnItem = intakeCtrlBlue.isObjectInPayload();
                         Log.d("AutonBrain","didIScoopAnItem: " + didIScoopAnItem);
                         if(didIScoopAnItem) {
                             stopSignal.set(Boolean.getBoolean("true"));
@@ -261,7 +262,7 @@ public class AutonomousBrain {
                             RRctrl.stopRobot();
                         }
                     } // will halt trajectory in separate thread
-                    intakeCtrl.loadItemIntoSlideForAutonomousOnly(); // approved usage
+                    intakeCtrlBlue.loadItemIntoSlideForAutonomousOnly(); // approved usage
                 }).start();
                 try {
                     Thread.sleep(750);
