@@ -54,7 +54,7 @@ public class SlideController {
         this.targetParams = SlideTarget.NA;
     }
 
-    private void dropCube()
+    public void dropCube()
     {
         if(slideState == SlideState.OUT_FULLY) {
             dumperServo.setPosition(dumperPosition_DUMP);
@@ -70,7 +70,7 @@ public class SlideController {
         }
     }
 
-    private void retractSlide() {
+    public void retractSlide() {
         slideState = SlideState.RET_BUCKET_OUT;
         doStateAction();
         slideState = SlideState.RET_BUCKET_IN;
@@ -78,7 +78,7 @@ public class SlideController {
         slideState = SlideState.PARKED;
     }
 
-    private void extendSlide() {
+    public void extendSlide() {
         slideState = SlideState.EXT_BUCKET_IN;
         doStateAction();
         slideState = SlideState.EXT_BUCKET_OUT;
