@@ -1,15 +1,8 @@
 package org.firstinspires.ftc.teamcode.Sandboxes.Michael.Unsafe;
 
-import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-
-import org.sbs.bears.robotframework.controllers.IntakeController;
-import org.sbs.bears.robotframework.enums.IntakeSide;
-import org.sbs.bears.robotframework.enums.IntakeState;
 
 @TeleOp(name="increment", group="Linear Opmode")
 public class Increment extends LinearOpMode {

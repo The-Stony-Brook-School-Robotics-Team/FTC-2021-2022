@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.common.teleop;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.canvas.Canvas;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -11,14 +9,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Sandboxes.Michael.Unsafe.SlideController;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
 import org.firstinspires.ftc.teamcode.common.teleop.misc.Beta;
-import org.firstinspires.ftc.teamcode.common.teleop.samples.DashboardInterface;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.util.DashboardUtil;
-import org.sbs.bears.robotframework.controllers.IntakeController;
+import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
+import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
+import org.sbs.bears.robotframework.controllers.SlideController;
 import org.sbs.bears.robotframework.enums.IntakeSide;
 import org.sbs.bears.robotframework.enums.IntakeState;
 
@@ -46,8 +43,8 @@ public class TeleOpRoutine extends OpMode {
     public static FtcDashboard dashboard;
 
     /** Stupid Michael MIT License: Open Source For Everyone */
-    private static IntakeController redIntake;
-    private static IntakeController blueIntake;
+    private static IntakeControllerRed redIntake;
+    private static IntakeControllerBlue blueIntake;
     private static SlideController slideController;
 
     /** Internal Usage */
@@ -64,10 +61,12 @@ public class TeleOpRoutine extends OpMode {
         dashboard = FtcDashboard.getInstance();
         internalTelemetry = telemetry;
         spoolMotor  = hardwareMap.get(DcMotor.class, "spool");
+        spoolMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        spoolMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         gamepad = new GamepadEx(gamepad1);
 
-        redIntake = new IntakeController(hardwareMap, telemetry, IntakeSide.RED);
-        blueIntake = new IntakeController(hardwareMap, telemetry, IntakeSide.BLUE);
+        redIntake = new IntakeControllerRed(hardwareMap, telemetry);
+        blueIntake = new IntakeControllerBlue(hardwareMap, telemetry);
         slideController = new SlideController(hardwareMap, telemetry);
 
         /**
@@ -105,8 +104,19 @@ public class TeleOpRoutine extends OpMode {
                 // End Intakes
 
 
+                spoolMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                for(int i = 0; i < 10; i++) {
+                    telemetry.addData("iteration", i);
+                    spoolMotor.setTargetPosition(800);
+                    while (spoolMotor.isBusy()) { }
+                    spoolMotor.setTargetPosition(0);
+                }
+
+
 
                 telemetry.addLine("robot running, runtime: " + this.getRuntime());
+                telemetry.addData("motor encoder position: ", spoolMotor.getCurrentPosition());
                 telemetry.update();
                 break;
 
@@ -192,15 +202,18 @@ public class TeleOpRoutine extends OpMode {
         }
     });
 
+    private static boolean running = false;
     private static void slideMotionControl() {
-        double joystickPosition = gamepad.getRightY();
-        internalTelemetry.addData("Joystick Position", joystickPosition);
-        internalTelemetry.addData("encoder pos", spoolMotor.getCurrentPosition());
-        internalTelemetry.update();
+        if(!running) {
+            running = true;
 
-        int cPos  = spoolMotor.getCurrentPosition();
-        cPos = cPos + (int)joystickPosition;
-        spoolMotor.setTargetPosition(cPos);
+            running = false;
+        } else {
+
+        }
+
+
+
     }
 
 

@@ -5,11 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import org.sbs.bears.robotframework.controllers.IntakeController;
-import org.sbs.bears.robotframework.enums.IntakeSide;
-import org.sbs.bears.robotframework.enums.IntakeState;
-import org.sbs.bears.robotframework.enums.SlideState;
-
 @TeleOp(name="Slide Motor Tester", group="Linear Opmode")
 public class MotorTester extends LinearOpMode {
     private DcMotor motor;
