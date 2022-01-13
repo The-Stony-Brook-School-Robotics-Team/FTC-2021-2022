@@ -21,15 +21,15 @@ public class DuckTester extends LinearOpMode {
                 qA = true;
                 telemetry.addData("init","yes i said init");
                 telemetry.update();
-                //ctrl.spinOneDuck();
-                DcMotor duckSpinner = hardwareMap.get(DcMotor.class, "duck");
+                ctrl.spinOneDuck(true);
+               /* DcMotor duckSpinner = hardwareMap.get(DcMotor.class, "duck");
                 duckSpinner.setPower(true ? -.3 : .3);
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                duckSpinner.setPower(0);
+                duckSpinner.setPower(0);*/
                 telemetry.addData("done","should be done");
                 telemetry.update();
 

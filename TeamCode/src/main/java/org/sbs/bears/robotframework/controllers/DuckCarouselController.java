@@ -1,5 +1,7 @@
 package org.sbs.bears.robotframework.controllers;
 
+import android.util.Log;
+
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -33,10 +35,10 @@ public class DuckCarouselController {
     //MAGICAL_CONSTANT should be between 0.30 to 0.40. Because of the lack of enough torque, the wheel actually never achieve the ideal acceleration.
     private static double MAGICAL_CONSTANT = 0.3;
 
-    private static double FIRST_STAGE_TIME;
-    private static double FIRST_STAGE_TIME_INTERVAL = 1.5;
-    private static double timer;
-    private static double runTime;
+    private  double FIRST_STAGE_TIME;
+    private  double FIRST_STAGE_TIME_INTERVAL = 1.5;
+    private  double iniTime;
+    private  double runTime;
 
     private  DcMotor wheelMover;
 
@@ -44,10 +46,10 @@ public class DuckCarouselController {
     public DuckCarouselController(HardwareMap hardwareMap, Telemetry telemetry)
     {
         wheelMover = hardwareMap.get(DcMotor.class,"duck");
-        //initializeEnvironment();
+        initializeEnvironment();
     }
     public void spinOneDuck(boolean qBlue)
-    {
+    {/*
         wheelMover.setPower(qBlue ? -.3 : .3);
         try {
             Thread.sleep(2000);
@@ -55,9 +57,9 @@ public class DuckCarouselController {
             e.printStackTrace();
         }
         wheelMover.setPower(0);
-
-
-       // while (updateMotorSpeed()) ;
+*/
+        Log.d("DuckCtrller","start");
+       while (updateMotorSpeed()) ;
     }
 
     //------------------------------------------------------------
@@ -72,9 +74,9 @@ public class DuckCarouselController {
     }
 
     public void initializeEnvironment() {
-        //wheelMover.setDirection(DcMotorSimple.Direction.REVERSE);
-        //initializeVariables();
-        //initializeVariables();
+        wheelMover.setDirection(DcMotorSimple.Direction.REVERSE);
+       // initializeVariables();
+        initializeVariables();
     }
 
     /**
@@ -82,24 +84,27 @@ public class DuckCarouselController {
      */
     public boolean updateMotorSpeed() {
         updateRunTime();
+        Log.d("DuckCtrller","update1");
         if (runTime >= 0 && runTime < FIRST_STAGE_TIME) {
             //First Stage
+            Log.d("DuckCtrller","update2");
             wheelMover.setPower(getFirstStageMotorSpeed(runTime));
             return false;
         } else {
             //Ending
+            Log.d("DuckCtrller","update3");
             wheelMover.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             return true;
         }
     }
 
     private void updateRunTime() {
-        runTime = getCurrentSystemSecond() - timer;
+        runTime = getCurrentSystemSecond() - iniTime;
     }
 
     private void initializeVariables() {
         FIRST_STAGE_TIME = FIRST_STAGE_TIME_INTERVAL;
-        timer = getCurrentSystemSecond();
+        iniTime = getCurrentSystemSecond();
     }
 
     /**
@@ -108,6 +113,7 @@ public class DuckCarouselController {
      * @return The speed of the real-time target speed of the motor.
      */
     private double getFirstStageMotorSpeed(double runTime) {
+        Log.d("DuckCtrller","update4 " + runTime);
         return MAGICAL_CONSTANT * runTime;
     }
 }
