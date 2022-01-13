@@ -8,18 +8,18 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.sbs.bears.robotframework.controllers.ColorStripController;
 import org.sbs.bears.robotframework.controllers.DuckCarouselController;
-import org.sbs.bears.robotframework.controllers.IntakeController;
+import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
+import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 import org.sbs.bears.robotframework.controllers.RoadRunnerController;
 import org.sbs.bears.robotframework.controllers.SlideController;
-
-import org.sbs.bears.robotframework.enums.IntakeSide;
 
 public class Robot {
     protected OpenCVController CVctrl;
     protected RoadRunnerController RRctrl;
     protected SlideController slideCtrl;
-    protected IntakeController IntakeCtrl;
+    protected IntakeControllerBlue IntakeCtrlBlue;
+    protected IntakeControllerRed IntakeCtrlRed;
     protected ColorStripController colorCtrl;
     protected DuckCarouselController duckCtrl;
     // TODO add other controllers here.
@@ -27,7 +27,8 @@ public class Robot {
         this.CVctrl = new OpenCVController(hardwareMap,telemetry,mode);
         this.RRctrl = new RoadRunnerController(hardwareMap,telemetry);
         this.slideCtrl = new SlideController(hardwareMap,telemetry);
-        this.IntakeCtrl = new IntakeController(hardwareMap,telemetry, IntakeSide.BLUE);
+        this.IntakeCtrlBlue = new IntakeControllerBlue(hardwareMap,telemetry);
+        this.IntakeCtrlRed = new IntakeControllerRed(hardwareMap,telemetry);
         this.colorCtrl = new ColorStripController(hardwareMap, telemetry);
         this.duckCtrl = new DuckCarouselController(hardwareMap,telemetry);
     }
@@ -43,8 +44,11 @@ public class Robot {
     {
         return slideCtrl;
     }
-    public IntakeController getIntakeCtrl() {
-        return IntakeCtrl;
+    public IntakeControllerBlue getIntakeCtrlBlue() {
+        return IntakeCtrlBlue;
+    }
+    public IntakeControllerRed getIntakeCtrlRed() {
+        return IntakeCtrlRed;
     }
     public ColorStripController getColorCtrl() {
         return colorCtrl;

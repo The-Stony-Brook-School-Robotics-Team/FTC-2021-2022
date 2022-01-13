@@ -1,5 +1,4 @@
 package org.sbs.bears.robotframework.controllers;
-import static org.sbs.bears.robotframework.enums.IntakeSide.*;
 
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -9,10 +8,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.sbs.bears.robotframework.enums.IntakeState;
 import org.sbs.bears.robotframework.enums.IntakeSide;
+import org.sbs.bears.robotframework.enums.IntakeState;
 
-public class IntakeController {
+public class IntakeControllerRed {
 
     private Servo scooper;
     private DcMotor compliantWheel;
@@ -35,23 +34,13 @@ public class IntakeController {
     Object stateMutex = new Object();
 
     /** Initialization **/
-    public IntakeController(HardwareMap hardwareMap, Telemetry telemetry, IntakeSide side) {
+    public IntakeControllerRed(HardwareMap hardwareMap, Telemetry telemetry) {
         /** Different hardwareMap depending on the intake side. **/
-        switch(side){
-            case RED:
-                scooper = hardwareMap.get(Servo.class, "ri");
-                compliantWheel = hardwareMap.get(DcMotor.class, "rightodom");
-                distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "rd");
-                scooper.setDirection(Servo.Direction.FORWARD);
-                compliantWheel.setDirection(DcMotorSimple.Direction.FORWARD);
-                break;
-            case BLUE:
-                scooper = hardwareMap.get(Servo.class, "bi");
-                compliantWheel = hardwareMap.get(DcMotor.class, "leftodom");
-                distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "bd");
-                scooper.setDirection(Servo.Direction.FORWARD);
-                compliantWheel.setDirection(DcMotorSimple.Direction.FORWARD);
-        }
+        scooper = hardwareMap.get(Servo.class, "ri");
+        compliantWheel = hardwareMap.get(DcMotor.class, "rightodom");
+        distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "rd");
+        scooper.setDirection(Servo.Direction.FORWARD);
+        compliantWheel.setDirection(DcMotorSimple.Direction.FORWARD);
         compliantWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
