@@ -12,6 +12,7 @@ import org.sbs.bears.robotframework.Robot;
 import org.sbs.bears.robotframework.controllers.IntakeController;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 import org.sbs.bears.robotframework.controllers.RoadRunnerController;
+import org.sbs.bears.robotframework.controllers.SlideController;
 import org.sbs.bears.robotframework.controllers.SlideExtensionController;
 import org.sbs.bears.robotframework.enums.IntakeSide;
 import org.sbs.bears.robotframework.enums.IntakeState;
@@ -28,8 +29,7 @@ public class AutonomousBrain {
     Robot robot;
     OpenCVController CVctrl;
     RoadRunnerController RRctrl;
-    SlideHeightController slideHCtrl;
-    SlideExtensionController slideExtCtrl;
+    SlideController slideCtrl;
     IntakeController intakeCtrl;
     IntakeController intakeCtrl2;
 
@@ -76,8 +76,7 @@ public class AutonomousBrain {
         this.robot = new Robot(hardwareMap,telemetry,mode);
         this.CVctrl = robot.getCVctrl();
         this.RRctrl = robot.getRRctrl();
-        this.slideHCtrl = robot.getSlideHCtrl();
-        this.slideExtCtrl = robot.getSlideExtCtrl();
+        this.slideCtrl = robot.getSlideCtrl();
         this.intakeCtrl = robot.getIntakeCtrl();
         this.intakeCtrl2 = new IntakeController(hardwareMap,telemetry, IntakeSide.RED);
     }
