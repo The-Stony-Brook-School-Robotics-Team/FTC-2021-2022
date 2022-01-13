@@ -276,6 +276,7 @@ public class SlideController {
         }
 
     }
+    /** End of TeleOp Methods */
     private double encoderInchesToTicks(double ticks) {
         return ticks * 8192 / .785 / 2 / Math.PI;
     }
