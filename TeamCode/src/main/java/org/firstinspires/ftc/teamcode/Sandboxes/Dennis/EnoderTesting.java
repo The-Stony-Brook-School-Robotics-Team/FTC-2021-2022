@@ -20,11 +20,7 @@ public class EnoderTesting extends LinearOpMode {
 
         while(!isStopRequested()) {
             spoolMotor.setTargetPosition(800);
-            spoolMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            while (spoolMotor.isBusy()) {
-                telemetry.addData("pos: ", spoolMotor.getCurrentPosition());
-                telemetry.update();
-            }
+//            spoolMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             spoolMotor.setTargetPosition(0);
             spoolMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             while (spoolMotor.isBusy()) {
