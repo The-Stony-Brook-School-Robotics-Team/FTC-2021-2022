@@ -102,8 +102,11 @@ public class SlideController {
         double verticalServoTargetPos = 0;
         switch(slideState) {
             case PARKED:
+            case OUT_FULLY:
+                slideMotor.setPower(slideMotorPowerStill);
                 return;
             case EXT_BUCKET_IN:
+                slideMotor.setPower(slideMotorPowerMoving);
                 targetPos = slideMotorPosition_BUCKET_OUT;
                 slideMotor.setTargetPosition(targetPos);
                 while (slideMotor.getCurrentPosition() < targetPos) {
@@ -113,8 +116,10 @@ public class SlideController {
                         e.printStackTrace();
                     }
                 }
+                slideMotor.setPower(slideMotorPowerStill);
                 return;
             case EXT_BUCKET_OUT:
+                slideMotor.setPower(slideMotorPowerStill);
                 switch (targetParams) {
                     case ONE_CAROUSEL:
                         targetPosFinal = slideMotorPosition_ONE_CAROUSEL;
@@ -137,40 +142,44 @@ public class SlideController {
                         flagToLeave = true;
                         return;
                 }
+                slideMotor.setPower(slideMotorPowerMoving);
                 slideMotor.setTargetPosition(targetPosFinal);
                 setHeightToParams(verticalServoTargetPos);
-                while (slideMotor.getCurrentPosition() < targetPosFinal) {
+                while (slideMotor.isBusy()) {
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
-                return;
-            case OUT_FULLY:
+                slideMotor.setPower(slideMotorPowerStill);
                 return;
             case RET_BUCKET_OUT:
                 targetPos = slideMotorPosition_BUCKET_OUT;
+                slideMotor.setPower(slideMotorPowerMoving);
                 slideMotor.setTargetPosition(targetPos);
                 setHeightToParams(vertServoPosition_PARKED);
-                while (slideMotor.getCurrentPosition() > targetPos) {
+                while (slideMotor.isBusy()) {
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
+                slideMotor.setPower(slideMotorPowerStill);
                 return;
             case RET_BUCKET_IN:
                 targetPos = slideMotorPosition_PARKED;
+                slideMotor.setPower(slideMotorPowerMoving);
                 slideMotor.setTargetPosition(targetPos);
-                while (slideMotor.getCurrentPosition() > targetPos) {
+                while (slideMotor.isBusy()) {
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
+                slideMotor.setPower(slideMotorPowerStill);
                 return;
         }
     }
@@ -220,7 +229,8 @@ public class SlideController {
     int slideMotorPosition_TWO_CAROUSEL = 0;
     int slideMotorPosition_ONE_CAROUSEL = 0;
 
-
+    double slideMotorPowerMoving = 0;
+    double slideMotorPowerStill = 0;
 
 
 
