@@ -47,20 +47,22 @@ public class EnoderTesting extends LinearOpMode {
 
 
         }
+        powerUpdater.interrupt();
 
     }
 
-    private static Thread powerUpdater = new Thread(() -> {
-        while (!stopRequested) {
+    private Thread powerUpdater = new Thread(() -> {
+        while (!this.isStopRequested()) {
             if(EncoderTestingConfig.setPower != currentPower) {
                 if(!spoolMotor.isBusy()) {
                     spoolMotor.setPower(EncoderTestingConfig.setPower);
                 }
             }
         }
+        spoolMotor.setPower(0);
     });
 
-    private static void runToPosition(int ticks) {
+    private void runToPosition(int ticks) {
         if(spoolMotor.getPower() == 0) {
             spoolMotor.setPower(0.3);
         }

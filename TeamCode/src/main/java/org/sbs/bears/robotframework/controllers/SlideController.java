@@ -212,7 +212,7 @@ public class SlideController {
     // vertical servo
     double vertServoPosition_PARKED = 0;
     double vertServoPosition_ONE_CAROUSEL = 0;
-    double vertServoPosition_TWO_CAROUSEL = 0;
+    double vertServoPosition_TWO_CAROUSEL = 0.5;
     double vertServoPosition_THREE_CAROUSEL = 0;
     double vertServoPosition_THREE_DEPOSIT = 0;
     double incrementDelta = 0.001;
@@ -223,13 +223,13 @@ public class SlideController {
 
     // slide motor
     int slideMotorPosition_PARKED = 0;
-    int slideMotorPosition_BUCKET_OUT = 0; // minimum position for the bucket to be out
+    int slideMotorPosition_BUCKET_OUT = 300; // minimum position for the bucket to be out
     int slideMotorPosition_THREE_DEPOSIT = 0;
     int slideMotorPosition_THREE_CAROUSEL = 0;
-    int slideMotorPosition_TWO_CAROUSEL = 0;
+    int slideMotorPosition_TWO_CAROUSEL = 700;
     int slideMotorPosition_ONE_CAROUSEL = 0;
 
-    double slideMotorPowerMoving = 0;
+    double slideMotorPowerMoving = 0.3; // TOOD:
     double slideMotorPowerStill = 0;
 
 

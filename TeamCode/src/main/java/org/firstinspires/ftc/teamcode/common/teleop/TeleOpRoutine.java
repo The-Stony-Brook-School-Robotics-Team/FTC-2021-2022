@@ -6,9 +6,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
 import org.firstinspires.ftc.teamcode.common.teleop.misc.Beta;
@@ -16,8 +14,8 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
 import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
 import org.sbs.bears.robotframework.controllers.SlideController;
-import org.sbs.bears.robotframework.enums.IntakeSide;
 import org.sbs.bears.robotframework.enums.IntakeState;
+import org.sbs.bears.robotframework.enums.SlideTarget;
 
 
 @TeleOp(name="A - TeleOp Qualifier One", group="default")
@@ -47,9 +45,6 @@ public class TeleOpRoutine extends OpMode {
     private static IntakeControllerBlue blueIntake;
     private static SlideController slideController;
 
-    /** Internal Usage */
-    private static Telemetry internalTelemetry;
-    private static DcMotor spoolMotor = null;
 
     @Override
     public void init() {
@@ -59,10 +54,6 @@ public class TeleOpRoutine extends OpMode {
          * */
         drive = new SampleMecanumDrive(hardwareMap);
         dashboard = FtcDashboard.getInstance();
-        internalTelemetry = telemetry;
-        spoolMotor  = hardwareMap.get(DcMotor.class, "spool");
-        spoolMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        spoolMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         gamepad = new GamepadEx(gamepad1);
 
         redIntake = new IntakeControllerRed(hardwareMap, telemetry);
@@ -104,19 +95,6 @@ public class TeleOpRoutine extends OpMode {
                 // End Intakes
 
 
-                spoolMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-                for(int i = 0; i < 10; i++) {
-                    telemetry.addData("iteration", i);
-                    spoolMotor.setTargetPosition(800);
-                    while (spoolMotor.isBusy()) { }
-                    spoolMotor.setTargetPosition(0);
-                }
-
-
-
-                telemetry.addLine("robot running, runtime: " + this.getRuntime());
-                telemetry.addData("motor encoder position: ", spoolMotor.getCurrentPosition());
                 telemetry.update();
                 break;
 
@@ -202,18 +180,8 @@ public class TeleOpRoutine extends OpMode {
         }
     });
 
-    private static boolean running = false;
     private static void slideMotionControl() {
-        if(!running) {
-            running = true;
-
-            running = false;
-        } else {
-
-        }
-
-
-
+        slideController.extendDropRetract(SlideTarget.TWO_CAROUSEL);
     }
 
 
