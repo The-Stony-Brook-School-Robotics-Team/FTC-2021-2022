@@ -9,14 +9,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.sbs.bears.robotframework.Robot;
+import org.sbs.bears.robotframework.controllers.DuckCarouselController;
 import org.sbs.bears.robotframework.controllers.IntakeController;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 import org.sbs.bears.robotframework.controllers.RoadRunnerController;
-import org.sbs.bears.robotframework.controllers.SlideExtensionController;
+import org.sbs.bears.robotframework.controllers.SlideController;
 import org.sbs.bears.robotframework.enums.IntakeSide;
 import org.sbs.bears.robotframework.enums.IntakeState;
-import org.sbs.bears.robotframework.enums.SlideHeight;
-import org.sbs.bears.robotframework.controllers.SlideHeightController;
+import org.sbs.bears.robotframework.enums.SlideTarget;
 import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
 import static org.sbs.bears.robotframework.controllers.OpenCVController.doAnalysisMaster;
 
@@ -28,10 +28,10 @@ public class AutonomousBrain {
     Robot robot;
     OpenCVController CVctrl;
     RoadRunnerController RRctrl;
-    SlideHeightController slideHCtrl;
-    SlideExtensionController slideExtCtrl;
+    SlideController slideCtrl;
     IntakeController intakeCtrl;
     IntakeController intakeCtrl2;
+    DuckCarouselController duckCtrl;
 
     Telemetry tel;
     HardwareMap hwMap;
@@ -44,6 +44,8 @@ public class AutonomousBrain {
     TowerHeightFromDuck heightFromDuck = TowerHeightFromDuck.NOT_YET_SET;
 
 
+    SlideTarget targetCarousel;
+    SlideTarget targetNormal = SlideTarget.THREE_DEPOSIT;
 
     enum AutonomousStates {
         STOPPED,
@@ -76,10 +78,10 @@ public class AutonomousBrain {
         this.robot = new Robot(hardwareMap,telemetry,mode);
         this.CVctrl = robot.getCVctrl();
         this.RRctrl = robot.getRRctrl();
-        this.slideHCtrl = robot.getSlideHCtrl();
-        this.slideExtCtrl = robot.getSlideExtCtrl();
+        this.slideCtrl = robot.getSlideCtrl();
         this.intakeCtrl = robot.getIntakeCtrl();
         this.intakeCtrl2 = new IntakeController(hardwareMap,telemetry, IntakeSide.RED);
+        this.duckCtrl = robot.getDuckCtrl();
     }
     public void launch() // call this method before loop, so start method.
     {
@@ -129,13 +131,13 @@ public class AutonomousBrain {
                 switch(heightFromDuck)
                 {
                     case ONE:
-                        slideHCtrl.setSlideHeight(SlideHeight.ONE_CAROUSEL);
+                        targetCarousel = SlideTarget.ONE_CAROUSEL;
                         break;
                     case TWO:
-                        slideHCtrl.setSlideHeight(SlideHeight.TWO_CAROUSEL);
+                        targetCarousel = SlideTarget.TWO_CAROUSEL;
                         break;
                     default:
-                        slideHCtrl.setSlideHeight(SlideHeight.THREE_CAROUSEL);
+                        targetCarousel = SlideTarget.THREE_CAROUSEL;
                 }
 
                 majorState = AutonomousStates.THREE_CAROUSEL;
@@ -156,26 +158,23 @@ public class AutonomousBrain {
             case THREE_CAROUSEL:
                 if(mode.equals(AutonomousMode.BlueFull)) {
                     RRctrl.followLineToSpline(duckSpinningPositionB);
-                    new Thread(()->{slideExtCtrl.extendDropRetract();}).start();
+                    new Thread(()->{slideCtrl.extendDropRetract(targetCarousel);}).start();
                     spinDuck(true);
 
                     mode = AutonomousMode.BlueSimple;
                 }
                 if(mode.equals(AutonomousMode.RedFull)) {
                     RRctrl.followLineToSpline(duckSpinningPositionR);
-                    new Thread(()->{slideExtCtrl.extendDropRetract();}).start();
-                    spinDuck(true);
-                    slideExtCtrl.extendDropRetract();
+                    new Thread(()->{slideCtrl.extendDropRetract(targetCarousel);}).start();
+                    spinDuck(false);
                     mode = AutonomousMode.RedSimple;
                 }
 
-                majorState = AutonomousStates.FOUR_B_SET_SLIDE_HEIGHT_3;
-                return;
-            case FOUR_B_SET_SLIDE_HEIGHT_3:
-                slideHCtrl.setSlideHeight(SlideHeight.THREE_CLOSE);
                 majorState = AutonomousStates.FOUR_DRIVE_TO_WAREHOUSE;
-                //majorState = AutonomousStates.FINISHED;
                 return;
+            /*case FOUR_B_SET_SLIDE_HEIGHT_3:
+                majorState = AutonomousStates.FOUR_DRIVE_TO_WAREHOUSE;
+                return;*/
             case FOUR_DRIVE_TO_WAREHOUSE:
                 switch(mode) {
                     case BlueSimple:
@@ -191,7 +190,6 @@ public class AutonomousBrain {
                         RRctrl.followLineToSpline(wareHousePickupPositionRSpl);
 */
                 }
-                //majorState = AutonomousStates.FINISHED;
                 majorState = AutonomousStates.FIVE_BACK_FORTH;
                 return;
             case FIVE_BACK_FORTH:
@@ -202,10 +200,10 @@ public class AutonomousBrain {
                     return;
                 }
                 // time check
-               /* double currentTime = NanoClock.system().seconds();
+               double currentTime = NanoClock.system().seconds();
                 if(currentTime-iniTime > 25) {
                     majorState = AutonomousStates.SIX_PARKING_WAREHOUSE;
-                }*/
+                }
                 return;
             case SIX_PARKING_WAREHOUSE:
                 /*switch(mode) {
@@ -307,13 +305,13 @@ public class AutonomousBrain {
                 //minorState = AutonomousBackForthSubStates.THREE_SLIDE_OUT_IN;
                 minorState = AutonomousBackForthSubStates.THREE_SLIDE_OUT_IN;
                 counter++; // 1 after first run, 2 after second.
-                while(!AutonomousBlueFull.gamepad.b) {
+                /*while(!AutonomousBlueFull.gamepad.b) {
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                }
+                }*/
                 /*if (counter == 2) {
                     minorState = AutonomousBackForthSubStates.STOPPED;
                     majorState = AutonomousStates.STOPPED;
@@ -322,17 +320,7 @@ public class AutonomousBrain {
                 //majorState = AutonomousStates.FINISHED; // stop.
                 return;
             case THREE_SLIDE_OUT_IN:
-                switch(mode) // should have already set slide height before.
-                {
-                    case BlueSimple:
-                    case RedSimple:
-                        slideHCtrl.setSlideHeight(SlideHeight.THREE_CLOSE);
-                        break;
-                    case RedSpline:
-                    case BlueSpline:
-                        slideHCtrl.setSlideHeight(SlideHeight.THREE_FAR);
-                }
-                slideExtCtrl.extendDropRetract();
+                slideCtrl.extendDropRetract(targetNormal);
                 minorState = AutonomousBackForthSubStates.FOUR_BACKWARD;
                 return;
             case FOUR_BACKWARD:
@@ -356,23 +344,30 @@ public class AutonomousBrain {
 
     public void spinDuck(boolean qBlue)
     {
-        try {
-            DcMotor duckSpinner = hwMap.get(DcMotor.class, "duck");
-            duckSpinner.setPower(qBlue ? -.3 : .3);
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            duckSpinner.setPower(0);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
+        if(qBlue)
+        {
+            duckCtrl.spinOneDuck();
         }
-        catch(Exception e) {
-            Log.d("AutonomousBrain","DuckSpinner Failed");
+        else {
+            try {
+                DcMotor duckSpinner = hwMap.get(DcMotor.class, "duck");
+                duckSpinner.setPower(qBlue ? -.3 : .3);
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                duckSpinner.setPower(0);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            catch(Exception e) {
+                Log.d("AutonomousBrain","DuckSpinner Failed");
+            }
         }
     }
 
