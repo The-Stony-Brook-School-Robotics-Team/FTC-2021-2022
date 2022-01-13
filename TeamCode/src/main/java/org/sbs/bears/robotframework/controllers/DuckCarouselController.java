@@ -44,11 +44,20 @@ public class DuckCarouselController {
     public DuckCarouselController(HardwareMap hardwareMap, Telemetry telemetry)
     {
         wheelMover = hardwareMap.get(DcMotor.class,"duck");
-        initializeEnvironment();
+        //initializeEnvironment();
     }
-    public void spinOneDuck()
+    public void spinOneDuck(boolean qBlue)
     {
-        while (updateMotorSpeed()) ;
+        wheelMover.setPower(qBlue ? -.3 : .3);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        wheelMover.setPower(0);
+
+
+       // while (updateMotorSpeed()) ;
     }
 
     //------------------------------------------------------------
@@ -63,9 +72,9 @@ public class DuckCarouselController {
     }
 
     public void initializeEnvironment() {
-        wheelMover.setDirection(DcMotorSimple.Direction.REVERSE);
-        initializeVariables();
-        initializeVariables();
+        //wheelMover.setDirection(DcMotorSimple.Direction.REVERSE);
+        //initializeVariables();
+        //initializeVariables();
     }
 
     /**
