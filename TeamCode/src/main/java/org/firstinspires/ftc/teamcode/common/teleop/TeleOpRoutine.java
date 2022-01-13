@@ -103,7 +103,6 @@ public class TeleOpRoutine extends OpMode {
     }
 
 
-
     public Thread buttonHandlerRuntime = new Thread(() -> {
         while(currentState == TeleOpRobotStates.RUNNING) {
             if(gamepad.isDown(GamepadKeys.Button.LEFT_BUMPER)) {
@@ -127,7 +126,7 @@ public class TeleOpRoutine extends OpMode {
                     // Y
                     if(gamepad.isDown(GamepadKeys.Button.Y)) {
                         // TODO: Add duck spinner function
-                        telemetry.addData("button down!", 1);
+                        telemetry.addLine("button down!");
                         telemetry.update();
                     }
                     // RB

@@ -345,31 +345,32 @@ public class AutonomousBrain {
 
     public void spinDuck(boolean qBlue)
     {
-
-        if(qBlue)
-        {
-            duckCtrl.spinOneDuck();
-        }
-        else {
-            try {
-                DcMotor duckSpinner = hwMap.get(DcMotor.class, "duck");
-                duckSpinner.setPower(qBlue ? -.3 : .3);
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                duckSpinner.setPower(0);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            catch(Exception e) {
-                Log.d("AutonomousBrain","DuckSpinner Failed");
-            }
-        }
+        duckCtrl.spinOneDuck(qBlue);
+//
+//
+//        if(qBlue)
+//        {
+//        }
+//        else {
+//            try {
+//                DcMotor duckSpinner = hwMap.get(DcMotor.class, "duck");
+//                duckSpinner.setPower(qBlue ? -.3 : .3);
+//                try {
+//                    Thread.sleep(2000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                duckSpinner.setPower(0);
+//                try {
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            catch(Exception e) {
+//                Log.d("AutonomousBrain","DuckSpinner Failed");
+//            }
+//        }
     }
 
 
