@@ -15,6 +15,10 @@ public class SlideController {
 
     private DcMotor slideMotor;
 
+
+    // TODO: determine which states are necessary and create variables and state machine
+
+
     public SlideController(HardwareMap hardwareMap, Telemetry telemetry)
     {
         verticalServo = hardwareMap.get(Servo.class, "vt");
@@ -46,11 +50,13 @@ public class SlideController {
 
     // slide motor
     double slideMotorPosition_PARKED = 0;
-    double slideMotorPosition_BUCKET_OUT = 0;
+    double slideMotorPosition_BUCKET_OUT = 0; // minimum position for the bucket to be out
     double slideMotorPosition_THREE_DEPOSIT = 0;
     double slideMotorPosition_THREE_CAROUSEL = 0;
     double slideMotorPosition_TWO_CAROUSEL = 0;
     double slideMotorPosition_ONE_CAROUSEL = 0;
+
+
 
 
 
