@@ -64,6 +64,8 @@ public class TeleOpRoutine extends OpMode {
         dashboard = FtcDashboard.getInstance();
         internalTelemetry = telemetry;
         spoolMotor  = hardwareMap.get(DcMotor.class, "spool");
+        spoolMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        spoolMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         gamepad = new GamepadEx(gamepad1);
 
         redIntake = new IntakeController(hardwareMap, telemetry, IntakeSide.RED);
@@ -105,8 +107,19 @@ public class TeleOpRoutine extends OpMode {
                 // End Intakes
 
 
+                spoolMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                for(int i = 0; i < 10; i++) {
+                    telemetry.addData("iteration", i);
+                    spoolMotor.setTargetPosition(800);
+                    while (spoolMotor.isBusy()) { }
+                    spoolMotor.setTargetPosition(0);
+                }
+
+
 
                 telemetry.addLine("robot running, runtime: " + this.getRuntime());
+                telemetry.addData("motor encoder position: ", spoolMotor.getCurrentPosition());
                 telemetry.update();
                 break;
 
@@ -192,15 +205,18 @@ public class TeleOpRoutine extends OpMode {
         }
     });
 
+    private static boolean running = false;
     private static void slideMotionControl() {
-        double joystickPosition = gamepad.getRightY();
-        internalTelemetry.addData("Joystick Position", joystickPosition);
-        internalTelemetry.addData("encoder pos", spoolMotor.getCurrentPosition());
-        internalTelemetry.update();
+        if(!running) {
+            running = true;
 
-        int cPos  = spoolMotor.getCurrentPosition();
-        cPos = cPos + (int)joystickPosition;
-        spoolMotor.setTargetPosition(cPos);
+            running = false;
+        } else {
+
+        }
+
+
+
     }
 
 
