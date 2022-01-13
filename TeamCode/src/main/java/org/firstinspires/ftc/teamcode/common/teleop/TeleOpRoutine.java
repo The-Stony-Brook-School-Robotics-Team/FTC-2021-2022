@@ -8,7 +8,9 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Sandboxes.Michael.Unsafe.SlideController;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
@@ -48,7 +50,9 @@ public class TeleOpRoutine extends OpMode {
     private static IntakeController blueIntake;
     private static SlideController slideController;
 
-
+    /** Internal Usage */
+    private static Telemetry internalTelemetry;
+    private static DcMotor spoolMotor = null;
 
     @Override
     public void init() {
@@ -58,6 +62,8 @@ public class TeleOpRoutine extends OpMode {
          * */
         drive = new SampleMecanumDrive(hardwareMap);
         dashboard = FtcDashboard.getInstance();
+        internalTelemetry = telemetry;
+        spoolMotor  = hardwareMap.get(DcMotor.class, "spool");
         gamepad = new GamepadEx(gamepad1);
 
         redIntake = new IntakeController(hardwareMap, telemetry, IntakeSide.RED);
@@ -81,15 +87,9 @@ public class TeleOpRoutine extends OpMode {
         if(!roadrunnerHandlerRuntime.isAlive()) {
             roadrunnerHandlerRuntime.start();
         }
-        if(!DashboardInterface.dashboardInterfaceUpdater.isAlive()) {
-            DashboardInterface.dashboardInterfaceUpdater.start();
-        }
-
-        /**
-        if(!dashboardHandler.isAlive()) {
-            dashboardHandler.start();
-        }
-        */
+        // if(!DashboardInterface.dashboardInterfaceUpdater.isAlive()) {
+        //     DashboardInterface.dashboardInterfaceUpdater.start();
+        // }
 
         switch(currentState) {
             case STOPPED:
@@ -120,7 +120,7 @@ public class TeleOpRoutine extends OpMode {
         while(currentState == TeleOpRobotStates.RUNNING) {
             if(gamepad.isDown(GamepadKeys.Button.LEFT_BUMPER)) {
                 controllerMode = ControllerModes.SECONDARY;
-            } else if(gamepad.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
+            } else {
                 controllerMode = ControllerModes.PRIMARY;
             }
 
@@ -166,9 +166,7 @@ public class TeleOpRoutine extends OpMode {
 
                     break;
                 case SECONDARY:
-                    if(gamepad.getRightX() > Configuration.rightStickXLimitTrigger || gamepad.getRightX() < Configuration.rightStickXLimitTrigger * -1) {
-                        slideMotionControl();
-                    }
+                    slideMotionControl();
                     break;
             }
         }
@@ -196,11 +194,13 @@ public class TeleOpRoutine extends OpMode {
 
     private static void slideMotionControl() {
         double joystickPosition = gamepad.getRightY();
-        if(joystickPosition > Configuration.rightStickXLimitThreshold || joystickPosition < Configuration.rightStickXLimitThreshold * -1) {
-            if (joystickPosition > 0 || joystickPosition < 0) {
-                slideController.setMotorIncrement((int)joystickPosition * (int)Configuration.slideAdjustmentMultiplier);
-            }
-        }
+        internalTelemetry.addData("Joystick Position", joystickPosition);
+        internalTelemetry.addData("encoder pos", spoolMotor.getCurrentPosition());
+        internalTelemetry.update();
+
+        int cPos  = spoolMotor.getCurrentPosition();
+        cPos = cPos + (int)joystickPosition;
+        spoolMotor.setTargetPosition(cPos);
     }
 
 
