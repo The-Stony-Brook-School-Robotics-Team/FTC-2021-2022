@@ -31,7 +31,7 @@ public class SlideController {
     {
         verticalServo = hardwareMap.get(Servo.class, "vt");
        // horizontalServo = hardwareMap.get(Servo.class, "hz");
-//        dumperServo = hardwareMap.get(Servo.class, "du");
+       dumperServo = hardwareMap.get(Servo.class, "du");
         slideMotor = hardwareMap.get(DcMotor.class, "spool");
 
 
@@ -219,6 +219,9 @@ public class SlideController {
 
 
     /** TeleOp Methods */
+    public double getVerticalServoPosition(){return verticalServo.getPosition();}
+    public double getSlideMotorPosition(){return slideMotor.getCurrentPosition();}
+
     public void setToEncoderPosition(int encoderTicks){
         //Checks if the position given is a position that would put the box inside of the robot
         if(encoderTicks < slideMotorPosition_BUCKET_OUT){
@@ -233,7 +236,7 @@ public class SlideController {
             slideState = SlideState.EXT_BUCKET_OUT;
         }
         //Checks if the slide is in a position to move
-       slideMotor.setTargetPosition(encoderTicks);
+       slideMotor.setTargetPosition(encoderTicks); return;
     }
     public void setToInchPosition(double inches){
         inches = encoderInchesToTicks(inches);
@@ -250,7 +253,7 @@ public class SlideController {
             slideState = SlideState.EXT_BUCKET_OUT;
         }
         //Checks if the slide is in a position to move
-        slideMotor.setTargetPosition((int)inches);
+        slideMotor.setTargetPosition((int)inches); return;
 
 
     }
@@ -275,7 +278,7 @@ public class SlideController {
             slideState = SlideState.EXT_BUCKET_OUT;
         }
         //Checks if the slide is in a position to move
-        slideMotor.setTargetPosition(encoderTicks);
+        slideMotor.setTargetPosition(encoderTicks); return;
 
     }
     public void incrementInchPosition(double inches){
@@ -300,7 +303,7 @@ public class SlideController {
             slideState = SlideState.EXT_BUCKET_OUT;
         }
         //Checks if the slide is in a position to move
-        slideMotor.setTargetPosition((int)inches);
+        slideMotor.setTargetPosition((int)inches); return;
 
     }
     /** End of TeleOp Methods */
