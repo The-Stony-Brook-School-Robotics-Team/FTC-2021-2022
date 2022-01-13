@@ -220,60 +220,87 @@ public class SlideController {
 
     /** TeleOp Methods */
     public void setToEncoderPosition(int encoderTicks){
+        //Checks if the position given is a position that would put the box inside of the robot
         if(encoderTicks < slideMotorPosition_BUCKET_OUT){
             Log.d("SlideController","Gave an encoder position with the box inside of the robot");
+            retractSlide();
             return;
         }
-        if(slideState == SlideState.EXT_BUCKET_OUT)slideMotor.setTargetPosition(encoderTicks);
-        else if(slideState == SlideState.PARKED){
+        //If the slide is not extended, extend it to the minimum position.
+        if(slideState == SlideState.PARKED){
             slideState = SlideState.EXT_BUCKET_IN;
             doStateAction();
             slideState = SlideState.EXT_BUCKET_OUT;
         }
-
+        //Checks if the slide is in a position to move
+       slideMotor.setTargetPosition(encoderTicks);
     }
     public void setToInchPosition(double inches){
         inches = encoderInchesToTicks(inches);
+        //Checks if the position given is a position that would put the box inside of the robot
         if(inches < slideMotorPosition_BUCKET_OUT){
             Log.d("SlideController","Gave an encoder position with the box inside of the robot");
+            retractSlide();
             return;
         }
-        if(slideState == SlideState.EXT_BUCKET_OUT)slideMotor.setTargetPosition((int)inches);
-        else if(slideState == SlideState.PARKED){
+        //If the slide is not extended, extend it to the minimum position.
+        if(slideState == SlideState.PARKED){
             slideState = SlideState.EXT_BUCKET_IN;
             doStateAction();
             slideState = SlideState.EXT_BUCKET_OUT;
         }
+        //Checks if the slide is in a position to move
+        slideMotor.setTargetPosition((int)inches);
 
 
     }
     public void incrementEncoderPosition(int encoderTicks){
         encoderTicks += slideMotor.getCurrentPosition();
+        //Checks if the position given is a position that would put the box inside of the robot
         if(encoderTicks < slideMotorPosition_BUCKET_OUT){
-            Log.d("SlideController","Gave an encoder position that would put the box inside of the robot");
-            return;
+            Log.d("SlideController","Gave an encoder position with the box inside of the robot");
+            if(encoderTicks < 0){
+                retractSlide();
+                return;
+            }
+            if(encoderTicks > 0){
+                extendSlide();
+                return;
+            }
         }
-        if(slideState == SlideState.EXT_BUCKET_OUT)slideMotor.setTargetPosition(encoderTicks);
-        else if(slideState == SlideState.PARKED){
+        //If the slide is not extended, extend it to the minimum position.
+        if(slideState == SlideState.PARKED){
             slideState = SlideState.EXT_BUCKET_IN;
             doStateAction();
             slideState = SlideState.EXT_BUCKET_OUT;
         }
+        //Checks if the slide is in a position to move
+        slideMotor.setTargetPosition(encoderTicks);
 
     }
     public void incrementInchPosition(double inches){
         inches = encoderInchesToTicks(inches);
         inches += slideMotor.getCurrentPosition();
+        //Checks if the position given is a position that would put the box inside of the robot
         if(inches < slideMotorPosition_BUCKET_OUT){
-            Log.d("SlideController","Gave an encoder position that would put the box inside of the robot");
-            return;
+            Log.d("SlideController","Gave an encoder position with the box inside of the robot");
+            if(inches < 0){
+                retractSlide();
+                return;
+            }
+            if(inches > 0){
+                extendSlide();
+                return;
+            }
         }
-        if(slideState == SlideState.EXT_BUCKET_OUT)slideMotor.setTargetPosition((int)inches);
-        else if(slideState == SlideState.PARKED){
+        //If the slide is not extended, extend it to the minimum position.
+        if(slideState == SlideState.PARKED){
             slideState = SlideState.EXT_BUCKET_IN;
             doStateAction();
             slideState = SlideState.EXT_BUCKET_OUT;
         }
+        //Checks if the slide is in a position to move
+        slideMotor.setTargetPosition((int)inches);
 
     }
     /** End of TeleOp Methods */
