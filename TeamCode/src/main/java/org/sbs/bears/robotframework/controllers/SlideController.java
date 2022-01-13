@@ -218,6 +218,41 @@ public class SlideController {
     }
 
 
+    /** TeleOp Methods */
+    public void setToEncoderPosition(int encoderTicks){
+        if(encoderTicks < slideMotorPosition_BUCKET_OUT){
+            Log.d("SlideController","Gave an encoder position with the box inside of the robot");
+            return;
+        }
+        if(slideState == SlideState.EXT_BUCKET_OUT)slideMotor.setTargetPosition(encoderTicks);
+        else if(slideState == SlideState.PARKED){
+            slideState = SlideState.EXT_BUCKET_IN;
+            doStateAction();
+            slideState = SlideState.EXT_BUCKET_OUT;
+        }
+
+    }
+    public void setToInchPosition(double inches){
+        inches = encoderInchesToTicks(inches);
+        if(inches < slideMotorPosition_BUCKET_OUT){
+            Log.d("SlideController","Gave an encoder position with the box inside of the robot");
+            return;
+        }
+        if(slideState == SlideState.EXT_BUCKET_OUT)slideMotor.setTargetPosition((int)inches);
+        else if(slideState == SlideState.PARKED){
+            slideState = SlideState.EXT_BUCKET_IN;
+            doStateAction();
+            slideState = SlideState.EXT_BUCKET_OUT;
+        }
+
+
+    }
+    private double encoderInchesToTicks(double ticks) {
+        return ticks * 8192 / .785 / 2 / Math.PI;
+    }
+
+
+
 
     // TODO MEASURE ALL CONSTANTS
 
