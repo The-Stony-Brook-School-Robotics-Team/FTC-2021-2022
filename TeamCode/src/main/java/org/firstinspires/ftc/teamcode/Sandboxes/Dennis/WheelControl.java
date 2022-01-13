@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Sandboxes.Dennis;
 
+import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
@@ -26,44 +27,52 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class WheelControl {
 
-    //MAGICAL_CONSTANT should be between 0.39 to 0.41. Because of the lack of enough torque, the wheel actually never achieve the ideal acceleration.
+    //MAGICAL_CONSTANT should be between 0.30 to 0.40. Because of the lack of enough torque, the wheel actually never achieve the ideal acceleration.
     private static double MAGICAL_CONSTANT = 0.3;
 
     private static double FIRST_STAGE_TIME;
     private static double FIRST_STAGE_TIME_INTERVAL = 1.5;
-    private static double MAX_WHEEL_SPEED = 0;
     private static double timer;
     private static double runTime;
 
-    public static int signal = 0;
-
     private static DcMotor wheelMover;
 
-    public static void initializeEnvironment(DcMotor wheelMover, double currentTime_s) {
-        wheelMover.setDirection(DcMotorSimple.Direction.REVERSE);
-        initializeVariables();
-        WheelControl.wheelMover = wheelMover;
+    //------------------------------------------------------------
+    public static void spinWheel(DcMotor wheelMover) {          //
+        initializeEnvironment(wheelMover);                      //
+        while (updateMotorSpeed()) ;                            //
+    }                                                           //
+    //------------------------------------------------------------
 
-        if (wheelMover.getPower() > MAX_WHEEL_SPEED)
-            MAX_WHEEL_SPEED = wheelMover.getPower();
+    private static double getCurrentSystemSecond() {
+        return NanoClock.system().seconds();
     }
 
-    public static void updateMotorSpeed(double currentTime_s) {
-        updateRunTime(currentTime_s);
+    public static void initializeEnvironment(DcMotor wheelMover) {
+        wheelMover.setDirection(DcMotorSimple.Direction.REVERSE);
+        WheelControl.wheelMover = wheelMover;
+        initializeVariables();
+        initializeVariables();
+    }
+
+    /**
+     * @return True if wheel spinning is finished. False if wheel spinning is running.
+     */
+    public static boolean updateMotorSpeed() {
+        updateRunTime();
         if (runTime >= 0 && runTime < FIRST_STAGE_TIME) {
             //First Stage
             wheelMover.setPower(getFirstStageMotorSpeed(runTime));
-            signal = 1;
+            return false;
         } else {
             //Ending
             wheelMover.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            signal = 2;
+            return true;
         }
     }
 
-
-    private static void updateRunTime(double currentTime_s) {
-        runTime = currentTime_s - timer;
+    private static void updateRunTime() {
+        runTime = getCurrentSystemSecond() - timer;
     }
 
     private static void initializeVariables() {
@@ -78,9 +87,5 @@ public class WheelControl {
      */
     private static double getFirstStageMotorSpeed(double runTime) {
         return MAGICAL_CONSTANT * runTime;
-    }
-
-    private static double getCurrentSystemSecond() {
-        return System.currentTimeMillis() / 1000.0;
     }
 }
