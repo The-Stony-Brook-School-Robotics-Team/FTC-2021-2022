@@ -193,8 +193,7 @@ public class SlideController {
     }
 
 
-    /** handles slow raise and lowering of servo @Dennis **/
-    //TODO @dennis hello this is what you probably want to look at delta varialbe used here
+
     private void setHeightToParams(double targetPos) {
         if(slideState == SlideState.OUT_FULLY || slideState == SlideState.RET_BUCKET_OUT || slideState == SlideState.EXT_BUCKET_OUT) {
             double currentPos = verticalServo.getPosition();
@@ -297,28 +296,32 @@ public class SlideController {
     public void incrementEncoderPosition(int encoderTicks){
         //TODO: to retract, just set to desired servo position and go to park from there?? idiot??
         flagTeleOp = true;
+        //ret in
+        int oldPosition = slideMotor.getCurrentPosition();
         encoderTicks += slideMotor.getCurrentPosition();
         //Checks if the position given is a position that would put the box inside of the robot
         if(encoderTicks > slideMotorPosition_FULL){return;}
-        if(encoderTicks < slideMotorPosition_BUCKET_OUT){
+        if(encoderTicks < slideMotorPosition_BUCKET_OUT || oldPosition < slideMotorPosition_BUCKET_OUT){
             Log.d("SlideController","Gave an encoder position with the box inside of the robot");
-            if(encoderTicks < 0){
-                //this dont work for teleop rn
-                //retractSlide();
+            if(encoderTicks < oldPosition && oldPosition < slideMotorPosition_BUCKET_OUT) {
+            return;
+            }
+            else if(encoderTicks < oldPosition){
+                retractSlide();
 
                 return;
             }
-            if(encoderTicks > 0){
+            if(encoderTicks > oldPosition ){
                 extendSlide();
                 return;
             }
         }
         //If the slide is not extended, extend it to the minimum position.
-        if(slideState == SlideState.PARKED){
-            slideState = SlideState.EXT_BUCKET_IN;
-            doStateAction();
+        //if(slideState == SlideState.PARKED){
+        //    slideState = SlideState.EXT_BUCKET_IN;
+        //    doStateAction();
             //slideState = SlideState.EXT_BUCKET_OUT;
-        }
+        //}
         //Checks if the slide is in a position to move
         slideMotor.setPower(slideMotorPowerMoving);
         slideMotor.setTargetPosition(encoderTicks);
@@ -386,16 +389,14 @@ public class SlideController {
     // TODO MEASURE ALL CONSTANTS
 
     // vertical servo
-    double vertServoPosition_PARKED = 0;
+    double vertServoPosition_PARKED = .2;
     double vertServoPosition_ONE_CAROUSEL = 0.2;
     double vertServoPosition_TWO_CAROUSEL = 0.5;
     double vertServoPosition_THREE_CAROUSEL = 0.7;
     double vertServoPosition_THREE_DEPOSIT = 1;
-    //TODO HERE DENNIS HERE HERE HERE IS VARIABLE @AUTHOR @ DENNIS @ EVERYTHING
     double incrementDelta = 0.001;
-/**HERE HERE HERE HERE HERE HEREH ERE HERE ^^^^*/
     double vertServoPosition_PARKED_MIN = 0;
-    double vertServoPosition_PARKED_MAX = 0.1;
+    double vertServoPosition_PARKED_MAX = 0.3;
 
     // dumper servo
     double dumperPosition_DUMP = 0;
