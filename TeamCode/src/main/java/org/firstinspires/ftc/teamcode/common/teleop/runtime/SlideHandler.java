@@ -5,6 +5,8 @@ import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideH
 
 import android.util.Log;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 
@@ -98,9 +100,10 @@ public class SlideHandler {
 
 
     public void manualSlideController(int stickValue) {
-        slideController.incrementEncoderPosition((stickValue + 1) * Configuration.DefaultSlideTicks);
-        Log.d("SLIDE CONTROLLER", String.valueOf((stickValue + 1) * Configuration.DefaultSlideTicks));
-
+        stickValue = stickValue * 2;
+        slideController.slideMotor.setPower(1);
+        slideController.slideMotor.setTargetPosition(slideController.slideMotor.getCurrentPosition() + (stickValue * Configuration.DefaultSlideTicks));
+        slideController.slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
 
