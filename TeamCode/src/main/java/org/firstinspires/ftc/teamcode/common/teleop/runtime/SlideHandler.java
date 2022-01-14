@@ -11,12 +11,17 @@ import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 
 public class SlideHandler {
-
+    //TODO make it work and push to github
     /**
      * Limits internal usage to one
      * @usage Threads check to see if this is already running
      */
     private static boolean running = false;
+
+    /**
+     * Interface Tag
+     */
+    public static String interfaceTag = "Slide Handler";
 
     /**
      * Slide Extended
@@ -34,7 +39,7 @@ public class SlideHandler {
     /**
      * One Carousel
      */
-    public Thread slideOneCarousel = new Thread(() -> {
+    public Thread slideOneCarousel = new Thread(() -> {//i like men
         if(!running) {
             running = true;
             slideController.extendDropRetract(SlideTarget.ONE_CAROUSEL);
