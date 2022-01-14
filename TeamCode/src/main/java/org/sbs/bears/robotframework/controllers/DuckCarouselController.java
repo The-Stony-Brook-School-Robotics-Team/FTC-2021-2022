@@ -89,7 +89,7 @@ public class DuckCarouselController {
         return NanoClock.system().seconds();
     }
 
-    public void initializeEnvironment() {
+    private void initializeEnvironment() {
         wheelMover.setDirection(DcMotorSimple.Direction.REVERSE);
        // initializeVariables();
         Log.d("DuckCtrller","initd");

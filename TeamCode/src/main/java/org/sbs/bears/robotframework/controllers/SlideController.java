@@ -30,8 +30,8 @@ public class SlideController {
     public SlideController(HardwareMap hardwareMap, Telemetry telemetry)
     {
         verticalServo = hardwareMap.get(Servo.class, "vt");
-       // horizontalServo = hardwareMap.get(Servo.class, "hz");
-//        dumperServo = hardwareMap.get(Servo.class, "du");
+        horizontalServo = hardwareMap.get(Servo.class, "hz");
+        dumperServo = hardwareMap.get(Servo.class, "du");
         slideMotor = hardwareMap.get(DcMotor.class, "spool");
 
 
