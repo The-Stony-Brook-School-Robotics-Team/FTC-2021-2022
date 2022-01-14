@@ -13,7 +13,7 @@ import org.sbs.bears.robotframework.enums.SlideTarget;
 public class NewSlideControllerTester extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        boolean qA = false,qX = false,qB = false;
+        boolean qA = false,qX = false,qB = false, qUp = false,  qDown = false;
         SlideController ctrl = new SlideController(hardwareMap,telemetry);
         waitForStart();
         new Thread(()->{
@@ -32,7 +32,7 @@ public class NewSlideControllerTester extends LinearOpMode {
             if(!qA && gamepad1.a)
             {
                 qA = true;
-                ctrl.incrementEncoderPosition(500);
+                ctrl.setToEncoderPosition(900);
                 Log.d("SlideTester","finished extension");
                 //telemetry.addData("pressed", 1);
                 //telemetry.update();
@@ -49,6 +49,24 @@ public class NewSlideControllerTester extends LinearOpMode {
             if(qB && !gamepad1.b)
             {
                 qB = false;
+            }
+            if(!qUp && gamepad1.dpad_up)
+            {
+                qUp = true;
+                ctrl.incrementVerticalServo(.1);
+            }
+            if(qUp && !gamepad1.dpad_up)
+            {
+                qUp = false;
+            }
+            if(!qDown && gamepad1.dpad_down)
+            {
+                qDown = true;
+                ctrl.incrementVerticalServo(-.1);
+            }
+            if(qDown && !gamepad1.dpad_down)
+            {
+                qDown = false;
             }
 
         }

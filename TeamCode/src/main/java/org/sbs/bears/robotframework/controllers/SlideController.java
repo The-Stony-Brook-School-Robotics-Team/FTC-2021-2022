@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.sbs.bears.robotframework.Sleep;
 import org.sbs.bears.robotframework.enums.SlideState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 
@@ -25,6 +26,7 @@ public class SlideController {
     public SlideState slideState = SlideState.PARKED; // low-level steps
     public SlideTarget targetParams = SlideTarget.NA;
     private boolean flagToLeave = false;
+    private boolean flagTeleOp = false;
 
 
     public SlideController(HardwareMap hardwareMap, Telemetry telemetry)
@@ -82,9 +84,11 @@ public class SlideController {
         slideState = SlideState.EXT_BUCKET_IN;
         doStateAction();
         Log.d("SlideController","bucket should be out");
-        slideState = SlideState.EXT_BUCKET_OUT;
-        doStateAction();
-        Log.d("SlideController","slide should be extended");
+        if(!flagTeleOp){
+            slideState = SlideState.EXT_BUCKET_OUT;
+            doStateAction();
+            Log.d("SlideController","slide should be extended");
+        }
         if(flagToLeave)
         {
             slideState = SlideState.RET_BUCKET_IN;
@@ -223,43 +227,73 @@ public class SlideController {
     public double getSlideMotorPosition(){return slideMotor.getCurrentPosition();}
 
     public void setToEncoderPosition(int encoderTicks){
+        flagTeleOp = true;
         //Checks if the position given is a position that would put the box inside of the robot
-        if(encoderTicks < slideMotorPosition_BUCKET_OUT){
+        if(encoderTicks>slideMotorPosition_FULL){return;}
+        if((encoderTicks < slideMotorPosition_BUCKET_OUT) && (slideState != SlideState.PARKED && slideState != SlideState.EXT_BUCKET_IN)){
             Log.d("SlideController","Gave an encoder position with the box inside of the robot");
             retractSlide();
+            return;
+        }
+        else if(encoderTicks < slideMotorPosition_BUCKET_OUT){
+            Log.d("SlideController","Gave an encoder position with the box inside of the robot");
             return;
         }
         //If the slide is not extended, extend it to the minimum position.
         if(slideState == SlideState.PARKED){
             slideState = SlideState.EXT_BUCKET_IN;
             doStateAction();
-            slideState = SlideState.EXT_BUCKET_OUT;
+            //slideState = SlideState.EXT_BUCKET_OUT;
         }
         //Checks if the slide is in a position to move
-       slideMotor.setTargetPosition(encoderTicks); return;
+        slideMotor.setPower(slideMotorPowerMoving);
+       slideMotor.setTargetPosition(encoderTicks);
+        while(slideMotor.isBusy())
+        {
+            Sleep.sleep(10);
+        }
+        slideMotor.setPower(slideMotorPowerStill);
+
+        return;
     }
     public void setToInchPosition(double inches){
+        flagTeleOp = true;
         inches = encoderInchesToTicks(inches);
         //Checks if the position given is a position that would put the box inside of the robot
-        if(inches < slideMotorPosition_BUCKET_OUT){
+        if(inches>slideMotorPosition_FULL){return;}
+        if((inches < slideMotorPosition_BUCKET_OUT) && (slideState != SlideState.PARKED && slideState != SlideState.EXT_BUCKET_IN)){
             Log.d("SlideController","Gave an encoder position with the box inside of the robot");
             retractSlide();
+            return;
+        }
+        else if(inches < slideMotorPosition_BUCKET_OUT){
+            Log.d("SlideController","Gave an encoder position with the box inside of the robot");
             return;
         }
         //If the slide is not extended, extend it to the minimum position.
         if(slideState == SlideState.PARKED){
             slideState = SlideState.EXT_BUCKET_IN;
             doStateAction();
-            slideState = SlideState.EXT_BUCKET_OUT;
+            //slideState = SlideState.EXT_BUCKET_OUT;
         }
         //Checks if the slide is in a position to move
-        slideMotor.setTargetPosition((int)inches); return;
+        slideMotor.setPower(slideMotorPowerMoving);
+        slideMotor.setTargetPosition((int)inches);
+        while(slideMotor.isBusy())
+        {
+            Sleep.sleep(10);
+        }
+        slideMotor.setPower(slideMotorPowerStill);
+
+        return;
 
 
     }
     public void incrementEncoderPosition(int encoderTicks){
+        flagTeleOp = true;
         encoderTicks += slideMotor.getCurrentPosition();
         //Checks if the position given is a position that would put the box inside of the robot
+        if(encoderTicks > slideMotorPosition_FULL){return;}
         if(encoderTicks < slideMotorPosition_BUCKET_OUT){
             Log.d("SlideController","Gave an encoder position with the box inside of the robot");
             if(encoderTicks < 0){
@@ -275,16 +309,24 @@ public class SlideController {
         if(slideState == SlideState.PARKED){
             slideState = SlideState.EXT_BUCKET_IN;
             doStateAction();
-            slideState = SlideState.EXT_BUCKET_OUT;
+            //slideState = SlideState.EXT_BUCKET_OUT;
         }
         //Checks if the slide is in a position to move
-        slideMotor.setTargetPosition(encoderTicks); return;
-
+        slideMotor.setPower(slideMotorPowerMoving);
+        slideMotor.setTargetPosition(encoderTicks);
+        while(slideMotor.isBusy())
+        {
+            Sleep.sleep(10);
+        }
+        slideMotor.setPower(slideMotorPowerStill);
+        return;
     }
     public void incrementInchPosition(double inches){
+        flagTeleOp = true;
         inches = encoderInchesToTicks(inches);
         inches += slideMotor.getCurrentPosition();
         //Checks if the position given is a position that would put the box inside of the robot
+        if(inches > slideMotorPosition_FULL){return;}
         if(inches < slideMotorPosition_BUCKET_OUT){
             Log.d("SlideController","Gave an encoder position with the box inside of the robot");
             if(inches < 0){
@@ -300,15 +342,34 @@ public class SlideController {
         if(slideState == SlideState.PARKED){
             slideState = SlideState.EXT_BUCKET_IN;
             doStateAction();
-            slideState = SlideState.EXT_BUCKET_OUT;
+            //slideState = SlideState.EXT_BUCKET_OUT;
         }
         //Checks if the slide is in a position to move
-        slideMotor.setTargetPosition((int)inches); return;
+        slideMotor.setPower(slideMotorPowerMoving);
+        slideMotor.setTargetPosition((int)inches);
+        while(slideMotor.isBusy())
+        {
+            Sleep.sleep(10);
+        }
+        slideMotor.setPower(slideMotorPowerStill);
+        return;
 
     }
+
+    public void incrementVerticalServo(double servoPosition){
+        flagTeleOp = true;
+        servoPosition += verticalServo.getPosition();
+
+        if((slideState == SlideState.PARKED || slideState == SlideState.EXT_BUCKET_IN) && (servoPosition > vertServoPosition_PARKED_MAX || servoPosition < vertServoPosition_PARKED_MIN)){return;}
+
+        verticalServo.setPosition(servoPosition);
+        return;
+
+    }
+
     /** End of TeleOp Methods */
     private double encoderInchesToTicks(double ticks) {
-        return ticks * 8192 / .785 / 2 / Math.PI;
+        return ticks * 145.1 / .785 / 2 / Math.PI;
     }
 
 
@@ -324,17 +385,21 @@ public class SlideController {
     double vertServoPosition_THREE_DEPOSIT = 1;
     double incrementDelta = 0.001;
 
+    double vertServoPosition_PARKED_MIN = 0;
+    double vertServoPosition_PARKED_MAX = 0.1;
+
     // dumper servo
     double dumperPosition_DUMP = 0;
     double dumperPosition_HOLDBLOCK = 0;
 
     // slide motor
     int slideMotorPosition_PARKED = 0;
-    int slideMotorPosition_BUCKET_OUT = 50; // minimum position for the bucket to be out
+    int slideMotorPosition_BUCKET_OUT = 700; // minimum position for the bucket to be out
     int slideMotorPosition_THREE_DEPOSIT = 300;
-    int slideMotorPosition_THREE_CAROUSEL = 400;
+    int slideMotorPosition_THREE_CAROUSEL = 1500;
     int slideMotorPosition_TWO_CAROUSEL = 500;
     int slideMotorPosition_ONE_CAROUSEL = 600;
+    int slideMotorPosition_FULL = 2000;
 
     double slideMotorPowerMoving = 0.6;
     double slideMotorPowerMovingWBucketInside = 0.4;
