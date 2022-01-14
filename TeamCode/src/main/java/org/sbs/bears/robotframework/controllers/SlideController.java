@@ -42,6 +42,8 @@ public class SlideController {
         slideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         slideMotor.setTargetPosition(0); // should be where it reset to
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        verticalServo.setDirection(Servo.Direction.REVERSE);
     }
 
     public void extendDropRetract(SlideTarget target)
@@ -191,6 +193,8 @@ public class SlideController {
     }
 
 
+    /** handles slow raise and lowering of servo @Dennis **/
+    //TODO @dennis hello this is what you probably want to look at delta varialbe used here
     private void setHeightToParams(double targetPos) {
         if(slideState == SlideState.OUT_FULLY || slideState == SlideState.RET_BUCKET_OUT || slideState == SlideState.EXT_BUCKET_OUT) {
             double currentPos = verticalServo.getPosition();
@@ -208,7 +212,7 @@ public class SlideController {
             else {
                 for(double i = verticalServo.getPosition(); i > targetPos; i-=incrementDelta){
                     verticalServo.setPosition(Range.clip(i, targetPos, 0));
-                    try {
+                     try {
                         Thread.sleep(1);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -256,6 +260,7 @@ public class SlideController {
 
         return;
     }
+    //TODO: i dont know why it dont be working
     public void setToInchPosition(double inches){
         flagTeleOp = true;
         inches = encoderInchesToTicks(inches);
@@ -290,6 +295,7 @@ public class SlideController {
 
     }
     public void incrementEncoderPosition(int encoderTicks){
+        //TODO: to retract, just set to desired servo position and go to park from there?? idiot??
         flagTeleOp = true;
         encoderTicks += slideMotor.getCurrentPosition();
         //Checks if the position given is a position that would put the box inside of the robot
@@ -297,7 +303,9 @@ public class SlideController {
         if(encoderTicks < slideMotorPosition_BUCKET_OUT){
             Log.d("SlideController","Gave an encoder position with the box inside of the robot");
             if(encoderTicks < 0){
-                retractSlide();
+                //this dont work for teleop rn
+                //retractSlide();
+
                 return;
             }
             if(encoderTicks > 0){
@@ -366,8 +374,8 @@ public class SlideController {
         return;
 
     }
-
     /** End of TeleOp Methods */
+
     private double encoderInchesToTicks(double ticks) {
         return ticks * 145.1 / .785 / 2 / Math.PI;
     }
@@ -383,8 +391,9 @@ public class SlideController {
     double vertServoPosition_TWO_CAROUSEL = 0.5;
     double vertServoPosition_THREE_CAROUSEL = 0.7;
     double vertServoPosition_THREE_DEPOSIT = 1;
+    //TODO HERE DENNIS HERE HERE HERE IS VARIABLE @AUTHOR @ DENNIS @ EVERYTHING
     double incrementDelta = 0.001;
-
+/**HERE HERE HERE HERE HERE HEREH ERE HERE ^^^^*/
     double vertServoPosition_PARKED_MIN = 0;
     double vertServoPosition_PARKED_MAX = 0.1;
 

@@ -32,7 +32,7 @@ public class NewSlideControllerTester extends LinearOpMode {
             if(!qA && gamepad1.a)
             {
                 qA = true;
-                ctrl.setToEncoderPosition(900);
+                ctrl.incrementEncoderPosition(200);
                 Log.d("SlideTester","finished extension");
                 //telemetry.addData("pressed", 1);
                 //telemetry.update();
