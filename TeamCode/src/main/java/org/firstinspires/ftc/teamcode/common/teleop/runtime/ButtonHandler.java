@@ -93,8 +93,7 @@ public class ButtonHandler {
 
                     break;
                 case SECONDARY:
-                    Log.d("SHEEEEEEEEEEEEEEEEEEEEEEEEEESH", String.valueOf(gamepad.getRightY()));
-                    if(gamepad.getRightY() > Configuration.rightStickXLimitTrigger) {
+                    if(gamepad.getRightY() > Configuration.rightStickXLimitTrigger || gamepad.getRightY() < (Configuration.rightStickXLimitTrigger * -1)) {
                         slideHandler.manualSlideController((int)gamepad.getRightY());
                     }
 
