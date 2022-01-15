@@ -102,7 +102,14 @@ public class MovementHandler {
     });
 
     private static Thread slowDriving = new Thread(() -> {
-
+        drive.setWeightedDrivePower(
+                new Pose2d(
+                        -gamepad.getLeftY(),
+                        -gamepad.getLeftX(),
+                        -gamepad.getRightX()
+                )
+        );
+        drive.update();
     });
 
     /**

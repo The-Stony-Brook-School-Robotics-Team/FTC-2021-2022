@@ -349,7 +349,7 @@ public class SlideController {
     public void incrementVerticalServo(double servoPosition){
         servoPosition += verticalServo.getPosition();
 
-        if((slideState == SlideState.PARKED || slideState == SlideState.EXT_BUCKET_IN) && (servoPosition > vertServoPosition_PARKED_MAX || servoPosition < vertServoPosition_PARKED_MIN)){return;}
+        //if((slideState == SlideState.PARKED || slideState == SlideState.EXT_BUCKET_IN) && (servoPosition > vertServoPosition_PARKED_MAX || servoPosition < vertServoPosition_PARKED_MIN)){return;}
 
         verticalServo.setPosition(servoPosition);
         return;

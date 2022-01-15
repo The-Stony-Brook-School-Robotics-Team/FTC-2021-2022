@@ -9,6 +9,7 @@ import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.gamepa
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.redIntake;
+import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideController;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideHandler;
 
 import android.util.Log;
@@ -42,13 +43,12 @@ public class ButtonHandler {
             switch(controllerMode) {
                 case PRIMARY:
                     // A
-                    if(gamepad.wasJustPressed(GamepadKeys.Button.A)) {
-                        // TODO: Add open claw function
-                    } else {
-                        // TODO: Add ensure claw is closed function
+                    if(gamepad.isDown(GamepadKeys.Button.A)) {
+                        slideController.incrementVerticalServo(0.1);
+                        Log.d(interfaceTag, "MOVING SERVOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
                     }
                     // X
-                    if(gamepad.wasJustPressed(GamepadKeys.Button.X)) {
+                    if(gamepad.isDown(GamepadKeys.Button.X)) {
                         MovementHandler.RunType runType = MovementHandler.getRunType();
                         switch (runType) {
                             case DEFAULT:
@@ -66,7 +66,7 @@ public class ButtonHandler {
                         Log.d(interfaceTag, ": Spinning duck");
                     }
                     // rb
-                    if(gamepad.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
+                    if(gamepad.isDown(GamepadKeys.Button.RIGHT_BUMPER)) {
                         if(slideHandler.toggleSlide.isAlive()) {
                             slideHandler.toggleSlide.interrupt();
                             if(slideHandler.isSlideExtended()) {
