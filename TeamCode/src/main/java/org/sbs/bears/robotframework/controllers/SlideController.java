@@ -2,6 +2,7 @@ package org.sbs.bears.robotframework.controllers;
 
 import android.util.Log;
 
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -26,7 +27,7 @@ public class SlideController {
     public SlideState slideState = SlideState.PARKED; // low-level steps
     public SlideTarget targetParams = SlideTarget.NA;
     private boolean flagToLeave = false;
-    private boolean flagTeleOp = false;
+
 
 
     public SlideController(HardwareMap hardwareMap, Telemetry telemetry)
@@ -86,11 +87,9 @@ public class SlideController {
         slideState = SlideState.EXT_BUCKET_IN;
         doStateAction();
         Log.d("SlideController","bucket should be out");
-        if(!flagTeleOp){
-            slideState = SlideState.EXT_BUCKET_OUT;
-            doStateAction();
-            Log.d("SlideController","slide should be extended");
-        }
+        slideState = SlideState.EXT_BUCKET_OUT;
+        doStateAction();
+        Log.d("SlideController","slide should be extended");
         if(flagToLeave)
         {
             slideState = SlideState.RET_BUCKET_IN;
@@ -193,15 +192,14 @@ public class SlideController {
     }
 
 
-    /** handles slow raise and lowering of servo @Dennis **/
-    //TODO @dennis hello this is what you probably want to look at delta varialbe used here
+
     private void setHeightToParams(double targetPos) {
-        if(slideState == SlideState.OUT_FULLY || slideState == SlideState.RET_BUCKET_OUT || slideState == SlideState.EXT_BUCKET_OUT) {
+        if(slideState == SlideState.OUT_FULLY || slideState == SlideState.RET_BUCKET_OUT || slideState == SlideState.EXT_BUCKET_OUT || slideState == SlideState.TELEOP) {
             double currentPos = verticalServo.getPosition();
             boolean qNeedsToGoUp = (currentPos < targetPos);
             if(qNeedsToGoUp) {
                 for(double i = verticalServo.getPosition(); i < targetPos; i+=incrementDelta){
-                    verticalServo.setPosition(Range.clip(i, targetPos, 1));
+                    verticalServo.setPosition(Range.clip(i, 0, targetPos));
                     try {
                         Thread.sleep(1);
                     } catch (InterruptedException e) {
@@ -211,7 +209,7 @@ public class SlideController {
             }
             else {
                 for(double i = verticalServo.getPosition(); i > targetPos; i-=incrementDelta){
-                    verticalServo.setPosition(Range.clip(i, targetPos, 0));
+                    verticalServo.setPosition(Range.clip(i, targetPos, 1));
                      try {
                         Thread.sleep(1);
                     } catch (InterruptedException e) {
@@ -231,38 +229,33 @@ public class SlideController {
     public double getSlideMotorPosition(){return slideMotor.getCurrentPosition();}
 
     public void setToEncoderPosition(int encoderTicks){
-        flagTeleOp = true;
+        int oldPos = slideMotor.getCurrentPosition();
+        slideState = SlideState.TELEOP;
+
+         if(slideMotor.isBusy()){
+            return;
+        }
+
+
         //Checks if the position given is a position that would put the box inside of the robot
-        if(encoderTicks>slideMotorPosition_FULL){return;}
-        if((encoderTicks < slideMotorPosition_BUCKET_OUT) && (slideState != SlideState.PARKED && slideState != SlideState.EXT_BUCKET_IN)){
-            Log.d("SlideController","Gave an encoder position with the box inside of the robot");
-            retractSlide();
-            return;
+        if(encoderTicks > slideMotorPosition_FULL || encoderTicks < slideMotorPosition_PARKED){return;}
+
+        if((encoderTicks < slideMotorPosition_BUCKET_OUT || oldPos < slideMotorPosition_BUCKET_OUT) && (verticalServo.getPosition() < vertServoPosition_PARKED-.01 || verticalServo.getPosition() > vertServoPosition_PARKED+.01)){
+            setHeightToParams(vertServoPosition_PARKED);
         }
-        else if(encoderTicks < slideMotorPosition_BUCKET_OUT){
-            Log.d("SlideController","Gave an encoder position with the box inside of the robot");
-            return;
-        }
-        //If the slide is not extended, extend it to the minimum position.
-        if(slideState == SlideState.PARKED){
-            slideState = SlideState.EXT_BUCKET_IN;
-            doStateAction();
-            //slideState = SlideState.EXT_BUCKET_OUT;
-        }
-        //Checks if the slide is in a position to move
         slideMotor.setPower(slideMotorPowerMoving);
-       slideMotor.setTargetPosition(encoderTicks);
+        slideMotor.setTargetPosition(encoderTicks);
         while(slideMotor.isBusy())
         {
             Sleep.sleep(10);
         }
         slideMotor.setPower(slideMotorPowerStill);
-
         return;
     }
+
     //TODO: i dont know why it dont be working
     public void setToInchPosition(double inches){
-        flagTeleOp = true;
+        slideState = SlideState.TELEOP;
         inches = encoderInchesToTicks(inches);
         //Checks if the position given is a position that would put the box inside of the robot
         if(inches>slideMotorPosition_FULL){return;}
@@ -295,31 +288,20 @@ public class SlideController {
 
     }
     public void incrementEncoderPosition(int encoderTicks){
-        //TODO: to retract, just set to desired servo position and go to park from there?? idiot??
-        flagTeleOp = true;
+
+        slideState = SlideState.TELEOP;
+       // if(slideMotor.isBusy()){
+        //    return;
+        //}
+
+
         encoderTicks += slideMotor.getCurrentPosition();
         //Checks if the position given is a position that would put the box inside of the robot
-        if(encoderTicks > slideMotorPosition_FULL){return;}
-        if(encoderTicks < slideMotorPosition_BUCKET_OUT){
-            Log.d("SlideController","Gave an encoder position with the box inside of the robot");
-            if(encoderTicks < 0){
-                //this dont work for teleop rn
-                //retractSlide();
+        if(encoderTicks > slideMotorPosition_FULL || encoderTicks < slideMotorPosition_PARKED){return;}
 
-                return;
-            }
-            if(encoderTicks > 0){
-                extendSlide();
-                return;
-            }
+        if(encoderTicks < slideMotorPosition_BUCKET_OUT && (verticalServo.getPosition() < vertServoPosition_PARKED-.01 || verticalServo.getPosition() > vertServoPosition_PARKED+.01)){
+            setHeightToParams(vertServoPosition_PARKED);
         }
-        //If the slide is not extended, extend it to the minimum position.
-        if(slideState == SlideState.PARKED){
-            slideState = SlideState.EXT_BUCKET_IN;
-            doStateAction();
-            //slideState = SlideState.EXT_BUCKET_OUT;
-        }
-        //Checks if the slide is in a position to move
         slideMotor.setPower(slideMotorPowerMoving);
         slideMotor.setTargetPosition(encoderTicks);
         while(slideMotor.isBusy())
@@ -330,7 +312,7 @@ public class SlideController {
         return;
     }
     public void incrementInchPosition(double inches){
-        flagTeleOp = true;
+       slideState = SlideState.TELEOP;
         inches = encoderInchesToTicks(inches);
         inches += slideMotor.getCurrentPosition();
         //Checks if the position given is a position that would put the box inside of the robot
@@ -365,10 +347,9 @@ public class SlideController {
     }
 
     public void incrementVerticalServo(double servoPosition){
-        flagTeleOp = true;
         servoPosition += verticalServo.getPosition();
 
-        if((slideState == SlideState.PARKED || slideState == SlideState.EXT_BUCKET_IN) && (servoPosition > vertServoPosition_PARKED_MAX || servoPosition < vertServoPosition_PARKED_MIN)){return;}
+        //if((slideState == SlideState.PARKED || slideState == SlideState.EXT_BUCKET_IN) && (servoPosition > vertServoPosition_PARKED_MAX || servoPosition < vertServoPosition_PARKED_MIN)){return;}
 
         verticalServo.setPosition(servoPosition);
         return;
@@ -386,16 +367,14 @@ public class SlideController {
     // TODO MEASURE ALL CONSTANTS
 
     // vertical servo
-    double vertServoPosition_PARKED = 0;
+    double vertServoPosition_PARKED = .2;
     double vertServoPosition_ONE_CAROUSEL = 0.2;
     double vertServoPosition_TWO_CAROUSEL = 0.5;
     double vertServoPosition_THREE_CAROUSEL = 0.7;
     double vertServoPosition_THREE_DEPOSIT = 1;
-    //TODO HERE DENNIS HERE HERE HERE IS VARIABLE @AUTHOR @ DENNIS @ EVERYTHING
     double incrementDelta = 0.001;
-/**HERE HERE HERE HERE HERE HEREH ERE HERE ^^^^*/
     double vertServoPosition_PARKED_MIN = 0;
-    double vertServoPosition_PARKED_MAX = 0.1;
+    double vertServoPosition_PARKED_MAX = 0.3;
 
     // dumper servo
     double dumperPosition_DUMP = 0;

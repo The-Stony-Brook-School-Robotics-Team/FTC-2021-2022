@@ -7,5 +7,6 @@ public enum SlideState {
     OUT_FULLY,
     RET_BUCKET_OUT,
     RET_BUCKET_IN,
+    TELEOP
 
 }

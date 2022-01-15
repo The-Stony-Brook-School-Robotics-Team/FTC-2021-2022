@@ -20,7 +20,10 @@ import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
 import org.sbs.bears.robotframework.controllers.SlideController;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 
-@TeleOp(name = "AX - Qualifier One TeleOp", group = "default")
+import java.util.HashMap;
+import java.util.Map;
+
+@TeleOp(name = "A - Qualifier One TeleOp", group = "default")
 public class OfficialTeleop extends OpMode {
 
 
@@ -35,9 +38,7 @@ public class OfficialTeleop extends OpMode {
     public static ControllerModes controllerMode = ControllerModes.PRIMARY;
 
     /** Toggle Indicators */
-    public static boolean slowmodeToggled = false; // TODO: Add slowmode code reader in the teleop
-    public boolean linearslideToggled = false; // TODO: Add a handler to handle this function if toggled
-    public boolean autonomousToggled = false; // TODO: Add handler to determine if this is enabled
+    public static boolean slowModeToggled = false; // TODO: Add slowmode code reader in the teleop
 
     /**
      * Information Provisioning
@@ -59,7 +60,15 @@ public class OfficialTeleop extends OpMode {
     public static ButtonHandler buttonHandler = new ButtonHandler();
     public static SlideHandler slideHandler = new SlideHandler();
 
+    /**
+     * Thread Pool
+     */
+    private static HashMap<String, Thread> threadPool = new HashMap<>();
 
+    /**
+     * Interface Tag
+     */
+    public static String interfaceTag = "Tele Op";
 
     @Override
     public void init() {
@@ -71,27 +80,27 @@ public class OfficialTeleop extends OpMode {
         dashboard = FtcDashboard.getInstance();
         gamepad = new GamepadEx(gamepad1);
 
-        redIntake = new IntakeControllerRed(hardwareMap, telemetry);
-        blueIntake = new IntakeControllerBlue(hardwareMap, telemetry);
+        // redIntake = new IntakeControllerRed(hardwareMap, telemetry);
+        // blueIntake = new IntakeControllerBlue(hardwareMap, telemetry);
         slideController = new SlideController(hardwareMap, telemetry);
         carouselController = new DuckCarouselController(hardwareMap, telemetry);
 
+        floodRuntimes();
         /**
          * Update current state to continue
          */
         currentState = TeleOpRobotStates.RUNNING;
     }
 
-
+    @Override
+    public void init_loop() {
+        floodRuntimes();
+    }
 
     @Override
     public void loop() {
-        if(!movementHandler.runtime.isAlive()) {
-            movementHandler.runtime.start();
-        }
-        if(!buttonHandler.runtime.isAlive()) {
-            buttonHandler.runtime.start();
-        }
+        floodRuntimes();
+
 
         switch(currentState) {
             case STOPPED:
@@ -102,8 +111,8 @@ public class OfficialTeleop extends OpMode {
 
             case RUNNING:
 
-                redIntake.checkIntake();
-                blueIntake.checkIntake();
+                // redIntake.checkIntake();
+                // blueIntake.checkIntake();
 
                 systemRuntime = getRuntime();
                 telemetry.update();
@@ -113,5 +122,39 @@ public class OfficialTeleop extends OpMode {
 
     }
 
+    /**
+     * Stop All Active Handler Threads
+     */
+    @Override
+    public void stop() {
+        exitThreads();
+    }
 
+    /**
+     * Flood Thread Pool
+     */
+    private static void floodRuntimes() {
+        if(!movementHandler.runtime.isAlive()) {
+            movementHandler.runtime.start();
+            threadPool.put(movementHandler.interfaceTag, movementHandler.runtime);
+            Log.i(interfaceTag, "Thread Registered: " + movementHandler.interfaceTag);
+        }
+        if(!buttonHandler.runtime.isAlive()) {
+            buttonHandler.runtime.start();
+            threadPool.put(buttonHandler.interfaceTag, buttonHandler.runtime);
+            Log.i(interfaceTag, "Thread Registered: " + buttonHandler.interfaceTag);
+        }
+    }
+
+    /**
+     * Iterate Over Thread Pool And Exit
+     */
+    private void exitThreads() {
+        for(Map.Entry<String, Thread> set : threadPool.entrySet()) {
+            if(set.getValue().isAlive()) {
+                set.getValue().interrupt();
+            }
+            Log.i(interfaceTag, "Interrupted: " + set.getKey());
+        }
+    }
 }
