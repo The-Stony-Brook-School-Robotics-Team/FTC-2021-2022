@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 
+import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
 import org.firstinspires.ftc.teamcode.common.teleop.misc.Beta;
@@ -137,9 +138,9 @@ class MovementHandlers {
     public static Thread slowDriving = new Thread(() -> {
         drive.setWeightedDrivePower(
                 new Pose2d(
-                        -gamepad.left_stick_y,
-                        -gamepad.left_stick_x,
-                        -gamepad.right_stick_x
+                        -gamepad.left_stick_y * Configuration.SlowMovementMultiplier,
+                        -gamepad.left_stick_x * Configuration.SlowMovementMultiplier,
+                        -gamepad.right_stick_x * Configuration.SlowMovementMultiplier
                 )
         );
         drive.update();

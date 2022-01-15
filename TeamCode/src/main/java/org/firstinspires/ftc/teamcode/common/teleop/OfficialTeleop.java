@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
 import org.firstinspires.ftc.teamcode.common.teleop.runtime.ButtonHandler;
+import org.firstinspires.ftc.teamcode.common.teleop.runtime.IntakeHandler;
 import org.firstinspires.ftc.teamcode.common.teleop.runtime.MovementHandler;
 import org.firstinspires.ftc.teamcode.common.teleop.runtime.SlideHandler;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -19,6 +20,7 @@ import org.sbs.bears.robotframework.controllers.DuckCarouselController;
 import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
 import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
 import org.sbs.bears.robotframework.controllers.SlideController;
+import org.sbs.bears.robotframework.enums.IntakeState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 
 import java.util.HashMap;
@@ -37,9 +39,6 @@ public class OfficialTeleop extends OpMode {
     /** Controller Modes */
     public static Gamepad gamepad;
     public static ControllerModes controllerMode = ControllerModes.PRIMARY;
-
-    /** Toggle Indicators */
-    public static boolean slowModeToggled = false; // TODO: Add slowmode code reader in the teleop
 
     /**
      * Information Provisioning
@@ -61,6 +60,7 @@ public class OfficialTeleop extends OpMode {
     public static MovementHandler movementHandler = new MovementHandler();
     public static ButtonHandler buttonHandler = new ButtonHandler();
     public static SlideHandler slideHandler = new SlideHandler();
+    public static IntakeHandler intakeHandler = new IntakeHandler();
 
     /**
      * Thread Pool
@@ -95,6 +95,8 @@ public class OfficialTeleop extends OpMode {
          * Configuration
          */
         slideController.initTeleop();
+        redIntake.setState(IntakeState.PARK);
+        blueIntake.setState(IntakeState.PARK);
 
         floodRuntimes();
     }
@@ -105,8 +107,6 @@ public class OfficialTeleop extends OpMode {
 
     @Override
     public void loop() {
-
-
         switch(currentState) {
             case STOPPED:
                 telemetry.clearAll();
@@ -121,10 +121,6 @@ public class OfficialTeleop extends OpMode {
                 break;
 
             case RUNNING:
-
-                redIntake.checkIntake();
-                blueIntake.checkIntake();
-
                 telemetry.update();
                 break;
 
@@ -148,6 +144,7 @@ public class OfficialTeleop extends OpMode {
     private static void floodRuntimes() {
         registerThread(buttonHandler.interfaceTag, buttonHandler.runtime);
         registerThread(movementHandler.interfaceTag, movementHandler.runtime);
+        registerThread(intakeHandler.interfaceTag, intakeHandler.runtime);
     }
 
     /**

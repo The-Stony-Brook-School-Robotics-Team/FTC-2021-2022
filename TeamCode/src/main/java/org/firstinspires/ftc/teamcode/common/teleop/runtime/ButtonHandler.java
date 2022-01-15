@@ -6,16 +6,11 @@ import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.contro
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.currentState;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.gamepad;
 
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.redIntake;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideController;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideHandler;
 
-import android.util.Log;
-
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
-import org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
 import org.sbs.bears.robotframework.enums.IntakeState;
@@ -106,6 +101,7 @@ public class ButtonHandler {
                     } else if(!gamepad.dpad_left && isPressingLeftDpad) {
                         isPressingLeftDpad = false;
                     }
+                    redIntake.checkIntake();
                     // Right dpad
                     if(gamepad.dpad_right && !isPressingRightDpad) {
                         if(blueIntake.getState() == IntakeState.PARK) {
