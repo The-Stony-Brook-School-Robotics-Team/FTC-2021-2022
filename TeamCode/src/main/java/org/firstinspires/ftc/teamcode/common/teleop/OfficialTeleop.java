@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
@@ -34,7 +35,7 @@ public class OfficialTeleop extends OpMode {
     private static Object stateMutex = new Object();
 
     /** Controller Modes */
-    public static GamepadEx gamepad;
+    public static Gamepad gamepad;
     public static ControllerModes controllerMode = ControllerModes.PRIMARY;
 
     /** Toggle Indicators */
@@ -78,7 +79,7 @@ public class OfficialTeleop extends OpMode {
          * */
         drive = new SampleMecanumDrive(hardwareMap);
         dashboard = FtcDashboard.getInstance();
-        gamepad = new GamepadEx(gamepad1);
+        this.gamepad = gamepad1;
 
         // redIntake = new IntakeControllerRed(hardwareMap, telemetry);
         // blueIntake = new IntakeControllerBlue(hardwareMap, telemetry);
@@ -136,13 +137,23 @@ public class OfficialTeleop extends OpMode {
     private static void floodRuntimes() {
         if(!movementHandler.runtime.isAlive()) {
             movementHandler.runtime.start();
-            threadPool.put(movementHandler.interfaceTag, movementHandler.runtime);
-            Log.i(interfaceTag, "Thread Registered: " + movementHandler.interfaceTag);
+            if(!threadPool.containsKey(movementHandler)) {
+                threadPool.put(movementHandler.interfaceTag, movementHandler.runtime);
+                Log.d(interfaceTag, "Thread Registered: " + movementHandler.interfaceTag);
+            } else {
+                Log.d(interfaceTag, "Thread: " + movementHandler.interfaceTag + " exists");
+            }
+
         }
         if(!buttonHandler.runtime.isAlive()) {
             buttonHandler.runtime.start();
-            threadPool.put(buttonHandler.interfaceTag, buttonHandler.runtime);
-            Log.i(interfaceTag, "Thread Registered: " + buttonHandler.interfaceTag);
+            if(threadPool.containsKey(buttonHandler.interfaceTag)) {
+                threadPool.put(buttonHandler.interfaceTag, buttonHandler.runtime);
+                Log.d(interfaceTag, "Thread Registered: " + buttonHandler.interfaceTag);
+            } else {
+                Log.d(interfaceTag, "Thread: " + buttonHandler.interfaceTag + " exists");
+            }
+
         }
     }
 

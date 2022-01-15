@@ -82,9 +82,9 @@ public class MovementHandler {
     private static Thread sprintDriving = new Thread(() -> {
         drive.setWeightedDrivePower(
                 new Pose2d(
-                        -gamepad.getLeftY(),
-                        -gamepad.getLeftX(),
-                        -gamepad.getRightX()
+                        -gamepad.left_stick_y,
+                        -gamepad.left_stick_x,
+                        -gamepad.right_stick_x
                 )
         );
         drive.update();
@@ -93,9 +93,9 @@ public class MovementHandler {
     private static Thread defaultDriving = new Thread(() -> {
         drive.setWeightedDrivePower(
                 new Pose2d(
-                        -gamepad.getLeftY(),
-                        -gamepad.getLeftX(),
-                        -gamepad.getRightX()
+                        -gamepad.left_stick_y,
+                        -gamepad.left_stick_x,
+                        -gamepad.right_stick_x
                 )
         );
         drive.update();
@@ -104,9 +104,9 @@ public class MovementHandler {
     private static Thread slowDriving = new Thread(() -> {
         drive.setWeightedDrivePower(
                 new Pose2d(
-                        -gamepad.getLeftY(),
-                        -gamepad.getLeftX(),
-                        -gamepad.getRightX()
+                        -gamepad.left_stick_y,
+                        -gamepad.left_stick_x,
+                        -gamepad.right_stick_x
                 )
         );
         drive.update();

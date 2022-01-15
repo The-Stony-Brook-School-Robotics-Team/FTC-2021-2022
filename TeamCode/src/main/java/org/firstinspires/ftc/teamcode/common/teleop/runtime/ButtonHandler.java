@@ -30,11 +30,20 @@ public class ButtonHandler {
     public static String interfaceTag = "Button Handler";
 
     /**
+     * Button Logic
+     */
+    boolean isPressingX = false, isPressingY = false, isPressingB = false, isPressingA = false;
+    boolean isPressingLeftDpad = false, isPressingRightDpad = false, isPressingUpDpad = false, isPressingDownDpad = false;
+    boolean isPressingLeftBumper = false, isPressingRightBumper = false;
+
+
+    /**
      * Working Button Handler Runtime
      */
     public Thread runtime = new Thread(() -> {
         while(currentState == TeleOpRobotStates.RUNNING) {
-            if(gamepad.isDown(GamepadKeys.Button.LEFT_BUMPER)) {
+
+            if(gamepad.left_bumper) {
                 controllerMode = ControllerModes.SECONDARY;
             } else {
                 controllerMode = ControllerModes.PRIMARY;
@@ -43,12 +52,16 @@ public class ButtonHandler {
             switch(controllerMode) {
                 case PRIMARY:
                     // A
-                    if(gamepad.isDown(GamepadKeys.Button.A)) {
+                    if(gamepad.a && !isPressingA) {
+                        Log.d(interfaceTag, "i wamt tp ,vep [;ease");
                         slideController.incrementVerticalServo(0.1);
                         Log.d(interfaceTag, "MOVING SERVOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+                        isPressingA = true;
+                    } else if(!gamepad.a && isPressingA) {
+                        isPressingA = false;
                     }
                     // X
-                    if(gamepad.isDown(GamepadKeys.Button.X)) {
+                    if(gamepad.x && !isPressingX) {
                         MovementHandler.RunType runType = MovementHandler.getRunType();
                         switch (runType) {
                             case DEFAULT:
@@ -59,14 +72,20 @@ public class ButtonHandler {
                                 break;
                         }
                         Log.d(interfaceTag, ": Toggled Drive Mode");
+                        isPressingX = true;
+                    } else if(!gamepad.x && isPressingX) {
+                        isPressingX = false;
                     }
                     // Yp
-                    if(gamepad.isDown(GamepadKeys.Button.Y)) {
+                    if(gamepad.y && !isPressingY) {
                         carouselController.spinOneDuck(true);
                         Log.d(interfaceTag, ": Spinning duck");
+                        isPressingY = true;
+                    } else if(!gamepad.y && isPressingY) {
+                        isPressingY = false;
                     }
                     // rb
-                    if(gamepad.isDown(GamepadKeys.Button.RIGHT_BUMPER)) {
+                    if(gamepad.right_bumper && !isPressingRightBumper) {
                         if(slideHandler.toggleSlide.isAlive()) {
                             slideHandler.toggleSlide.interrupt();
                             if(slideHandler.isSlideExtended()) {
@@ -76,7 +95,12 @@ public class ButtonHandler {
                             }
                         }
                         slideHandler.toggleSlide.run();
+                        isPressingRightBumper = true;
+                    } else if(!gamepad.right_bumper && isPressingRightBumper) {
+                        isPressingRightBumper = false;
                     }
+
+
                     // Left dpad TODO: Uncomment
 //                    if(gamepad.wasJustPressed(GamepadKeys.Button.DPAD_LEFT)) {
 //                        Log.d(interfaceTag, ": CHECKING LOGIC");
@@ -103,8 +127,9 @@ public class ButtonHandler {
 
                     break;
                 case SECONDARY:
-                    if(gamepad.getRightY() > Configuration.rightStickXLimitTrigger || gamepad.getRightY() < (Configuration.rightStickXLimitTrigger * -1)) {
-                        slideHandler.manualSlideController((int)gamepad.getRightY());
+                    Log.d(interfaceTag, ": FUCK");
+                    if(gamepad.right_stick_y > Configuration.rightStickXLimitTrigger || gamepad.right_stick_y < (Configuration.rightStickXLimitTrigger * -1)) {
+                        slideHandler.manualSlideController((int)gamepad.right_stick_y);
                     }
 
 
