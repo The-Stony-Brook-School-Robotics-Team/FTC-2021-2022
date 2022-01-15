@@ -225,6 +225,10 @@ public class SlideController {
 
 
     /** TeleOp Methods */
+   public void initTeleop(){
+       slideState = SlideState.TELEOP;
+   }
+
     public double getVerticalServoPosition(){return verticalServo.getPosition();}
     public double getSlideMotorPosition(){return slideMotor.getCurrentPosition();}
 
