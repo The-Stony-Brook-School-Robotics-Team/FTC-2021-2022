@@ -26,7 +26,7 @@ public class ButtonHandler {
     /**
      * Interface Tag
      */
-    public static String interfaceTag = "ButtonHandler";
+    public static String interfaceTag = "Button Handler";
 
     /**
      * Working Button Handler Runtime
@@ -77,28 +77,28 @@ public class ButtonHandler {
                         }
                         slideHandler.toggleSlide.run();
                     }
-                    // Left dpad
-                    if(gamepad.wasJustPressed(GamepadKeys.Button.DPAD_LEFT)) {
-                        Log.d(interfaceTag, ": CHECKING LOGIC");
-                        if(redIntake.getState() == IntakeState.PARK) {
-                            redIntake.setState(IntakeState.BASE);
-                            Log.d(interfaceTag, ": Set Red Intake to BASE position");
-                        } else {
-                            redIntake.setState(IntakeState.PARK);
-                            Log.d(interfaceTag, ": Set Red Intake to PARK position");
-                        }
-                        Log.d(interfaceTag, ": FINISHED FUNCTION");
-                    }
+                    // Left dpad TODO: Uncomment
+//                    if(gamepad.wasJustPressed(GamepadKeys.Button.DPAD_LEFT)) {
+//                        Log.d(interfaceTag, ": CHECKING LOGIC");
+//                        if(redIntake.getState() == IntakeState.PARK) {
+//                            redIntake.setState(IntakeState.BASE);
+//                            Log.d(interfaceTag, ": Set Red Intake to BASE position");
+//                        } else {
+//                            redIntake.setState(IntakeState.PARK);
+//                            Log.d(interfaceTag, ": Set Red Intake to PARK position");
+//                        }
+//                        Log.d(interfaceTag, ": FINISHED FUNCTION");
+//                    }
                     // Right dpad
-                    if(gamepad.wasJustPressed(GamepadKeys.Button.DPAD_RIGHT)) {
-                        if(blueIntake.getState() == IntakeState.PARK) {
-                            blueIntake.setState(IntakeState.BASE);
-                            Log.d(interfaceTag, ": Set Blue Intake to BASE position");
-                        } else {
-                            blueIntake.setState(IntakeState.PARK);
-                            Log.d(interfaceTag, ": Set Blue Intake to PARK position");
-                        }
-                    }
+//                    if(gamepad.wasJustPressed(GamepadKeys.Button.DPAD_RIGHT)) {
+//                        if(blueIntake.getState() == IntakeState.PARK) {
+//                            blueIntake.setState(IntakeState.BASE);
+//                            Log.d(interfaceTag, ": Set Blue Intake to BASE position");
+//                        } else {
+//                            blueIntake.setState(IntakeState.PARK);
+//                            Log.d(interfaceTag, ": Set Blue Intake to PARK position");
+//                        }
+//                    }
 
 
                     break;

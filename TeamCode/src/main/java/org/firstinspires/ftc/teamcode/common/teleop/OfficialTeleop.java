@@ -23,7 +23,7 @@ import org.sbs.bears.robotframework.enums.SlideTarget;
 import java.util.HashMap;
 import java.util.Map;
 
-@TeleOp(name = "AX - Qualifier One TeleOp", group = "default")
+@TeleOp(name = "A - Qualifier One TeleOp", group = "default")
 public class OfficialTeleop extends OpMode {
 
 
@@ -86,7 +86,6 @@ public class OfficialTeleop extends OpMode {
         carouselController = new DuckCarouselController(hardwareMap, telemetry);
 
         floodRuntimes();
-
         /**
          * Update current state to continue
          */
@@ -96,8 +95,6 @@ public class OfficialTeleop extends OpMode {
     @Override
     public void init_loop() {
         floodRuntimes();
-        Log.d(interfaceTag, ": Tele Op Ready");
-
     }
 
     @Override
@@ -114,8 +111,8 @@ public class OfficialTeleop extends OpMode {
 
             case RUNNING:
 
-                redIntake.checkIntake();
-                blueIntake.checkIntake();
+                // redIntake.checkIntake();
+                // blueIntake.checkIntake();
 
                 systemRuntime = getRuntime();
                 telemetry.update();
@@ -140,12 +137,12 @@ public class OfficialTeleop extends OpMode {
         if(!movementHandler.runtime.isAlive()) {
             movementHandler.runtime.start();
             threadPool.put(movementHandler.interfaceTag, movementHandler.runtime);
-            Log.d(interfaceTag, "Thread Registered: " + movementHandler.interfaceTag);
+            Log.i(interfaceTag, "Thread Registered: " + movementHandler.interfaceTag);
         }
         if(!buttonHandler.runtime.isAlive()) {
             buttonHandler.runtime.start();
             threadPool.put(buttonHandler.interfaceTag, buttonHandler.runtime);
-            Log.d(interfaceTag, "Thread Registered: " + buttonHandler.interfaceTag);
+            Log.i(interfaceTag, "Thread Registered: " + buttonHandler.interfaceTag);
         }
     }
 
@@ -157,7 +154,7 @@ public class OfficialTeleop extends OpMode {
             if(set.getValue().isAlive()) {
                 set.getValue().interrupt();
             }
-            Log.d(interfaceTag, "Interrupted: " + set.getKey());
+            Log.i(interfaceTag, "Interrupted: " + set.getKey());
         }
     }
 }
