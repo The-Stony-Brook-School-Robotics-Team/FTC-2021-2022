@@ -304,11 +304,13 @@ public class SlideController {
         }
         slideMotor.setPower(slideMotorPowerMoving);
         slideMotor.setTargetPosition(encoderTicks);
-        while(slideMotor.isBusy())
-        {
-            Sleep.sleep(10);
+       // while(slideMotor.isBusy())
+        //{
+          //  Sleep.sleep(10);
+        //}
+        if(!slideMotor.isBusy()){
+            slideMotor.setPower(slideMotorPowerStill);
         }
-        slideMotor.setPower(slideMotorPowerStill);
         return;
     }
     public void incrementInchPosition(double inches){

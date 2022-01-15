@@ -32,7 +32,7 @@ public class NewSlideControllerTester extends LinearOpMode {
             if(gamepad1.a)
             {
                 qA = true;
-                ctrl.incrementEncoderPosition(-200);
+                ctrl.incrementEncoderPosition(100);
                 Log.d("SlideTester","finished extension");
                 //telemetry.addData("pressed", 1);
                 //telemetry.update();
@@ -44,7 +44,7 @@ public class NewSlideControllerTester extends LinearOpMode {
             if(gamepad1.b)
             {
                 qB = true;
-                ctrl.setToEncoderPosition(900);
+                ctrl.setToEncoderPosition(0);
             }
             if(qB && !gamepad1.b)
             {
@@ -54,6 +54,7 @@ public class NewSlideControllerTester extends LinearOpMode {
             {
                 qUp = true;
                 ctrl.incrementVerticalServo(.1);
+                Log.d("SlideTester","increment servo");
             }
             if(qUp && !gamepad1.dpad_up)
             {
