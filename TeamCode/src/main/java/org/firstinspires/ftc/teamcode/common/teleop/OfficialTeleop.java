@@ -80,8 +80,8 @@ public class OfficialTeleop extends OpMode {
         dashboard = FtcDashboard.getInstance();
         gamepad = new GamepadEx(gamepad1);
 
-        redIntake = new IntakeControllerRed(hardwareMap, telemetry);
-        blueIntake = new IntakeControllerBlue(hardwareMap, telemetry);
+        // redIntake = new IntakeControllerRed(hardwareMap, telemetry);
+        // blueIntake = new IntakeControllerBlue(hardwareMap, telemetry);
         slideController = new SlideController(hardwareMap, telemetry);
         carouselController = new DuckCarouselController(hardwareMap, telemetry);
 
@@ -119,12 +119,15 @@ public class OfficialTeleop extends OpMode {
 
                 systemRuntime = getRuntime();
                 telemetry.update();
-                break;//i like men
+                break;
 
         }
 
     }
 
+    /**
+     * Stop All Active Handler Threads
+     */
     @Override
     public void stop() {
         exitThreads();
