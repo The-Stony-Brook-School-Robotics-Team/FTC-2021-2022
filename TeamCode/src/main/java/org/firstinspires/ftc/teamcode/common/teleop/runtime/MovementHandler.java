@@ -12,6 +12,8 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
 import org.firstinspires.ftc.teamcode.common.teleop.misc.Beta;
 
+import java.util.HashMap;
+
 public class MovementHandler {
 
     // TODO: Add functionality
@@ -127,4 +129,20 @@ public class MovementHandler {
     public static RunType getRunType() {
         return currentRunType;
     }
+
+    /**
+     * Kill Threads
+     */
+    public static void sendKillSignal() {
+        if(slowDriving.isAlive()) {
+            slowDriving.interrupt();
+        }
+        if(sprintDriving.isAlive()) {
+            sprintDriving.interrupt();
+        }
+        if(defaultDriving.isAlive()) {
+            defaultDriving.interrupt();
+        }
+    }
+
 }

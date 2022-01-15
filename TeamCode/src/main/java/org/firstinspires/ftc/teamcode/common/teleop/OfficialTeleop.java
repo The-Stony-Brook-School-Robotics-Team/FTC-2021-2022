@@ -115,6 +115,7 @@ public class OfficialTeleop extends OpMode {
                 // redIntake.checkIntake();
                 // blueIntake.checkIntake();
 
+                listThreadPool();
                 systemRuntime = getRuntime();
                 telemetry.update();
                 break;
@@ -128,6 +129,7 @@ public class OfficialTeleop extends OpMode {
      */
     @Override
     public void stop() {
+        MovementHandler.sendKillSignal();
         exitThreads();
     }
 
@@ -161,11 +163,19 @@ public class OfficialTeleop extends OpMode {
      * Iterate Over Thread Pool And Exit
      */
     private void exitThreads() {
+        Log.d(interfaceTag, "-------------------------------------------------------------------------------------------------");
         for(Map.Entry<String, Thread> set : threadPool.entrySet()) {
             if(set.getValue().isAlive()) {
                 set.getValue().interrupt();
             }
             Log.i(interfaceTag, "Interrupted: " + set.getKey());
+        }
+        Log.d(interfaceTag, "-------------------------------------------------------------------------------------------------");
+    }
+
+    private static void listThreadPool() {
+        for(Map.Entry<String, Thread> set : threadPool.entrySet()) {
+            Log.d(interfaceTag, "Thread Name: " + set.getKey());
         }
     }
 }
