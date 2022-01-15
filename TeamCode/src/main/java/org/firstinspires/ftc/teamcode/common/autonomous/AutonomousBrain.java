@@ -96,7 +96,7 @@ public class AutonomousBrain {
                 doAnalysisMaster = true;
                 intakeCtrlBlue.setState(IntakeState.PARK);
                 intakeCtrlRed.setState(IntakeState.PARK); // to prevent from moving around
-                switch(mode) {
+                /*switch(mode) {
                     case BlueSimple:
                         RRctrl.setPos(startPositionBSimp);
                         break;
@@ -116,7 +116,8 @@ public class AutonomousBrain {
                         RRctrl.setPos(startPositionRFull);
                         break;
 
-                }
+                }*/
+                RRctrl.setPos(startPositionBFull);
                 majorState = AutonomousStates.ONE_READ_DUCK;
                 return;
             case ONE_READ_DUCK:
@@ -128,7 +129,6 @@ public class AutonomousBrain {
                 CVctrl.shutDown();
                 return;
             case TWO_SET_SLIDE_HEIGHT:
-
                 switch(heightFromDuck)
                 {
                     case ONE:
@@ -157,12 +157,8 @@ public class AutonomousBrain {
                 }
                 return;*/
             case THREE_CAROUSEL:
-                if(mode.equals(AutonomousMode.BlueFull)) {
-                    RRctrl.followLineToSpline(duckSpinningPositionB);
-                    new Thread(()->{slideCtrl.extendDropRetract(targetCarousel);}).start();
-                    spinDuck(true);
+                /*if(mode.equals(AutonomousMode.BlueFull)) {
 
-                    mode = AutonomousMode.BlueSimple;
                 }
                 if(mode.equals(AutonomousMode.RedFull)) {
                     RRctrl.followLineToSpline(duckSpinningPositionR);
@@ -170,17 +166,32 @@ public class AutonomousBrain {
                     spinDuck(false);
                     mode = AutonomousMode.RedSimple;
                 }
-
+*/
+                AtomicReference<Boolean> finishedSlide = new AtomicReference<>(Boolean.getBoolean("false"));
+                RRctrl.followLineToSpline(duckSpinningPositionB);
+                new Thread(()->{
+                    slideCtrl.extendDropRetract(targetCarousel);
+                    finishedSlide.set(true);
+                }).start();
+                spinDuck(true);
+                while(finishedSlide.get())
+                {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                mode = AutonomousMode.BlueSimple;
                 majorState = AutonomousStates.FOUR_DRIVE_TO_WAREHOUSE;
                 return;
             /*case FOUR_B_SET_SLIDE_HEIGHT_3:
                 majorState = AutonomousStates.FOUR_DRIVE_TO_WAREHOUSE;
                 return;*/
             case FOUR_DRIVE_TO_WAREHOUSE:
-                switch(mode) {
+                /*switch(mode) {
                     case BlueSimple:
-                        RRctrl.followLineToSpline(wareHousePickupPositionBSimpIntermediate);
-                        RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
+
                     /*case BlueSpline:
                         RRctrl.followSplineTrajWarehouse(true);
                         RRctrl.followLineToSpline(wareHousePickupPositionBSpl);
@@ -189,8 +200,10 @@ public class AutonomousBrain {
                     case RedSpline:
                         RRctrl.followSplineTrajWarehouse(false);
                         RRctrl.followLineToSpline(wareHousePickupPositionRSpl);
-*/
-                }
+
+                }*/
+                RRctrl.followLineToSpline(wareHousePickupPositionBSimpIntermediate);
+                RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
                 majorState = AutonomousStates.FIVE_BACK_FORTH;
                 return;
             case FIVE_BACK_FORTH:
@@ -269,8 +282,9 @@ public class AutonomousBrain {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                RRctrl.forward(20,10);
+                RRctrl.forward(20,10); // interruptible
                 if(!didIScoopAnItem) {
+                    RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
                     return; // try again
                 }
 
@@ -396,7 +410,8 @@ public class AutonomousBrain {
     public static Pose2d wareHousePickupPositionRSpl = new Pose2d(71, -34, Math.PI/2);
 
     public static Pose2d depositObjectPositionBsimp = new Pose2d(-19,65.5,0);
-
+    // TODO TODO TODO MEASURE THE POSITION TO TURN AND DEPOSIT!!!!!
+    // just replace the variable above.
 
 
 
