@@ -5,38 +5,46 @@
 
 
     import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
-    import org.sbs.bears.robotframework.enums.IntakeSide;
+    import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
     import org.sbs.bears.robotframework.enums.IntakeState;
 
     @TeleOp(name="Intake Controller Tester", group="Linear Opmode")
     public class IntakeControllerTester extends LinearOpMode {
-        private IntakeControllerBlue frontIntake;
+        private IntakeControllerBlue blueIntake;
+        private IntakeControllerRed redIntake;
         private boolean check = false;
         private double position = .2;
 
         public void runOpMode() throws InterruptedException {
-            frontIntake = new IntakeControllerBlue(hardwareMap, telemetry);
-            frontIntake.setState(IntakeState.BASE);
+            blueIntake = new IntakeControllerBlue(hardwareMap, telemetry);
+            redIntake = new IntakeControllerRed(hardwareMap, telemetry);
+            blueIntake.setState(IntakeState.BASE);
+            redIntake.setState(IntakeState.BASE);
             waitForStart();
 
             while(opModeIsActive()){
                 if(check){
-                    frontIntake.checkIntake();
+                    blueIntake.checkIntake();
+                    redIntake.checkIntake();
                 }
                 if(gamepad1.left_bumper){
                     check = true;
                 }
                 else{check = false;}
                 if(gamepad1.x){
-                    frontIntake.changeStatePosiiton(IntakeState.BASE, position);
+                    blueIntake.changeStatePosiiton(IntakeState.BASE, position);
+                    redIntake.changeStatePosiiton(IntakeState.BASE, position);
                 }
                 if(gamepad1.b){
-                    frontIntake.setState(IntakeState.DUMP);
+                    blueIntake.setState(IntakeState.DUMP);
+                    redIntake.setState(IntakeState.DUMP);
                 }
                 else if(gamepad1.a){
-                    frontIntake.setState(IntakeState.BASE);}
+                    blueIntake.setState(IntakeState.BASE);
+                    redIntake.setState(IntakeState.BASE);}
                 else if(gamepad1.y){
-                    frontIntake.setState(IntakeState.PARK);
+                    blueIntake.setState(IntakeState.PARK);
+                    redIntake.setState(IntakeState.PARK);
                 }
                 else if(gamepad1.dpad_up){
                     position += .01;
@@ -48,8 +56,10 @@
 
 
 
-                telemetry.addData("red State: ", frontIntake.getState());
+                telemetry.addData("blue State: ", blueIntake.getState());
+                telemetry.addData("red State: ", redIntake.getState());
                 telemetry.addData("Desired Position: ", position);
+                telemetry.addData("servo ", blueIntake.getServoPos());
 
                 telemetry.update();
             }

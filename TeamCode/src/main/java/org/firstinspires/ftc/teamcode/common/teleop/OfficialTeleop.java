@@ -86,8 +86,8 @@ public class OfficialTeleop extends OpMode {
         /**
          * Initialization
          */
-        // redIntake = new IntakeControllerRed(hardwareMap, telemetry);
-        // blueIntake = new IntakeControllerBlue(hardwareMap, telemetry);
+        redIntake = new IntakeControllerRed(hardwareMap, telemetry);
+        blueIntake = new IntakeControllerBlue(hardwareMap, telemetry);
         slideController = new SlideController(hardwareMap, telemetry);
         carouselController = new DuckCarouselController(hardwareMap, telemetry);
 
@@ -122,8 +122,8 @@ public class OfficialTeleop extends OpMode {
 
             case RUNNING:
 
-                // redIntake.checkIntake();
-                // blueIntake.checkIntake();
+                redIntake.checkIntake();
+                blueIntake.checkIntake();
 
                 telemetry.update();
                 break;
@@ -146,8 +146,8 @@ public class OfficialTeleop extends OpMode {
      * Flood Thread Pool
      */
     private static void floodRuntimes() {
-        registerThread(ButtonHandler.interfaceTag, ButtonHandler.runtime);
-        registerThread(MovementHandler.interfaceTag, MovementHandler.runtime);
+        registerThread(buttonHandler.interfaceTag, buttonHandler.runtime);
+        registerThread(movementHandler.interfaceTag, movementHandler.runtime);
     }
 
     /**

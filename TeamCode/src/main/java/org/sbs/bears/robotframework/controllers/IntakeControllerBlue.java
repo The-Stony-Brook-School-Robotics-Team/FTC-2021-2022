@@ -132,6 +132,8 @@ public class IntakeControllerBlue {
     /** Accessor for current state **/
     public IntakeState getState(){return state;}
 
+    public double getServoPos(){return scooper.getPosition();}
+
 
 
     /** Assigns position and motor power to their respective states **/

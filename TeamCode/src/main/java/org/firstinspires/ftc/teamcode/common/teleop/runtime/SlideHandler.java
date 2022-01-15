@@ -39,7 +39,7 @@ public class SlideHandler {
     /**
      * One Carousel
      */
-    public Thread slideOneCarousel = new Thread(() -> {//i like men
+    public Thread slideOneCarousel = new Thread(() -> {
         if(!running) {
             running = true;
             slideController.extendDropRetract(SlideTarget.ONE_CAROUSEL);
@@ -103,15 +103,14 @@ public class SlideHandler {
     });
 
 
-
+    /**
+     * Manual Slide Controller
+     * @param stickValue increase multiplier for motor encoder position
+     */
     public void manualSlideController(int stickValue) {
-        stickValue = stickValue * 2;
-        //slideController.slideMotor.setPower(1);
-        //slideController.slideMotor.setTargetPosition(slideController.slideMotor.getCurrentPosition() + (stickValue * Configuration.DefaultSlideTicks));
-        //slideController.slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        Log.d(interfaceTag, ": motor ticks - " + slideController.getSlideMotorPosition());
-//        Log.d(interfaceTag, ": servo ticks - " + slideController.getVerticalServoPosition());
+        stickValue = stickValue * -2;
         slideController.incrementEncoderPosition(stickValue * Configuration.DefaultSlideTicks);
+        Log.d(interfaceTag, "Current Slide Motor Ticks: " + slideController.getSlideMotorPosition());
     }
 
 

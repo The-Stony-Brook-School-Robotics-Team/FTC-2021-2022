@@ -227,6 +227,7 @@ public class SlideController {
     /** TeleOp Methods */
    public void initTeleop(){
        slideState = SlideState.TELEOP;
+       verticalServo.setPosition(vertServoPosition_PARKED);
    }
 
     public double getVerticalServoPosition(){return verticalServo.getPosition();}
@@ -301,20 +302,21 @@ public class SlideController {
 
         encoderTicks += slideMotor.getCurrentPosition();
         //Checks if the position given is a position that would put the box inside of the robot
-        if(encoderTicks > slideMotorPosition_FULL || encoderTicks < slideMotorPosition_PARKED){return;}
+        //if(encoderTicks > slideMotorPosition_FULL || encoderTicks < slideMotorPosition_PARKED){return;}
 
-        if(encoderTicks < slideMotorPosition_BUCKET_OUT && (verticalServo.getPosition() < vertServoPosition_PARKED-.01 || verticalServo.getPosition() > vertServoPosition_PARKED+.01)){
-            setHeightToParams(vertServoPosition_PARKED);
-        }
+    //    if(encoderTicks < slideMotorPosition_BUCKET_OUT && (verticalServo.getPosition() < vertServoPosition_PARKED-.01 || verticalServo.getPosition() > vertServoPosition_PARKED+.01)){
+      //      setHeightToParams(vertServoPosition_PARKED);
+      //  }
         slideMotor.setPower(slideMotorPowerMoving);
         slideMotor.setTargetPosition(encoderTicks);
+        slideMotor.setPower(slideMotorPowerMoving);
        // while(slideMotor.isBusy())
         //{
           //  Sleep.sleep(10);
         //}
-        if(!slideMotor.isBusy()){
-            slideMotor.setPower(slideMotorPowerStill);
-        }
+        //if(!slideMotor.isBusy()){
+          //  slideMotor.setPower(slideMotorPowerStill);
+        //}
         return;
     }
     public void incrementInchPosition(double inches){
@@ -395,7 +397,7 @@ public class SlideController {
     int slideMotorPosition_ONE_CAROUSEL = 600;
     int slideMotorPosition_FULL = 2000;
 
-    double slideMotorPowerMoving = 0.6;
+    double slideMotorPowerMoving = .6;
     double slideMotorPowerMovingWBucketInside = 0.4;
     double slideMotorPowerStill = 0;
 
