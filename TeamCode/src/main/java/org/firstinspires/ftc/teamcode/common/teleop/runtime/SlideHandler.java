@@ -105,10 +105,11 @@ public class SlideHandler {
 
 
     public void manualSlideController(int stickValue) {
-        stickValue = stickValue * 2;
-        slideController.slideMotor.setPower(1);
-        slideController.slideMotor.setTargetPosition(slideController.slideMotor.getCurrentPosition() + (stickValue * Configuration.DefaultSlideTicks));
-        slideController.slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        stickValue = stickValue * 2;
+//        slideController.slideMotor.setPower(1);
+//        slideController.slideMotor.setTargetPosition(slideController.slideMotor.getCurrentPosition() + (stickValue * Configuration.DefaultSlideTicks));
+//        slideController.slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideController.incrementEncoderPosition(stickValue * Configuration.DefaultSlideTicks);
     }
 
 
