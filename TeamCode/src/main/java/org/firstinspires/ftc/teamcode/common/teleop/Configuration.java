@@ -10,5 +10,6 @@ public class Configuration {
     /** Slide Thresholding */
     public static int MaxSlideTicks = 1000;
     public static int DefaultSlideTicks = 20;
+    public static double DefaultVerticalSlideIncrement = 0.05;
 
 }

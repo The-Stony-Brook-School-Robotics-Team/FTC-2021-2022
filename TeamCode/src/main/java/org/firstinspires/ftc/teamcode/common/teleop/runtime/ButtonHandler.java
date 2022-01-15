@@ -41,7 +41,6 @@ public class ButtonHandler {
      * Working Button Handler Runtime
      */
     public static Thread runtime = new Thread(() -> {
-        Log.d(interfaceTag, "Button Handler Running");
         while(currentState == TeleOpRobotStates.RUNNING || currentState.equals(TeleOpRobotStates.INITIALIZING)) {
 
             if(gamepad.left_bumper) {
@@ -54,9 +53,8 @@ public class ButtonHandler {
                 case PRIMARY:
                     // A
                     if(gamepad.a && !isPressingA) {
-                        slideController.incrementVerticalServo(0.1);
+                        // TODO: Add Drop Object
                         isPressingA = true;
-                        Log.d(interfaceTag, "SERVO " + slideController.getVerticalServoPosition());
                     } else if(!gamepad.a && isPressingA) {
                         isPressingA = false;
                     }
@@ -71,7 +69,6 @@ public class ButtonHandler {
                                 MovementHandler.setRunType(MovementHandler.RunType.DEFAULT);
                                 break;
                         }
-                        Log.d(interfaceTag, ": Toggled Drive Mode");
                         isPressingX = true;
                     } else if(!gamepad.x && isPressingX) {
                         isPressingX = false;
@@ -79,7 +76,6 @@ public class ButtonHandler {
                     // Y
                     if(gamepad.y && !isPressingY) {
                         carouselController.spinOneDuck(true);
-                        Log.d(interfaceTag, ": Spinning duck");
                         isPressingY = true;
                     } else if(!gamepad.y && isPressingY) {
                         isPressingY = false;
@@ -101,15 +97,11 @@ public class ButtonHandler {
                     }
                     // Left dpad
                     if(gamepad.dpad_left && !isPressingLeftDpad) {
-                        Log.d(interfaceTag, ": CHECKING LOGIC");
                         if(redIntake.getState() == IntakeState.PARK) {
                             redIntake.setState(IntakeState.BASE);
-                            Log.d(interfaceTag, ": Set Red Intake to BASE position");
                         } else {
                             redIntake.setState(IntakeState.PARK);
-                            Log.d(interfaceTag, ": Set Red Intake to PARK position");
                         }
-                        Log.d(interfaceTag, ": FINISHED FUNCTION");
                         isPressingLeftDpad = true;
                     } else if(!gamepad.dpad_left && isPressingLeftDpad) {
                         isPressingLeftDpad = false;
@@ -118,25 +110,32 @@ public class ButtonHandler {
                     if(gamepad.dpad_right && !isPressingRightDpad) {
                         if(blueIntake.getState() == IntakeState.PARK) {
                             blueIntake.setState(IntakeState.BASE);
-                            Log.d(interfaceTag, ": Set Blue Intake to BASE position");
                         } else {
                             blueIntake.setState(IntakeState.PARK);
-                            Log.d(interfaceTag, ": Set Blue Intake to PARK position");
                         }
                         isPressingRightDpad = true;
                     } else if(!gamepad.dpad_right && isPressingRightDpad) {
                         isPressingRightDpad = false;
                     }
-                    if(gamepad.dpad_up)
-
+                    // Up dpad
+                    if(gamepad.dpad_up && !isPressingUpDpad) {
+                        slideController.incrementVerticalServo(Configuration.DefaultVerticalSlideIncrement);
+                        isPressingUpDpad = true;
+                    } else if(!gamepad.dpad_up && isPressingUpDpad) {
+                        isPressingUpDpad = false;
+                    }
+                    // Down dpad
+                    if(gamepad.dpad_down && !isPressingDownDpad) {
+                        slideController.incrementVerticalServo(Configuration.DefaultVerticalSlideIncrement * -1);
+                        isPressingDownDpad = true;
+                    } else if(!gamepad.dpad_down && isPressingDownDpad) {
+                        isPressingDownDpad = false;
+                    }
                     break;
                 case SECONDARY:
                     if(gamepad.right_stick_y > Configuration.rightStickXLimitTrigger || gamepad.right_stick_y < (Configuration.rightStickXLimitTrigger * -1)) {
                         slideHandler.manualSlideController((int)gamepad.right_stick_y);
                     }
-
-
-
                     break;
             }
         }
