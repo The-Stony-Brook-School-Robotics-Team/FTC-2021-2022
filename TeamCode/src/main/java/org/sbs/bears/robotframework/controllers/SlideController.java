@@ -359,7 +359,7 @@ public class SlideController {
 
         //if((slideState == SlideState.PARKED || slideState == SlideState.EXT_BUCKET_IN) && (servoPosition > vertServoPosition_PARKED_MAX || servoPosition < vertServoPosition_PARKED_MIN)){return;}
 
-        verticalServo.setPosition(servoPosition);
+        setHeightToParams(servoPosition);
         return;
 
     }

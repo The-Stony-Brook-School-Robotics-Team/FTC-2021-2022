@@ -15,6 +15,7 @@ public class NewSlideControllerTester extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         boolean qA = false,qX = false,qB = false, qUp = false,  qDown = false;
         SlideController ctrl = new SlideController(hardwareMap,telemetry);
+        ctrl.initTeleop();
         waitForStart();
         new Thread(()->{
             while(opModeIsActive() && !isStopRequested())
@@ -32,7 +33,8 @@ public class NewSlideControllerTester extends LinearOpMode {
             if(gamepad1.a)
             {
                 qA = true;
-                ctrl.incrementEncoderPosition(100);
+                ctrl.incrementVerticalServo(0.1);
+                // ctrl.incrementEncoderPosition(100);
                 Log.d("SlideTester","finished extension");
                 //telemetry.addData("pressed", 1);
                 //telemetry.update();
@@ -44,7 +46,7 @@ public class NewSlideControllerTester extends LinearOpMode {
             if(gamepad1.b)
             {
                 qB = true;
-                ctrl.setToEncoderPosition(0);
+                ctrl.incrementVerticalServo(-0.1);
             }
             if(qB && !gamepad1.b)
             {
