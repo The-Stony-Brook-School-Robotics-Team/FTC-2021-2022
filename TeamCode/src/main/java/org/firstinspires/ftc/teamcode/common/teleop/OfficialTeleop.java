@@ -83,10 +83,18 @@ public class OfficialTeleop extends OpMode {
         dashboard = FtcDashboard.getInstance();
         this.gamepad = gamepad1;
 
+        /**
+         * Initialization
+         */
         // redIntake = new IntakeControllerRed(hardwareMap, telemetry);
         // blueIntake = new IntakeControllerBlue(hardwareMap, telemetry);
         slideController = new SlideController(hardwareMap, telemetry);
         carouselController = new DuckCarouselController(hardwareMap, telemetry);
+
+        /**
+         * Configuration
+         */
+        slideController.initTeleop();
 
         floodRuntimes();
     }
@@ -108,16 +116,15 @@ public class OfficialTeleop extends OpMode {
 
             case INITIALIZING:
                 DrivingEnabled = true;
+                startThreadPool();
                 synchronized (stateMutex) { currentState = TeleOpRobotStates.RUNNING; }
                 break;
 
             case RUNNING:
+
                 // redIntake.checkIntake();
                 // blueIntake.checkIntake();
 
-                listThreadPool();
-                Log.d(interfaceTag, String.valueOf(getRuntime()));
-                systemRuntime = getRuntime();
                 telemetry.update();
                 break;
 
@@ -131,42 +138,22 @@ public class OfficialTeleop extends OpMode {
     @Override
     public void stop() {
         synchronized (currentState) { currentState = TeleOpRobotStates.STOPPED; }
-        DrivingEnabled = false;
-        systemStopRequested = true;
         MovementHandler.sendKillSignal();
-        exitThreads();
+        killThreadPool();
     }
 
     /**
      * Flood Thread Pool
      */
     private static void floodRuntimes() {
-        if(!movementHandler.runtime.isAlive()) {
-            movementHandler.runtime.start();
-            if(!threadPool.containsKey(movementHandler.interfaceTag)) {
-                threadPool.put(movementHandler.interfaceTag, movementHandler.runtime);
-                Log.d(interfaceTag, "Thread Registered: " + movementHandler.interfaceTag);
-            } else {
-                Log.d(interfaceTag, "Thread: " + movementHandler.interfaceTag + " exists");
-            }
-
-        }
-        if(!buttonHandler.runtime.isAlive()) {
-            buttonHandler.runtime.start();
-            if(threadPool.containsKey(buttonHandler.interfaceTag)) {
-                threadPool.put(buttonHandler.interfaceTag, buttonHandler.runtime);
-                Log.d(interfaceTag, "Thread Registered: " + buttonHandler.interfaceTag);
-            } else {
-                Log.d(interfaceTag, "Thread: " + buttonHandler.interfaceTag + " exists");
-            }
-
-        }
+        registerThread(ButtonHandler.interfaceTag, ButtonHandler.runtime);
+        registerThread(MovementHandler.interfaceTag, MovementHandler.runtime);
     }
 
     /**
      * Iterate Over Thread Pool And Exit
      */
-    private void exitThreads() {
+    private void killThreadPool() {
         Log.d(interfaceTag, "-------------------------------------------------------------------------------------------------");
         for(Map.Entry<String, Thread> set : threadPool.entrySet()) {
             set.getValue().interrupt();
@@ -175,6 +162,9 @@ public class OfficialTeleop extends OpMode {
         Log.d(interfaceTag, "-------------------------------------------------------------------------------------------------");
     }
 
+    /**
+     * Lists every thread in the thread pool
+     */
     public static void listThreadPool() {
         Log.d(interfaceTag, "-------------------------------------------------------------------------------------------------");
         for(Map.Entry<String, Thread> set : threadPool.entrySet()) {
@@ -182,4 +172,55 @@ public class OfficialTeleop extends OpMode {
         }
         Log.d(interfaceTag, "-------------------------------------------------------------------------------------------------");
     }
+
+    /**
+     * Registers a thread to the thread pool
+     * @param interfaceTag the interface tag for the handler
+     * @param thread the runtime thread for the handler
+     */
+    public static void registerThread(String interfaceTag, Thread thread) {
+        if(!threadPool.containsKey(interfaceTag)) {
+            threadPool.put(interfaceTag, thread);
+            Log.d(OfficialTeleop.interfaceTag, "Thread Registered: " + interfaceTag);
+        } else {
+            Log.d(OfficialTeleop.interfaceTag, "Thread Already Registered: " + interfaceTag);
+        }
+    }
+
+    /**
+     * Starts The Whole Thread Pool
+     */
+    public static void startThreadPool() {
+        for(Map.Entry<String, Thread> set : threadPool.entrySet()) {
+            if(set.getValue().isAlive() == false) {
+                set.getValue().start();
+                Log.d(interfaceTag, "Started Process: " + set.getKey());
+            }
+        }
+    }
+
+    /**
+     * Starts a specific interface handler
+     * @param interfaceTag the interface handler tag
+     */
+    public static void startInterface(String interfaceTag) {
+        Thread requestedThread = threadPool.get(interfaceTag);
+        if(requestedThread != null && !requestedThread.isAlive()) {
+            requestedThread.start();
+            Log.d(interfaceTag, "Started Process: " + interfaceTag);
+        }
+    }
+
+    /**
+     * Stops a specific interface handler
+     * @param interfaceTag the interface handler tag
+     */
+    public static void stopInterface(String interfaceTag) {
+        Thread requestedThread = threadPool.get(interfaceTag);
+        if(requestedThread != null) {
+            requestedThread.interrupt();
+        }
+    }
+
+
 }

@@ -32,16 +32,17 @@ public class ButtonHandler {
     /**
      * Button Logic
      */
-    boolean isPressingX = false, isPressingY = false, isPressingB = false, isPressingA = false;
-    boolean isPressingLeftDpad = false, isPressingRightDpad = false, isPressingUpDpad = false, isPressingDownDpad = false;
-    boolean isPressingLeftBumper = false, isPressingRightBumper = false;
+    private static boolean isPressingX = false, isPressingY = false, isPressingB = false, isPressingA = false;
+    private static boolean isPressingLeftDpad = false, isPressingRightDpad = false, isPressingUpDpad = false, isPressingDownDpad = false;
+    private static boolean isPressingLeftBumper = false, isPressingRightBumper = false;
 
 
     /**
      * Working Button Handler Runtime
      */
-    public Thread runtime = new Thread(() -> {
-        while(currentState == TeleOpRobotStates.RUNNING) {
+    public static Thread runtime = new Thread(() -> {
+        Log.d(interfaceTag, "Button Handler Running");
+        while(currentState == TeleOpRobotStates.RUNNING || currentState.equals(TeleOpRobotStates.INITIALIZING)) {
 
             if(gamepad.left_bumper) {
                 controllerMode = ControllerModes.SECONDARY;

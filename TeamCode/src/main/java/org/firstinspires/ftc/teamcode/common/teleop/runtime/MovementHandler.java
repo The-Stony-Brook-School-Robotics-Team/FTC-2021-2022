@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.common.teleop.runtime;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.currentState;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.drive;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.gamepad;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slowModeToggled;
 
 import android.util.Log;
 
@@ -38,92 +37,51 @@ public class MovementHandler {
      * Working Movement Handler Runtime
      */
     @Beta
-    public Thread runtime = new Thread(() -> {
-        while(currentState.equals(TeleOpRobotStates.RUNNING) || OfficialTeleop.systemStopRequested == false) {
-            if(isDrivable()) {
-                switch (currentRunType) {
-                    case SLOW:
-                        if(!slowDriving.isAlive()) {
-                            if(defaultDriving.isAlive()) {
-                                defaultDriving.interrupt();
-                            }
-                            if(sprintDriving.isAlive()) {
-                                sprintDriving.interrupt();
-                            }
-                            slowDriving.start();
+    public static Thread runtime = new Thread(() -> {
+        while(currentState.equals(TeleOpRobotStates.RUNNING) || currentState.equals(TeleOpRobotStates.INITIALIZING)) {
+            switch (currentRunType) {
+                case SLOW:
+                    if(!MovementHandlers.slowDriving.isAlive()) {
+                        if(MovementHandlers.defaultDriving.isAlive()) {
+                            MovementHandlers.defaultDriving.interrupt();
                         }
-                        break;
-                    case DEFAULT:
-                        Log.d(interfaceTag, "im checking");
-                        if(!defaultDriving.isAlive()) {
-                            Log.d(interfaceTag, "im not alive");
-                            if(slowDriving.isAlive()) {
-                                slowDriving.interrupt();
-                            }
-                            if(sprintDriving.isAlive()) {
-                                sprintDriving.interrupt();
-                            }
-                            defaultDriving.start();
-                            Log.d(interfaceTag, "im started");
+                        if(MovementHandlers.sprintDriving.isAlive()) {
+                            MovementHandlers.sprintDriving.interrupt();
                         }
-                        Log.d(interfaceTag, "im already alive");
-                        break;
-                    case SPRINT:
-                        if(!sprintDriving.isAlive()) {
-                            if(slowDriving.isAlive()) {
-                                slowDriving.interrupt();
-                            }
-                            if(defaultDriving.isAlive()) {
-                                defaultDriving.interrupt();
-                            }
-                            sprintDriving.start();
+                        MovementHandlers.slowDriving.start();
+                    }
+                    break;
+                case DEFAULT:
+                    if(!MovementHandlers.defaultDriving.isAlive()) {
+                        if(MovementHandlers.slowDriving.isAlive()) {
+                            MovementHandlers.slowDriving.interrupt();
                         }
-                        break;
-                    default:
-                        Log.e("Movement Handler", ": Internal Logic Error @runtime -> Drive Handler Checks");
-                        Log.e(interfaceTag, "Log Info: " + currentRunType);
-                }
-            } else {
-                Log.d(interfaceTag, "no drive permissions");
+                        if(MovementHandlers.sprintDriving.isAlive()) {
+                            MovementHandlers.sprintDriving.interrupt();
+                        }
+                        MovementHandlers.defaultDriving.start();
+                    }
+                    break;
+                case SPRINT:
+                    if(!MovementHandlers.sprintDriving.isAlive()) {
+                        if(MovementHandlers.slowDriving.isAlive()) {
+                            MovementHandlers.slowDriving.interrupt();
+                        }
+                        if(MovementHandlers.defaultDriving.isAlive()) {
+                            MovementHandlers.defaultDriving.interrupt();
+                        }
+                        MovementHandlers.sprintDriving.start();
+                    }
+                    break;
+                default:
+                    Log.e(interfaceTag, ": Internal Logic Error @runtime -> Drive Handler Checks");
+                    Log.e(interfaceTag, "Log Info: " + currentRunType);
             }
-
         }
     });
 
 
-    private static Thread sprintDriving = new Thread(() -> {
-        drive.setWeightedDrivePower(
-                new Pose2d(
-                        -gamepad.left_stick_y,
-                        -gamepad.left_stick_x,
-                        -gamepad.right_stick_x
-                )
-        );
-        drive.update();
-    });
 
-    private static Thread defaultDriving = new Thread(() -> {
-        drive.setWeightedDrivePower(
-                new Pose2d(
-                        -gamepad.left_stick_y,
-                        -gamepad.left_stick_x,
-                        -gamepad.right_stick_x
-                )
-        );
-        drive.update();
-        Log.d(interfaceTag, "LOLOLOL IM STILL DRIVING BRO");
-    });
-
-    private static Thread slowDriving = new Thread(() -> {
-        drive.setWeightedDrivePower(
-                new Pose2d(
-                        -gamepad.left_stick_y,
-                        -gamepad.left_stick_x,
-                        -gamepad.right_stick_x
-                )
-        );
-        drive.update();
-    });
 
     /**
      * Lets you set the current run type
@@ -145,17 +103,45 @@ public class MovementHandler {
      * Kill Threads
      */
     public static void sendKillSignal() {
-        slowDriving.interrupt();
-        sprintDriving.interrupt();
-        defaultDriving.interrupt();
+        MovementHandler.runtime.interrupt();
+        MovementHandlers.slowDriving.interrupt();
+        MovementHandlers.sprintDriving.interrupt();
+        MovementHandlers.defaultDriving.interrupt();
     }
 
-    private static boolean isDrivable() {
-        if(currentState == TeleOpRobotStates.RUNNING && OfficialTeleop.DrivingEnabled) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+}
 
+class MovementHandlers {
+    public static Thread sprintDriving = new Thread(() -> {
+        drive.setWeightedDrivePower(
+                new Pose2d(
+                        -gamepad.left_stick_y,
+                        -gamepad.left_stick_x,
+                        -gamepad.right_stick_x
+                )
+        );
+        drive.update();
+    });
+
+    public static Thread defaultDriving = new Thread(() -> {
+        drive.setWeightedDrivePower(
+                new Pose2d(
+                        -gamepad.left_stick_y,
+                        -gamepad.left_stick_x,
+                        -gamepad.right_stick_x
+                )
+        );
+        drive.update();
+    });
+
+    public static Thread slowDriving = new Thread(() -> {
+        drive.setWeightedDrivePower(
+                new Pose2d(
+                        -gamepad.left_stick_y,
+                        -gamepad.left_stick_x,
+                        -gamepad.right_stick_x
+                )
+        );
+        drive.update();
+    });
 }
