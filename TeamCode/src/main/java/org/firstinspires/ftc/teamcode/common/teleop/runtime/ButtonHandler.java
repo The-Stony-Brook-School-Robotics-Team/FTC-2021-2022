@@ -53,9 +53,7 @@ public class ButtonHandler {
                 case PRIMARY:
                     // A
                     if(gamepad.a && !isPressingA) {
-                        Log.d(interfaceTag, "i wamt tp ,vep [;ease");
                         slideController.incrementVerticalServo(0.1);
-                        Log.d(interfaceTag, "MOVING SERVOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
                         isPressingA = true;
                     } else if(!gamepad.a && isPressingA) {
                         isPressingA = false;
@@ -127,7 +125,6 @@ public class ButtonHandler {
 
                     break;
                 case SECONDARY:
-                    Log.d(interfaceTag, ": FUCK");
                     if(gamepad.right_stick_y > Configuration.rightStickXLimitTrigger || gamepad.right_stick_y < (Configuration.rightStickXLimitTrigger * -1)) {
                         slideHandler.manualSlideController((int)gamepad.right_stick_y);
                     }

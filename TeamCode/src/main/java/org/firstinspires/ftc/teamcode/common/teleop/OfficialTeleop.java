@@ -45,6 +45,7 @@ public class OfficialTeleop extends OpMode {
      * Information Provisioning
      */
     public static double systemRuntime = 0;
+    public static boolean systemStopRequested = false;
 
     /** Roadrunner Items */
     public static SampleMecanumDrive drive;
@@ -64,6 +65,7 @@ public class OfficialTeleop extends OpMode {
     /**
      * Thread Pool
      */
+    public static boolean DrivingEnabled = false;
     private static HashMap<String, Thread> threadPool = new HashMap<>();
 
     /**
@@ -87,20 +89,14 @@ public class OfficialTeleop extends OpMode {
         carouselController = new DuckCarouselController(hardwareMap, telemetry);
 
         floodRuntimes();
-        /**
-         * Update current state to continue
-         */
-        currentState = TeleOpRobotStates.RUNNING;
     }
 
     @Override
     public void init_loop() {
-        floodRuntimes();
     }
 
     @Override
     public void loop() {
-        floodRuntimes();
 
 
         switch(currentState) {
@@ -110,12 +106,17 @@ public class OfficialTeleop extends OpMode {
                 telemetry.update();
                 break;
 
-            case RUNNING:
+            case INITIALIZING:
+                DrivingEnabled = true;
+                synchronized (stateMutex) { currentState = TeleOpRobotStates.RUNNING; }
+                break;
 
+            case RUNNING:
                 // redIntake.checkIntake();
                 // blueIntake.checkIntake();
 
                 listThreadPool();
+                Log.d(interfaceTag, String.valueOf(getRuntime()));
                 systemRuntime = getRuntime();
                 telemetry.update();
                 break;
@@ -129,6 +130,9 @@ public class OfficialTeleop extends OpMode {
      */
     @Override
     public void stop() {
+        synchronized (currentState) { currentState = TeleOpRobotStates.STOPPED; }
+        DrivingEnabled = false;
+        systemStopRequested = true;
         MovementHandler.sendKillSignal();
         exitThreads();
     }
@@ -139,7 +143,7 @@ public class OfficialTeleop extends OpMode {
     private static void floodRuntimes() {
         if(!movementHandler.runtime.isAlive()) {
             movementHandler.runtime.start();
-            if(!threadPool.containsKey(movementHandler)) {
+            if(!threadPool.containsKey(movementHandler.interfaceTag)) {
                 threadPool.put(movementHandler.interfaceTag, movementHandler.runtime);
                 Log.d(interfaceTag, "Thread Registered: " + movementHandler.interfaceTag);
             } else {
@@ -165,17 +169,17 @@ public class OfficialTeleop extends OpMode {
     private void exitThreads() {
         Log.d(interfaceTag, "-------------------------------------------------------------------------------------------------");
         for(Map.Entry<String, Thread> set : threadPool.entrySet()) {
-            if(set.getValue().isAlive()) {
-                set.getValue().interrupt();
-            }
+            set.getValue().interrupt();
             Log.i(interfaceTag, "Interrupted: " + set.getKey());
         }
         Log.d(interfaceTag, "-------------------------------------------------------------------------------------------------");
     }
 
-    private static void listThreadPool() {
+    public static void listThreadPool() {
+        Log.d(interfaceTag, "-------------------------------------------------------------------------------------------------");
         for(Map.Entry<String, Thread> set : threadPool.entrySet()) {
             Log.d(interfaceTag, "Thread Name: " + set.getKey());
         }
+        Log.d(interfaceTag, "-------------------------------------------------------------------------------------------------");
     }
 }
