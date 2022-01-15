@@ -302,11 +302,11 @@ public class SlideController {
 
         encoderTicks += slideMotor.getCurrentPosition();
         //Checks if the position given is a position that would put the box inside of the robot
-        //if(encoderTicks > slideMotorPosition_FULL || encoderTicks < slideMotorPosition_PARKED){return;}
+        if(encoderTicks > slideMotorPosition_FULL || encoderTicks < slideMotorPosition_PARKED){return;}
 
-    //    if(encoderTicks < slideMotorPosition_BUCKET_OUT && (verticalServo.getPosition() < vertServoPosition_PARKED-.01 || verticalServo.getPosition() > vertServoPosition_PARKED+.01)){
-      //      setHeightToParams(vertServoPosition_PARKED);
-      //  }
+        if(encoderTicks < slideMotorPosition_BUCKET_OUT && (verticalServo.getPosition() < vertServoPosition_PARKED-.01 || verticalServo.getPosition() > vertServoPosition_PARKED+.01)){
+            setHeightToParams(vertServoPosition_PARKED);
+        }
         slideMotor.setPower(slideMotorPowerMoving);
         slideMotor.setTargetPosition(encoderTicks);
         slideMotor.setPower(slideMotorPowerMoving);
