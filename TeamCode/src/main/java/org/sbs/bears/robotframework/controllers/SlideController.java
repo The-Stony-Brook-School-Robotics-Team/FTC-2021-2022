@@ -61,7 +61,7 @@ public class SlideController {
 
     public void dropCube()
     {
-        if(slideState == SlideState.OUT_FULLY) {
+        if(slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT) {
             dumperServo.setPosition(dumperPosition_DUMP);
             try {
                 Thread.sleep(500);
@@ -69,17 +69,19 @@ public class SlideController {
                 e.printStackTrace();
             }
             dumperServo.setPosition(dumperPosition_HOLDBLOCK);
-        }
-        else {
-            Log.d("SlideController","Assert for slide out fully failed; dont release the cube in transit!");
+        //}
+       // else {
+         //   Log.d("SlideController","Assert for slide out fully failed; dont release the cube in transit!");
         }
     }
 
     public void retractSlide() {
         slideState = SlideState.RET_BUCKET_OUT;
         doStateAction();
+        Log.d("SlideController","Should be right outside " + slideMotor.getCurrentPosition() + " " + verticalServo.getPosition());
         slideState = SlideState.RET_BUCKET_IN;
         doStateAction();
+        Log.d("SlideController","Should be inside " + slideMotor.getCurrentPosition() + " " + verticalServo.getPosition());
         slideState = SlideState.PARKED;
     }
 
@@ -110,9 +112,10 @@ public class SlideController {
         switch(slideState) {
             case PARKED:
             case OUT_FULLY:
-                slideMotor.setPower(slideMotorPowerStill);
+                //slideMotor.setPower(slideMotorPowerStill);
                 return;
             case EXT_BUCKET_IN:
+
                 slideMotor.setPower(slideMotorPowerMovingWBucketInside);
                 targetPos = slideMotorPosition_BUCKET_OUT;
                 slideMotor.setTargetPosition(targetPos);
@@ -123,7 +126,7 @@ public class SlideController {
                         e.printStackTrace();
                     }
                 }
-                slideMotor.setPower(slideMotorPowerStill);
+                //slideMotor.setPower(slideMotorPowerStill);
                 return;
             case EXT_BUCKET_OUT:
                 //slideMotor.setPower(slideMotorPowerStill);
@@ -149,9 +152,10 @@ public class SlideController {
                         flagToLeave = true;
                         return;
                 }
+                setHeightToParams(verticalServoTargetPos);
                 slideMotor.setTargetPosition(targetPosFinal);
                 slideMotor.setPower(slideMotorPowerMoving);
-                setHeightToParams(verticalServoTargetPos);
+                //setHeightToParams(verticalServoTargetPos);
                 while (slideMotor.isBusy()) {
                     try {
                         Thread.sleep(10);
@@ -159,13 +163,14 @@ public class SlideController {
                         e.printStackTrace();
                     }
                 }
-                slideMotor.setPower(slideMotorPowerStill);
+                //slideMotor.setPower(slideMotorPowerStill);
                 return;
             case RET_BUCKET_OUT:
                 targetPos = slideMotorPosition_BUCKET_OUT;
                 slideMotor.setPower(slideMotorPowerMoving);
                 slideMotor.setTargetPosition(targetPos);
                 setHeightToParams(vertServoPosition_PARKED);
+                //setHeightToParams(vertServoPosition_PARKED);
                 while (slideMotor.isBusy()) {
                     try {
                         Thread.sleep(10);
@@ -173,7 +178,7 @@ public class SlideController {
                         e.printStackTrace();
                     }
                 }
-                slideMotor.setPower(slideMotorPowerStill);
+                //slideMotor.setPower(slideMotorPowerStill);
                 return;
             case RET_BUCKET_IN:
                 targetPos = slideMotorPosition_PARKED;
@@ -186,7 +191,7 @@ public class SlideController {
                         e.printStackTrace();
                     }
                 }
-                slideMotor.setPower(slideMotorPowerStill);
+                //slideMotor.setPower(slideMotorPowerStill);
                 return;
         }
     }
@@ -228,6 +233,7 @@ public class SlideController {
    public void initTeleop(){
        slideState = SlideState.TELEOP;
        verticalServo.setPosition(vertServoPosition_PARKED);
+       this.targetParams = SlideTarget.THREE_CAROUSEL;
    }
 
     public double getVerticalServoPosition(){return verticalServo.getPosition();}
@@ -302,11 +308,11 @@ public class SlideController {
 
         encoderTicks += slideMotor.getCurrentPosition();
         //Checks if the position given is a position that would put the box inside of the robot
-       // if(encoderTicks > slideMotorPosition_FULL || encoderTicks < slideMotorPosition_PARKED){return;}
+       if(encoderTicks > slideMotorPosition_FULL || encoderTicks < slideMotorPosition_PARKED){return;}
 
-   //     if(encoderTicks < slideMotorPosition_BUCKET_OUT && (verticalServo.getPosition() < vertServoPosition_PARKED-.01 || verticalServo.getPosition() > vertServoPosition_PARKED+.01)){
-  //          setHeightToParams(vertServoPosition_PARKED);
-  //      }
+        if(encoderTicks < slideMotorPosition_BUCKET_OUT && (verticalServo.getPosition() < vertServoPosition_PARKED-.01 || verticalServo.getPosition() > vertServoPosition_PARKED+.01)){
+            setHeightToParams(vertServoPosition_PARKED);
+        }
         slideMotor.setPower(slideMotorPowerMoving);
         slideMotor.setTargetPosition(encoderTicks);
         slideMotor.setPower(slideMotorPowerMoving);
@@ -356,6 +362,7 @@ public class SlideController {
 
     public void incrementVerticalServo(double servoPosition){
         servoPosition += verticalServo.getPosition();
+        if(servoPosition > vertServoPosition_FULL_MAX){return;}
 
         //if((slideState == SlideState.PARKED || slideState == SlideState.EXT_BUCKET_IN) && (servoPosition > vertServoPosition_PARKED_MAX || servoPosition < vertServoPosition_PARKED_MIN)){return;}
 
@@ -377,25 +384,26 @@ public class SlideController {
     // vertical servo
     double vertServoPosition_PARKED = .2;
     double vertServoPosition_ONE_CAROUSEL = 0.2;
-    double vertServoPosition_TWO_CAROUSEL = 0.5;
-    double vertServoPosition_THREE_CAROUSEL = 0.7;
-    double vertServoPosition_THREE_DEPOSIT = 1;
-    double incrementDelta = 0.001;
+    double vertServoPosition_TWO_CAROUSEL = 0.3;
+    double vertServoPosition_THREE_CAROUSEL = 0.3;
+    double vertServoPosition_THREE_DEPOSIT = .3;
+    double incrementDelta = 0.005;
     double vertServoPosition_PARKED_MIN = 0;
     double vertServoPosition_PARKED_MAX = 0.3;
+    double vertServoPosition_FULL_MAX = 1;
 
     // dumper servo
-    double dumperPosition_DUMP = 0;
+    double dumperPosition_DUMP = .91;
     double dumperPosition_HOLDBLOCK = 0;
 
     // slide motor
     int slideMotorPosition_PARKED = 0;
-    int slideMotorPosition_BUCKET_OUT = 700; // minimum position for the bucket to be out
-    int slideMotorPosition_THREE_DEPOSIT = 300;
-    int slideMotorPosition_THREE_CAROUSEL = 1500;
+    public int slideMotorPosition_BUCKET_OUT = 310; // minimum position for the bucket to be out
+    int slideMotorPosition_THREE_DEPOSIT = 500;
+    int slideMotorPosition_THREE_CAROUSEL = 1800;
     int slideMotorPosition_TWO_CAROUSEL = 500;
     int slideMotorPosition_ONE_CAROUSEL = 600;
-    int slideMotorPosition_FULL = 2000;
+    int slideMotorPosition_FULL = 1980;
 
     double slideMotorPowerMoving = .6;
     double slideMotorPowerMovingWBucketInside = 0.4;

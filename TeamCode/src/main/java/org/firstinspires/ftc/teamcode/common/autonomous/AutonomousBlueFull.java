@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 
-@TeleOp(name = "A - Auton (Blue Full)")
+@Autonomous(name = "A - Auton (Blue Full)")
 public class AutonomousBlueFull extends OpMode {
     AutonomousBrain brain;
     boolean qA = false;
@@ -48,7 +48,7 @@ public class AutonomousBlueFull extends OpMode {
             }
             qContinue = false;
         }
-qContinue = true;
+        qContinue = true;
         /*if(gamepad1.a && !qA) {
             qA = true;
             qContinue = true;

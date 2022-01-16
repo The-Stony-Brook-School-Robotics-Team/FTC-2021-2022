@@ -6,7 +6,7 @@ public class Configuration {
     public static double rightStickXLimitTrigger = 0.02;
 
     /** Slide Thresholding */
-    public static int DefaultSlideTicks = 20;
+    public static int DefaultSlideTicks = 30;
     public static double DefaultVerticalSlideIncrement = 0.05;
 
     /** Movement Adjustments */

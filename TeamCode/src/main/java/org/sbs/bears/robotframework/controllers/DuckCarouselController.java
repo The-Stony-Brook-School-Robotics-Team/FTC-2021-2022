@@ -36,7 +36,7 @@ public class DuckCarouselController {
     private static final double MAGICAL_CONSTANT = 0.3;
 
     private  double FIRST_STAGE_TIME;
-    private  double FIRST_STAGE_TIME_INTERVAL = 1.5;
+    private  double FIRST_STAGE_TIME_INTERVAL = 1.3;
     private  double iniTime;
     private  double runTime;
 

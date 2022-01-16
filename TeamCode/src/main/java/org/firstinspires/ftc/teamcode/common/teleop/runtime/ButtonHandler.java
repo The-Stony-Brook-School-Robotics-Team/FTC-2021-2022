@@ -10,6 +10,8 @@ import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.redInt
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideController;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideHandler;
 
+import android.util.Log;
+
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
@@ -31,6 +33,7 @@ public class ButtonHandler {
     private static boolean isPressingLeftDpad = false, isPressingRightDpad = false, isPressingUpDpad = false, isPressingDownDpad = false;
     private static boolean isPressingLeftBumper = false, isPressingRightBumper = false;
 
+    private static boolean isSlideMoving = false;
 
     /**
      * Working Button Handler Runtime
@@ -48,10 +51,16 @@ public class ButtonHandler {
                 case PRIMARY:
                     // A
                     if(gamepad.a && !isPressingA) {
-                        // TODO: Add Drop Object
+                        slideController.dropCube();
                         isPressingA = true;
                     } else if(!gamepad.a && isPressingA) {
                         isPressingA = false;
+                    }
+                    // B
+                    if(gamepad.b && isPressingB) {
+                        isPressingB = true;
+                    } else if(!gamepad.b && isPressingB) {
+                        isPressingB = false;
                     }
                     // X
                     if(gamepad.x && !isPressingX) {
@@ -77,25 +86,21 @@ public class ButtonHandler {
                     }
                     // rb
                     if(gamepad.right_bumper && !isPressingRightBumper) {
-                        if(slideHandler.toggleSlide.isAlive()) {
-                            slideHandler.toggleSlide.interrupt();
-                            if(slideHandler.isSlideExtended()) {
-                                slideHandler.fullyRetract.run();
-                            } else if (!slideHandler.isSlideExtended()) {
-                                slideHandler.fullyExtend.run();
-                            }
+                        if(slideController.slideMotor.getCurrentPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
+                            slideController.extendSlide();
+                        } else if(slideController.slideMotor.getCurrentPosition() > slideController.slideMotorPosition_BUCKET_OUT) {
+                            slideController.retractSlide();
                         }
-                        slideHandler.toggleSlide.run();
                         isPressingRightBumper = true;
                     } else if(!gamepad.right_bumper && isPressingRightBumper) {
                         isPressingRightBumper = false;
                     }
                     // Left dpad
                     if(gamepad.dpad_left && !isPressingLeftDpad) {
-                        if(redIntake.getState() == IntakeState.PARK) {
-                            redIntake.setState(IntakeState.BASE);
+                        if(blueIntake.getState() == IntakeState.PARK && slideController.getSlideMotorPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
+                            blueIntake.setState(IntakeState.BASE);
                         } else {
-                            redIntake.setState(IntakeState.PARK);
+                            blueIntake.setState(IntakeState.PARK);
                         }
                         isPressingLeftDpad = true;
                     } else if(!gamepad.dpad_left && isPressingLeftDpad) {
@@ -104,28 +109,22 @@ public class ButtonHandler {
                     redIntake.checkIntake();
                     // Right dpad
                     if(gamepad.dpad_right && !isPressingRightDpad) {
-                        if(blueIntake.getState() == IntakeState.PARK) {
-                            blueIntake.setState(IntakeState.BASE);
+                        if(redIntake.getState() == IntakeState.PARK && slideController.getSlideMotorPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
+                            redIntake.setState(IntakeState.BASE);
                         } else {
-                            blueIntake.setState(IntakeState.PARK);
+                            redIntake.setState(IntakeState.PARK);
                         }
                         isPressingRightDpad = true;
                     } else if(!gamepad.dpad_right && isPressingRightDpad) {
                         isPressingRightDpad = false;
                     }
                     // Up dpad
-                    if(gamepad.dpad_up && !isPressingUpDpad) {
+                    if(gamepad.dpad_up) {
                         slideController.incrementVerticalServo(Configuration.DefaultVerticalSlideIncrement);
-                        isPressingUpDpad = true;
-                    } else if(!gamepad.dpad_up && isPressingUpDpad) {
-                        isPressingUpDpad = false;
                     }
                     // Down dpad
-                    if(gamepad.dpad_down && !isPressingDownDpad) {
+                    if(gamepad.dpad_down) {
                         slideController.incrementVerticalServo(Configuration.DefaultVerticalSlideIncrement * -1);
-                        isPressingDownDpad = true;
-                    } else if(!gamepad.dpad_down && isPressingDownDpad) {
-                        isPressingDownDpad = false;
                     }
                     break;
                 case SECONDARY:

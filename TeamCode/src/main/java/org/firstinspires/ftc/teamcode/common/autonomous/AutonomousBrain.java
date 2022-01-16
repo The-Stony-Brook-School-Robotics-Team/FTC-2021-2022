@@ -121,8 +121,8 @@ public class AutonomousBrain {
                 majorState = AutonomousStates.ONE_READ_DUCK;
                 return;
             case ONE_READ_DUCK:
-                heightFromDuck = CVctrl.getWhichTowerHeight();
-                Log.d("height: ",heightFromDuck.toString());
+                heightFromDuck = TowerHeightFromDuck.THREE;
+                Log.d("height: ", heightFromDuck.toString());
                 tel.addData("height: ",heightFromDuck);
                 tel.update();
                 majorState = AutonomousStates.TWO_SET_SLIDE_HEIGHT;
@@ -167,21 +167,13 @@ public class AutonomousBrain {
                     mode = AutonomousMode.RedSimple;
                 }
 */
-                AtomicReference<Boolean> finishedSlide = new AtomicReference<>(Boolean.getBoolean("false"));
-                RRctrl.followLineToSpline(duckSpinningPositionB);
-                new Thread(()->{
-                    slideCtrl.extendDropRetract(targetCarousel);
-                    finishedSlide.set(true);
-                }).start();
                 spinDuck(true);
-                while(finishedSlide.get())
-                {
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    Thread.sleep(2000);
+                } catch(Exception ex) {
+                    ex.printStackTrace();
                 }
+
                 mode = AutonomousMode.BlueSimple;
                 majorState = AutonomousStates.FOUR_DRIVE_TO_WAREHOUSE;
                 return;
@@ -204,7 +196,7 @@ public class AutonomousBrain {
                 }*/
                 RRctrl.followLineToSpline(wareHousePickupPositionBSimpIntermediate);
                 RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
-                majorState = AutonomousStates.FIVE_BACK_FORTH;
+                majorState = AutonomousStates.SIX_PARKING_WAREHOUSE;
                 return;
             case FIVE_BACK_FORTH:
                 doBackForth();
