@@ -167,9 +167,9 @@ public class SlideController {
                 return;
             case RET_BUCKET_OUT:
                 targetPos = slideMotorPosition_BUCKET_OUT;
+                //targetPos = slideMotorPosition_START_LOWER;
                 slideMotor.setPower(slideMotorPowerMoving);
                 slideMotor.setTargetPosition(targetPos);
-                setHeightToParams(vertServoPosition_PARKED);
                 //setHeightToParams(vertServoPosition_PARKED);
                 while (slideMotor.isBusy()) {
                     try {
@@ -178,6 +178,17 @@ public class SlideController {
                         e.printStackTrace();
                     }
                 }
+               // targetPos = slideMotorPosition_BUCKET_OUT;
+               // slideMotor.setTargetPosition(targetPos);
+                setHeightToParams(vertServoPosition_PARKED);
+             //   while (slideMotor.isBusy()) {
+              //      try {
+             //           Thread.sleep(10);
+             ///       } catch (InterruptedException e) {
+            //            e.printStackTrace();
+           //         }
+           //     }
+
                 //slideMotor.setPower(slideMotorPowerStill);
                 return;
             case RET_BUCKET_IN:
@@ -363,7 +374,7 @@ public class SlideController {
     public void incrementVerticalServo(double servoPosition){
         servoPosition += verticalServo.getPosition();
         if(servoPosition > vertServoPosition_FULL_MAX){return;}
-
+        Log.d("stupid michael", "servo " + verticalServo.getPosition());
         //if((slideState == SlideState.PARKED || slideState == SlideState.EXT_BUCKET_IN) && (servoPosition > vertServoPosition_PARKED_MAX || servoPosition < vertServoPosition_PARKED_MIN)){return;}
 
         setHeightToParams(servoPosition);
@@ -383,10 +394,12 @@ public class SlideController {
 
     // vertical servo
     double vertServoPosition_PARKED = .2;
-    double vertServoPosition_ONE_CAROUSEL = 0.2;
-    double vertServoPosition_TWO_CAROUSEL = 0.3;
-    double vertServoPosition_THREE_CAROUSEL = 0.3;
-    double vertServoPosition_THREE_DEPOSIT = .3;
+    double vertServoPosition_ONE_CAROUSEL = 0.406;
+    double vertServoPosition_TWO_CAROUSEL = 0.676; ///measured
+    double vertServoPosition_THREE_CAROUSEL = 0.86;
+    double vertServoPosition_THREE_DEPOSIT = 1; //.92; //measured
+    double vertServoPosition_TWO_DEPOSIT = .65; //.92; //measured
+    double vertServoPosition_ONE_DEPOSIT = .47; //.92; //measured
     double incrementDelta = 0.005;
     double vertServoPosition_PARKED_MIN = 0;
     double vertServoPosition_PARKED_MAX = 0.3;
@@ -397,13 +410,14 @@ public class SlideController {
     double dumperPosition_HOLDBLOCK = 0;
 
     // slide motor
-    int slideMotorPosition_PARKED = 0;
-    public int slideMotorPosition_BUCKET_OUT = 310; // minimum position for the bucket to be out
-    int slideMotorPosition_THREE_DEPOSIT = 500;
-    int slideMotorPosition_THREE_CAROUSEL = 1800;
+    int slideMotorPosition_PARKED =  0;
+    public int slideMotorPosition_BUCKET_OUT = 310; // minimum position for the bucket to be out, measured
+    int slideMotorPosition_THREE_DEPOSIT = 1246; //measured
+    int slideMotorPosition_THREE_CAROUSEL = 1713;
     int slideMotorPosition_TWO_CAROUSEL = 500;
     int slideMotorPosition_ONE_CAROUSEL = 600;
     int slideMotorPosition_FULL = 1980;
+    int slideMotorPosition_START_LOWER = 400;
 
     double slideMotorPowerMoving = .6;
     double slideMotorPowerMovingWBucketInside = 0.4;
