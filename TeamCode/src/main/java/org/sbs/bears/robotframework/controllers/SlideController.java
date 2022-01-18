@@ -171,13 +171,13 @@ public class SlideController {
                 slideMotor.setPower(slideMotorPowerMoving);
                 slideMotor.setTargetPosition(targetPos);
                 //setHeightToParams(vertServoPosition_PARKED);
-                while (slideMotor.isBusy()) {
+                do {
                     try {
-                        Thread.sleep(10);
+                        Thread.sleep(50);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                }
+                } while(slideMotor.isBusy());
                // targetPos = slideMotorPosition_BUCKET_OUT;
                // slideMotor.setTargetPosition(targetPos);
                 setHeightToParams(vertServoPosition_PARKED);
