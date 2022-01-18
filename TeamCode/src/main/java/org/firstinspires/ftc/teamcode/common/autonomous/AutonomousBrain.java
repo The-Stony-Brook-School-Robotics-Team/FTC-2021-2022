@@ -118,7 +118,7 @@ public class AutonomousBrain {
 
                 }*/
                 RRctrl.setPos(startPositionBFull);
-                majorState = AutonomousStates.ONE_READ_DUCK;
+                majorState = AutonomousStates.THREE_CAROUSEL;
                 return;
             case ONE_READ_DUCK:
                 heightFromDuck = TowerHeightFromDuck.THREE;
@@ -166,16 +166,31 @@ public class AutonomousBrain {
                     spinDuck(false);
                     mode = AutonomousMode.RedSimple;
                 }
-*/
-                spinDuck(true);
-                try {
-                    Thread.sleep(2000);
-                } catch(Exception ex) {
-                    ex.printStackTrace();
-                }
+*/              RRctrl.followLineToSpline(duckSpinningPositionB);
+                duckCtrl.spinOneDuck(false);
 
-                mode = AutonomousMode.BlueSimple;
-                majorState = AutonomousStates.FOUR_DRIVE_TO_WAREHOUSE;
+                slideCtrl.extendSlide();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                slideCtrl.dropCube();
+                try {
+                    Thread.sleep(1000);
+                } catch(InterruptedException e) {
+                    e.printStackTrace();
+                }
+                slideCtrl.retractSlide();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                majorState = AutonomousStates.FINISHED;
+
+                // mode = AutonomousMode.BlueSimple;
+                // majorState = AutonomousStates.FOUR_DRIVE_TO_WAREHOUSE;
                 return;
             /*case FOUR_B_SET_SLIDE_HEIGHT_3:
                 majorState = AutonomousStates.FOUR_DRIVE_TO_WAREHOUSE;

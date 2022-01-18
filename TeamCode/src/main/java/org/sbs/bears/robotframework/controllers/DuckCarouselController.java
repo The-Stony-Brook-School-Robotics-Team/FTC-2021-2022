@@ -36,7 +36,7 @@ public class DuckCarouselController {
     private static final double MAGICAL_CONSTANT = 0.3;
 
     private  double FIRST_STAGE_TIME;
-    private  double FIRST_STAGE_TIME_INTERVAL = 1.3;
+    private  double FIRST_STAGE_TIME_INTERVAL = 2;
     private  double iniTime;
     private  double runTime;
 
@@ -59,16 +59,15 @@ public class DuckCarouselController {
         wheelMover.setPower(0);
 */
         //cleanup();
-        initializeEnvironment();
-        Log.d("DuckCtrller","start");
-        while(true)
-        {
-            if(updateMotorSpeed())
-            {
-                wheelMover.setPower(0);
-                return;
-            }
+        wheelMover.setDirection(DcMotorSimple.Direction.REVERSE);
+        wheelMover.setPower(0.2);
+        try {
+            Thread.sleep(2000);
+        } catch(Exception ex) {
+            ex.printStackTrace();
         }
+        wheelMover.setPower(0);
+        return;
     }
 
     private void cleanup()
@@ -90,7 +89,7 @@ public class DuckCarouselController {
     }
 
     private void initializeEnvironment() {
-        wheelMover.setDirection(DcMotorSimple.Direction.REVERSE);
+
        // initializeVariables();
         Log.d("DuckCtrller","initd");
         initializeVariables();
