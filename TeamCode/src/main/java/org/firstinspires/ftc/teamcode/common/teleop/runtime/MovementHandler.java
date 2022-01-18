@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.common.teleop.runtime;
 
+import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.DrivingEnabled;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.currentState;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.drive;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.gamepad;
@@ -23,6 +24,11 @@ public class MovementHandler {
         DEFAULT,
         SPRINT
     }
+
+    /**
+     * Movement Disabled
+     */
+    protected static boolean MovementEnabled = true;
 
     /**
      * Interface Tag
@@ -110,39 +116,63 @@ public class MovementHandler {
         MovementHandlers.defaultDriving.interrupt();
     }
 
+    /**
+     * Enable Driving
+     */
+    public static void enableDriving() {
+        if(DrivingEnabled != true) {
+            DrivingEnabled = true;
+        }
+    }
+
+    /**
+     * Disable Drivign
+     */
+    public static void disableDriving() {
+        if(DrivingEnabled != false) {
+            DrivingEnabled = false;
+        }
+    }
+
 }
 
 class MovementHandlers {
     public static Thread sprintDriving = new Thread(() -> {
-        drive.setWeightedDrivePower(
-                new Pose2d(
-                        -gamepad.left_stick_y,
-                        -gamepad.left_stick_x,
-                        -gamepad.right_stick_x
-                )
-        );
-        drive.update();
+        if(MovementHandler.MovementEnabled) {
+            drive.setWeightedDrivePower(
+                    new Pose2d(
+                            -gamepad.left_stick_y,
+                            -gamepad.left_stick_x,
+                            -gamepad.right_stick_x
+                    )
+            );
+            drive.update();
+        }
     });
 
     public static Thread defaultDriving = new Thread(() -> {
-        drive.setWeightedDrivePower(
-                new Pose2d(
-                        -gamepad.left_stick_y,
-                        -gamepad.left_stick_x,
-                        -gamepad.right_stick_x
-                )
-        );
-        drive.update();
+        if(MovementHandler.MovementEnabled) {
+            drive.setWeightedDrivePower(
+                    new Pose2d(
+                            -gamepad.left_stick_y,
+                            -gamepad.left_stick_x,
+                            -gamepad.right_stick_x
+                    )
+            );
+            drive.update();
+        }
     });
 
     public static Thread slowDriving = new Thread(() -> {
-        drive.setWeightedDrivePower(
-                new Pose2d(
-                        -gamepad.left_stick_y * Configuration.SlowMovementMultiplier,
-                        -gamepad.left_stick_x * Configuration.SlowMovementMultiplier,
-                        -gamepad.right_stick_x * Configuration.SlowMovementMultiplier
-                )
-        );
-        drive.update();
+        if(MovementHandler.MovementEnabled) {
+            drive.setWeightedDrivePower(
+                    new Pose2d(
+                            -gamepad.left_stick_y * Configuration.SlowMovementMultiplier,
+                            -gamepad.left_stick_x * Configuration.SlowMovementMultiplier,
+                            -gamepad.right_stick_x * Configuration.SlowMovementMultiplier
+                    )
+            );
+            drive.update();
+        }
     });
 }

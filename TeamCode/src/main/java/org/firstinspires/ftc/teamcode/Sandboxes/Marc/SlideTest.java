@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Sandboxes.Marc;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.sbs.bears.robotframework.Robot;
@@ -10,11 +12,14 @@ import org.sbs.bears.robotframework.controllers.SlideController;
 import org.sbs.bears.robotframework.enums.IntakeState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 
+@TeleOp
+@Config
 public class SlideTest extends OpMode {
     Robot robot;
     SlideController slideCtrl;
     IntakeControllerBlue intakeCtrlB;
     IntakeControllerRed intakeCtrlR;
+    public static int MODE = 0;
 
     boolean qA,qB,qX,qY;
     @Override
@@ -30,11 +35,10 @@ public class SlideTest extends OpMode {
 
     @Override
     public void loop() {
-        if(!qA && gamepad1.a) {
-            qA = true;
+        if(MODE == 1) {
             slideCtrl.targetParams = SlideTarget.THREE_CAROUSEL;
             slideCtrl.extendSlide();
-            while(gamepad1.x) {
+            while(MODE != 2) {
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException e) {
@@ -42,7 +46,7 @@ public class SlideTest extends OpMode {
                 }
             }
             slideCtrl.dropCube();
-            while(gamepad1.x) {
+            while(MODE != 3) {
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException e) {
@@ -51,9 +55,6 @@ public class SlideTest extends OpMode {
             }
             slideCtrl.retractSlide();
         }
-        if(qA && !gamepad1.a)
-        {
-            qA = false;
-        }
+
     }
 }

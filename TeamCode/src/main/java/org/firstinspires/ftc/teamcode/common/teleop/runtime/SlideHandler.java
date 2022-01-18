@@ -16,19 +16,30 @@ public class SlideHandler {
      */
     public static String interfaceTag = "Slide Handler";
 
-    /**
-     * Slide Extended
-     */
-    private static boolean slideExtended = false;
+    public static boolean slideMoving = false;
 
     /**
      * Manual Slide Controller
      * @param stickValue increase multiplier for motor encoder position
      */
     public void manualSlideController(int stickValue) {
-        stickValue = stickValue * -2;
-        slideController.incrementEncoderPosition(stickValue * Configuration.DefaultSlideTicks);
-        Log.d(interfaceTag, "Current Slide Motor Ticks: " + slideController.getSlideMotorPosition());
+        if(!slideMoving) {
+            MovementHandler.disableDriving();
+            slideMoving = true;
+            stickValue = stickValue * -2;
+            slideController.incrementEncoderPosition(stickValue * Configuration.DefaultSlideTicks);
+            Log.d(interfaceTag, "Current Slide Motor Ticks: " + slideController.getSlideMotorPosition());
+            MovementHandler.enableDriving();
+            slideMoving = false;
+        }
+    }
+
+    public static void DuckToMiddle() {
+        if(!slideMoving) {
+            slideMoving = true;
+            slideController.extendDropRetract(SlideTarget.TWO_CAROUSEL);
+            slideMoving = false;
+        }
     }
 
 

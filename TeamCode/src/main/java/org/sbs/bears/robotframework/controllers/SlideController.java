@@ -152,9 +152,9 @@ public class SlideController {
                         flagToLeave = true;
                         return;
                 }
-                setHeightToParams(verticalServoTargetPos);
                 slideMotor.setTargetPosition(targetPosFinal);
                 slideMotor.setPower(slideMotorPowerMoving);
+                setHeightToParams(verticalServoTargetPos);
                 //setHeightToParams(verticalServoTargetPos);
                 while (slideMotor.isBusy()) {
                     try {
@@ -173,14 +173,20 @@ public class SlideController {
                 //setHeightToParams(vertServoPosition_PARKED);
                 do {
                     try {
-                        Thread.sleep(50);
+                        Thread.sleep(10);
+                        if(slideMotor.getCurrentPosition() < slideMotorPosition_BUCKET_OUT && (verticalServo.getPosition() < vertServoPosition_PARKED-.01 || verticalServo.getPosition() > vertServoPosition_PARKED+.01)){
+                            setHeightToParams(vertServoPosition_PARKED);
+                        }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 } while(slideMotor.isBusy());
+                if(slideMotor.getCurrentPosition() < slideMotorPosition_BUCKET_OUT && (verticalServo.getPosition() < vertServoPosition_PARKED-.01 || verticalServo.getPosition() > vertServoPosition_PARKED+.01)){
+                    setHeightToParams(vertServoPosition_PARKED);
+                }
                // targetPos = slideMotorPosition_BUCKET_OUT;
                // slideMotor.setTargetPosition(targetPos);
-                setHeightToParams(vertServoPosition_PARKED);
+               // setHeightToParams(vertServoPosition_PARKED);
              //   while (slideMotor.isBusy()) {
               //      try {
              //           Thread.sleep(10);
@@ -244,7 +250,7 @@ public class SlideController {
    public void initTeleop(){
        slideState = SlideState.TELEOP;
        verticalServo.setPosition(vertServoPosition_PARKED);
-       this.targetParams = SlideTarget.THREE_CAROUSEL;
+       this.targetParams = SlideTarget.ONE_CAROUSEL;
    }
 
     public double getVerticalServoPosition(){return verticalServo.getPosition();}
@@ -394,9 +400,9 @@ public class SlideController {
 
     // vertical servo
     double vertServoPosition_PARKED = .2;
-    double vertServoPosition_ONE_CAROUSEL = 0.406;
-    double vertServoPosition_TWO_CAROUSEL = 0.676; ///measured
-    double vertServoPosition_THREE_CAROUSEL = 0.86;
+    double vertServoPosition_ONE_CAROUSEL = 0.29; //0.406;
+    double vertServoPosition_TWO_CAROUSEL = 0.47; //0.676; ///measured
+    double vertServoPosition_THREE_CAROUSEL = 0.762; // 0.86;
     double vertServoPosition_THREE_DEPOSIT = 1; //.92; //measured
     double vertServoPosition_TWO_DEPOSIT = .65; //.92; //measured
     double vertServoPosition_ONE_DEPOSIT = .47; //.92; //measured
@@ -414,8 +420,8 @@ public class SlideController {
     public int slideMotorPosition_BUCKET_OUT = 310; // minimum position for the bucket to be out, measured
     int slideMotorPosition_THREE_DEPOSIT = 1246; //measured
     int slideMotorPosition_THREE_CAROUSEL = 1713;
-    int slideMotorPosition_TWO_CAROUSEL = 500;
-    int slideMotorPosition_ONE_CAROUSEL = 600;
+    int slideMotorPosition_TWO_CAROUSEL = 1692;
+    int slideMotorPosition_ONE_CAROUSEL = 1671;
     int slideMotorPosition_FULL = 1980;
     int slideMotorPosition_START_LOWER = 400;
 
