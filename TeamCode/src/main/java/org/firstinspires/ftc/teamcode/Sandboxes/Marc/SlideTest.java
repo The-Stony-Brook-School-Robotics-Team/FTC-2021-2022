@@ -4,18 +4,27 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.sbs.bears.robotframework.Robot;
+import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
+import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
 import org.sbs.bears.robotframework.controllers.SlideController;
+import org.sbs.bears.robotframework.enums.IntakeState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 
 public class SlideTest extends OpMode {
     Robot robot;
     SlideController slideCtrl;
+    IntakeControllerBlue intakeCtrlB;
+    IntakeControllerRed intakeCtrlR;
 
     boolean qA,qB,qX,qY;
     @Override
     public void init() {
         robot = new Robot(hardwareMap,telemetry, AutonomousMode.BlueFull);
         slideCtrl = robot.getSlideCtrl();
+        intakeCtrlB = robot.getIntakeCtrlBlue();
+        intakeCtrlB.setState(IntakeState.PARK);
+        intakeCtrlR = robot.getIntakeCtrlRed();
+        intakeCtrlR.setState(IntakeState.PARK);
         msStuckDetectLoop = Integer.MAX_VALUE;
     }
 
