@@ -11,13 +11,6 @@ import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 
 public class SlideHandler {
-    //TODO make it work and push to github
-    /**
-     * Limits internal usage to one
-     * @usage Threads check to see if this is already running
-     */
-    private static boolean running = false;
-
     /**
      * Interface Tag
      */
@@ -27,14 +20,6 @@ public class SlideHandler {
      * Slide Extended
      */
     private static boolean slideExtended = false;
-
-    /**
-     * Gets Slide Extension
-     * @return Slide Status
-     */
-    public boolean isSlideExtended() {
-        return slideExtended;
-    }
 
     /**
      * Manual Slide Controller
