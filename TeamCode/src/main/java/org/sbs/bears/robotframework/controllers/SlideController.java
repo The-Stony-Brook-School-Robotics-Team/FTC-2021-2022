@@ -51,12 +51,12 @@ public class SlideController {
     {
         this.targetParams = target;
         extendSlide();
-        if(flagToLeave) {
-            return;
-        }
+        //if(flagToLeave) {
+          //  return;
+        //}
         dropCube();
         retractSlide();
-        this.targetParams = SlideTarget.NA;
+        //this.targetParams = SlideTarget.NA;
     }
 
     public void dropCube()
@@ -400,7 +400,7 @@ public class SlideController {
 
     // vertical servo
     double vertServoPosition_PARKED = .2;
-    double vertServoPosition_ONE_CAROUSEL = 0.29; //0.406;
+    double vertServoPosition_ONE_CAROUSEL = 0.26; //0.406;
     double vertServoPosition_TWO_CAROUSEL = 0.47; //0.676; ///measured
     double vertServoPosition_THREE_CAROUSEL = 0.762; // 0.86;
     double vertServoPosition_THREE_DEPOSIT = 1; //.92; //measured

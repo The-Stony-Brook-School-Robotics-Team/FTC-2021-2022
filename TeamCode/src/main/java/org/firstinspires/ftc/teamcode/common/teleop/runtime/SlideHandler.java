@@ -37,7 +37,11 @@ public class SlideHandler {
     public static void DuckToMiddle() {
         if(!slideMoving) {
             slideMoving = true;
-            slideController.extendDropRetract(SlideTarget.TWO_CAROUSEL);
+            //slideController.extendDropRetract(SlideTarget.TWO_CAROUSEL);
+            slideController.extendSlide();
+            slideController.dropCube();
+            slideController.retractSlide();
+
             slideMoving = false;
         }
     }
