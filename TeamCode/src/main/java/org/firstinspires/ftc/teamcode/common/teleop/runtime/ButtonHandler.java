@@ -50,10 +50,10 @@ public class ButtonHandler {
             switch(controllerMode) {
                 case PRIMARY:
                     // A
-                    if(gamepad.a && !isPressingA) {
+                    if(gamepad.a && !isPressingA && controllerMode == ControllerModes.PRIMARY) {
                         slideController.dropCube();
                         isPressingA = true;
-                    } else if(!gamepad.a && isPressingA) {
+                    } else if(!gamepad.a && isPressingA && controllerMode == ControllerModes.PRIMARY) {
                         isPressingA = false;
                     }
                     // B
@@ -128,8 +128,18 @@ public class ButtonHandler {
                     }
                     break;
                 case SECONDARY:
+                    // Manual Extension
                     if(gamepad.right_stick_y > Configuration.rightStickXLimitTrigger || gamepad.right_stick_y < (Configuration.rightStickXLimitTrigger * -1)) {
                         slideHandler.manualSlideController((int)gamepad.right_stick_y);
+                    }
+                    // A
+                    if(gamepad.a && !isPressingA && controllerMode == ControllerModes.SECONDARY) {
+                        if(slideHandler.slideMoving == false) {
+                            slideHandler.DuckToMiddle();
+                        }
+                        isPressingA = true;
+                    } else if(!gamepad.a && isPressingA && controllerMode == ControllerModes.SECONDARY) {
+                        isPressingA = false;
                     }
                     break;
             }
