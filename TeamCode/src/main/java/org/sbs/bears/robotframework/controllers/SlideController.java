@@ -180,7 +180,6 @@ public class SlideController {
                 }
                // targetPos = slideMotorPosition_BUCKET_OUT;
                // slideMotor.setTargetPosition(targetPos);
-
                 setHeightToParams(vertServoPosition_PARKED);
              //   while (slideMotor.isBusy()) {
               //      try {
