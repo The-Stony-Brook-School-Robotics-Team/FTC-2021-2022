@@ -83,11 +83,11 @@ public class WheelControl_Debug extends OpMode {
         checkKeyA();        //Start spinning.
         checkKeyB();        //Check if need emergency Stop.
         checkKeyX();        //Add 0.002 second to MAGICAL_CONSTANT.
-        checkKeyY();        //Subtract 0.002 second to MAGICAL_CONSTANT.
-        checkDpadUp();      //Add 0.005 second to Stage 1 time.
-        checkDpadDown();    //Subtract 0.005 second to Stage 1 time.
-        checkDpadLeft();    //Add 0.05 second to Stage 2 time.
-        checkDpadRight();   //Add 0.05 second to Stage 2 time.
+        checkKeyY();        //Sub 0.002 second to MAGICAL_CONSTANT.
+        checkDpadUp();      //Add 0.005 second to FIRST_STAGE_TIME_INTERVAL.
+        checkDpadDown();    //Sub 0.005 second to FIRST_STAGE_TIME_INTERVAL.
+        checkDpadLeft();    //Add 0.005 second to SECOND_STAGE_TIME_INTERVAL.
+        checkDpadRight();   //Add 0.005 second to SECOND_STAGE_TIME_INTERVAL.
     }
 
     private void updateMotorSpeed() {
