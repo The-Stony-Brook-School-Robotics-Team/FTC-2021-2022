@@ -46,7 +46,6 @@ public class DuckCarouselController {
 
     public DuckCarouselController(HardwareMap hardwareMap, Telemetry telemetry) {
         wheelMover = hardwareMap.get(DcMotor.class, "duck");
-//        wheelMover.setDirection(DcMotorSimple.Direction.REVERSE);
         wheelMover.setPower(0);
     }
 

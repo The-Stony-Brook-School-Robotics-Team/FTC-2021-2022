@@ -198,7 +198,7 @@ public class WheelControl_Debug extends OpMode {
         if (gamepad1.dpad_left && !isPressingDpadLeft) {
             isPressingDpadUp = true;
         } else if (!gamepad1.dpad_left && isPressingDpadLeft) {
-            duckCarouselController.SECOND_STAGE_TIME_INTERVAL += 0.01;
+            duckCarouselController.SECOND_STAGE_TIME_INTERVAL += 0.005;
             isPressingDpadLeft = false;
         }
     }
@@ -207,7 +207,7 @@ public class WheelControl_Debug extends OpMode {
         if (gamepad1.dpad_right && !isPressingDpadRight) {
             isPressingDpadRight = true;
         } else if (!gamepad1.dpad_right && isPressingDpadRight) {
-            duckCarouselController.SECOND_STAGE_TIME_INTERVAL -= 0.01;
+            duckCarouselController.SECOND_STAGE_TIME_INTERVAL -= 0.005;
             isPressingDpadRight = false;
         }
     }
