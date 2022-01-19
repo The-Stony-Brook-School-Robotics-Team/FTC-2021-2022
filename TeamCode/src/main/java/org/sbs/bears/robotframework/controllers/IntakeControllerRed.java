@@ -16,6 +16,7 @@ public class IntakeControllerRed {
     private Servo scooper;
     private DcMotor compliantWheel;
     private Rev2mDistanceSensor distanceSensor;
+    private Servo mini;
 
     /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/
 //    private double[] basePos = {.025, 0.7}; //.141 // COMMENTED OUT BY MARC ON SUN JAN 9 2022 AT 22h12m54s
@@ -39,6 +40,7 @@ public class IntakeControllerRed {
         scooper = hardwareMap.get(Servo.class, "ri");
         compliantWheel = hardwareMap.get(DcMotor.class, "rightodom");
         distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "rd");
+        mini = hardwareMap.get(Servo.class, "vout");
         scooper.setDirection(Servo.Direction.FORWARD);
         compliantWheel.setDirection(DcMotorSimple.Direction.FORWARD);
         compliantWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -87,8 +89,15 @@ public class IntakeControllerRed {
     public void checkIntake(){
         if(state == IntakeState.BASE && isObjectInPayload()){
             setState(IntakeState.DUMP);
+            //mini.setPosition(1);
             try {
-                Thread.sleep(1250);
+                Thread.sleep(800);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            //mini.setPosition(0);
+            try {
+                Thread.sleep(450);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

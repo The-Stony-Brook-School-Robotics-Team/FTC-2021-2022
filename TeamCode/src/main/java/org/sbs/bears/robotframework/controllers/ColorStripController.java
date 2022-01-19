@@ -16,13 +16,15 @@ public class ColorStripController {
 
     public ColorStripController(HardwareMap hardwareMap, Telemetry telemetry)
     {
-
+        brightLights = hardwareMap.get(DcMotor.class, "vout");
         colorstrip2 = hardwareMap.get(RevBlinkinLedDriver.class,"rgb");
 
     }
     public void setColorBright()
     {
+        brightLights.setPower(1);
         Sleep.sleep(500);
+        brightLights.setPower(0);
         Sleep.sleep(500);
 
     }

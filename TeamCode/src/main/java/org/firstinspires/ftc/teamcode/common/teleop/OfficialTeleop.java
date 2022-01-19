@@ -59,11 +59,11 @@ public class OfficialTeleop extends OpMode {
     /** Run Time Applications */
     public static MovementHandler movementHandler = new MovementHandler();
     public static ButtonHandler buttonHandler = new ButtonHandler();
-    public static SlideHandler slideHandler = new SlideHandler();
+    public static SlideHandler 幻灯片处理程序 = new SlideHandler();
     public static IntakeHandler intakeHandler = new IntakeHandler();
 
     /**
-     * Thread Pool
+     * 线程池
      */
     public static boolean DrivingEnabled = false;
     private static HashMap<String, Thread> threadPool = new HashMap<>();
