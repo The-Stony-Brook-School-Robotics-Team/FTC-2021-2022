@@ -25,7 +25,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
  * --------With MAGICAL_CONSTANT--------
  */
 
-@TeleOp(name = "Wheel Control (Tuning)", group = "-WC")
+@TeleOp(name = "DuckCarouselController (Tuning)", group = "-WC")
 public class WheelControl_Debug extends OpMode {
 
     private boolean isPressingA = false;
@@ -57,11 +57,11 @@ public class WheelControl_Debug extends OpMode {
     private double timer;
     private double runTime;
 
+    DuckCarouselController duckCarouselController = null;
+
     @Override
     public void init() {
-        wheelMover = hardwareMap.get(DcMotor.class, "duck");
-        wheelMover.setDirection(DcMotorSimple.Direction.REVERSE);
-        initializeVariables();
+        duckCarouselController = new DuckCarouselController(hardwareMap, telemetry);
     }
 
     @Override
@@ -71,26 +71,21 @@ public class WheelControl_Debug extends OpMode {
 
         //Print data to the phone.
         telemetry.update();
-        telemetry.addData("FIRST_STAGE_TIME_INTERVAL", "%.3f", FIRST_STAGE_TIME_INTERVAL);
-        telemetry.addData("SECOND_STAGE_TIME_INTERVAL", "%.3f", SECOND_STAGE_TIME_INTERVAL);
-        telemetry.addData("MAGICAL_CONSTANT", "--%.3f--", MAGICAL_CONSTANT);
+        telemetry.addData("FIRST_STAGE_TIME_INTERVAL", "%.3f", duckCarouselController.FIRST_STAGE_TIME_INTERVAL);
+        telemetry.addData("SECOND_STAGE_TIME_INTERVAL", "%.3f", duckCarouselController.SECOND_STAGE_TIME_INTERVAL);
+        telemetry.addData("MAGICAL_CONSTANT", "--%.3f--", duckCarouselController.MAGICAL_CONSTANT);
         telemetry.addData("Current Speed", "--%.5f--", wheelMover.getPower());
         telemetry.addData("Max Speed", "--%.5f--", MAX_WHEEL_SPEED);
 
         //Detect keys on the game pad.
         checkKeyA();        //Start spinning.
         checkKeyB();        //Check if need emergency Stop.
-        checkKeyX();        //Add 0.01 second to MAGICAL_CONSTANT.
-        checkKeyY();        //Subtract 0.01 second to MAGICAL_CONSTANT.
-        checkDpadUp();      //Add 0.01 second to Stage 1 time.
-        checkDpadDown();    //Subtract 0.01 second to Stage 1 time.
+        checkKeyX();        //Add 0.002 second to MAGICAL_CONSTANT.
+        checkKeyY();        //Subtract 0.002 second to MAGICAL_CONSTANT.
+        checkDpadUp();      //Add 0.005 second to Stage 1 time.
+        checkDpadDown();    //Subtract 0.005 second to Stage 1 time.
         checkDpadLeft();    //Add 0.05 second to Stage 2 time.
         checkDpadRight();   //Add 0.05 second to Stage 2 time.
-
-        enableEmergencyStop();
-
-        //Control the movement of the wheel.
-        updateMotorSpeed();
     }
 
     private void updateMotorSpeed() {
@@ -147,11 +142,7 @@ public class WheelControl_Debug extends OpMode {
         if (gamepad1.a && !isPressingA) {
             isPressingA = true;
         } else if (!gamepad1.a && isPressingA) {
-            if (!hasStarted) {
-                hasStarted = true;
-            } else {
-                NEED_EMERGENCY_STOP = true;
-            }
+            duckCarouselController.spinOneDuck();
             isPressingA = false;
         }
     }
@@ -169,7 +160,7 @@ public class WheelControl_Debug extends OpMode {
         if (gamepad1.x && !isPressingX) {
             isPressingX = true;
         } else if (!gamepad1.x && isPressingX) {
-            MAGICAL_CONSTANT += 0.002;
+            duckCarouselController.MAGICAL_CONSTANT += 0.002;
             isPressingX = false;
         }
     }
@@ -178,7 +169,7 @@ public class WheelControl_Debug extends OpMode {
         if (gamepad1.y && !isPressingY) {
             isPressingY = true;
         } else if (!gamepad1.y && isPressingY) {
-            MAGICAL_CONSTANT -= 0.002;
+            duckCarouselController.MAGICAL_CONSTANT -= 0.002;
             isPressingY = false;
         }
     }
@@ -187,7 +178,7 @@ public class WheelControl_Debug extends OpMode {
         if (gamepad1.dpad_up && !isPressingDpadUp) {
             isPressingDpadUp = true;
         } else if (!gamepad1.dpad_up && isPressingDpadUp) {
-            FIRST_STAGE_TIME_INTERVAL += 0.005;
+            duckCarouselController.FIRST_STAGE_TIME_INTERVAL += 0.005;
             isPressingDpadUp = false;
         }
     }
@@ -196,7 +187,7 @@ public class WheelControl_Debug extends OpMode {
         if (gamepad1.dpad_down && !isPressingDpadDown) {
             isPressingDpadDown = true;
         } else if (!gamepad1.dpad_down && isPressingDpadDown) {
-            FIRST_STAGE_TIME_INTERVAL -= 0.005;
+            duckCarouselController.FIRST_STAGE_TIME_INTERVAL -= 0.005;
             isPressingDpadDown = false;
         }
     }
@@ -205,7 +196,7 @@ public class WheelControl_Debug extends OpMode {
         if (gamepad1.dpad_left && !isPressingDpadLeft) {
             isPressingDpadUp = true;
         } else if (!gamepad1.dpad_left && isPressingDpadLeft) {
-            SECOND_STAGE_TIME_INTERVAL += 0.05;
+            duckCarouselController.FIRST_STAGE_TIME_INTERVAL += 0.05;
             isPressingDpadLeft = false;
         }
     }
@@ -214,7 +205,7 @@ public class WheelControl_Debug extends OpMode {
         if (gamepad1.dpad_right && !isPressingDpadRight) {
             isPressingDpadRight = true;
         } else if (!gamepad1.dpad_right && isPressingDpadRight) {
-            SECOND_STAGE_TIME_INTERVAL -= 0.05;
+            duckCarouselController.SECOND_STAGE_TIME_INTERVAL -= 0.05;
             isPressingDpadRight = false;
         }
     }
