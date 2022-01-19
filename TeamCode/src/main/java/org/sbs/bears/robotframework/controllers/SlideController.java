@@ -188,18 +188,18 @@ public class SlideController {
                 //slideMotor.setPower(slideMotorPowerStill);
                 return;
             case RET_BUCKET_OUT:
-                targetPos = slideMotorPosition_BUCKET_OUT;
-                //targetPos = slideMotorPosition_START_LOWER;
+                //targetPos = slideMotorPosition_BUCKET_OUT;
+                targetPos = slideMotorPosition_PARKED;
                 slideMotor.setPower(slideMotorPowerMoving);
                 slideMotor.setTargetPosition(targetPos);
                 //setHeightToParams(vertServoPosition_PARKED);
-                do {
+                while(slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT){
                     try {
-                        Thread.sleep(50);
+                        Thread.sleep(10);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                } while(slideMotor.isBusy());
+                }
                 // targetPos = slideMotorPosition_BUCKET_OUT;
                 // slideMotor.setTargetPosition(targetPos);
                 setHeightToParams(vertServoPosition_PARKED);
@@ -212,6 +212,13 @@ public class SlideController {
                 //     }
 
                 //slideMotor.setPower(slideMotorPowerStill);
+                while(slideMotor.isBusy()){
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
                 return;
             case RET_BUCKET_IN:
                 targetPos = slideMotorPosition_PARKED;
