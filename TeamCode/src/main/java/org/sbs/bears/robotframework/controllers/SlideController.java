@@ -44,7 +44,7 @@ public class SlideController {
         slideMotor.setTargetPosition(0); // should be where it reset to
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        verticalServo.setDirection(Servo.Direction.REVERSE);
+        //verticalServo.setDirection(Servo.Direction.REVERSE);
     }
 
     public void extendDropRetract(SlideTarget target)
@@ -430,7 +430,7 @@ public class SlideController {
     double vertServoPosition_THREE_DEPOSIT = 1; //.92; //measured
     double vertServoPosition_TWO_DEPOSIT = .65; //.92; //measured
     double vertServoPosition_ONE_DEPOSIT = .47; //.92; //measured
-    double incrementDelta = 0.005;
+    double incrementDelta = 0.002;
     double vertServoPosition_PARKED_MIN = 0;
     double vertServoPosition_PARKED_MAX = 0.3;
     double vertServoPosition_FULL_MAX = 1;
@@ -449,7 +449,7 @@ public class SlideController {
     int slideMotorPosition_FULL = 1980;
     int slideMotorPosition_START_LOWER = 400;
 
-    double slideMotorPowerMoving = .6;
+    double slideMotorPowerMoving = .4;
     double slideMotorPowerMovingWBucketInside = 0.4;
     double slideMotorPowerStill = 0;
 
