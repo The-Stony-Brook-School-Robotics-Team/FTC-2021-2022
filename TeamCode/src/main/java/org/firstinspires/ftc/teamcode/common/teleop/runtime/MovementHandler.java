@@ -18,7 +18,9 @@ import java.util.HashMap;
 
 public class MovementHandler {
 
-    // TODO: Add functionality
+    /**
+     * Run Type for Movement
+     */
     public enum RunType {
         SLOW,
         DEFAULT,
@@ -28,7 +30,7 @@ public class MovementHandler {
     /**
      * Movement Disabled
      */
-    protected static boolean MovementEnabled = true;
+    public static boolean MovementEnabled = true;
 
     /**
      * Interface Tag
