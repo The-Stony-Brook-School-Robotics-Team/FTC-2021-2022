@@ -33,14 +33,15 @@ public class DuckCarouselController {
     //MAGICAL_CONSTANT should be between 0.30 to 0.40. Because of the lack of enough torque, the wheel actually never achieve the ideal acceleration.
     public double MAGICAL_CONSTANT = 0.3;
 
-    public double FIRST_STAGE_TIME_FLAG;
+    public double FIRST_STAGE_TIME_FLAG = -1;
     public double FIRST_STAGE_TIME_INTERVAL = 2;
-    public double SECOND_STAGE_TIME_FLAG;
-    public double SECOND_STAGE_TIME_INTERVAL = 1;
-    public double iniTime;
+    public double SECOND_STAGE_TIME_FLAG = -1;
+    public double SECOND_STAGE_TIME_INTERVAL = 0.3;
+    public double currentTime;
+    public double initTime;
     public double runTime;
 
-    private DcMotor wheelMover;
+    public DcMotor wheelMover;
 
 
     public DuckCarouselController(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -50,8 +51,8 @@ public class DuckCarouselController {
     }
 
     public void spinOneDuck() {
-        iniTime = getCurrentSystemSecond();
-        FIRST_STAGE_TIME_FLAG = iniTime + FIRST_STAGE_TIME_INTERVAL;
+        initTime = getCurrentSystemSecond();
+        FIRST_STAGE_TIME_FLAG = initTime + FIRST_STAGE_TIME_INTERVAL;
         SECOND_STAGE_TIME_FLAG = FIRST_STAGE_TIME_FLAG + SECOND_STAGE_TIME_INTERVAL;
         while (updateMotorSpeed()) ;
     }
@@ -65,20 +66,24 @@ public class DuckCarouselController {
      * @return True if wheel spinning is finished. False if wheel spinning is running.
      */
     private boolean updateMotorSpeed() {
-        updateRunTime();
-        if (runTime >= 0 && runTime < FIRST_STAGE_TIME_FLAG) {
+        currentTime = getCurrentSystemSecond();
+        if (currentTime >= initTime && currentTime < FIRST_STAGE_TIME_FLAG) {
             //First Stage
             wheelMover.setPower(getFirstStageMotorSpeed());
             return true;
+        } else if(currentTime >= FIRST_STAGE_TIME_FLAG && currentTime < SECOND_STAGE_TIME_FLAG){
+            wheelMover.setPower(-1);
+            return true;
         } else {
             //Ending
+            wheelMover.setPower(0);
             wheelMover.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             return false;
         }
     }
 
-    private void updateRunTime() {
-        runTime = getCurrentSystemSecond() - iniTime;
+    private void updateCurrentTime() {
+        currentTime = getCurrentSystemSecond();
     }
 
     /**
@@ -87,6 +92,6 @@ public class DuckCarouselController {
      * @return The speed of the real-time target speed of the motor.
      */
     private double getFirstStageMotorSpeed() {
-        return MAGICAL_CONSTANT * runTime;
+        return MAGICAL_CONSTANT * (getCurrentSystemSecond() - initTime);
     }
 }

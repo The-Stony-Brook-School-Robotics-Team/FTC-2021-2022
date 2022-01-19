@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Sandboxes.William.WheelControl;
 
+import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -66,16 +67,17 @@ public class WheelControl_Debug extends OpMode {
 
     @Override
     public void loop() {
-        if (wheelMover.getPower() > MAX_WHEEL_SPEED)
-            MAX_WHEEL_SPEED = wheelMover.getPower();
 
         //Print data to the phone.
         telemetry.update();
+        telemetry.addData("FIRST_STAGE_TIME_FLAG", "%.3f", duckCarouselController.FIRST_STAGE_TIME_FLAG);
+        telemetry.addData("SECOND_STAGE_TIME_FLAG", "%.3f", duckCarouselController.SECOND_STAGE_TIME_FLAG);
+
         telemetry.addData("FIRST_STAGE_TIME_INTERVAL", "%.3f", duckCarouselController.FIRST_STAGE_TIME_INTERVAL);
         telemetry.addData("SECOND_STAGE_TIME_INTERVAL", "%.3f", duckCarouselController.SECOND_STAGE_TIME_INTERVAL);
         telemetry.addData("MAGICAL_CONSTANT", "--%.3f--", duckCarouselController.MAGICAL_CONSTANT);
-        telemetry.addData("Current Speed", "--%.5f--", wheelMover.getPower());
-        telemetry.addData("Max Speed", "--%.5f--", MAX_WHEEL_SPEED);
+        telemetry.addData("Current Speed", "--%.5f--", duckCarouselController.wheelMover.getPower());
+        telemetry.addData("Nano Time", "--%.5f--", NanoClock.system().seconds());
 
         //Detect keys on the game pad.
         checkKeyA();        //Start spinning.
