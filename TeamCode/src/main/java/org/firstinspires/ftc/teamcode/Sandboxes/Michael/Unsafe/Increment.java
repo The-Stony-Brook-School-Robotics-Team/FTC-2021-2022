@@ -15,7 +15,7 @@ public class Increment extends LinearOpMode {
         //DcMotor compliantWheel = hardwareMap.get(DcMotor.class, "motor");
         //Rev2mDistanceSensor distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "2m");
 
-        scooper.setDirection(Servo.Direction.REVERSE);
+        //scooper.setDirection(Servo.Direction.REVERSE);
         //compliantWheel.setDirection(DcMotorSimple.Direction.FORWARD);
         double pos = .2;
         boolean pressingB = false;

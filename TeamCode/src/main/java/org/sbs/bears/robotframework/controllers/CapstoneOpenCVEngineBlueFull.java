@@ -79,11 +79,11 @@ public class CapstoneOpenCVEngineBlueFull extends DuckOpenCVEngine {
     /**
      * This variable represents the XOffset of the rectangle about barcode A.
      */
-    public static int XOffsetA = -600; // -500
+    public static int XOffsetA = -845; // -500
     /**
      * This variable represents the YOffset of the rectangle about barcode A.
      */
-    public static int YOffsetA = 400; // 250
+    public static int YOffsetA = 425; // 250
     /**
      * This variable represents the Top Left Anchor of the rectangle about barcode A.
      */
@@ -100,11 +100,11 @@ public class CapstoneOpenCVEngineBlueFull extends DuckOpenCVEngine {
     /**
      * This variable represents the XOffset of the rectangle about barcode B.
      */
-    public static int XOffsetB = -150;
+    public static int XOffsetB = -350;
     /**
      * This variable represents the YOffset of the rectangle about barcode B.
      */
-    public static int YOffsetB = 400;
+    public static int YOffsetB = 425;
     /**
      * This variable represents the Top Left Anchor of the rectangle about barcode B.
      */
@@ -121,15 +121,17 @@ public class CapstoneOpenCVEngineBlueFull extends DuckOpenCVEngine {
     /**
      * This variable represents the XOffset of the rectangle about barcode C.
      */
-    public static int XOffsetC = 325;
+    public static int XOffsetC = 180;
     /**
      * This variable represents the YOffset of the rectangle about barcode C.
      */
-    public static int YOffsetC = 400;
+    public static int YOffsetC = 425;
     /**
      * This variable represents the Top Left Anchor of the rectangle about barcode C.
      */
     static final Point RectCTopLeftAnchor = new Point((STREAM_WIDTH - WidthRectB) / 2 + XOffsetC, ((STREAM_HEIGHT - HeightRectA) / 2) + YOffsetC);
+
+
 
     /**
      * This variable represents the Top Left Corner of the rectangle about barcode A.
