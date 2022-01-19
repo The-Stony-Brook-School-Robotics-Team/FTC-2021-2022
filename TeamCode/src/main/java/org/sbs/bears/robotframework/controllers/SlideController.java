@@ -273,7 +273,7 @@ public class SlideController {
     public void initTeleop(){
         slideState = SlideState.TELEOP;
         verticalServo.setPosition(vertServoPosition_PARKED);
-        this.targetParams = SlideTarget.THREE_CAROUSEL;
+        this.targetParams = SlideTarget.TWO_CAROUSEL;
     }
 
     public double getVerticalServoPosition(){return verticalServo.getPosition();}
@@ -423,14 +423,14 @@ public class SlideController {
 
     // vertical servo
 
-    double vertServoPosition_PARKED = .2;
-    double vertServoPosition_ONE_CAROUSEL = 0.406;
-    double vertServoPosition_TWO_CAROUSEL = 0.676; ///measured
-    double vertServoPosition_THREE_CAROUSEL = 0.86;
-    double vertServoPosition_THREE_DEPOSIT = 1; //.92; //measured
+    double vertServoPosition_PARKED = 0;
+    double vertServoPosition_ONE_CAROUSEL = 0.26;
+    double vertServoPosition_TWO_CAROUSEL = 0.47; ///measured
+    double vertServoPosition_THREE_CAROUSEL = 0.762;
+    double vertServoPosition_THREE_DEPOSIT = .762; // TODO //.92; //measured
     double vertServoPosition_TWO_DEPOSIT = .65; //.92; //measured
     double vertServoPosition_ONE_DEPOSIT = .47; //.92; //measured
-    double incrementDelta = 0.002;
+    double incrementDelta = 0.003;
     double vertServoPosition_PARKED_MIN = 0;
     double vertServoPosition_PARKED_MAX = 0.3;
     double vertServoPosition_FULL_MAX = 1;
@@ -444,13 +444,13 @@ public class SlideController {
     public int slideMotorPosition_BUCKET_OUT = 310; // minimum position for the bucket to be out, measured
     int slideMotorPosition_THREE_DEPOSIT = 1246; //measured
     int slideMotorPosition_THREE_CAROUSEL = 1713;
-    int slideMotorPosition_TWO_CAROUSEL = 500;
-    int slideMotorPosition_ONE_CAROUSEL = 600;
+    int slideMotorPosition_TWO_CAROUSEL = 1692;
+    int slideMotorPosition_ONE_CAROUSEL = 1671;
     int slideMotorPosition_FULL = 1980;
     int slideMotorPosition_START_LOWER = 400;
 
-    double slideMotorPowerMoving = .4;
-    double slideMotorPowerMovingWBucketInside = 0.4;
+    public double slideMotorPowerMoving = 1;
+    public double slideMotorPowerMovingWBucketInside = 1;
     double slideMotorPowerStill = 0;
 
 
