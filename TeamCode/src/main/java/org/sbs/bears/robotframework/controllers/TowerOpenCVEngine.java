@@ -262,10 +262,14 @@ public class TowerOpenCVEngine extends OpenCvPipeline {
     @Override
     public Mat processFrame(Mat input) {
         Log.d("BlueFullDuckOpenCVController","Start ProcessFrame");
+        Mat B = new Mat();
         if(doAnalysisMaster) {
-           convertY(input);
-           this.sizeOfLayer = findSizeOfBottomLayer(Y);
-           this.distanceFromCenterOfHub = findDistanceFromCenterOfHub(Y);
+           //convertY(input);
+            ArrayList<Mat> rgbChannels = new ArrayList<Mat>(3);
+            Core.split(input, rgbChannels); // split into Y, Cr, and Cb
+            B = rgbChannels.get(2);
+           this.sizeOfLayer = findSizeOfBottomLayer(B);
+           this.distanceFromCenterOfHub = findDistanceFromCenterOfHub(B);
        }
         /*for(int i = 0; i < Y.rows(); i++)
         {
@@ -298,7 +302,7 @@ public class TowerOpenCVEngine extends OpenCvPipeline {
             }
         }*/
 
-        return Y;
+        return B;
     }
 
 

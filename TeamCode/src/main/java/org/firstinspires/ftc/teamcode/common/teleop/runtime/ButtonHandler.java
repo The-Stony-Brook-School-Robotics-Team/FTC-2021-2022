@@ -8,7 +8,7 @@ import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.gamepa
 
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.redIntake;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideController;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.幻灯片处理程序;
+import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideHandler;
 
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
@@ -129,12 +129,12 @@ public class ButtonHandler {
                 case SECONDARY:
                     // Manual Extension
                     if(gamepad.right_stick_y > Configuration.rightStickXLimitTrigger || gamepad.right_stick_y < (Configuration.rightStickXLimitTrigger * -1)) {
-                        幻灯片处理程序.manualSlideController((int)gamepad.right_stick_y);
+                        slideHandler.manualSlideController((int)gamepad.right_stick_y);
                     }
                     // A
                     if(gamepad.a && !isPressingA && controllerMode == ControllerModes.SECONDARY) {
-                        if(幻灯片处理程序.slideMoving == false) {
-                            幻灯片处理程序.DuckToMiddle();
+                        if(slideHandler.slideMoving == false) {
+                            slideHandler.DuckToMiddle();
                         }
                         isPressingA = true;
                     } else if(!gamepad.a && isPressingA && controllerMode == ControllerModes.SECONDARY) {
