@@ -54,7 +54,22 @@ public class SlideController {
         if(flagToLeave) {
             return;
         }
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //if(flagToLeave) {
+          //  return;
+        //}
+
         dropCube();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         retractSlide();
         this.targetParams = SlideTarget.NA;
     }
@@ -86,19 +101,19 @@ public class SlideController {
     }
 
     public void extendSlide() {
-        slideState = SlideState.EXT_BUCKET_IN;
-        doStateAction();
+        //slideState = SlideState.EXT_BUCKET_IN;
+        //doStateAction();
         Log.d("SlideController","bucket should be out");
         slideState = SlideState.EXT_BUCKET_OUT;
         doStateAction();
         Log.d("SlideController","slide should be extended");
-        if(flagToLeave)
-        {
-            slideState = SlideState.RET_BUCKET_IN;
-            doStateAction();
-            slideState = SlideState.PARKED;
-            return;
-        }
+       // if(flagToLeave)
+        //{
+         //   slideState = SlideState.RET_BUCKET_IN;
+          //  doStateAction();
+           // slideState = SlideState.PARKED;
+            //return;
+        //}
         slideState = SlideState.OUT_FULLY;
     }
 
@@ -152,10 +167,17 @@ public class SlideController {
                         flagToLeave = true;
                         return;
                 }
-                setHeightToParams(verticalServoTargetPos);
                 slideMotor.setTargetPosition(targetPosFinal);
                 slideMotor.setPower(slideMotorPowerMoving);
                 //setHeightToParams(verticalServoTargetPos);
+                while(slideMotor.getCurrentPosition() < slideMotorPosition_BUCKET_OUT){
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                setHeightToParams(verticalServoTargetPos);
                 while (slideMotor.isBusy()) {
                     try {
                         Thread.sleep(10);
@@ -393,6 +415,7 @@ public class SlideController {
     // TODO MEASURE ALL CONSTANTS
 
     // vertical servo
+
     double vertServoPosition_PARKED = .2;
     double vertServoPosition_ONE_CAROUSEL = 0.406;
     double vertServoPosition_TWO_CAROUSEL = 0.676; ///measured
@@ -422,10 +445,6 @@ public class SlideController {
     double slideMotorPowerMoving = .6;
     double slideMotorPowerMovingWBucketInside = 0.4;
     double slideMotorPowerStill = 0;
-
-
-
-
 
 
 
