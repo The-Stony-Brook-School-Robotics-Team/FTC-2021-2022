@@ -72,7 +72,7 @@ public class WheelControl_Debug extends OpMode {
         telemetry.update();
         telemetry.addData("FIRST_STAGE_TIME_FLAG", "%.3f", duckCarouselController.FIRST_STAGE_TIME_FLAG);
         telemetry.addData("SECOND_STAGE_TIME_FLAG", "%.3f", duckCarouselController.SECOND_STAGE_TIME_FLAG);
-
+        telemetry.addData("MAGICAL_CONSTANT_TIME_OFFSET", "%.4f", duckCarouselController.MAGICAL_CONSTANT_TIME_OFFSET);
         telemetry.addData("FIRST_STAGE_TIME_INTERVAL", "%.3f", duckCarouselController.FIRST_STAGE_TIME_INTERVAL);
         telemetry.addData("SECOND_STAGE_TIME_INTERVAL", "%.3f", duckCarouselController.SECOND_STAGE_TIME_INTERVAL);
         telemetry.addData("MAGICAL_CONSTANT", "--%.3f--", duckCarouselController.MAGICAL_CONSTANT);
