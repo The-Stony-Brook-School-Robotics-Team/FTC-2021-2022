@@ -154,8 +154,8 @@ public class WheelControl_Debug extends OpMode {
             isPressingB = true;
         } else if (!gamepad1.b && isPressingB) {
             duckCarouselController.MAGICAL_CONSTANT_TIME_OFFSET += 0.02;
+            isPressingB = false;
         }
-        isPressingB = false;
     }
 
     private void checkKeyX() {
@@ -196,7 +196,7 @@ public class WheelControl_Debug extends OpMode {
 
     private void checkDpadLeft() {
         if (gamepad1.dpad_left && !isPressingDpadLeft) {
-            isPressingDpadUp = true;
+            isPressingDpadLeft = true;
         } else if (!gamepad1.dpad_left && isPressingDpadLeft) {
             duckCarouselController.SECOND_STAGE_TIME_INTERVAL += 0.005;
             isPressingDpadLeft = false;
