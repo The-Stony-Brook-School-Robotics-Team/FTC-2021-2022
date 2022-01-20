@@ -67,6 +67,7 @@ public class RoadrunnerHandler {
      * Internal executor
      */
     private Thread movementExecutor = new Thread(() -> {
+        Log.d(interfaceTag, "switching movement");
         switch (scheduledMovement) {
             case LEFT:
                 Trajectory left = drive.trajectoryBuilder(drive.getPoseEstimate())
@@ -100,10 +101,8 @@ public class RoadrunnerHandler {
 
             case TURN_ABOUT_WHEEL:
                 Log.d(interfaceTag, "Starting to pivot");
-                drive.setPoseEstimate(new Pose2d(14, 65.5, 0));
-                Pose2d currentPos = drive.getPoseEstimate();
                 Pose2d target = new Pose2d(5.58, 64.47, -Math.toRadians(52));
-                drive.followTrajectory(drive.trajectoryBuilder(currentPos)
+                drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
                         .lineToSplineHeading(target, velocityConstraint, accelerationConstraint)
                         .build());
                 Log.d(interfaceTag, "Finished pivoting");
@@ -119,13 +118,14 @@ public class RoadrunnerHandler {
      */
     // TODO: Add an indicator showing if the robot took the movement
     public void scheduleMovement(MovementTypes movementType) {
+        Log.d(interfaceTag, "Movement enabled: " + movementHandler.movementEnabled);
+        Log.d(interfaceTag, "Slide movement enabled: " + slideHandler.slideMovementEnabled);
+        Log.d(interfaceTag, "Autonomous running: " + movementHandler.autonomousRunning);
+        Log.d(interfaceTag, "Schedule Type: " + scheduledMovement);
         movementHandler.movementEnabled = false;
         slideHandler.slideMovementEnabled = false;
         if (movementHandler.autonomousRunning) {
             return;
-        }
-        if (movementExecutor.isAlive()) {
-
         }
         if (scheduledMovement != MovementTypes.EMPTY) {
             scheduledMovement = MovementTypes.EMPTY;
@@ -134,6 +134,7 @@ public class RoadrunnerHandler {
             movementHandler.currentDriverMode = MovementHandler.DriverMode.AUTOMATIC;
         }
         scheduledMovement = movementType;
+        Log.d(interfaceTag, "started");
         movementExecutor.start();
     }
 

@@ -174,7 +174,6 @@ class MovementHandlers {
                 )
         );
         drive.update();
-        Log.d(interfaceTag, "Sprint Driving Inactive");
     }
 
     private static void defaultRunner() {
@@ -195,7 +194,6 @@ class MovementHandlers {
                 )
         );
         drive.update();
-        Log.d(interfaceTag, "Default Driving Inactive");
     }
 
     private static void slowRunner() {
@@ -216,6 +214,5 @@ class MovementHandlers {
                 )
         );
         drive.update();
-        Log.d(interfaceTag, "Slow Driving Active");
     }
 }

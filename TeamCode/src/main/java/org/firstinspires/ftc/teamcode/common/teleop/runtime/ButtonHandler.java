@@ -12,6 +12,8 @@ import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.roadru
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideController;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideHandler;
 
+import android.util.Log;
+
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
@@ -39,7 +41,7 @@ public class ButtonHandler {
     public static Thread runtime = new Thread(() -> {
         while(currentState == TeleOpRobotStates.RUNNING || currentState.equals(TeleOpRobotStates.INITIALIZING)) {
 
-            if(movementHandler.currentDriverMode != MovementHandler.DriverMode.DRIVER) {
+            if(!movementHandler.autonomousRunning && movementHandler.currentDriverMode != MovementHandler.DriverMode.DRIVER) {
                 roadrunnerHandler.softKill();
                 return;
             }
@@ -60,9 +62,10 @@ public class ButtonHandler {
                         isPressingA = false;
                     }
                     // B
-                    if(gamepad.b && isPressingB) {
-                        isPressingB = true;
+                    if(gamepad.b && !isPressingB) {
+                        Log.d(interfaceTag, "PRESSED B");
                         roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.TURN_ABOUT_WHEEL);
+                        isPressingB = true;
                     } else if(!gamepad.b && isPressingB) {
                         isPressingB = false;
                     }
