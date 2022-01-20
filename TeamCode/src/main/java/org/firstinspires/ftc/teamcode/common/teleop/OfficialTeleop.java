@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
 import org.firstinspires.ftc.teamcode.common.teleop.runtime.ButtonHandler;
 import org.firstinspires.ftc.teamcode.common.teleop.runtime.IntakeHandler;
 import org.firstinspires.ftc.teamcode.common.teleop.runtime.MovementHandler;
+import org.firstinspires.ftc.teamcode.common.teleop.runtime.RoadrunnerHandler;
 import org.firstinspires.ftc.teamcode.common.teleop.runtime.SlideHandler;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.controllers.DuckCarouselController;
@@ -58,6 +59,7 @@ public class OfficialTeleop extends OpMode {
     public static ButtonHandler buttonHandler = new ButtonHandler();
     public static SlideHandler slideHandler = new SlideHandler();
     public static IntakeHandler intakeHandler = new IntakeHandler();
+    public static RoadrunnerHandler roadrunnerHandler = new RoadrunnerHandler();
 
     /**
      * 线程池

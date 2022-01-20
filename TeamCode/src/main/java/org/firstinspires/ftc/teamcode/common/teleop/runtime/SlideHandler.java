@@ -16,7 +16,8 @@ public class SlideHandler {
      */
     public static String interfaceTag = "Slide Handler";
 
-    public static boolean slideMoving = false;
+    public boolean slideMovementEnabled = false;
+    public boolean slideMoving = false;
 
     /**
      * Manual Slide Controller
@@ -34,7 +35,7 @@ public class SlideHandler {
         }
     }
 
-    public static void DuckToMiddle() {
+    public void DuckToMiddle() {
         if(!slideMoving) {
             slideMoving = true;
             slideController.extendDropRetract(SlideTarget.TWO_CAROUSEL);
