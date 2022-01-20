@@ -420,7 +420,8 @@ public class SlideController {
 
     public void calculateAngleAndExtensionFromPosition(Pose2d currentPos)
     {
-        double deltaX = currentPos.getX() - 
+        double deltaX = currentPos.getX() - positionOfBlueHub.getX();
+        double deltaY = currentPos.getY() - positionOfBlueHub.getY();
     }
 
     private double encoderInchesToTicks(double ticks) {
