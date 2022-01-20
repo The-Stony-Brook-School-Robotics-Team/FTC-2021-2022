@@ -41,7 +41,7 @@ public class ButtonHandler {
 
             if(movementHandler.currentDriverMode != MovementHandler.DriverMode.DRIVER) {
                 roadrunnerHandler.softKill();
-                movementHandler.currentDriverMode = MovementHandler.DriverMode.DRIVER;
+                return;
             }
 
             if(gamepad.left_bumper) {

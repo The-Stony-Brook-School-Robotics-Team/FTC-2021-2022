@@ -64,7 +64,6 @@ public class OfficialTeleop extends OpMode {
     /**
      * 线程池
      */
-    public static boolean DrivingEnabled = false;
     private static HashMap<String, Thread> threadPool = new HashMap<>();
 
     /**
@@ -114,7 +113,8 @@ public class OfficialTeleop extends OpMode {
                 break;
 
             case INITIALIZING:
-                DrivingEnabled = true;
+                movementHandler.movementEnabled = true;
+                slideHandler.slideMovementEnabled = true;
                 startThreadPool();
                 synchronized (stateMutex) { currentState = TeleOpRobotStates.RUNNING; }
                 break;
@@ -133,7 +133,8 @@ public class OfficialTeleop extends OpMode {
     @Override
     public void stop() {
         synchronized (currentState) { currentState = TeleOpRobotStates.STOPPED; }
-        MovementHandler.sendKillSignal();
+        movementHandler.sendKillSignal();
+        roadrunnerHandler.sendKillSignal();
         killThreadPool();
     }
 

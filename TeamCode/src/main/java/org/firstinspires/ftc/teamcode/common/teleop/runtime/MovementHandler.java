@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.common.teleop.runtime;
 
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.DrivingEnabled;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.currentState;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.drive;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.gamepad;
@@ -137,8 +136,8 @@ public class MovementHandler {
      * Enable Driving
      */
     public static void enableDriving() {
-        if(DrivingEnabled != true) {
-            DrivingEnabled = true;
+        if(movementEnabled != true) {
+            movementEnabled = true;
         }
     }
 
@@ -146,8 +145,8 @@ public class MovementHandler {
      * Disable Drivign
      */
     public static void disableDriving() {
-        if(DrivingEnabled != false) {
-            DrivingEnabled = false;
+        if(movementEnabled != false) {
+            movementEnabled = false;
         }
     }
 
@@ -160,7 +159,7 @@ class MovementHandlers {
     public static String interfaceTag = "Movement Handlers";
 
     public static Thread sprintDriving = new Thread(() -> {
-        if(MovementHandler.movementEnabled) {
+        if(movementHandler.movementEnabled) {
             drive.setWeightedDrivePower(
                     new Pose2d(
                             -gamepad.left_stick_y,
@@ -176,7 +175,7 @@ class MovementHandlers {
     });
 
     public static Thread defaultDriving = new Thread(() -> {
-        if(MovementHandler.movementEnabled) {
+        if(movementHandler.movementEnabled) {
             drive.setWeightedDrivePower(
                     new Pose2d(
                             -gamepad.left_stick_y,
@@ -192,7 +191,7 @@ class MovementHandlers {
     });
 
     public static Thread slowDriving = new Thread(() -> {
-        if(MovementHandler.movementEnabled) {
+        if(movementHandler.movementEnabled) {
             drive.setWeightedDrivePower(
                     new Pose2d(
                             -gamepad.left_stick_y * Configuration.SlowMovementMultiplier,
