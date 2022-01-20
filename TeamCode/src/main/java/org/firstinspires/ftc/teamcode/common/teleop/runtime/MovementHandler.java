@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.common.teleop.runtime;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.currentState;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.drive;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.gamepad;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.movementHandler;
 
 import android.util.Log;
 
@@ -130,7 +129,7 @@ public class MovementHandler {
      * Enable Driving
      */
     public static void enableDriving() {
-        if(movementEnabled != true) {
+        if(!movementEnabled) {
             movementEnabled = true;
         }
     }
@@ -139,7 +138,7 @@ public class MovementHandler {
      * Disable Drivign
      */
     public static void disableDriving() {
-        if(movementEnabled != false) {
+        if(movementEnabled) {
             movementEnabled = false;
         }
     }
@@ -152,62 +151,70 @@ public class MovementHandler {
 class MovementHandlers {
     public static String interfaceTag = "Movement Handlers";
 
-    public static Thread sprintDriving = new Thread(() -> {
-        if(movementHandler.movementEnabled != true) { return; }
-        if(movementHandler.autonomousRunning != false) { return; }
-        if(movementHandler.currentDriverMode != MovementHandler.DriverMode.DRIVER) { return; }
+    public static Thread sprintDriving = new Thread(MovementHandlers::sprintRunner);
+    public static Thread defaultDriving = new Thread(MovementHandlers::defaultRunner);
+    public static Thread slowDriving = new Thread(MovementHandlers::slowRunner);
 
-        if(movementHandler.movementEnabled) {
-            drive.setWeightedDrivePower(
-                    new Pose2d(
-                            -gamepad.left_stick_y,
-                            -gamepad.left_stick_x,
-                            -gamepad.right_stick_x
-                    )
-            );
-            drive.update();
-            Log.d(interfaceTag, "Sprint Driving Inactive");
-        } else {
-            drive.setWeightedDrivePower(new Pose2d());
+    private static void sprintRunner() {
+        if (!MovementHandler.movementEnabled) {
+            return;
         }
-    });
+        if (MovementHandler.autonomousRunning) {
+            return;
+        }
+        if (MovementHandler.currentDriverMode != MovementHandler.DriverMode.DRIVER) {
+            return;
+        }
+        drive.setWeightedDrivePower(
+                new Pose2d(
+                        -gamepad.left_stick_y,
+                        -gamepad.left_stick_x,
+                        -gamepad.right_stick_x
+                )
+        );
+        drive.update();
+        Log.d(interfaceTag, "Sprint Driving Inactive");
+    }
 
-    public static Thread defaultDriving = new Thread(() -> {
-        if(movementHandler.movementEnabled != true) { return; }
-        if(movementHandler.autonomousRunning != false) { return; }
-        if(movementHandler.currentDriverMode != MovementHandler.DriverMode.DRIVER) { return; }
-        if(movementHandler.movementEnabled) {
-            drive.setWeightedDrivePower(
-                    new Pose2d(
-                            -gamepad.left_stick_y,
-                            -gamepad.left_stick_x,
-                            -gamepad.right_stick_x
-                    )
-            );
-            drive.update();
-            Log.d(interfaceTag, "Default Driving Inactive");
-        } else {
-            drive.setWeightedDrivePower(new Pose2d());
+    private static void defaultRunner() {
+        if (!MovementHandler.movementEnabled) {
+            return;
         }
-    });
+        if (MovementHandler.autonomousRunning) {
+            return;
+        }
+        if (MovementHandler.currentDriverMode != MovementHandler.DriverMode.DRIVER) {
+            return;
+        }
+        drive.setWeightedDrivePower(
+                new Pose2d(
+                        -gamepad.left_stick_y,
+                        -gamepad.left_stick_x,
+                        -gamepad.right_stick_x
+                )
+        );
+        drive.update();
+        Log.d(interfaceTag, "Default Driving Inactive");
+    }
 
-    public static Thread slowDriving = new Thread(() -> {
-        if(movementHandler.movementEnabled != true) { return; }
-        if(movementHandler.autonomousRunning != false) { return; }
-        if(movementHandler.currentDriverMode != MovementHandler.DriverMode.DRIVER) { return; }
-        if(movementHandler.movementEnabled) {
-            drive.setWeightedDrivePower(
-                    new Pose2d(
-                            -gamepad.left_stick_y * Configuration.SlowMovementMultiplier,
-                            -gamepad.left_stick_x * Configuration.SlowMovementMultiplier,
-                            -gamepad.right_stick_x * Configuration.SlowMovementMultiplier
-                    )
-            );
-            drive.update();
-            Log.d(interfaceTag, "Slow Driving Active");
-        } else {
-            drive.setWeightedDrivePower(new Pose2d());
-            Log.d(interfaceTag, "Slow Driving Inactive");
+    private static void slowRunner() {
+        if (!MovementHandler.movementEnabled) {
+            return;
         }
-    });
+        if (MovementHandler.autonomousRunning) {
+            return;
+        }
+        if (MovementHandler.currentDriverMode != MovementHandler.DriverMode.DRIVER) {
+            return;
+        }
+        drive.setWeightedDrivePower(
+                new Pose2d(
+                        -gamepad.left_stick_y * Configuration.SlowMovementMultiplier,
+                        -gamepad.left_stick_x * Configuration.SlowMovementMultiplier,
+                        -gamepad.right_stick_x * Configuration.SlowMovementMultiplier
+                )
+        );
+        drive.update();
+        Log.d(interfaceTag, "Slow Driving Active");
+    }
 }
