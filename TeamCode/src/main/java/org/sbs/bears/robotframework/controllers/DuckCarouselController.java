@@ -30,8 +30,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class DuckCarouselController {
 
     //MAGICAL_CONSTANT should be between 0.30 to 0.40. Because of the lack of enough torque, the wheel actually never achieve the ideal acceleration.
-    public double MAGICAL_CONSTANT = 0.28;
-    public double MAGICAL_CONSTANT_TIME_OFFSET = 0.02;
+    public double MAGICAL_CONSTANT = 0.25;
+    public double MAGICAL_CONSTANT_TIME_OFFSET = 0.1;
 
     public double FIRST_STAGE_TIME_FLAG = -1;
     public double FIRST_STAGE_TIME_INTERVAL = 2; //1.4

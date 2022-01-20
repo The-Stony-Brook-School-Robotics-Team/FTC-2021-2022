@@ -134,26 +134,12 @@ public class AutonomousBrain {
                 majorState = AutonomousStates.FINISHED;
 
                 mode = AutonomousMode.BlueSimple;
-                // majorState = AutonomousStates.FOUR_DRIVE_TO_WAREHOUSE;
-                return;
-            /*case FOUR_B_SET_SLIDE_HEIGHT_3:
                 majorState = AutonomousStates.FOUR_DRIVE_TO_WAREHOUSE;
-                return;*/
+                return;
+
             case FOUR_DRIVE_TO_WAREHOUSE:
-                /*switch(mode) {
-                    case BlueSimple:
-
-                    /*case BlueSpline:
-                        RRctrl.followSplineTrajWarehouse(true);
-                        RRctrl.followLineToSpline(wareHousePickupPositionBSpl);
-                    case RedSimple:
-                        RRctrl.followLineToSpline(wareHousePickupPositionRSimp);
-                    case RedSpline:
-                        RRctrl.followSplineTrajWarehouse(false);
-                        RRctrl.followLineToSpline(wareHousePickupPositionRSpl);
-
-                }*/
                 RRctrl.followLineToSpline(wareHousePickupPositionBSimpIntermediate);
+                RRctrl.followLineToSpline(wareHousePickupPositionBSimpIntermediate2);
                 RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
                 majorState = AutonomousStates.SIX_PARKING_WAREHOUSE;
                 return;
@@ -307,39 +293,6 @@ public class AutonomousBrain {
         }
     }
 
-
-    public void spinDuck(boolean qBlue)
-    {
-        duckCtrl.spinOneDuck();
-//
-//
-//        if(qBlue)
-//        {
-//        }
-//        else {
-//            try {
-//                DcMotor duckSpinner = hwMap.get(DcMotor.class, "duck");
-//                duckSpinner.setPower(qBlue ? -.3 : .3);
-//                try {
-//                    Thread.sleep(2000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                duckSpinner.setPower(0);
-//                try {
-//                    Thread.sleep(1000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            catch(Exception e) {
-//                Log.d("AutonomousBrain","DuckSpinner Failed");
-//            }
-//        }
-    }
-
-
-
     public static Pose2d startPositionBSimp = new Pose2d(6.5,65.5,0);
     public static Pose2d startPositionBSpl = new Pose2d(6.5,65.5,0);
     public static Pose2d startPositionBFull = new Pose2d(-42,66,0);
@@ -348,14 +301,15 @@ public class AutonomousBrain {
     public static Pose2d startPositionRFull = new Pose2d(-42,-66,Math.PI);
 
     public static Pose2d duckSpinningPositionB3 = new Pose2d(-61, 63, Math.toRadians(50));
-    public static Pose2d duckSpinningPositionB2 = new Pose2d(-64, 60, Math.toRadians(50));
+    public static Pose2d duckSpinningPositionB2 = new Pose2d(-64, 60, Math.toRadians(49));
     public static Pose2d duckSpinningPositionB1 = new Pose2d(-63, 61, Math.toRadians(47));
     public static Pose2d duckSpinningPositionBflush1 = new Pose2d(-64, 66, Math.toRadians(50));
-    public static Pose2d duckSpinningPositionBflush2 = new Pose2d(-64, 66, Math.toRadians(50));
-    public static Pose2d duckSpinningPositionBflush3 = new Pose2d(-64, 66, Math.toRadians(48));
+    public static Pose2d duckSpinningPositionBflush2 = new Pose2d(-64, 66, Math.toRadians(49));
+    public static Pose2d duckSpinningPositionBflush3 = new Pose2d(-64, 66, Math.toRadians(47));
     public static Pose2d duckSpinningPositionR = new Pose2d(-60, -63, Math.toRadians(-48));
 
-    public static Pose2d wareHousePickupPositionBSimpIntermediate = new Pose2d(-45,66,0);
+    public static Pose2d wareHousePickupPositionBSimpIntermediate = new Pose2d(-45,63,0);
+    public static Pose2d wareHousePickupPositionBSimpIntermediate2 = new Pose2d(-35,67,0);
     public static Pose2d wareHousePickupPositionRSimpIntermediate = new Pose2d(-45,-66,0);
     public static Pose2d wareHousePickupPositionBSimp = new Pose2d(30,65.5,0);
     public static Pose2d wareHousePickupPositionBSimp2 = new Pose2d(38,65.5,0);
