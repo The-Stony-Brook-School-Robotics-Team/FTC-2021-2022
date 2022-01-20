@@ -167,9 +167,13 @@ public class AutonomousBrain {
                     mode = AutonomousMode.RedSimple;
                 }
 */              RRctrl.followLineToSpline(duckSpinningPositionB);
+                RRctrl.followLineToSplineAsync(duckSpinningPositionBflush);
                 duckCtrl.spinOneDuck();
+                Log.d("AutonBrain","duck finished");
                 slideCtrl.targetParams = targetCarousel;
                 slideCtrl.extendDropRetract(targetCarousel);
+                Log.d("AutonBrain","slide finished");
+                RRctrl.stopTrajectory();
                 majorState = AutonomousStates.FINISHED;
 
                 // mode = AutonomousMode.BlueSimple;
@@ -386,7 +390,8 @@ public class AutonomousBrain {
     public static Pose2d startPositionRSpl = new Pose2d(6.5,-65.5,Math.PI);
     public static Pose2d startPositionRFull = new Pose2d(-42,-66,Math.PI);
 
-    public static Pose2d duckSpinningPositionB = new Pose2d(-61, 63, Math.toRadians(48));
+    public static Pose2d duckSpinningPositionB = new Pose2d(-61, 63, Math.toRadians(50));
+    public static Pose2d duckSpinningPositionBflush = new Pose2d(-64, 66, Math.toRadians(50));
     public static Pose2d duckSpinningPositionR = new Pose2d(-60, -63, Math.toRadians(-48));
 
     public static Pose2d wareHousePickupPositionBSimpIntermediate = new Pose2d(-45,66,0);

@@ -34,7 +34,7 @@ public class DuckCarouselController {
     public double MAGICAL_CONSTANT_TIME_OFFSET = 0.02;
 
     public double FIRST_STAGE_TIME_FLAG = -1;
-    public double FIRST_STAGE_TIME_INTERVAL = 1.43;
+    public double FIRST_STAGE_TIME_INTERVAL = 2; //1.4
     public double SECOND_STAGE_TIME_FLAG = -1;
     public double SECOND_STAGE_TIME_INTERVAL = 0.1;
     public double currentTime;
