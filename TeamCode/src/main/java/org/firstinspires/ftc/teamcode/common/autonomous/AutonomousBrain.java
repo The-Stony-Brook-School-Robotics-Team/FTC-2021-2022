@@ -169,9 +169,7 @@ public class AutonomousBrain {
 */              RRctrl.followLineToSpline(duckSpinningPositionB);
                 duckCtrl.spinOneDuck();
                 slideCtrl.targetParams = targetCarousel;
-                slideCtrl.extendSlide();
-                slideCtrl.dropCube();
-                slideCtrl.retractSlide();
+                slideCtrl.extendDropRetract(targetCarousel);
                 majorState = AutonomousStates.FINISHED;
 
                 // mode = AutonomousMode.BlueSimple;
