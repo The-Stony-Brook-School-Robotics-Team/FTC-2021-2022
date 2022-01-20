@@ -31,7 +31,7 @@ public class RoadrunnerHandler {
         BACK(Configuration.inchesBack),
         TURN_ABOUT_WHEEL(0);
 
-        private int inches;
+        private final int inches;
 
         private int getInches() {
             return this.inches;
@@ -47,7 +47,7 @@ public class RoadrunnerHandler {
      * Tags
      */
     private MovementTypes scheduledMovement = null;
-    private String interfaceTag = "RoadRunner Handler";
+    private final String interfaceTag = "RoadRunner Handler";
 
     /**
      * Kill all management threads
@@ -66,21 +66,21 @@ public class RoadrunnerHandler {
     /**
      * Internal executor
      */
-    private Thread movementExecutor = new Thread(() -> {
+    private final Thread movementExecutor = new Thread(() -> {
         switch (scheduledMovement) {
             case LEFT:
                 Trajectory left = drive.trajectoryBuilder(drive.getPoseEstimate())
                         .strafeLeft(scheduledMovement.getInches())
                         .build();
                 drive.followTrajectory(left);
-                Log.d(interfaceTag, "Moving " + String.valueOf(scheduledMovement.getInches()) + " inches left");
+                Log.d(interfaceTag, "Moving " + scheduledMovement.getInches() + " inches left");
                 break;
             case RIGHT:
                 Trajectory right = drive.trajectoryBuilder(drive.getPoseEstimate())
                         .strafeRight(scheduledMovement.getInches())
                         .build();
                 drive.followTrajectory(right);
-                Log.d(interfaceTag, "Moving " + String.valueOf(scheduledMovement.getInches()) + " right left");
+                Log.d(interfaceTag, "Moving " + scheduledMovement.getInches() + " right left");
                 break;
 
             case FORWARD:
@@ -88,14 +88,14 @@ public class RoadrunnerHandler {
                         .forward(scheduledMovement.getInches())
                         .build();
                 drive.followTrajectory(forward);
-                Log.d(interfaceTag, "Moving " + String.valueOf(scheduledMovement.getInches()) + " inches forward");
+                Log.d(interfaceTag, "Moving " + scheduledMovement.getInches() + " inches forward");
                 break;
             case BACK:
                 Trajectory back = drive.trajectoryBuilder(drive.getPoseEstimate())
                         .back(scheduledMovement.getInches())
                         .build();
                 drive.followTrajectory(back);
-                Log.d(interfaceTag, "Moving " + String.valueOf(scheduledMovement.getInches()) + " inches backwards");
+                Log.d(interfaceTag, "Moving " + scheduledMovement.getInches() + " inches backwards");
                 break;
 
             case TURN_ABOUT_WHEEL:
@@ -109,7 +109,7 @@ public class RoadrunnerHandler {
                 Log.d(interfaceTag, "Finished pivoting");
         }
         scheduledMovement = MovementTypes.EMPTY;
-        movementHandler.movementEnabled = true;
+        MovementHandler.movementEnabled = true;
         slideHandler.slideMovementEnabled = true;
         requestKill();
     });
@@ -119,9 +119,9 @@ public class RoadrunnerHandler {
      */
     // TODO: Add an indicator showing if the robot took the movement
     public void scheduleMovement(MovementTypes movementType) {
-        movementHandler.movementEnabled = false;
+        MovementHandler.movementEnabled = false;
         slideHandler.slideMovementEnabled = false;
-        if (movementHandler.autonomousRunning) {
+        if (MovementHandler.autonomousRunning) {
             return;
         }
         if (movementExecutor.isAlive()) {
@@ -130,8 +130,8 @@ public class RoadrunnerHandler {
         if (scheduledMovement != MovementTypes.EMPTY) {
             scheduledMovement = MovementTypes.EMPTY;
         }
-        if (movementHandler.currentDriverMode != MovementHandler.DriverMode.AUTOMATIC) {
-            movementHandler.currentDriverMode = MovementHandler.DriverMode.AUTOMATIC;
+        if (MovementHandler.currentDriverMode != MovementHandler.DriverMode.AUTOMATIC) {
+            MovementHandler.currentDriverMode = MovementHandler.DriverMode.AUTOMATIC;
         }
         scheduledMovement = movementType;
         movementExecutor.start();
@@ -150,9 +150,9 @@ public class RoadrunnerHandler {
     public void softKill() {
         drive.trajectorySequenceRunner.cancelTraj();
         movementExecutor.interrupt();
-        movementHandler.autonomousRunning = false;
-        movementHandler.currentDriverMode = MovementHandler.DriverMode.DRIVER;
-        movementHandler.movementEnabled = true;
+        MovementHandler.autonomousRunning = false;
+        MovementHandler.currentDriverMode = MovementHandler.DriverMode.DRIVER;
+        MovementHandler.movementEnabled = true;
         slideHandler.slideMovementEnabled = true;
     }
 }

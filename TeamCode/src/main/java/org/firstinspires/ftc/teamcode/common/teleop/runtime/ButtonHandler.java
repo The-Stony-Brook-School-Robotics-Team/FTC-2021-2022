@@ -138,7 +138,7 @@ public class ButtonHandler {
                     }
                     // A
                     if(gamepad.a && !isPressingA && controllerMode == ControllerModes.SECONDARY) {
-                        if(slideHandler.slideMoving == false) {
+                        if(!slideHandler.slideMoving) {
                             slideHandler.DuckToMiddle();
                         }
                         isPressingA = true;
