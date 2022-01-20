@@ -105,7 +105,7 @@ public class ButtonHandler {
                     }
                     // Y
                     if(gamepad.y && !isPressingY) {
-                        carouselController.spinOneDuck(true);
+                        carouselController.spinOneDuck();
                         isPressingY = true;
                     } else if(!gamepad.y && isPressingY) {
                         isPressingY = false;

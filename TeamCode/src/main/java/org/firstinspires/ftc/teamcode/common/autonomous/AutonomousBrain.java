@@ -167,10 +167,10 @@ public class AutonomousBrain {
                     mode = AutonomousMode.RedSimple;
                 }
 */              RRctrl.followLineToSpline(duckSpinningPositionB);
-                duckCtrl.spinOneDuck(false);
-                slideCtrl.extendSlide();
-                slideCtrl.dropCube();
-                slideCtrl.retractSlide();
+                duckCtrl.spinOneDuck();
+                //slideCtrl.extendSlide();
+                //slideCtrl.dropCube();
+                //slideCtrl.retractSlide();
                 majorState = AutonomousStates.FINISHED;
 
                 // mode = AutonomousMode.BlueSimple;
@@ -350,7 +350,7 @@ public class AutonomousBrain {
 
     public void spinDuck(boolean qBlue)
     {
-        duckCtrl.spinOneDuck(qBlue);
+        duckCtrl.spinOneDuck();
 //
 //
 //        if(qBlue)

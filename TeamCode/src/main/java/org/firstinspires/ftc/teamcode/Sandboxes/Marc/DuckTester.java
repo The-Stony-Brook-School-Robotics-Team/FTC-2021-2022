@@ -21,7 +21,7 @@ public class DuckTester extends LinearOpMode {
                 telemetry.addData("init","yes i said init");
                 telemetry.update();
               //  ctrl.initializeEnvironment();
-                ctrl.spinOneDuck(true);
+                ctrl.spinOneDuck();
                /* DcMotor duckSpinner = hardwareMap.get(DcMotor.class, "duck");
                 duckSpinner.setPower(true ? -.3 : .3);
                 try {
