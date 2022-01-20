@@ -8,13 +8,11 @@ import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.gamepa
 import android.util.Log;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
-import org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
 import org.firstinspires.ftc.teamcode.common.teleop.misc.Beta;
-
-import java.util.HashMap;
 
 public class MovementHandler {
 
@@ -25,6 +23,11 @@ public class MovementHandler {
         SLOW,
         DEFAULT,
         SPRINT
+    }
+
+    public enum DriverMode {
+        AUTOMATIC,
+        DRIVER
     }
 
     /**
@@ -41,6 +44,7 @@ public class MovementHandler {
      * Current Driving Run Type
      */
     private static RunType currentRunType = RunType.DEFAULT;
+    public static DriverMode currentDriverMode = DriverMode.DRIVER;
 
     /**
      * Working Movement Handler Runtime
@@ -138,7 +142,114 @@ public class MovementHandler {
 
 }
 
+/**
+ * Brings Automatic Movement To TeleOp
+ */
+class RoadrunnerHandlers {
+
+    /**
+     * Movement Types to Schedule
+     */
+    enum MovementTypes {
+        EMPTY(0),
+        LEFT(Configuration.inchesLeft),
+        RIGHT(Configuration.inchesRight),
+        FORWARD(Configuration.inchesForward),
+        BACK(Configuration.inchesBack);
+
+        private int inches;
+
+        private int getInches() {
+            return this.inches;
+        }
+
+        private MovementTypes(int inches) {
+            this.inches = inches;
+        }
+
+    }
+
+    private static MovementTypes scheduledMovement = null;
+    private static String interfaceTag = "RoadRunner Handler";
+
+    /**
+     * Kill all management threads
+     */
+    public static void sendKillSignal() {
+        movementExecutor.interrupt();
+    }
+
+    /**
+     * Internal executor
+     */
+    private static Thread movementExecutor = new Thread(() -> {
+        switch(scheduledMovement) {
+            case LEFT:
+                scheduledMovement = MovementTypes.EMPTY;
+                Trajectory left = drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .strafeLeft(scheduledMovement.getInches())
+                        .build();
+                drive.followTrajectory(left);
+                Log.d(interfaceTag, "Moving " + String.valueOf(scheduledMovement.getInches()) + " inches left");
+                break;
+            case RIGHT:
+                scheduledMovement = MovementTypes.EMPTY;
+                Trajectory right = drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .strafeRight(scheduledMovement.getInches())
+                        .build();
+                drive.followTrajectory(right);
+                Log.d(interfaceTag, "Moving " + String.valueOf(scheduledMovement.getInches()) + " right left");
+                break;
+
+            case FORWARD:
+                scheduledMovement = MovementTypes.EMPTY;
+                Trajectory forward = drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .forward(scheduledMovement.getInches())
+                        .build();
+                drive.followTrajectory(forward);
+                Log.d(interfaceTag, "Moving " + String.valueOf(scheduledMovement.getInches()) + " inches forward");
+                break;
+            case BACK:
+                scheduledMovement = MovementTypes.EMPTY;
+                Trajectory back = drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .back(scheduledMovement.getInches())
+                        .build();
+                drive.followTrajectory(back);
+                Log.d(interfaceTag, "Moving " + String.valueOf(scheduledMovement.getInches()) + " inches backwards");
+                break;
+
+            default:
+                requestKill();
+                break;
+        }
+    });
+
+    /** Schedule A Movement */
+    // TODO: Add an indicator showing if the robot took the movement
+    public static void scheduleMovement(MovementTypes movementType) {
+        // Check if the drive is busy
+        if(drive.isBusy()) { return; }
+        // Check if the executor is alive, if not start it
+        if(!movementExecutor.isAlive()) {
+            movementExecutor.start();
+        }
+        // Schedule the requested movement
+        scheduledMovement = movementType;
+    }
+
+    /** Kills Movement Executor Thread */
+    private static void requestKill() {
+        movementExecutor.interrupt();
+    }
+
+}
+
+/**
+ * Driver Movement
+ */
 class MovementHandlers {
+    public static String interfaceTag = "Movement Handlers";
+
     public static Thread sprintDriving = new Thread(() -> {
         if(MovementHandler.MovementEnabled) {
             drive.setWeightedDrivePower(
@@ -149,6 +260,9 @@ class MovementHandlers {
                     )
             );
             drive.update();
+            Log.d(interfaceTag, "Sprint Driving Inactive");
+        } else {
+            drive.setWeightedDrivePower(new Pose2d());
         }
     });
 
@@ -162,6 +276,9 @@ class MovementHandlers {
                     )
             );
             drive.update();
+            Log.d(interfaceTag, "Default Driving Inactive");
+        } else {
+            drive.setWeightedDrivePower(new Pose2d());
         }
     });
 
@@ -175,6 +292,10 @@ class MovementHandlers {
                     )
             );
             drive.update();
+            Log.d(interfaceTag, "Slow Driving Active");
+        } else {
+            drive.setWeightedDrivePower(new Pose2d());
+            Log.d(interfaceTag, "Slow Driving Inactive");
         }
     });
 }

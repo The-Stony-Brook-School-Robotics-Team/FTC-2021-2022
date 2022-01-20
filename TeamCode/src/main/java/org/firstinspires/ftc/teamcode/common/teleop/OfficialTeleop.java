@@ -3,11 +3,9 @@ package org.firstinspires.ftc.teamcode.common.teleop;
 import android.util.Log;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
@@ -21,7 +19,6 @@ import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
 import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
 import org.sbs.bears.robotframework.controllers.SlideController;
 import org.sbs.bears.robotframework.enums.IntakeState;
-import org.sbs.bears.robotframework.enums.SlideTarget;
 
 import java.util.HashMap;
 import java.util.Map;

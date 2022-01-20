@@ -59,16 +59,16 @@ public class SlideController {
             return;
         }
 
-       // try {
-         //   Thread.sleep(10);
-       // } catch (InterruptedException e) {
-         //   e.printStackTrace();
-        //}
-        //if(flagToLeave) {
-          //  return;
-        //}
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if(flagToLeave) {
+            return;
+        }
 
-        //dropCube();
+        dropCube();
         try {
             Thread.sleep(10);
         } catch (InterruptedException e) {
@@ -183,15 +183,15 @@ public class SlideController {
                 }
                 setHeightToParams(verticalServoTargetPos);
 
-               while(slideMotor.getCurrentPosition() < targetPosFinal - 100){
-                   try {
-                       Thread.sleep(10);
-                   } catch (InterruptedException e) {
-                       e.printStackTrace();
-                   }
-               }
-               dropCube();
-
+            //   while(slideMotor.getCurrentPosition() < targetPosFinal - 100){
+            //       try {
+            //           Thread.sleep(10);
+            //       } catch (InterruptedException e) {
+            //           e.printStackTrace();
+            //       }
+            //   }
+            //   dropCube();
+//
                 while (slideMotor.isBusy()) {
                     try {
                         Thread.sleep(10);
@@ -287,7 +287,7 @@ public class SlideController {
     public void initTeleop(){
         slideState = SlideState.TELEOP;
         verticalServo.setPosition(vertServoPosition_PARKED);
-        this.targetParams = SlideTarget.TWO_CAROUSEL;
+        this.targetParams = SlideTarget.THREE_DEPOSIT;
     }
 
     public double getVerticalServoPosition(){return verticalServo.getPosition();}
@@ -449,10 +449,10 @@ public class SlideController {
     double vertServoPosition_ONE_CAROUSEL = 0.161;
     double vertServoPosition_TWO_CAROUSEL = 0.3767; ///measured
     double vertServoPosition_THREE_CAROUSEL = 0.647;
-    double vertServoPosition_THREE_DEPOSIT = 0.7383; // TODO //.92; //measured
+    double vertServoPosition_THREE_DEPOSIT = 0.754; // TODO //.92; //measured
     double vertServoPosition_TWO_DEPOSIT = .65; //.92; //measured
     double vertServoPosition_ONE_DEPOSIT = .47; //.92; //measured
-    double incrementDelta = 0.003;
+    double incrementDelta = 0.005;
     double vertServoPosition_PARKED_MIN = 0;
     double vertServoPosition_PARKED_MAX = 0.3;
     double vertServoPosition_FULL_MAX = 1;
@@ -464,7 +464,7 @@ public class SlideController {
     // slide motor
     int slideMotorPosition_PARKED =  0;
     public int slideMotorPosition_BUCKET_OUT = 310; // minimum position for the bucket to be out, measured
-    int slideMotorPosition_THREE_DEPOSIT = 1205; //measured
+    int slideMotorPosition_THREE_DEPOSIT = 1360; //measured
     int slideMotorPosition_THREE_CAROUSEL = 1713;
     int slideMotorPosition_TWO_CAROUSEL = 1650;
     int slideMotorPosition_ONE_CAROUSEL = 1665;
