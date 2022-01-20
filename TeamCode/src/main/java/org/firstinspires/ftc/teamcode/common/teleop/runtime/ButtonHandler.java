@@ -119,17 +119,10 @@ public class ButtonHandler {
                     }
                     // Up dpad
                     if(gamepad.dpad_up) {
-                        //slideController.slideMotorPowerMoving += 0.1;
-                        //slideController.slideMotorPowerMovingWBucketInside += 0.1;
-                        //System.out.println(slideController.slideMotorPowerMoving);
                         slideController.incrementVerticalServo(Configuration.DefaultVerticalSlideIncrement);
                     }
                     // Down dpad
                     if(gamepad.dpad_down) {
-                       // slideController.slideMotorPowerMoving -= 0.1;
-                        //slideController.slideMotorPowerMovingWBucketInside -= 0.1;
-                       // System.out.println(slideController.slideMotorPowerMoving);
-
                         slideController.incrementVerticalServo(Configuration.DefaultVerticalSlideIncrement * -1);
                     }
                     break;
