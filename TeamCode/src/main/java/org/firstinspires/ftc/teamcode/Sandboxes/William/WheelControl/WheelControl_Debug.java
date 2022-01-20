@@ -153,7 +153,7 @@ public class WheelControl_Debug extends OpMode {
         if (gamepad1.b && !isPressingB) {
             isPressingB = true;
         } else if (!gamepad1.b && isPressingB) {
-            NEED_EMERGENCY_STOP = true;
+            duckCarouselController.MAGICAL_CONSTANT_TIME_OFFSET += 0.02;
         }
         isPressingB = false;
     }
