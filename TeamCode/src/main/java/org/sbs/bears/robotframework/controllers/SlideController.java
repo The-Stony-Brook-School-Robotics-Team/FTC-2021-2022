@@ -2,6 +2,8 @@ package org.sbs.bears.robotframework.controllers;
 
 import android.util.Log;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -13,6 +15,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.sbs.bears.robotframework.Sleep;
 import org.sbs.bears.robotframework.enums.SlideState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
+
+import java.util.Vector;
 
 public class SlideController {
     public Servo verticalServo;
@@ -412,6 +416,13 @@ public class SlideController {
     }
     /** End of TeleOp Methods */
 
+
+
+    public void calculateAngleAndExtensionFromPosition(Pose2d currentPos)
+    {
+        double deltaX = currentPos.getX() - 
+    }
+
     private double encoderInchesToTicks(double ticks) {
         return ticks * 145.1 / .785 / 2 / Math.PI;
     }
@@ -424,10 +435,10 @@ public class SlideController {
     // vertical servo
 
     double vertServoPosition_PARKED = 0;
-    double vertServoPosition_ONE_CAROUSEL = 0.26;
-    double vertServoPosition_TWO_CAROUSEL = 0.47; ///measured
-    double vertServoPosition_THREE_CAROUSEL = 0.762;
-    double vertServoPosition_THREE_DEPOSIT = .762; // TODO //.92; //measured
+    double vertServoPosition_ONE_CAROUSEL = 0.161;
+    double vertServoPosition_TWO_CAROUSEL = 0.3767; ///measured
+    double vertServoPosition_THREE_CAROUSEL = 0.647;
+    double vertServoPosition_THREE_DEPOSIT = 0.7383; // TODO //.92; //measured
     double vertServoPosition_TWO_DEPOSIT = .65; //.92; //measured
     double vertServoPosition_ONE_DEPOSIT = .47; //.92; //measured
     double incrementDelta = 0.003;
@@ -442,16 +453,23 @@ public class SlideController {
     // slide motor
     int slideMotorPosition_PARKED =  0;
     public int slideMotorPosition_BUCKET_OUT = 310; // minimum position for the bucket to be out, measured
-    int slideMotorPosition_THREE_DEPOSIT = 1246; //measured
+    int slideMotorPosition_THREE_DEPOSIT = 1205; //measured
     int slideMotorPosition_THREE_CAROUSEL = 1713;
-    int slideMotorPosition_TWO_CAROUSEL = 1692;
-    int slideMotorPosition_ONE_CAROUSEL = 1671;
+    int slideMotorPosition_TWO_CAROUSEL = 1650;
+    int slideMotorPosition_ONE_CAROUSEL = 1665;
     int slideMotorPosition_FULL = 1980;
     int slideMotorPosition_START_LOWER = 400;
 
     public double slideMotorPowerMoving = 1;
     public double slideMotorPowerMovingWBucketInside = 1;
     double slideMotorPowerStill = 0;
+
+    double deltaZForLevel3 = 12; // in
+    double deltaZForLevel2 = 5; // in
+    double deltaZForLevel1 = 0; // in
+
+    static final Vector2d positionOfBlueHub = new Vector2d(24,12);
+
 
 
 
