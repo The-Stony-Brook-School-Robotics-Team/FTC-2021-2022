@@ -1,19 +1,23 @@
 package org.firstinspires.ftc.teamcode.Sandboxes.Michael.Unsafe;
 
+import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.drive;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.gamepad;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideHandler;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.controllers.SlideController;
 
 @TeleOp(name="increment", group="Linear Opmode")
 public class Increment extends LinearOpMode {
     private boolean qDR, qDL,qX,qY;
+    private SampleMecanumDrive drive;
     private SlideController slideCtrl;
     //private IntakeController frontIntake;
 
@@ -28,6 +32,7 @@ public class Increment extends LinearOpMode {
         //DcMotor compliantWheel = hardwareMap.get(DcMotor.class, "motor");
         //Rev2mDistanceSensor distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "2m");
         slideCtrl = new SlideController(hardwareMap,telemetry);
+        drive = new SampleMecanumDrive(hardwareMap);
         //scooper.setDirection(Servo.Direction.REVERSE);
         //compliantWheel.setDirection(DcMotorSimple.Direction.FORWARD);
         double pos = .2;
@@ -60,7 +65,14 @@ public class Increment extends LinearOpMode {
             if(gamepad1.x && !qX)
             {
                 qX = true;
-                switch(state2)
+                drive.setWeightedDrivePower(new Pose2d()); // stop robot
+                Pose2d currentPos = drive.getPoseEstimate();
+                Pose2d targetPos = new Pose2d(currentPos.getX()-8.42,currentPos.getY()-1.03,currentPos.getHeading() - Math.toRadians(52));
+                drive.followTrajectory(drive.trajectoryBuilder(currentPos)
+                        .lineToSplineHeading(targetPos)
+                        .build());
+
+                /*switch(state2)
                 {
                     case TO_EXT:
                         slideCtrl.extendSlide();
@@ -75,7 +87,7 @@ public class Increment extends LinearOpMode {
                         state2 = state.TO_EXT;
                         break;
 
-                }
+                }*/
             }
             if(!gamepad1.x && qX)
             {

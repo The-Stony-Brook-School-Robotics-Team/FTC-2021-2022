@@ -38,6 +38,7 @@ public class AutonomousBlueFull extends OpMode {
 
         telemetry.addData("majorState", brain.majorState);
         telemetry.addData("minorState", brain.minorState);
+        telemetry.addData("CameraReading", brain.heightFromDuck);
         telemetry.update();
         if(qContinue) {
             brain.doAutonAction();
@@ -48,15 +49,15 @@ public class AutonomousBlueFull extends OpMode {
             }
             qContinue = false;
         }
-        qContinue = true;
-        /*if(gamepad1.a && !qA) {
+        //qContinue = true;
+        if(gamepad1.a && !qA) {
             qA = true;
             qContinue = true;
             return;
         }
         else if (!gamepad1.a && qA) {
             qA = false;
-        }*/
+        }
 
     }
 }

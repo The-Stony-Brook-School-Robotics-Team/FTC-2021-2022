@@ -118,13 +118,13 @@ public class AutonomousBrain {
 
                 }*/
                 RRctrl.setPos(startPositionBFull);
-                majorState = AutonomousStates.THREE_CAROUSEL;
+                majorState = AutonomousStates.ONE_READ_DUCK;
                 return;
             case ONE_READ_DUCK:
-                heightFromDuck = TowerHeightFromDuck.THREE;
+                heightFromDuck = CVctrl.getWhichTowerHeight();
                 Log.d("height: ", heightFromDuck.toString());
-                tel.addData("height: ",heightFromDuck);
-                tel.update();
+                //tel.addData("height: ",heightFromDuck);
+                //tel.update();
                 majorState = AutonomousStates.TWO_SET_SLIDE_HEIGHT;
                 CVctrl.shutDown();
                 return;
@@ -168,25 +168,9 @@ public class AutonomousBrain {
                 }
 */              RRctrl.followLineToSpline(duckSpinningPositionB);
                 duckCtrl.spinOneDuck(false);
-
                 slideCtrl.extendSlide();
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 slideCtrl.dropCube();
-                try {
-                    Thread.sleep(1000);
-                } catch(InterruptedException e) {
-                    e.printStackTrace();
-                }
                 slideCtrl.retractSlide();
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 majorState = AutonomousStates.FINISHED;
 
                 // mode = AutonomousMode.BlueSimple;
