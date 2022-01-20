@@ -4,20 +4,14 @@ import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.curren
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.drive;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.gamepad;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.movementHandler;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideHandler;
 
 import android.util.Log;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
-import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
 import org.firstinspires.ftc.teamcode.common.teleop.misc.Beta;
-import org.firstinspires.ftc.teamcode.drive.DriveConstants;
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 public class MovementHandler {
 
@@ -159,6 +153,10 @@ class MovementHandlers {
     public static String interfaceTag = "Movement Handlers";
 
     public static Thread sprintDriving = new Thread(() -> {
+        if(movementHandler.movementEnabled != true) { return; }
+        if(movementHandler.autonomousRunning != false) { return; }
+        if(movementHandler.currentDriverMode != MovementHandler.DriverMode.DRIVER) { return; }
+
         if(movementHandler.movementEnabled) {
             drive.setWeightedDrivePower(
                     new Pose2d(
@@ -175,6 +173,9 @@ class MovementHandlers {
     });
 
     public static Thread defaultDriving = new Thread(() -> {
+        if(movementHandler.movementEnabled != true) { return; }
+        if(movementHandler.autonomousRunning != false) { return; }
+        if(movementHandler.currentDriverMode != MovementHandler.DriverMode.DRIVER) { return; }
         if(movementHandler.movementEnabled) {
             drive.setWeightedDrivePower(
                     new Pose2d(
@@ -191,6 +192,9 @@ class MovementHandlers {
     });
 
     public static Thread slowDriving = new Thread(() -> {
+        if(movementHandler.movementEnabled != true) { return; }
+        if(movementHandler.autonomousRunning != false) { return; }
+        if(movementHandler.currentDriverMode != MovementHandler.DriverMode.DRIVER) { return; }
         if(movementHandler.movementEnabled) {
             drive.setWeightedDrivePower(
                     new Pose2d(
