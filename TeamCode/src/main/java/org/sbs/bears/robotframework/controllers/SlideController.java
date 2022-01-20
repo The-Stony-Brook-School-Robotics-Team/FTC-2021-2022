@@ -59,16 +59,16 @@ public class SlideController {
             return;
         }
 
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+       // try {
+         //   Thread.sleep(10);
+       // } catch (InterruptedException e) {
+         //   e.printStackTrace();
+        //}
         //if(flagToLeave) {
           //  return;
         //}
 
-        dropCube();
+        //dropCube();
         try {
             Thread.sleep(10);
         } catch (InterruptedException e) {
@@ -182,6 +182,16 @@ public class SlideController {
                     }
                 }
                 setHeightToParams(verticalServoTargetPos);
+
+               while(slideMotor.getCurrentPosition() < targetPosFinal - 100){
+                   try {
+                       Thread.sleep(10);
+                   } catch (InterruptedException e) {
+                       e.printStackTrace();
+                   }
+               }
+               dropCube();
+
                 while (slideMotor.isBusy()) {
                     try {
                         Thread.sleep(10);
