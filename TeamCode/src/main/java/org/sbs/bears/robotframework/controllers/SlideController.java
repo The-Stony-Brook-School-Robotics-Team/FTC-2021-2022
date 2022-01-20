@@ -448,13 +448,13 @@ public class SlideController {
     // vertical servo
 
     double vertServoPosition_PARKED = 0;
-    double vertServoPosition_ONE_CAROUSEL = 0.161;
+    double vertServoPosition_ONE_CAROUSEL = 0.175;
     double vertServoPosition_TWO_CAROUSEL = 0.3767; ///measured
     double vertServoPosition_THREE_CAROUSEL = 0.647;
     double vertServoPosition_THREE_DEPOSIT = 0.754; // TODO //.92; //measured
     double vertServoPosition_TWO_DEPOSIT = .65; //.92; //measured
     double vertServoPosition_ONE_DEPOSIT = .47; //.92; //measured
-    double incrementDelta = 0.005;
+    double incrementDelta = 0.007;
     double vertServoPosition_PARKED_MIN = 0;
     double vertServoPosition_PARKED_MAX = 0.3;
     double vertServoPosition_FULL_MAX = 1;

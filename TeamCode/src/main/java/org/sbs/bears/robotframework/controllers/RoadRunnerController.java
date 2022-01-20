@@ -268,6 +268,7 @@ public class RoadRunnerController {
                         .lineToSplineHeading(finalPos)
                         .build()
         );
+        new Thread(()->{drive.waitForIdle();}).start();
     }
     public void stopTrajectory()
     {
