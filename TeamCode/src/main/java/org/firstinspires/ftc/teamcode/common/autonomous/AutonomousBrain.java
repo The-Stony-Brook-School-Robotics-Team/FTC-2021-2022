@@ -137,7 +137,7 @@ public class AutonomousBrain {
                     case TWO:
                         targetCarousel = SlideTarget.TWO_CAROUSEL;
                         break;
-                    default:
+                    case THREE:
                         targetCarousel = SlideTarget.THREE_CAROUSEL;
                 }
 
@@ -168,9 +168,10 @@ public class AutonomousBrain {
                 }
 */              RRctrl.followLineToSpline(duckSpinningPositionB);
                 duckCtrl.spinOneDuck();
-                //slideCtrl.extendSlide();
-                //slideCtrl.dropCube();
-                //slideCtrl.retractSlide();
+                slideCtrl.targetParams = targetCarousel;
+                slideCtrl.extendSlide();
+                slideCtrl.dropCube();
+                slideCtrl.retractSlide();
                 majorState = AutonomousStates.FINISHED;
 
                 // mode = AutonomousMode.BlueSimple;
@@ -387,7 +388,7 @@ public class AutonomousBrain {
     public static Pose2d startPositionRSpl = new Pose2d(6.5,-65.5,Math.PI);
     public static Pose2d startPositionRFull = new Pose2d(-42,-66,Math.PI);
 
-    public static Pose2d duckSpinningPositionB = new Pose2d(-60, 63, Math.toRadians(48));
+    public static Pose2d duckSpinningPositionB = new Pose2d(-61, 63, Math.toRadians(48));
     public static Pose2d duckSpinningPositionR = new Pose2d(-60, -63, Math.toRadians(-48));
 
     public static Pose2d wareHousePickupPositionBSimpIntermediate = new Pose2d(-45,66,0);

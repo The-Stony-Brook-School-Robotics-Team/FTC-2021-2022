@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 
-@Autonomous(name = "A - Auton (Blue Full)")
+@TeleOp (name = "A - Auton (Blue Full)")
 public class AutonomousBlueFull extends OpMode {
     AutonomousBrain brain;
     boolean qA = false;
@@ -39,6 +39,7 @@ public class AutonomousBlueFull extends OpMode {
         telemetry.addData("majorState", brain.majorState);
         telemetry.addData("minorState", brain.minorState);
         telemetry.addData("CameraReading", brain.heightFromDuck);
+        telemetry.addData("DepositHeight", brain.targetCarousel);
         telemetry.update();
         if(qContinue) {
             brain.doAutonAction();
