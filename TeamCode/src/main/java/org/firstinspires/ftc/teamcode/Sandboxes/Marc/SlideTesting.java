@@ -100,7 +100,7 @@ drive = new SampleMecanumDrive(hardwareMap);
             }
             if(gamepad1.x && !qX) {
                 drive.setWeightedDrivePower(new Pose2d());
-                slideController.extendDropRetract(SlideTarget.THREE_DEPOSIT);
+                slideController.extendDropRetract(SlideTarget.THREE_CAROUSEL);
                 slideController.extendSlide();
                 slideController.dropCube();
                 slideController.retractSlide();

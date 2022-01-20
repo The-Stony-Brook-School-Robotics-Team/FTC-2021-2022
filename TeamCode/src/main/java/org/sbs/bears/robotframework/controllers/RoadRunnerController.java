@@ -261,6 +261,19 @@ public class RoadRunnerController {
                         .build()
         );
     }
+    public void followLineToSplineAsync(Pose2d finalPos)
+    {
+        drive.followTrajectoryAsync(
+                drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .lineToSplineHeading(finalPos)
+                        .build()
+        );
+        new Thread(()->{drive.waitForIdle();}).start();
+    }
+    public void stopTrajectory()
+    {
+        runner.cancelTraj();
+    }
     public void followSplineToSpline(Pose2d iniPos, Pose2d finalPos,double finTang)
     {
         drive.followTrajectory(

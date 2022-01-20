@@ -133,20 +133,20 @@ public class SlideController {
             case OUT_FULLY:
                 //slideMotor.setPower(slideMotorPowerStill);
                 return;
-            case EXT_BUCKET_IN:
-
-                slideMotor.setPower(slideMotorPowerMovingWBucketInside);
-                targetPos = slideMotorPosition_BUCKET_OUT;
-                slideMotor.setTargetPosition(targetPos);
-                while (slideMotor.isBusy()) {
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                //slideMotor.setPower(slideMotorPowerStill);
-                return;
+         //   case EXT_BUCKET_IN:
+//
+         //    //   slideMotor.setPower(slideMotorPowerMovingWBucketInside);
+         //       targetPos = slideMotorPosition_BUCKET_OUT;
+         //       slideMotor.setTargetPosition(targetPos);
+         //       while (slideMotor.isBusy()) {
+         //           try {
+         //               Thread.sleep(10);
+         //           } catch (InterruptedException e) {
+         //               e.printStackTrace();
+         //           }
+         //       }
+         //       //slideMotor.setPower(slideMotorPowerStill);
+         //       return;
             case EXT_BUCKET_OUT:
                 //slideMotor.setPower(slideMotorPowerStill);
                 switch (targetParams) {
@@ -207,7 +207,7 @@ public class SlideController {
                 slideMotor.setPower(slideMotorPowerMoving);
                 slideMotor.setTargetPosition(targetPos);
                 //setHeightToParams(vertServoPosition_PARKED);
-                while(slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT){
+                while(slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT+300){
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException e) {
@@ -216,6 +216,8 @@ public class SlideController {
                 }
                 // targetPos = slideMotorPosition_BUCKET_OUT;
                 // slideMotor.setTargetPosition(targetPos);
+                slideMotor.setPower(slideMotorPowerMovingWBucketInside);
+
                 setHeightToParams(vertServoPosition_PARKED);
                 //   while (slideMotor.isBusy()) {
                 //      try {
@@ -234,7 +236,7 @@ public class SlideController {
                     }
                 }
                 return;
-            case RET_BUCKET_IN:
+           /* case RET_BUCKET_IN:
                 targetPos = slideMotorPosition_PARKED;
                 slideMotor.setPower(slideMotorPowerMovingWBucketInside);
                 slideMotor.setTargetPosition(targetPos);
@@ -247,7 +249,7 @@ public class SlideController {
                 }
                 //slideMotor.setPower(slideMotorPowerStill);
                 return;
-        }
+        */}
     }
 
 
@@ -446,13 +448,13 @@ public class SlideController {
     // vertical servo
 
     double vertServoPosition_PARKED = 0;
-    double vertServoPosition_ONE_CAROUSEL = 0.161;
+    double vertServoPosition_ONE_CAROUSEL = 0.175;
     double vertServoPosition_TWO_CAROUSEL = 0.3767; ///measured
     double vertServoPosition_THREE_CAROUSEL = 0.647;
     double vertServoPosition_THREE_DEPOSIT = 0.754; // TODO //.92; //measured
     double vertServoPosition_TWO_DEPOSIT = .65; //.92; //measured
     double vertServoPosition_ONE_DEPOSIT = .47; //.92; //measured
-    double incrementDelta = 0.005;
+    double incrementDelta = 0.007;
     double vertServoPosition_PARKED_MIN = 0;
     double vertServoPosition_PARKED_MAX = 0.3;
     double vertServoPosition_FULL_MAX = 1;
@@ -472,7 +474,7 @@ public class SlideController {
     int slideMotorPosition_START_LOWER = 400;
 
     public double slideMotorPowerMoving = 1;
-    public double slideMotorPowerMovingWBucketInside = 1;
+    public double slideMotorPowerMovingWBucketInside = 0.4;
     double slideMotorPowerStill = 0;
 
     double deltaZForLevel3 = 12; // in
