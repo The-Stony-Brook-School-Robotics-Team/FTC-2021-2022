@@ -140,6 +140,7 @@ public class AutonomousBrain {
             case FOUR_DRIVE_TO_WAREHOUSE:
                 RRctrl.followLineToSpline(wareHousePickupPositionBSimpIntermediate);
                 RRctrl.followLineToSpline(wareHousePickupPositionBSimpIntermediate2);
+                RRctrl.setPos(new Pose2d(-35,65.5,0));
                 RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
                 majorState = AutonomousStates.SIX_PARKING_WAREHOUSE;
                 return;
@@ -309,7 +310,7 @@ public class AutonomousBrain {
     public static Pose2d duckSpinningPositionR = new Pose2d(-60, -63, Math.toRadians(-48));
 
     public static Pose2d wareHousePickupPositionBSimpIntermediate = new Pose2d(-45,63,0);
-    public static Pose2d wareHousePickupPositionBSimpIntermediate2 = new Pose2d(-35,67,0);
+    public static Pose2d wareHousePickupPositionBSimpIntermediate2 = new Pose2d(-35,70,0);
     public static Pose2d wareHousePickupPositionRSimpIntermediate = new Pose2d(-45,-66,0);
     public static Pose2d wareHousePickupPositionBSimp = new Pose2d(30,65.5,0);
     public static Pose2d wareHousePickupPositionBSimp2 = new Pose2d(38,65.5,0);

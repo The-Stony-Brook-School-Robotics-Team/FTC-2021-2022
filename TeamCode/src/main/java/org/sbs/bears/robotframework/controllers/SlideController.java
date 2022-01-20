@@ -454,7 +454,7 @@ public class SlideController {
     double vertServoPosition_THREE_DEPOSIT = 0.754; // TODO //.92; //measured
     double vertServoPosition_TWO_DEPOSIT = .65; //.92; //measured
     double vertServoPosition_ONE_DEPOSIT = .47; //.92; //measured
-    double incrementDelta = 0.007;
+    double incrementDelta = 0.004;
     double vertServoPosition_PARKED_MIN = 0;
     double vertServoPosition_PARKED_MAX = 0.3;
     double vertServoPosition_FULL_MAX = 1;
@@ -473,7 +473,7 @@ public class SlideController {
     int slideMotorPosition_FULL = 1980;
     int slideMotorPosition_START_LOWER = 400;
 
-    public double slideMotorPowerMoving = 1;
+    public double slideMotorPowerMoving = 0.7;
     public double slideMotorPowerMovingWBucketInside = 0.4;
     double slideMotorPowerStill = 0;
 
