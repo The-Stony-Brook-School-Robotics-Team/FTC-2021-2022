@@ -40,7 +40,8 @@ public class ButtonHandler {
         while(currentState == TeleOpRobotStates.RUNNING || currentState.equals(TeleOpRobotStates.INITIALIZING)) {
 
             if(movementHandler.currentDriverMode != MovementHandler.DriverMode.DRIVER) {
-                RoadrunnerHandler.
+                roadrunnerHandler.softKill();
+                movementHandler.currentDriverMode = MovementHandler.DriverMode.DRIVER;
             }
 
             if(gamepad.left_bumper) {
