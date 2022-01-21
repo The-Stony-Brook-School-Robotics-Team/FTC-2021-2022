@@ -1,16 +1,10 @@
 package org.firstinspires.ftc.teamcode.Sandboxes.Michael.Unsafe;
 
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.drive;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.gamepad;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideHandler;
-
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.controllers.SlideController;
 
@@ -45,7 +39,7 @@ public class Increment extends LinearOpMode {
             {
                 qDR = true;
                 slideCtrl.slideMotorPowerMoving += 0.1;
-                slideCtrl.slideMotorPowerMovingWBucketInside += 0.1;
+                slideCtrl.slideMotorPowerMovingBack += 0.1;
             }
             if(!gamepad1.dpad_right && qDR)
             {
@@ -55,7 +49,7 @@ public class Increment extends LinearOpMode {
             {
                 qDL = true;
                 slideCtrl.slideMotorPowerMoving -= 0.1;
-                slideCtrl.slideMotorPowerMovingWBucketInside -= 0.1;
+                slideCtrl.slideMotorPowerMovingBack -= 0.1;
             }
             if(!gamepad1.dpad_left && qDL)
             {
