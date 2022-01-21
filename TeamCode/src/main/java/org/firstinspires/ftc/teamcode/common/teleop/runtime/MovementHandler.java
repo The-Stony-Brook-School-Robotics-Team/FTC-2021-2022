@@ -158,18 +158,21 @@ class MovementHandlers {
 
     private static void sprintRunner() {
         if (!MovementHandler.movementEnabled) {
+            drive.setWeightedDrivePower(new Pose2d());
             return;
         }
         if (MovementHandler.autonomousRunning) {
+            drive.setWeightedDrivePower(new Pose2d());
             return;
         }
         if (MovementHandler.currentDriverMode != MovementHandler.DriverMode.DRIVER) {
+            drive.setWeightedDrivePower(new Pose2d());
             return;
         }
         drive.setWeightedDrivePower(
                 new Pose2d(
-                        -gamepad.left_stick_y,
                         -gamepad.left_stick_x,
+                        gamepad.left_stick_y,
                         -gamepad.right_stick_x
                 )
         );
@@ -178,18 +181,21 @@ class MovementHandlers {
 
     private static void defaultRunner() {
         if (!MovementHandler.movementEnabled) {
+            drive.setWeightedDrivePower(new Pose2d());
             return;
         }
         if (MovementHandler.autonomousRunning) {
+            drive.setWeightedDrivePower(new Pose2d());
             return;
         }
         if (MovementHandler.currentDriverMode != MovementHandler.DriverMode.DRIVER) {
+            drive.setWeightedDrivePower(new Pose2d());
             return;
         }
         drive.setWeightedDrivePower(
                 new Pose2d(
-                        -gamepad.left_stick_y,
                         -gamepad.left_stick_x,
+                        gamepad.left_stick_y,
                         -gamepad.right_stick_x
                 )
         );
@@ -198,18 +204,21 @@ class MovementHandlers {
 
     private static void slowRunner() {
         if (!MovementHandler.movementEnabled) {
+            drive.setWeightedDrivePower(new Pose2d());
             return;
         }
         if (MovementHandler.autonomousRunning) {
+            drive.setWeightedDrivePower(new Pose2d());
             return;
         }
         if (MovementHandler.currentDriverMode != MovementHandler.DriverMode.DRIVER) {
+            drive.setWeightedDrivePower(new Pose2d());
             return;
         }
         drive.setWeightedDrivePower(
                 new Pose2d(
                         -gamepad.left_stick_y * Configuration.SlowMovementMultiplier,
-                        -gamepad.left_stick_x * Configuration.SlowMovementMultiplier,
+                        gamepad.left_stick_x * Configuration.SlowMovementMultiplier,
                         -gamepad.right_stick_x * Configuration.SlowMovementMultiplier
                 )
         );

@@ -464,7 +464,7 @@ public class SlideController {
     double dumperPosition_HOLDBLOCK = 0;
 
     // slide motor
-    int slideMotorPosition_PARKED =  0;
+    int slideMotorPosition_PARKED =  10;
     public int slideMotorPosition_BUCKET_OUT = 310; // minimum position for the bucket to be out, measured
     int slideMotorPosition_THREE_DEPOSIT = 1360; //measured
     int slideMotorPosition_THREE_CAROUSEL = 1713;
