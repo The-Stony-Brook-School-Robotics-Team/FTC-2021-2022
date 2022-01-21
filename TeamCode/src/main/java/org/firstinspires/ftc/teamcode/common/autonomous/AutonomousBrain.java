@@ -228,6 +228,7 @@ public class AutonomousBrain {
                 minorState = AutonomousBackForthSubStates.FOUR_BACKWARD;
                 return;
             case FOUR_BACKWARD:
+                RRctrl.followLineToSpline(depositObjectPositionBsimp);
                 RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
                 minorState = AutonomousBackForthSubStates.ONE_INTAKE;
                 return;
@@ -263,7 +264,7 @@ public class AutonomousBrain {
 
 
     public static Pose2d depositObjectPositionBsimp = new Pose2d(14,65.5,0);
-    public static Pose2d depositObjectPositionBsimp2 = new Pose2d(5.58,64.47,-Math.toRadians(52));
+    public static Pose2d depositObjectPositionBsimp2 = new Pose2d(5.58,64.47,-Math.toRadians(60));
     // TODO TODO TODO MEASURE THE POSITION TO TURN AND DEPOSIT!!!!!
     // just replace the variable above.
 
