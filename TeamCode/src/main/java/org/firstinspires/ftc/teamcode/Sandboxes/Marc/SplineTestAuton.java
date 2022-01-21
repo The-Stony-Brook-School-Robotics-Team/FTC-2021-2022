@@ -19,8 +19,6 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
  * @author Marc N
  * @version 5.1
  */
-@Config
-@Autonomous(name="A - Spline Test (Marc)")
 public class SplineTestAuton extends LinearOpMode {
     RevBlinkinLedDriver colorstrip2;
 

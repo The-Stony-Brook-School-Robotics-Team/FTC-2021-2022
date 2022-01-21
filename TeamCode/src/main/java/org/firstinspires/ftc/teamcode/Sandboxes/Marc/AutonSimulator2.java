@@ -18,7 +18,6 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.controllers.RoadRunnerController;
 
 @Config
-@TeleOp(name="A - Autonomous Simulator2 (X)")
 public class AutonSimulator2 extends LinearOpMode {
     SampleMecanumDrive drive;
     RevBlinkinLedDriver colorstrip2;

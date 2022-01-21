@@ -18,7 +18,6 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import java.time.Clock;
 
 @Config
-@TeleOp(name="A - Autonomous Simulator (X)")
 public class AutonSimulator extends LinearOpMode {
     SampleMecanumDrive drive;
     RevBlinkinLedDriver colorstrip2;

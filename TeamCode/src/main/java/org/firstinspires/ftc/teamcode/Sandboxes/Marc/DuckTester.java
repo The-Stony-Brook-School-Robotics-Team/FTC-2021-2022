@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.sbs.bears.robotframework.controllers.DuckCarouselController;
-@TeleOp
 public class DuckTester extends LinearOpMode {
 
     @Override
