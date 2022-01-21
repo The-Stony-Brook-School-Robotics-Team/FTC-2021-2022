@@ -41,11 +41,6 @@ public class ButtonHandler {
     public static Thread runtime = new Thread(() -> {
         while(currentState == TeleOpRobotStates.RUNNING || currentState.equals(TeleOpRobotStates.INITIALIZING)) {
 
-            if(!movementHandler.autonomousRunning && movementHandler.currentDriverMode != MovementHandler.DriverMode.DRIVER) {
-                roadrunnerHandler.softKill();
-                return;
-            }
-
             if(gamepad.left_bumper) {
                 controllerMode = ControllerModes.SECONDARY;
             } else {

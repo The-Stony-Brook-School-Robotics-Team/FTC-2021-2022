@@ -253,6 +253,17 @@ public class RoadRunnerController {
             // final pos is 71, -34, Math.PI/2
         }
     }
+    public void followLineToSpline(Pose2d finalPos,double vel)
+    {
+        TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(vel, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
+        TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
+
+        drive.followTrajectory(
+                drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .lineToSplineHeading(finalPos,velocityConstraint,accelerationConstraint)
+                        .build()
+        );
+    }
     public void followLineToSpline(Pose2d finalPos)
     {
         drive.followTrajectory(

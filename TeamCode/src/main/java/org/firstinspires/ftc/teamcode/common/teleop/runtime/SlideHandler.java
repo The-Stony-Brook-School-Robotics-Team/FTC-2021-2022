@@ -26,12 +26,10 @@ public class SlideHandler {
     public void manualSlideController(int stickValue) {
         if(slideMovementEnabled != true) { return; }
         if(!slideMoving) {
-            MovementHandler.disableDriving();
             slideMoving = true;
             stickValue = stickValue * -2;
             slideController.incrementEncoderPosition(stickValue * Configuration.DefaultSlideTicks);
             Log.d(interfaceTag, "Current Slide Motor Ticks: " + slideController.getSlideMotorPosition());
-            MovementHandler.enableDriving();
             slideMoving = false;
         }
     }

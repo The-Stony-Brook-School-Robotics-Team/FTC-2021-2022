@@ -142,7 +142,7 @@ public class AutonomousBrain {
                 RRctrl.followLineToSpline(wareHousePickupPositionBSimpIntermediate);
                 RRctrl.followLineToSpline(wareHousePickupPositionBSimpIntermediate2);
                 RRctrl.setPos(new Pose2d(-35,65.5,0));
-                RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
+                RRctrl.followLineToSpline(wareHousePickupPositionBSimp,20);
                 majorState = AutonomousStates.FIVE_BACK_FORTH;
                 return;
             case FIVE_BACK_FORTH:

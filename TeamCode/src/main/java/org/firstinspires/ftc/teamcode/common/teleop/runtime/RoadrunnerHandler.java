@@ -67,6 +67,7 @@ public class RoadrunnerHandler {
      * Internal executor
      */
     private Thread movementExecutor = new Thread(() -> {
+        movementHandler.autonomousRunning = true;
         switch (scheduledMovement) {
             case LEFT:
                 Trajectory left = drive.trajectoryBuilder(drive.getPoseEstimate())
@@ -110,6 +111,7 @@ public class RoadrunnerHandler {
         }
         scheduledMovement = MovementTypes.EMPTY;
         movementHandler.movementEnabled = true;
+        movementHandler.autonomousRunning = false;
         slideHandler.slideMovementEnabled = true;
         requestKill();
     });
