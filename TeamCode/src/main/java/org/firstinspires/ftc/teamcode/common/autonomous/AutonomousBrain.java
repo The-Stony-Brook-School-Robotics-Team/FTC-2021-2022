@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.sbs.bears.robotframework.Robot;
+import org.sbs.bears.robotframework.Sleep;
 import org.sbs.bears.robotframework.controllers.DuckCarouselController;
 import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
 import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
@@ -186,6 +187,30 @@ public class AutonomousBrain {
                 // do nothing
                 return;
             case ONE_INTAKE:
+                new Thread(()->{
+                    boolean isInState = minorState.equals(AutonomousBackForthSubStates.ONE_INTAKE);
+                    while(!didIScoopAnItem && isInState)
+                    {
+                        Sleep.sleep(10);
+                        isInState = minorState.equals(AutonomousBackForthSubStates.ONE_INTAKE);
+                        didIScoopAnItem = intakeCtrlBlue.isObjectInPayload();
+                    }
+                    if(didIScoopAnItem)
+                    {
+                        RRctrl.stopTrajectory();
+                        RRctrl.stopRobot();
+                    }
+                }).start();
+                RRctrl.forward(20,10);
+                // stopped
+                if(didIScoopAnItem)
+                {
+                    minorState = AutonomousBackForthSubStates.TWO_DEPOSIT;
+                    return;
+                }
+                RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
+                return;
+            /*case ONE_INTAKE:
                 Object externMutex = new Object();
                 AtomicReference<Boolean> stopSignal = new AtomicReference<>(Boolean.getBoolean("false"));
                 intakeCtrlBlue.setState(IntakeState.BASE);
@@ -250,10 +275,10 @@ public class AutonomousBrain {
                 }
                 synchronized (externMutex) {
                     didIScoopAnItem = false;
-                }*/
+                }
                 RRctrl.stopRobot(); // make sure robot is stopped.
                 minorState = AutonomousBackForthSubStates.TWO_DEPOSIT;
-                return;
+                return;*/
             case TWO_DEPOSIT: // TODO implement go forward and then turn
                 /*switch(mode) {
                     case BlueSimple:
