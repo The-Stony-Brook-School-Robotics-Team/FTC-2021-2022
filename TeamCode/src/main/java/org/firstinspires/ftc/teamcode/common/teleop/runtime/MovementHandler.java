@@ -199,6 +199,7 @@ class MovementHandlers {
                         -gamepad.right_stick_x
                 )
         );
+        Log.d(interfaceTag, "ABLE TO DRIVE");
         drive.update();
     }
 
