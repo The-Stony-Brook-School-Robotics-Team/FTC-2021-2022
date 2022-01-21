@@ -119,14 +119,11 @@ public class RoadrunnerHandler {
      */
     // TODO: Add an indicator showing if the robot took the movement
     public void scheduleMovement(MovementTypes movementType) {
-        movementHandler.movementEnabled = false;
-        slideHandler.slideMovementEnabled = false;
         if (movementHandler.autonomousRunning) {
             return;
         }
-        if (movementExecutor.isAlive()) {
-
-        }
+        movementHandler.movementEnabled = false;
+        slideHandler.slideMovementEnabled = false;
         if (scheduledMovement != MovementTypes.EMPTY) {
             scheduledMovement = MovementTypes.EMPTY;
         }
