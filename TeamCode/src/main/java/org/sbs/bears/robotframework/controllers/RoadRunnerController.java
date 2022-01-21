@@ -120,13 +120,14 @@ public class RoadRunnerController {
         TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(vel, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
         TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
 
-        drive.followTrajectoryAsync(
+        drive.followTrajectory(
                 drive.trajectoryBuilder(drive.getPoseEstimate())
                         .forward(dist,velocityConstraint,accelerationConstraint)
                         .build()
         );
 
     }
+
 
 
     /**

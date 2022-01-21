@@ -60,4 +60,12 @@ public class AutonomousBlueFull extends OpMode {
             qA = false;
         }
     }
+
+    @Override
+    public void stop() {
+        brain.majorState = AutonomousBrain.AutonomousStates.FINISHED;
+        brain.minorState = AutonomousBrain.AutonomousBackForthSubStates.STOPPED;
+        super.stop();
+
+    }
 }

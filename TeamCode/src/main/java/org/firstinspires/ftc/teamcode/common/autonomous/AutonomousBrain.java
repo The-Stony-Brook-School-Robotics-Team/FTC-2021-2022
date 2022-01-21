@@ -187,6 +187,7 @@ public class AutonomousBrain {
                 // do nothing
                 return;
             case ONE_INTAKE:
+                intakeCtrlBlue.setState(IntakeState.BASE);
                 new Thread(()->{
                     boolean isInState = minorState.equals(AutonomousBackForthSubStates.ONE_INTAKE);
                     while(!didIScoopAnItem && isInState)
@@ -194,14 +195,21 @@ public class AutonomousBrain {
                         Sleep.sleep(10);
                         isInState = minorState.equals(AutonomousBackForthSubStates.ONE_INTAKE);
                         didIScoopAnItem = intakeCtrlBlue.isObjectInPayload();
+                        Log.d("AutonBrainThread","Status: scoop: " + didIScoopAnItem +" state " + isInState);
                     }
+                    Log.d("AutonBrainThread","Status2: scoop: " + didIScoopAnItem +" state " + isInState);
                     if(didIScoopAnItem)
                     {
                         RRctrl.stopTrajectory();
-                        RRctrl.stopRobot();
+                        intakeCtrlBlue.loadItemIntoSlideForAutonomousOnly();
+                        Log.d("AutonBrainThread","Status: loaded");
                     }
                 }).start();
+                Log.d("AutonBrain","Forward init");
                 RRctrl.forward(20,10);
+                Log.d("AutonBrain","Forward done");
+                RRctrl.stopRobot();
+                RRctrl.stopRobot();
                 // stopped
                 if(didIScoopAnItem)
                 {
@@ -210,121 +218,16 @@ public class AutonomousBrain {
                 }
                 RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
                 return;
-            /*case ONE_INTAKE:
-                Object externMutex = new Object();
-                AtomicReference<Boolean> stopSignal = new AtomicReference<>(Boolean.getBoolean("false"));
-                intakeCtrlBlue.setState(IntakeState.BASE);
-
-                new Thread(()->{
-                    boolean isInState = true;
-                    synchronized (externMutex) {
-                        isInState = minorState.equals(AutonomousBackForthSubStates.ONE_INTAKE);
-                    }
-                    while(!intakeCtrlBlue.isObjectInPayload() && isInState) {
-                        try {
-                            Thread.sleep(10);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        synchronized (externMutex) {
-                            isInState = minorState.equals(AutonomousBackForthSubStates.ONE_INTAKE);
-                        }
-                    }
-                    synchronized (externMutex) {
-                        didIScoopAnItem = intakeCtrlBlue.isObjectInPayload();
-                        Log.d("AutonBrain","didIScoopAnItem: " + didIScoopAnItem + " " + isInState);
-                        if(didIScoopAnItem) {
-                            stopSignal.set(Boolean.getBoolean("true"));
-                            RRctrl.haltTrajectory();
-                            RRctrl.stopRobot();
-                        }
-                    } // will halt trajectory in separate thread
-                    intakeCtrlBlue.loadItemIntoSlideForAutonomousOnly(); // approved usage
-                }).start();
-                try {
-                    Thread.sleep(750);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if(didIScoopAnItem)
-                {
-                    // continue
-                    Log.d("AutonBrain","continuing to deposit");
-                    minorState = AutonomousBackForthSubStates.TWO_DEPOSIT;
-                    return;
-                }
-                Log.d("AutonBrain","starting forward: " + didIScoopAnItem + " ");
-                RRctrl.forward(20,10); // interruptible
-                Log.d("AutonBrain","done forward: " + didIScoopAnItem + " ");
-                if(!didIScoopAnItem) {
-                    RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
-                    Log.d("AutonBrain","trying again");
-                    return; // try again
-                }
-                Log.d("AutonBrain","continuing to deposit");
-
-
-
-                //RRctrl.doForwardHaltableTrajectory(30,3,50,40, stopSignal.get(),externMutex);
-                /*if(!didIScoopAnItem) {
-                    RRctrl.followLineToSpline(wareHousePickupPositionBSimp2);
-                    RRctrl.strafeR(5);
-                    counterDidntFind++;
-                    Log.d("AutonBrain","Didnt find item, " + counterDidntFind + "th time");
-                    return;
-                }
-                synchronized (externMutex) {
-                    didIScoopAnItem = false;
-                }
-                RRctrl.stopRobot(); // make sure robot is stopped.
-                minorState = AutonomousBackForthSubStates.TWO_DEPOSIT;
-                return;*/
             case TWO_DEPOSIT: // TODO implement go forward and then turn
-                /*switch(mode) {
-                    case BlueSimple:
-                    case BlueFull:
-                        RRctrl.followLineToSpline(depositObjectPositionBsimp);
-                    case BlueSpline:
-                        RRctrl.followLineToSpline(depositObjectPositionBspl);
-                    case RedSimple:
-                        RRctrl.followLineToSpline(depositObjectPositionRsimp);
-                    case RedSpline:
-                        RRctrl.followLineToSpline(depositObjectPositionRspl);
-                }*/
-                RRctrl.followLineToSpline(depositObjectPositionBsimp); // TODO reput switch for all possible autonomi
-                //minorState = AutonomousBackForthSubStates.THREE_SLIDE_OUT_IN;
-                minorState = AutonomousBackForthSubStates.STOPPED;
-                majorState = AutonomousStates.FINISHED;
-                counter++; // 1 after first run, 2 after second.
-                /*while(!AutonomousBlueFull.gamepad.b) {
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }*/
-                /*if (counter == 2) {
-                    minorState = AutonomousBackForthSubStates.STOPPED;
-                    majorState = AutonomousStates.STOPPED;
-                    return;
-                }*/
-                //majorState = AutonomousStates.FINISHED; // stop.
+                RRctrl.followLineToSpline(depositObjectPositionBsimp);
+                RRctrl.followLineToSpline(depositObjectPositionBsimp2);
+                minorState = AutonomousBackForthSubStates.THREE_SLIDE_OUT_IN;
                 return;
             case THREE_SLIDE_OUT_IN:
                 slideCtrl.extendDropRetract(targetNormal);
                 minorState = AutonomousBackForthSubStates.FOUR_BACKWARD;
                 return;
             case FOUR_BACKWARD:
-                /*switch(mode) {
-                    case BlueSimple:
-                        RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
-                    case BlueSpline:
-                        RRctrl.followLineToSpline(wareHousePickupPositionBSpl);
-                    case RedSimple:
-                        RRctrl.followLineToSpline(wareHousePickupPositionRSimp);
-                    case RedSpline:
-                        RRctrl.followLineToSpline(wareHousePickupPositionRSpl);
-                }*/
                 RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
                 minorState = AutonomousBackForthSubStates.ONE_INTAKE;
                 return;
@@ -358,7 +261,9 @@ public class AutonomousBrain {
     public static Pose2d wareHousePickupPositionRSimp = new Pose2d(54.5,-65.5,Math.PI);
     public static Pose2d wareHousePickupPositionRSpl = new Pose2d(71, -34, Math.PI/2);
 
-    public static Pose2d depositObjectPositionBsimp = new Pose2d(-19,65.5,0);
+
+    public static Pose2d depositObjectPositionBsimp = new Pose2d(14,65.5,0);
+    public static Pose2d depositObjectPositionBsimp2 = new Pose2d(5.58,64.47,-Math.toRadians(52));
     // TODO TODO TODO MEASURE THE POSITION TO TURN AND DEPOSIT!!!!!
     // just replace the variable above.
 
