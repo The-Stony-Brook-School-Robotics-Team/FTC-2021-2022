@@ -32,7 +32,7 @@ public class MovementHandler {
     /**
      * Movement Disabled
      */
-    public static boolean movementEnabled = true;
+    public static volatile boolean movementEnabled = true;
 
     /**
      * Interface Tag
@@ -180,27 +180,32 @@ class MovementHandlers {
     }
 
     private static void defaultRunner() {
-        if (!MovementHandler.movementEnabled) {
-            drive.setWeightedDrivePower(new Pose2d());
-            return;
-        }
-        if (MovementHandler.autonomousRunning) {
-            drive.setWeightedDrivePower(new Pose2d());
-            return;
-        }
-        if (MovementHandler.currentDriverMode != MovementHandler.DriverMode.DRIVER) {
-            drive.setWeightedDrivePower(new Pose2d());
-            return;
-        }
-        drive.setWeightedDrivePower(
-                new Pose2d(
-                        -gamepad.left_stick_x,
-                        gamepad.left_stick_y,
-                        -gamepad.right_stick_x
-                )
-        );
-        Log.d(interfaceTag, "ABLE TO DRIVE");
-        drive.update();
+        Log.d(interfaceTag, "Movement Enabled: " + movementHandler.movementEnabled);
+        Log.d(interfaceTag, "Movement Autonomous Running: " + movementHandler.autonomousRunning);
+        Log.d(interfaceTag, "Movement Current Driver Mode: " + movementHandler.currentDriverMode);
+        return;
+//
+//        if (!MovementHandler.movementEnabled) {
+//            drive.setWeightedDrivePower(new Pose2d());
+//            return;
+//        }
+//        if (MovementHandler.autonomousRunning) {
+//            drive.setWeightedDrivePower(new Pose2d());
+//            return;
+//        }
+//        if (MovementHandler.currentDriverMode != MovementHandler.DriverMode.DRIVER) {
+//            drive.setWeightedDrivePower(new Pose2d());
+//            return;
+//        }
+//        drive.setWeightedDrivePower(
+//                new Pose2d(
+//                        -gamepad.left_stick_x,
+//                        gamepad.left_stick_y,
+//                        -gamepad.right_stick_x
+//                )
+//        );
+//        Log.d(interfaceTag, "ABLE TO DRIVE");
+//        drive.update();
     }
 
     private static void slowRunner() {
