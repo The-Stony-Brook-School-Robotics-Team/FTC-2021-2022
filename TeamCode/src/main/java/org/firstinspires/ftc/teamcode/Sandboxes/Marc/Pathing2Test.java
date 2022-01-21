@@ -18,7 +18,6 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  * @author Marc N
  * @version 2.2
  */
-@TeleOp(name="U - PathingTuner")
 public class Pathing2Test extends LinearOpMode {
     // MARK - Class Variables
 

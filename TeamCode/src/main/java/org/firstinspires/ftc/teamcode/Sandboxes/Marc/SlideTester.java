@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.sbs.bears.robotframework.controllers.SlideController;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 
-@TeleOp
 public class SlideTester extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

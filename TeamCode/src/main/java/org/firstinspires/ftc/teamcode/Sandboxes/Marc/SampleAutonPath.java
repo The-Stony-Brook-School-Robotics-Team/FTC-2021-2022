@@ -31,8 +31,6 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunne
  * @author Marc N
  * @version 5.1
  */
-@TeleOp(name="A - Sample Autonomous Path")
-@Config
 public class SampleAutonPath extends LinearOpMode {
     // MARK - Class Variables
     public static PIDCoefficients SPLINE_TRANSLATIONAL_PID = new PIDCoefficients(20, .2, .5);

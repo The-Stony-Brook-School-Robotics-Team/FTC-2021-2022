@@ -12,7 +12,6 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 
-@TeleOp(name = "P - Winston Movement2", group = "default")
 public class WinstonMovementTest2 extends LinearOpMode {
 
     private static Pose2d homePose = new Pose2d(0, 0,0);

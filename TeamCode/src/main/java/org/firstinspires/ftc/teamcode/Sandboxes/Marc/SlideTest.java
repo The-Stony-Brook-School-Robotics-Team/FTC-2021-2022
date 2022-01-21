@@ -12,8 +12,6 @@ import org.sbs.bears.robotframework.controllers.SlideController;
 import org.sbs.bears.robotframework.enums.IntakeState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 
-@TeleOp
-@Config
 public class SlideTest extends OpMode {
     Robot robot;
     SlideController slideCtrl;

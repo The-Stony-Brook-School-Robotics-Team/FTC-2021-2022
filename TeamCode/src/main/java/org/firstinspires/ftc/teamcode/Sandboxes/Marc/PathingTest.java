@@ -17,7 +17,6 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  * @author Marc N
  * @version 2.2
  */
-@Autonomous(name="A - 72R24R72 Pathing Test")
 public class PathingTest extends LinearOpMode {
     // MARK - Class Variables
 

@@ -17,7 +17,6 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
  * @author Marc N.
  * @version 5.1
  */
-@Autonomous(name="A - OpenCV Duck Analysis")
 public class OpenCVSample extends OpMode {
 
     // MARK - Class Variables
