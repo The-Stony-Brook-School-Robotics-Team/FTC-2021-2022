@@ -51,14 +51,13 @@ public class AutonomousBlueFull extends OpMode {
             qContinue = false;
         }
         qContinue = true;
-       /* if(gamepad1.a && !qA) {
+        if(gamepad1.a && !qA) {
             qA = true;
             qContinue = true;
             return;
         }
         else if (!gamepad1.a && qA) {
             qA = false;
-        }*/
-
+        }
     }
 }

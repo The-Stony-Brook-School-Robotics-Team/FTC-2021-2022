@@ -23,6 +23,7 @@ import org.sbs.bears.robotframework.enums.SlideTarget;
 public class SlideTesting extends LinearOpMode
 {
     boolean pA = false, pUp = false, pDown = false;
+    boolean pY = false;
     SlideController slideController;
 SampleMecanumDrive drive;
 IntakeControllerBlue bu;
@@ -49,6 +50,12 @@ drive = new SampleMecanumDrive(hardwareMap);
                             -gamepad1.right_stick_x
                     )
             );
+            if(gamepad1.y && !pY) {
+                slideController.retractSlide();
+                pY = true;
+            } else if(!gamepad1.y && pY) {
+                pY = false;
+            }
 
             if(gamepad1.a && !pA) {
                 //drive.setWeightedDrivePower(new Pose2d());
@@ -62,13 +69,6 @@ drive = new SampleMecanumDrive(hardwareMap);
                 drive.followTrajectory(drive.trajectoryBuilder(currentPos)
                         .lineToSplineHeading(target,velocityConstraint,accelerationConstraint)
                         .build());
-                /*   if(slideOut) {
-                    slideController.retractSlide();
-                    slideOut = true;
-                } else if(!slideOut) {
-                    slideController.extendSlide();
-                    slideOut = false;
-                }*/
                 pA = true;
             } else if(!gamepad1.a && pA) {
                 pA = false;
@@ -78,13 +78,13 @@ drive = new SampleMecanumDrive(hardwareMap);
                 //drive.setWeightedDrivePower(new Pose2d());
                 double stickValue = gamepad1.right_stick_y * -0.2;
                 slideController.incrementEncoderPosition((int) (stickValue * Configuration.DefaultSlideTicks));
-                Log.d("SLIDE TESTER", "Current Slide Motor Ticks: " + slideController.getSlideMotorPosition());
+                //Log.d("SLIDE TESTER", "Current Slide Motor Ticks: " + slideController.getSlideMotorPosition());
             }
 
             if(gamepad1.dpad_up && !pUp) {
                 drive.setWeightedDrivePower(new Pose2d());
                 slideController.incrementVerticalServo(0.02);
-                Log.d("SLIDE TESTER", "Current Slide Servo Position: " + slideController.getVerticalServoPosition());
+                //Log.d("SLIDE TESTER", "Current Slide Servo Position: " + slideController.getVerticalServoPosition());
                 pUp = true;
             } else if(!gamepad1.dpad_up && pUp) {
                 pUp = false;
@@ -93,7 +93,7 @@ drive = new SampleMecanumDrive(hardwareMap);
             if(gamepad1.dpad_down && !pDown) {
                 drive.setWeightedDrivePower(new Pose2d());
                 slideController.incrementVerticalServo(-0.02);
-                Log.d("SLIDE TESTER", "Current Slide Servo Position: " + slideController.getVerticalServoPosition());
+                //Log.d("SLIDE TESTER", "Current Slide Servo Position: " + slideController.getVerticalServoPosition());
                 pDown = true;
             } else if(!gamepad1.dpad_down && pDown) {
                 pDown = false;

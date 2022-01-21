@@ -142,7 +142,7 @@ public class AutonomousBrain {
                 RRctrl.followLineToSpline(wareHousePickupPositionBSimpIntermediate2);
                 RRctrl.setPos(new Pose2d(-35,65.5,0));
                 RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
-                majorState = AutonomousStates.SIX_PARKING_WAREHOUSE;
+                majorState = AutonomousStates.FIVE_BACK_FORTH;
                 return;
             case FIVE_BACK_FORTH:
                 doBackForth();
@@ -189,6 +189,7 @@ public class AutonomousBrain {
                 Object externMutex = new Object();
                 AtomicReference<Boolean> stopSignal = new AtomicReference<>(Boolean.getBoolean("false"));
                 intakeCtrlBlue.setState(IntakeState.BASE);
+
                 new Thread(()->{
                     boolean isInState = true;
                     synchronized (externMutex) {
@@ -206,7 +207,7 @@ public class AutonomousBrain {
                     }
                     synchronized (externMutex) {
                         didIScoopAnItem = intakeCtrlBlue.isObjectInPayload();
-                        Log.d("AutonBrain","didIScoopAnItem: " + didIScoopAnItem);
+                        Log.d("AutonBrain","didIScoopAnItem: " + didIScoopAnItem + " " + isInState);
                         if(didIScoopAnItem) {
                             stopSignal.set(Boolean.getBoolean("true"));
                             RRctrl.haltTrajectory();
@@ -220,11 +221,23 @@ public class AutonomousBrain {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                if(didIScoopAnItem)
+                {
+                    // continue
+                    Log.d("AutonBrain","continuing to deposit");
+                    minorState = AutonomousBackForthSubStates.TWO_DEPOSIT;
+                    return;
+                }
+                Log.d("AutonBrain","starting forward: " + didIScoopAnItem + " ");
                 RRctrl.forward(20,10); // interruptible
+                Log.d("AutonBrain","done forward: " + didIScoopAnItem + " ");
                 if(!didIScoopAnItem) {
                     RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
+                    Log.d("AutonBrain","trying again");
                     return; // try again
                 }
+                Log.d("AutonBrain","continuing to deposit");
+
 
 
                 //RRctrl.doForwardHaltableTrajectory(30,3,50,40, stopSignal.get(),externMutex);
@@ -239,7 +252,6 @@ public class AutonomousBrain {
                     didIScoopAnItem = false;
                 }*/
                 RRctrl.stopRobot(); // make sure robot is stopped.
-
                 minorState = AutonomousBackForthSubStates.TWO_DEPOSIT;
                 return;
             case TWO_DEPOSIT: // TODO implement go forward and then turn
@@ -256,7 +268,8 @@ public class AutonomousBrain {
                 }*/
                 RRctrl.followLineToSpline(depositObjectPositionBsimp); // TODO reput switch for all possible autonomi
                 //minorState = AutonomousBackForthSubStates.THREE_SLIDE_OUT_IN;
-                minorState = AutonomousBackForthSubStates.THREE_SLIDE_OUT_IN;
+                minorState = AutonomousBackForthSubStates.STOPPED;
+                majorState = AutonomousStates.FINISHED;
                 counter++; // 1 after first run, 2 after second.
                 /*while(!AutonomousBlueFull.gamepad.b) {
                     try {
@@ -312,7 +325,7 @@ public class AutonomousBrain {
     public static Pose2d wareHousePickupPositionBSimpIntermediate = new Pose2d(-45,63,0);
     public static Pose2d wareHousePickupPositionBSimpIntermediate2 = new Pose2d(-35,70,0);
     public static Pose2d wareHousePickupPositionRSimpIntermediate = new Pose2d(-45,-66,0);
-    public static Pose2d wareHousePickupPositionBSimp = new Pose2d(30,65.5,0);
+    public static Pose2d wareHousePickupPositionBSimp = new Pose2d(40,65.5,0);
     public static Pose2d wareHousePickupPositionBSimp2 = new Pose2d(38,65.5,0);
 
 
