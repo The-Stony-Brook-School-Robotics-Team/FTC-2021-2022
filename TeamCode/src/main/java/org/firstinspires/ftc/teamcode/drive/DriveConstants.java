@@ -6,16 +6,16 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 @Config
 public class DriveConstants {
 
-    public static final double TICKS_PER_REV = 380;
-    public static final double MAX_RPM = 400;
+    public static final double TICKS_PER_REV = 384.5;
+    public static final double MAX_RPM = 435;
 
     public static boolean RUN_USING_ENCODER = false;
     public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(0, 0, 0,
             0);
 
-    public static double WHEEL_RADIUS = 1.5; // in
-    public static double GEAR_RATIO = 1.46; // 14.0 / 8; // output (wheel) speed / input (motor) speed 8/14
-    public static double TRACK_WIDTH = 10; // in
+    public static double WHEEL_RADIUS = 1.7; // in
+    public static double GEAR_RATIO = 1.5; // 14.0 / 8; // output (wheel) speed / input (motor) speed 8/14
+    public static double TRACK_WIDTH = 9.5; // in 10
 
     public static double kV = 0.0099;
     public static double kA = 0.00384;
