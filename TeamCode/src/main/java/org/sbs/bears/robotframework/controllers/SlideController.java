@@ -27,10 +27,7 @@ public class SlideController {
 
     public DcMotorEx slideMotor;
 
-
-    // TODO: determine which states are necessary and create variables and state machine
-
-    public SlideState slideState = SlideState.PARKED; // low-level steps
+    public SlideState slideState = SlideState.PARKED;
     public SlideTarget targetParams = SlideTarget.NA;
     private boolean flagToLeave = false;
 
@@ -54,7 +51,6 @@ public class SlideController {
         slideMotor.setTargetPosition(0); // should be where it reset to
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        //verticalServo.setDirection(Servo.Direction.REVERSE);
     }
 
     public void extendDropRetract(SlideTarget target)
@@ -95,36 +91,21 @@ public class SlideController {
                 e.printStackTrace();
             }
             dumperServo.setPosition(dumperPosition_HOLDBLOCK);
-            //}
-            // else {
-            //   Log.d("SlideController","Assert for slide out fully failed; dont release the cube in transit!");
         }
     }
 
     public void retractSlide() {
         slideState = SlideState.RETRACTING;
         doStateAction();
-        //Log.d("SlideController","Should be right outside " + slideMotor.getCurrentPosition() + " " + verticalServo.getPosition());
-        //slideState = SlideState.RET_BUCKET_IN;
-        //doStateAction();
         Log.d("SlideController","Should be inside " + slideMotor.getCurrentPosition() + " " + verticalServo.getPosition());
         slideState = SlideState.PARKED;
     }
 
     public void extendSlide() {
-        //slideState = SlideState.EXT_BUCKET_IN;
-        //doStateAction();
         Log.d("SlideController","bucket should be out");
         slideState = SlideState.EXTENDING;
         doStateAction();
         Log.d("SlideController","slide should be extended");
-       // if(flagToLeave)
-        //{
-         //   slideState = SlideState.RET_BUCKET_IN;
-          //  doStateAction();
-           // slideState = SlideState.PARKED;
-            //return;
-        //}
         slideState = SlideState.OUT_FULLY;
     }
 
@@ -138,25 +119,8 @@ public class SlideController {
         switch(slideState) {
             case PARKED:
             case OUT_FULLY:
-                //slideMotor.setPower(slideMotorPowerStill);
                 return;
-         //   case EXT_BUCKET_IN:
-//
-         //    //   slideMotor.setPower(slideMotorPowerMovingWBucketInside);
-         //       targetPos = slideMotorPosition_BUCKET_OUT;
-         //       slideMotor.setTargetPosition(targetPos);
-         //       while (slideMotor.isBusy()) {
-         //           try {
-         //               Thread.sleep(10);
-         //           } catch (InterruptedException e) {
-         //               e.printStackTrace();
-         //           }
-         //       }
-         //       //slideMotor.setPower(slideMotorPowerStill);
-         //       return;
             case EXTENDING:
-
-                //slideMotor.setPower(slideMotorPowerStill);
                 switch (targetParams) {
                     case ONE_CAROUSEL:
                         targetPosFinal = slideMotorPosition_ONE_CAROUSEL;
@@ -181,7 +145,6 @@ public class SlideController {
                 }
                 slideMotor.setTargetPosition(targetPosFinal);
                 slideMotor.setPower(slideMotorPowerMoving);
-                //setHeightToParams(verticalServoTargetPos);
                 while(slideMotor.getCurrentPosition() < slideMotorPosition_BUCKET_OUT){
                     try {
                         Thread.sleep(10);
@@ -198,30 +161,12 @@ public class SlideController {
                        e.printStackTrace();
                    }
                }
-                slideMotor.setPower(0);
-                slideMotor.setTargetPosition(slideMotor.getCurrentPosition());
-                slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                slideMotor.setPower(0);
-                slideMotor.setTargetPosition(slideMotor.getCurrentPosition());
-                slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slideMotor.setPower(0);
-            //   dropCube();
-//
-                /*while (slideMotor.isBusy()) {
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }*/
-                //slideMotor.setPower(slideMotorPowerStill);
+                hardStopReset();
                 return;
             case RETRACTING:
-                //targetPos = slideMotorPosition_BUCKET_OUT;
                 targetPos = slideMotorPosition_PARKED;
                 slideMotor.setPower(slideMotorPowerMoving);
                 slideMotor.setTargetPosition(targetPos);
-                //setHeightToParams(vertServoPosition_PARKED);
                 while(slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT+300){
                     try {
                         Thread.sleep(10);
@@ -229,55 +174,23 @@ public class SlideController {
                         e.printStackTrace();
                     }
                 }
-                // targetPos = slideMotorPosition_BUCKET_OUT;
-                // slideMotor.setTargetPosition(targetPos);
                 slideMotor.setPower(slideMotorPowerMovingBack);
 
                 setHeightToParams(vertServoPosition_PARKED);
-                //   while (slideMotor.isBusy()) {
-                //      try {
-                //           Thread.sleep(10);
-                ///       } catch (InterruptedException e) {
-                //            e.printStackTrace();
-                //         }
-                //     }
-
-                //slideMotor.setPower(slideMotorPowerStill);
                 while(slideMotor.isBusy()){
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    if(!magswitch.getState()) // magswitch activated.
+                    if(!magswitch.getState())
                     {
-                        // STOPP!!!!
-                        slideMotor.setPower(0);
-                        slideMotor.setTargetPosition(slideMotor.getCurrentPosition());
-                        slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                        slideMotor.setPower(0);
+                        hardStopReset();
                         break;
                     }
                 }
-                slideMotor.setTargetPosition(slideMotor.getCurrentPosition());
-                slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slideMotor.setPower(0);
-               // Log.d("PIDF","" + slideMotor.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION));
                 return;
-           /* case RET_BUCKET_IN:
-                targetPos = slideMotorPosition_PARKED;
-                slideMotor.setPower(slideMotorPowerMovingWBucketInside);
-                slideMotor.setTargetPosition(targetPos);
-                while (slideMotor.isBusy()) {
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                //slideMotor.setPower(slideMotorPowerStill);
-                return;
-        */}
+           }
     }
 
 
@@ -348,47 +261,11 @@ public class SlideController {
         return;
     }
 
-    //TODO: i dont know why it dont be working
-    public void setToInchPosition(double inches){
-        slideState = SlideState.TELEOP;
-        inches = encoderInchesToTicks(inches);
-        //Checks if the position given is a position that would put the box inside of the robot
-        if(inches>slideMotorPosition_FULL){return;}
-        if((inches < slideMotorPosition_BUCKET_OUT) && (slideState != SlideState.PARKED && slideState != SlideState.EXT_BUCKET_IN)){
-            Log.d("SlideController","Gave an encoder position with the box inside of the robot");
-            retractSlide();
-            return;
-        }
-        else if(inches < slideMotorPosition_BUCKET_OUT){
-            Log.d("SlideController","Gave an encoder position with the box inside of the robot");
-            return;
-        }
-        //If the slide is not extended, extend it to the minimum position.
-        if(slideState == SlideState.PARKED){
-            slideState = SlideState.EXT_BUCKET_IN;
-            doStateAction();
-            //slideState = SlideState.EXT_BUCKET_OUT;
-        }
-        //Checks if the slide is in a position to move
-        slideMotor.setPower(slideMotorPowerMoving);
-        slideMotor.setTargetPosition((int)inches);
-        while(slideMotor.isBusy())
-        {
-            Sleep.sleep(10);
-        }
-        slideMotor.setPower(slideMotorPowerStill);
-
-        return;
 
 
-    }
     public void incrementEncoderPosition(int encoderTicks){
 
         slideState = SlideState.TELEOP;
-        // if(slideMotor.isBusy()){
-        //    return;
-        //}
-
 
         encoderTicks += slideMotor.getCurrentPosition();
         //Checks if the position given is a position that would put the box inside of the robot
@@ -400,57 +277,16 @@ public class SlideController {
         slideMotor.setPower(slideMotorPowerMoving);
         slideMotor.setTargetPosition(encoderTicks);
         slideMotor.setPower(slideMotorPowerMoving);
-        // while(slideMotor.isBusy())
-        //{
-        //  Sleep.sleep(10);
-        //}
-        //if(!slideMotor.isBusy()){
-        //  slideMotor.setPower(slideMotorPowerStill);
-        //}
-        return;
-    }
-    public void incrementInchPosition(double inches){
-        slideState = SlideState.TELEOP;
-        inches = encoderInchesToTicks(inches);
-        inches += slideMotor.getCurrentPosition();
-        //Checks if the position given is a position that would put the box inside of the robot
-        if(inches > slideMotorPosition_FULL){return;}
-        if(inches < slideMotorPosition_BUCKET_OUT){
-            Log.d("SlideController","Gave an encoder position with the box inside of the robot");
-            if(inches < 0){
-                retractSlide();
-                return;
-            }
-            if(inches > 0){
-                extendSlide();
-                return;
-            }
-        }
-        //If the slide is not extended, extend it to the minimum position.
-        if(slideState == SlideState.PARKED){
-            slideState = SlideState.EXT_BUCKET_IN;
-            doStateAction();
-            //slideState = SlideState.EXT_BUCKET_OUT;
-        }
-        //Checks if the slide is in a position to move
-        slideMotor.setPower(slideMotorPowerMoving);
-        slideMotor.setTargetPosition((int)inches);
-        while(slideMotor.isBusy())
-        {
-            Sleep.sleep(10);
-        }
-        slideMotor.setPower(slideMotorPowerStill);
-        return;
 
+        return;
     }
+
 
     public void incrementVerticalServo(double servoPosition){
         servoPosition += verticalServo.getPosition();
         if(servoPosition > vertServoPosition_FULL_MAX){return;}
-        Log.d("stupid michael", "servo " + verticalServo.getPosition());
-        //if((slideState == SlideState.PARKED || slideState == SlideState.EXT_BUCKET_IN) && (servoPosition > vertServoPosition_PARKED_MAX || servoPosition < vertServoPosition_PARKED_MIN)){return;}
-
         setHeightToParams(servoPosition);
+        Log.d("Servo Increment: ", "servo " + verticalServo.getPosition());
         return;
 
     }
@@ -468,12 +304,21 @@ public class SlideController {
         return ticks * 145.1 / .785 / 2 / Math.PI;
     }
 
+    private void hardStopReset(){
+        //STOP!!!!!!!!!!!!
+        slideMotor.setPower(0);
+        slideMotor.setTargetPosition(slideMotor.getCurrentPosition());
+        slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        slideMotor.setPower(0);
+        slideMotor.setTargetPosition(slideMotor.getCurrentPosition());
+        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideMotor.setPower(0);
 
+    }
 
 
     // TODO MEASURE ALL CONSTANTS
-
-    // vertical servo
+    
 
     double vertServoPosition_PARKED = 0;
     double vertServoPosition_ONE_CAROUSEL = 0.175;
