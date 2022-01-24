@@ -103,7 +103,7 @@ public class RoadrunnerHandler {
                 Log.d(interfaceTag, "Starting to pivot");
                 drive.setPoseEstimate(new Pose2d(14, 65.5, 0));
                 Pose2d currentPos = drive.getPoseEstimate();
-                Pose2d target = new Pose2d(5.58, 64.47, -Math.toRadians(52));
+                Pose2d target = new Pose2d(5.58, 64.47, -Math.toRadians(58));
                 drive.followTrajectory(drive.trajectoryBuilder(currentPos)
                         .lineToSplineHeading(target, velocityConstraint, accelerationConstraint)
                         .build());
