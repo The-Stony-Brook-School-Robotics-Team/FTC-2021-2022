@@ -132,7 +132,6 @@ public class AutonomousBrain {
                 duckCtrl.spinOneDuck();
                 Log.d("AutonBrain","duck finished");
                 RRctrl.stopTrajectory();
-                majorState = AutonomousStates.FINISHED;
 
                 mode = AutonomousMode.BlueSimple;
                 majorState = AutonomousStates.FOUR_DRIVE_TO_WAREHOUSE;
@@ -142,6 +141,7 @@ public class AutonomousBrain {
                 RRctrl.followLineToSpline(wareHousePickupPositionBSimpIntermediate);
                 RRctrl.followLineToSpline(wareHousePickupPositionBSimpIntermediate2);
                 RRctrl.setPos(new Pose2d(-35,65.5,0));
+                intakeCtrlBlue.setState(IntakeState.BASE);
                 RRctrl.followLineToSpline(wareHousePickupPositionBSimp,20);
                 majorState = AutonomousStates.FIVE_BACK_FORTH;
                 return;
@@ -154,23 +154,19 @@ public class AutonomousBrain {
                 }
                 // time check
                double currentTime = NanoClock.system().seconds();
-                if(currentTime-iniTime > 25) {
+                if(currentTime-iniTime > 35) {
+                    Log.d("AutonBrain","Time Constraint: parking");
                     majorState = AutonomousStates.SIX_PARKING_WAREHOUSE;
                 }
                 return;
             case SIX_PARKING_WAREHOUSE:
-                /*switch(mode) {
-                    case BlueSimple:
-                        RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
-                    case BlueSpline:
-                        RRctrl.followLineToSpline(wareHousePickupPositionBSpl);
-                    case RedSimple:
-                        RRctrl.followLineToSpline(wareHousePickupPositionRSimp);
-                    case RedSpline:
-                        RRctrl.followLineToSpline(wareHousePickupPositionRSpl);
-                }*/
+                Log.d("AutonBrain","parking1");
                 intakeCtrlBlue.setState(IntakeState.PARK);
+                Log.d("AutonBrain","parking2");
+                RRctrl.followLineToSpline(resetpositionWarehouseBsimp);
+                Log.d("AutonBrain","parking3");
                 RRctrl.followLineToSpline(wareHousePickupPositionBSimp2);
+                Log.d("AutonBrain","parking4");
                 majorState = AutonomousStates.FINISHED;
                 return;
             case FINISHED:
@@ -190,6 +186,7 @@ public class AutonomousBrain {
                 intakeCtrlBlue.setState(IntakeState.BASE);
                 new Thread(()->{
                     boolean isInState = minorState.equals(AutonomousBackForthSubStates.ONE_INTAKE);
+                    Log.d("AutonBrainThread","Status0: scoop: " + didIScoopAnItem +" state " + isInState);
                     while(!didIScoopAnItem && isInState)
                     {
                         Sleep.sleep(10);
@@ -214,24 +211,30 @@ public class AutonomousBrain {
                 if(didIScoopAnItem)
                 {
                     minorState = AutonomousBackForthSubStates.TWO_DEPOSIT;
+                    Log.d("AutonBrain","Continuing to deposit");
                     return;
                 }
                 RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
+                Log.d("AutonBrain","Retrying to find a block");
                 return;
             case TWO_DEPOSIT: // TODO implement go forward and then turn
                 RRctrl.followLineToSpline(depositObjectPositionBsimp);
                 RRctrl.followLineToSpline(depositObjectPositionBsimp2);
+                Log.d("AutonBrain","Prepare for drop off");
                 minorState = AutonomousBackForthSubStates.THREE_SLIDE_OUT_IN;
                 return;
             case THREE_SLIDE_OUT_IN:
                 slideCtrl.extendDropRetract(targetNormal);
+                Log.d("AutonBrain","Slide drop complete");
                 minorState = AutonomousBackForthSubStates.FOUR_BACKWARD;
                 return;
             case FOUR_BACKWARD:
                 RRctrl.followLineToSpline(resetpositionWarehouseBsimp);
                 RRctrl.setPos(new Pose2d(14,65.5,0));
+                Log.d("AutonBrain","intake prepped");
                 intakeCtrlBlue.setState(IntakeState.BASE);
                 RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
+                Log.d("AutonBrain","reset status and init for intake");
                 didIScoopAnItem = false; // reset
                 minorState = AutonomousBackForthSubStates.ONE_INTAKE;
                 return;

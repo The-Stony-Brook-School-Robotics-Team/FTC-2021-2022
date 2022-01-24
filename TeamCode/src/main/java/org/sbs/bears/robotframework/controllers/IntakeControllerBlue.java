@@ -61,7 +61,7 @@ public class IntakeControllerBlue {
     public void loadItemIntoSlideForAutonomousOnly() {
         setState(IntakeState.DUMP);
         try {
-            Thread.sleep(1000);
+            Thread.sleep(1500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
