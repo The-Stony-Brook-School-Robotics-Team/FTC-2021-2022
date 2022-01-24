@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
-
+@TeleOp
 public class RoadRunnerTrajectories extends LinearOpMode {
 DcMotor m1;
 double Gain = 0.5;
