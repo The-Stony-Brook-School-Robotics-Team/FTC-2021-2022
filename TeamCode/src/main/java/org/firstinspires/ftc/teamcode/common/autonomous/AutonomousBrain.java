@@ -230,7 +230,9 @@ public class AutonomousBrain {
             case FOUR_BACKWARD:
                 RRctrl.followLineToSpline(resetpositionWarehouseBsimp);
                 RRctrl.setPos(new Pose2d(14,65.5,0));
+                intakeCtrlBlue.setState(IntakeState.BASE);
                 RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
+                didIScoopAnItem = false; // reset
                 minorState = AutonomousBackForthSubStates.ONE_INTAKE;
                 return;
 
@@ -255,7 +257,7 @@ public class AutonomousBrain {
     public static Pose2d wareHousePickupPositionBSimpIntermediate = new Pose2d(-45,63,0);
     public static Pose2d wareHousePickupPositionBSimpIntermediate2 = new Pose2d(-35,70,0);
     public static Pose2d wareHousePickupPositionRSimpIntermediate = new Pose2d(-45,-66,0);
-    public static Pose2d wareHousePickupPositionBSimp = new Pose2d(40,65.5,0);
+    public static Pose2d wareHousePickupPositionBSimp = new Pose2d(35,65.5,0);
     public static Pose2d wareHousePickupPositionBSimp2 = new Pose2d(38,65.5,0);
 
 
@@ -265,7 +267,7 @@ public class AutonomousBrain {
 
 
     public static Pose2d depositObjectPositionBsimp = new Pose2d(14,65.5,0);
-    public static Pose2d depositObjectPositionBsimp2 = new Pose2d(5.58,64.47,-Math.toRadians(57));
+    public static Pose2d depositObjectPositionBsimp2 = new Pose2d(5.58,64.47,-Math.toRadians(58));
     public static Pose2d resetpositionWarehouseBsimp = new Pose2d(14,80,0);
 
     // TODO TODO TODO MEASURE THE POSITION TO TURN AND DEPOSIT!!!!!
