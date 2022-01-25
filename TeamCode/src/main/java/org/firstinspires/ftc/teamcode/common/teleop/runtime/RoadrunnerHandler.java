@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.common.teleop.runtime;
 
+import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.blueIntake;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.drive;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.movementHandler;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideController;
@@ -15,6 +16,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityCons
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.sbs.bears.robotframework.enums.IntakeState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 
 /**
@@ -160,6 +162,9 @@ public class RoadrunnerHandler {
                         .forward(24)
                         .build());
 
+                Log.d(interfaceTag, "Dropping blue intake");
+                // Drop Blue Intake
+                blueIntake.setState(IntakeState.BASE);
                 break;
         }
         scheduledMovement = MovementTypes.EMPTY;

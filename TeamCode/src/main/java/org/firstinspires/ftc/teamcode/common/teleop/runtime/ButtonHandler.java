@@ -138,8 +138,8 @@ public class ButtonHandler {
                     if(gamepad.right_stick_y > Configuration.rightStickXLimitTrigger || gamepad.right_stick_y < (Configuration.rightStickXLimitTrigger * -1)) {
                         slideHandler.manualSlideController((int)gamepad.right_stick_y);
                     }
-                    // X
-                    if(gamepad.x && controllerMode == ControllerModes.SECONDARY && OfficialTeleop.normalizedColorSensor.getNormalizedColors().alpha > Configuration.colorSensorWhiteAlpha) {
+                    // B
+                    if(gamepad.b && controllerMode == ControllerModes.SECONDARY && OfficialTeleop.normalizedColorSensor.getNormalizedColors().alpha > Configuration.colorSensorWhiteAlpha) {
                         if(!roadrunnerHandler.isBusy) {
                             roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.WAREHOUSE_AUTO_TURN);
                         }
