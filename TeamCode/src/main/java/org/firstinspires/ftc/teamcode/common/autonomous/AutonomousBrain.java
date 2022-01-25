@@ -203,7 +203,7 @@ public class AutonomousBrain {
                     }
                 }).start();
                 Log.d("AutonBrain","Forward init");
-                RRctrl.forward(20,10);
+                RRctrl.forward(40,10);
                 Log.d("AutonBrain","Forward done");
                 RRctrl.stopRobot();
                 RRctrl.stopRobot();

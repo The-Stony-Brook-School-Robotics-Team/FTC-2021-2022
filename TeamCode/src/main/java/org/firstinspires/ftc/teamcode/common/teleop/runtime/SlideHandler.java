@@ -38,7 +38,7 @@ public class SlideHandler {
         if(slideMovementEnabled != true) { return; }
         if(!slideMoving) {
             slideMoving = true;
-            slideController.extendDropRetract(SlideTarget.THREE_CAROUSEL);
+            slideController.extendDropRetract(SlideTarget.THREE_DEPOSIT);
             slideMoving = false;
         }
     }

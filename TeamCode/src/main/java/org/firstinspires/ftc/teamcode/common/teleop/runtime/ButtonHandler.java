@@ -58,15 +58,10 @@ public class ButtonHandler {
                         isPressingA = false;
                     }
                     // B
-                    if(gamepad.b && !isPressingB) {
+                    if(gamepad.b && controllerMode == ControllerModes.SECONDARY && OfficialTeleop.normalizedColorSensor.getNormalizedColors().alpha > Configuration.colorSensorWhiteAlpha) {
                         if(!roadrunnerHandler.isBusy) {
-                            roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.TURN_ABOUT_WHEEL);
-                        } else {
-                            Log.d(interfaceTag, "Tried scheduling a movement while executor was busy, Movement: " + RoadrunnerHandler.MovementTypes.TURN_ABOUT_WHEEL);
+                            roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.WAREHOUSE_AUTO_TURN);
                         }
-                        isPressingB = true; 
-                    } else if(!gamepad.b && isPressingB) {
-                        isPressingB = false;
                     }
                     // X
                     if(gamepad.x && !isPressingX) {
@@ -137,12 +132,6 @@ public class ButtonHandler {
                     // Manual Extension
                     if(gamepad.right_stick_y > Configuration.rightStickXLimitTrigger || gamepad.right_stick_y < (Configuration.rightStickXLimitTrigger * -1)) {
                         slideHandler.manualSlideController((int)gamepad.right_stick_y);
-                    }
-                    // B
-                    if(gamepad.b && controllerMode == ControllerModes.SECONDARY && OfficialTeleop.normalizedColorSensor.getNormalizedColors().alpha > Configuration.colorSensorWhiteAlpha) {
-                        if(!roadrunnerHandler.isBusy) {
-                            roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.WAREHOUSE_AUTO_TURN);
-                        }
                     }
                     // A
                     if(gamepad.a && !isPressingA && controllerMode == ControllerModes.SECONDARY) {
