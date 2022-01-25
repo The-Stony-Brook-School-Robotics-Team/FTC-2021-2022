@@ -20,6 +20,8 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  */
 public class RoadrunnerHandler {
 
+    public boolean isBusy = false;
+
     /**
      * Movement Types to Schedule
      */
@@ -109,6 +111,7 @@ public class RoadrunnerHandler {
                 Log.d(interfaceTag, "Finished pivoting");
         }
         scheduledMovement = MovementTypes.EMPTY;
+        isBusy = false;
         movementHandler.movementEnabled = true;
         slideHandler.slideMovementEnabled = true;
         requestKill();
@@ -119,7 +122,9 @@ public class RoadrunnerHandler {
      */
     // TODO: Add an indicator showing if the robot took the movement
     public void scheduleMovement(MovementTypes movementType) {
+        isBusy = true;
         if (movementHandler.autonomousRunning) {
+            isBusy = false;
             return;
         }
         movementHandler.movementEnabled = false;
