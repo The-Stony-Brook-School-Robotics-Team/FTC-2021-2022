@@ -17,7 +17,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
  * @author Marc N.
  * @version 2.1.2
  */
-@TeleOp(name="U - Motor Direction Debugger")
 public class buttonmotor extends LinearOpMode {
     DcMotor[] motors = new DcMotor[4];
     public static String[] motorNames = new String[]{"rb","lb","rf","lf"}; // rb lb rf lf

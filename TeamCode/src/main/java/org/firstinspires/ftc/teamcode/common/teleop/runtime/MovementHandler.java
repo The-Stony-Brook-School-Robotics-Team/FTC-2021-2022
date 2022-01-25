@@ -32,7 +32,7 @@ public class MovementHandler {
     /**
      * Movement Disabled
      */
-    public static boolean movementEnabled = true;
+    public static volatile boolean movementEnabled = true;
 
     /**
      * Interface Tag
@@ -181,15 +181,11 @@ class MovementHandlers {
 
     private static void defaultRunner() {
         if (!MovementHandler.movementEnabled) {
-            drive.setWeightedDrivePower(new Pose2d());
+            Log.d(interfaceTag, "nonce: MOVEMENT DISABLED");
             return;
         }
         if (MovementHandler.autonomousRunning) {
-            drive.setWeightedDrivePower(new Pose2d());
-            return;
-        }
-        if (MovementHandler.currentDriverMode != MovementHandler.DriverMode.DRIVER) {
-            drive.setWeightedDrivePower(new Pose2d());
+            Log.d(interfaceTag, "nonce: AUTONOMOUS RUNNING");
             return;
         }
         drive.setWeightedDrivePower(
@@ -199,6 +195,7 @@ class MovementHandlers {
                         -gamepad.right_stick_x
                 )
         );
+        Log.d(interfaceTag, "ABLE TO DRIVE");
         drive.update();
     }
 

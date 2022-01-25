@@ -23,14 +23,12 @@
             waitForStart();
 
             while(opModeIsActive()){
-                if(check){
                     blueIntake.checkIntake();
                     redIntake.checkIntake();
-                }
-                if(gamepad1.left_bumper){
-                    check = true;
-                }
-                else{check = false;}
+
+
+
+
                 if(gamepad1.x){
                     blueIntake.changeStatePosiiton(IntakeState.BASE, position);
                     redIntake.changeStatePosiiton(IntakeState.BASE, position);

@@ -69,6 +69,7 @@ public class RoadrunnerHandler {
      * Internal executor
      */
     private Thread movementExecutor = new Thread(() -> {
+        movementHandler.autonomousRunning = true;
         switch (scheduledMovement) {
             case LEFT:
                 Trajectory left = drive.trajectoryBuilder(drive.getPoseEstimate())
@@ -104,7 +105,7 @@ public class RoadrunnerHandler {
                 Log.d(interfaceTag, "Starting to pivot");
                 drive.setPoseEstimate(new Pose2d(14, 65.5, 0));
                 Pose2d currentPos = drive.getPoseEstimate();
-                Pose2d target = new Pose2d(5.58, 64.47, -Math.toRadians(52));
+                Pose2d target = new Pose2d(5.58, 64.47, -Math.toRadians(58));
                 drive.followTrajectory(drive.trajectoryBuilder(currentPos)
                         .lineToSplineHeading(target, velocityConstraint, accelerationConstraint)
                         .build());
@@ -113,6 +114,7 @@ public class RoadrunnerHandler {
         scheduledMovement = MovementTypes.EMPTY;
         isBusy = false;
         movementHandler.movementEnabled = true;
+        movementHandler.autonomousRunning = false;
         slideHandler.slideMovementEnabled = true;
         requestKill();
     });
@@ -129,6 +131,8 @@ public class RoadrunnerHandler {
         }
         movementHandler.movementEnabled = false;
         slideHandler.slideMovementEnabled = false;
+        Log.d(interfaceTag, "I FINALLY SET THE MOVEMENT TO FALSE");
+        Log.d(interfaceTag, "---- Movement Enabled: " + movementHandler.movementEnabled);
         if (scheduledMovement != MovementTypes.EMPTY) {
             scheduledMovement = MovementTypes.EMPTY;
         }

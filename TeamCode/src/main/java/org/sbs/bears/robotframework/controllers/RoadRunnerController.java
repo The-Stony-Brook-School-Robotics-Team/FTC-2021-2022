@@ -14,7 +14,6 @@ import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Sandboxes.Marc.AutonSimulator;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
@@ -120,13 +119,14 @@ public class RoadRunnerController {
         TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(vel, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
         TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
 
-        drive.followTrajectoryAsync(
+        drive.followTrajectory(
                 drive.trajectoryBuilder(drive.getPoseEstimate())
                         .forward(dist,velocityConstraint,accelerationConstraint)
                         .build()
         );
 
     }
+
 
 
     /**
@@ -252,6 +252,17 @@ public class RoadRunnerController {
             drive.followTrajectorySequence(seq);
             // final pos is 71, -34, Math.PI/2
         }
+    }
+    public void followLineToSpline(Pose2d finalPos,double vel)
+    {
+        TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(vel, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
+        TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
+
+        drive.followTrajectory(
+                drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .lineToSplineHeading(finalPos,velocityConstraint,accelerationConstraint)
+                        .build()
+        );
     }
     public void followLineToSpline(Pose2d finalPos)
     {
