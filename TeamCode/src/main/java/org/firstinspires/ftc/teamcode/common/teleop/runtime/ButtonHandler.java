@@ -58,9 +58,12 @@ public class ButtonHandler {
                     }
                     // B
                     if(gamepad.b && !isPressingB) {
-                        Log.d(interfaceTag, "PRESSED B");
-                        roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.TURN_ABOUT_WHEEL);
-                        isPressingB = true;
+                        if(!roadrunnerHandler.isBusy) {
+                            roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.TURN_ABOUT_WHEEL);
+                        } else {
+                            Log.d(interfaceTag, "Tried scheduling a movement while executor was busy, Movement: " + RoadrunnerHandler.MovementTypes.TURN_ABOUT_WHEEL);
+                        }
+                        isPressingB = true; 
                     } else if(!gamepad.b && isPressingB) {
                         isPressingB = false;
                     }
@@ -142,6 +145,50 @@ public class ButtonHandler {
                         isPressingA = true;
                     } else if(!gamepad.a && isPressingA && controllerMode == ControllerModes.SECONDARY) {
                         isPressingA = false;
+                    }
+                    // Left Dpad
+                    if(gamepad.dpad_left && !isPressingLeftDpad) {
+                        if(!roadrunnerHandler.isBusy) {
+                            roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.FORWARD);
+                        } else {
+                            Log.d(interfaceTag, "Tried scheduling a movement while executor was busy, Movement: " + RoadrunnerHandler.MovementTypes.FORWARD);
+                        }
+                        isPressingLeftDpad = true;
+                    } else if(!gamepad.dpad_left && isPressingLeftDpad) {
+                        isPressingLeftDpad = false;
+                    }
+                    // Right Dpad
+                    if(gamepad.dpad_right && !isPressingRightDpad) {
+                        if(!roadrunnerHandler.isBusy) {
+                            roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.BACK);
+                        } else {
+                            Log.d(interfaceTag, "Tried scheduling a movement while executor was busy, Movement: " + RoadrunnerHandler.MovementTypes.BACK);
+                        }
+                        isPressingRightDpad = true;
+                    } else if(!gamepad.dpad_right && isPressingRightDpad) {
+                        isPressingRightDpad = false;
+                    }
+                    // Up Dpad
+                    if(gamepad.dpad_up && !isPressingUpDpad) {
+                        if(!roadrunnerHandler.isBusy) {
+                            roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.RIGHT);
+                        } else {
+                            Log.d(interfaceTag, "Tried scheduling a movement while executor was busy, Movement: " + RoadrunnerHandler.MovementTypes.RIGHT);
+                        }
+                        isPressingUpDpad = true;
+                    } else if(!gamepad.dpad_up && isPressingUpDpad) {
+                        isPressingUpDpad = false;
+                    }
+                    // Down Dpad
+                    if(gamepad.dpad_down && !isPressingDownDpad) {
+                        if(!roadrunnerHandler.isBusy) {
+                            roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.LEFT);
+                        } else {
+                            Log.d(interfaceTag, "Tried scheduling a movement while executor was busy, Movement: " + RoadrunnerHandler.MovementTypes.LEFT);
+                        }
+                        isPressingDownDpad = true;
+                    } else if(!gamepad.dpad_down && isPressingDownDpad) {
+                        isPressingDownDpad = false;
                     }
                     break;
             }
