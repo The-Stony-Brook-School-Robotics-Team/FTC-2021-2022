@@ -5,6 +5,7 @@ import static java.lang.Thread.sleep;
 import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -12,64 +13,62 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 
 @Autonomous (name = "A - Auton (Blue Full)")
-public class AutonomousBlueFull extends OpMode {
+public class AutonomousBlueFull extends LinearOpMode {
     AutonomousBrain brain;
     boolean qA = false;
     boolean qContinue = false;
-
-
     public static Gamepad gamepad;
+
     @Override
-    public void init() {
+    public void runOpMode()
+    {
         OpenCVController.isDuck = false;
         brain = new AutonomousBrain(hardwareMap,telemetry,AutonomousMode.BlueFull);
         Log.d("Auton BF","Init Complete");
         msStuckDetectLoop = Integer.MAX_VALUE;
         gamepad = gamepad1;
-    }
 
-    @Override
-    public void start() {
+        waitForStart();
+
         brain.launch();
-    }
 
-    @Override
-    public void loop() {
-
-        telemetry.addData("majorState", brain.majorState);
-        telemetry.addData("minorState", brain.minorState);
-        telemetry.addData("CameraReading", brain.heightFromDuck);
-        telemetry.addData("DepositHeight", brain.targetCarousel);
-        telemetry.update();
-        if(qContinue) {
-            brain.doAutonAction();
-            try {
-                sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            qContinue = false;
-        }
-        qContinue = true;
-        if(gamepad1.a && !qA) {
-            qA = true;
-            qContinue = true;
-            return;
-        }
-        else if (!gamepad1.a && qA) {
-            qA = false;
-        }
-        if(brain.majorState.equals(AutonomousBrain.AutonomousStates.FINISHED))
+        autonBrainExecutor.start();
+        while(opModeIsActive() && !isStopRequested())
         {
-            requestOpModeStop();
+            telemetry.addData("majorState", brain.majorState);
+            telemetry.addData("minorState", brain.minorState);
+            telemetry.addData("CameraReading", brain.heightFromDuck);
+            telemetry.addData("DepositHeight", brain.targetCarousel);
+            telemetry.update();
         }
-    }
-
-    @Override
-    public void stop() {
+        // stop requested
+        autonBrainExecutor.interrupt();
         brain.majorState = AutonomousBrain.AutonomousStates.FINISHED;
         brain.minorState = AutonomousBrain.AutonomousBackForthSubStates.STOPPED;
-        super.stop();
-
     }
+
+
+    Thread autonBrainExecutor = new Thread(()->{
+        while(opModeIsActive()&& !isStopRequested()){
+                if(qContinue) {
+                    brain.doAutonAction();
+                    sleep(100);
+                    qContinue = false;
+                }
+                qContinue = true;
+                if(gamepad1.a && !qA) {
+                    qA = true;
+                    qContinue = true;
+                    return;
+                }
+                else if (!gamepad1.a && qA) {
+                    qA = false;
+                }
+                if(brain.majorState.equals(AutonomousBrain.AutonomousStates.FINISHED))
+                {
+                    requestOpModeStop();
+                }
+        }
+    });
+
 }

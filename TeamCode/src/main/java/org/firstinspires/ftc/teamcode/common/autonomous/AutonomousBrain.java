@@ -5,8 +5,10 @@ import android.util.Log;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.sbs.bears.robotframework.Robot;
 import org.sbs.bears.robotframework.Sleep;
 import org.sbs.bears.robotframework.controllers.DuckCarouselController;
@@ -33,6 +35,8 @@ public class AutonomousBrain {
     IntakeControllerRed intakeCtrlRed;
     DuckCarouselController duckCtrl;
 
+    NormalizedColorSensor normalizedColorSensor;
+
     Telemetry tel;
     HardwareMap hwMap;
      int counter = 0;
@@ -52,6 +56,7 @@ public class AutonomousBrain {
     enum AutonomousStates {
         STOPPED,
         ONE_READ_DUCK,
+        TWO_TURN_DEPOSIT,
         TWO_SET_SLIDE_HEIGHT,
         THREE_DEPOSIT_BOX,
         TWO_CAROUSEL,
@@ -87,12 +92,14 @@ public class AutonomousBrain {
         intakeCtrlBlue.setState(IntakeState.PARK);
         intakeCtrlRed.setState(IntakeState.PARK); // to prevent from moving around
         RRctrl.setPos(startPositionBFull);
+        normalizedColorSensor = hardwareMap.get(NormalizedColorSensor.class, "color");
+        normalizedColorSensor.setGain(Configuration.colorSensorGain);
+
     }
     public void launch() // call this method before loop, so start method.
     {
         iniTime = NanoClock.system().seconds();
-        RRctrl.setPos(wareHousePickupPositionBSimp);
-        majorState = AutonomousStates.FIVE_BACK_FORTH;
+        RRctrl.setPos(depositObjectPositionBsimp);
     }
     public void doAutonAction() // call in loop (once per loop pls)
     {
@@ -101,7 +108,7 @@ public class AutonomousBrain {
                 doAnalysisMaster = true;
                 majorState = AutonomousStates.ONE_READ_DUCK;
                 return;
-            case ONE_READ_DUCK:
+           /* case ONE_READ_DUCK:
                 heightFromDuck = CVctrl.getWhichTowerHeight();
                 Log.d("height: ", heightFromDuck.toString());
                 CVctrl.shutDown();
@@ -146,6 +153,40 @@ public class AutonomousBrain {
                 intakeCtrlBlue.setState(IntakeState.BASE);
                 RRctrl.followLineToSpline(wareHousePickupPositionBSimp,20);
                 majorState = AutonomousStates.FIVE_BACK_FORTH;
+                return;*/
+            case ONE_READ_DUCK:
+                heightFromDuck = CVctrl.getWhichTowerHeight();
+                Log.d("height: ", heightFromDuck.toString());
+                CVctrl.shutDown();
+                switch (heightFromDuck) {
+                    case ONE:
+                        targetCarousel = SlideTarget.ONE_CAROUSEL;
+                        carouselDropPosition = duckSpinningPositionB1;
+                        carouselDropPositionFlush = duckSpinningPositionBflush1;
+                        break;
+                    case TWO:
+                        targetCarousel = SlideTarget.TWO_CAROUSEL;
+                        carouselDropPosition = duckSpinningPositionB2;
+                        carouselDropPositionFlush = duckSpinningPositionBflush2;
+                        break;
+                    case THREE:
+                        targetCarousel = SlideTarget.THREE_CAROUSEL;
+                        carouselDropPosition = duckSpinningPositionB3;
+                        carouselDropPositionFlush = duckSpinningPositionBflush3;
+                }
+                majorState = AutonomousStates.TWO_CAROUSEL;
+                return;
+            case TWO_TURN_DEPOSIT:
+                RRctrl.followLineToSpline(depositObjectPositionBsimp2);
+                slideCtrl.extendDropRetract(targetNormal);
+                Log.d("AutonBrain","Slide drop complete");
+                RRctrl.followLineToSpline(resetpositionWarehouseBsimp);
+                RRctrl.setPos(new Pose2d(14,65.5,0));
+                intakeCtrlBlue.setState(IntakeState.BASE);
+                RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
+                Log.d("AutonBrain","reset status and init for intake");
+                didIScoopAnItem = false; // reset
+                majorState = AutonomousStates.FIVE_BACK_FORTH;
                 return;
             case FIVE_BACK_FORTH:
                 doBackForth();
@@ -185,6 +226,15 @@ public class AutonomousBrain {
                 // do nothing
                 return;
             case ONE_INTAKE:
+                Log.d("AutonBrain","Current Status: itemBool: " + didIScoopAnItem + " intakeStatus " + intakeCtrlBlue.isObjectInPayload());
+                if(didIScoopAnItem  || intakeCtrlBlue.isObjectInPayload())
+                {
+                    // we actually have the block!
+                    Log.d("AutonBrain","Missed block on last run, proceeding.");
+                    minorState = AutonomousBackForthSubStates.TWO_DEPOSIT;
+                    return;
+                }
+
                 intakeCtrlBlue.setState(IntakeState.BASE);
                 new Thread(()->{
                     boolean isInState = minorState.equals(AutonomousBackForthSubStates.ONE_INTAKE);
@@ -220,6 +270,18 @@ public class AutonomousBrain {
                 Log.d("AutonBrain","Retrying to find a block");
                 return;
             case TWO_DEPOSIT: // TODO implement go forward and then turn
+                new Thread(()->{
+                       while(minorState == AutonomousBackForthSubStates.TWO_DEPOSIT)
+                       {
+                           if(normalizedColorSensor.getNormalizedColors().alpha > Configuration.colorSensorWhiteAlpha)
+                           {
+                               // we know the x coordinate
+                               Pose2d currentPos = RRctrl.getPos();
+                               RRctrl.setPos(new Pose2d(28.5,currentPos.getY(),currentPos.getHeading()));
+                           }
+                       }
+                       //out of state so kill thread
+                }).start();
                 RRctrl.followLineToSpline(depositObjectPositionBsimp);
                 RRctrl.followLineToSpline(depositObjectPositionBsimp2);
                 Log.d("AutonBrain","Prepare for drop off");
