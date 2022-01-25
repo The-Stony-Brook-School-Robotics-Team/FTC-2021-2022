@@ -160,21 +160,16 @@ public class AutonomousBrain {
                 CVctrl.shutDown();
                 switch (heightFromDuck) {
                     case ONE:
-                        targetCarousel = SlideTarget.ONE_CAROUSEL;
-                        carouselDropPosition = duckSpinningPositionB1;
-                        carouselDropPositionFlush = duckSpinningPositionBflush1;
+                        targetCarousel = SlideTarget.ONE_DEPOSIT;
                         break;
                     case TWO:
-                        targetCarousel = SlideTarget.TWO_CAROUSEL;
-                        carouselDropPosition = duckSpinningPositionB2;
-                        carouselDropPositionFlush = duckSpinningPositionBflush2;
+                        targetCarousel = SlideTarget.TWO_DEPOSIT;
                         break;
                     case THREE:
-                        targetCarousel = SlideTarget.THREE_CAROUSEL;
-                        carouselDropPosition = duckSpinningPositionB3;
-                        carouselDropPositionFlush = duckSpinningPositionBflush3;
+                        targetCarousel = SlideTarget.THREE_DEPOSIT;
+                        break;
                 }
-                majorState = AutonomousStates.TWO_CAROUSEL;
+                majorState = AutonomousStates.TWO_TURN_DEPOSIT                                                                                                                                                                                                          ;
                 return;
             case TWO_TURN_DEPOSIT:
                 RRctrl.followLineToSpline(depositObjectPositionBsimp2);
@@ -255,7 +250,7 @@ public class AutonomousBrain {
                     }
                 }).start();
                 Log.d("AutonBrain","Forward init");
-                RRctrl.forward(40,20);
+                RRctrl.forward(40,10);
                 Log.d("AutonBrain","Forward done");
                 RRctrl.stopRobot();
                 RRctrl.stopRobot();
@@ -277,11 +272,16 @@ public class AutonomousBrain {
                            {
                                // we know the x coordinate
                                Pose2d currentPos = RRctrl.getPos();
-                               RRctrl.setPos(new Pose2d(28.5,currentPos.getY(),currentPos.getHeading()));
+                               Log.d("AutonBrainThread","Current X: " + currentPos.getX());
+                               RRctrl.setPos(new Pose2d(29,currentPos.getY(),currentPos.getHeading()));
+                               Log.d("AutonBrainThread","New X: " + RRctrl.getPos().getX());
                            }
                        }
                        //out of state so kill thread
                 }).start();
+                RRctrl.followLineToSpline(resetPositionInWarehouseBSimp);
+                Pose2d currentPos = RRctrl.getPos();
+                RRctrl.setPos(new Pose2d(currentPos.getX(),65.5,0));
                 RRctrl.followLineToSpline(depositObjectPositionBsimp);
                 RRctrl.followLineToSpline(depositObjectPositionBsimp2);
                 Log.d("AutonBrain","Prepare for drop off");
@@ -326,7 +326,7 @@ public class AutonomousBrain {
     public static Pose2d wareHousePickupPositionRSimpIntermediate = new Pose2d(-45,-66,0);
     public static Pose2d wareHousePickupPositionBSimp = new Pose2d(35,65.5,0);
     public static Pose2d wareHousePickupPositionBSimp2 = new Pose2d(38,65.5,0);
-    public static Pose2d finalPositionBSimp = new Pose2d(40,80,0);
+    public static Pose2d finalPositionBSimp = new Pose2d(50,80,0);
 
 
     public static Pose2d wareHousePickupPositionBSpl = new Pose2d(71, 34, -Math.PI/2);
@@ -334,6 +334,7 @@ public class AutonomousBrain {
     public static Pose2d wareHousePickupPositionRSpl = new Pose2d(71, -34, Math.PI/2);
 
 
+    public static Pose2d resetPositionInWarehouseBSimp = new Pose2d(30,75,0);
     public static Pose2d depositObjectPositionBsimp = new Pose2d(14,65.5,0);
     public static Pose2d depositObjectPositionBsimp2 = new Pose2d(5.58,64.47,-Math.toRadians(58));
     public static Pose2d resetpositionWarehouseBsimp = new Pose2d(14,80,0);

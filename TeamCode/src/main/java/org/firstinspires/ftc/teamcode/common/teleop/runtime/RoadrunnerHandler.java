@@ -66,9 +66,11 @@ public class RoadrunnerHandler {
     /**
      * Movement Stuff
      */
-    private final TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(30, 2, DriveConstants.TRACK_WIDTH);
-    private final TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
+    private final TrajectoryVelocityConstraint turnVelocityConstraint = SampleMecanumDrive.getVelocityConstraint(30, 2, DriveConstants.TRACK_WIDTH);
+    private final TrajectoryAccelerationConstraint turnAccelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
 
+    private final TrajectoryVelocityConstraint quickTurnVelocityConstraint = SampleMecanumDrive.getVelocityConstraint(50, 5, DriveConstants.TRACK_WIDTH);
+    private final TrajectoryAccelerationConstraint quickTurnAccelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
 
     /**
      * Internal executor
@@ -112,7 +114,7 @@ public class RoadrunnerHandler {
                 Pose2d currentPos = drive.getPoseEstimate();
                 Pose2d target = new Pose2d(5.58, 64.47, -Math.toRadians(58));
                 drive.followTrajectory(drive.trajectoryBuilder(currentPos)
-                        .lineToSplineHeading(target, velocityConstraint, accelerationConstraint)
+                        .lineToSplineHeading(target, turnVelocityConstraint, turnAccelerationConstraint)
                         .build());
                 Log.d(interfaceTag, "Finished pivoting");
 
@@ -127,44 +129,29 @@ public class RoadrunnerHandler {
                 // Do The Turn
                 drive.setPoseEstimate(new Pose2d(14, 65.5, 0));
                 drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToSplineHeading(new Pose2d(5.58, 64.47, -Math.toRadians(58)), velocityConstraint, accelerationConstraint)
+                        .lineToSplineHeading(new Pose2d(5.58, 64.47, -Math.toRadians(58)), turnVelocityConstraint, turnAccelerationConstraint)
                         .build());
-
-                Log.d(interfaceTag, "Waiting for a few ms");
-                // Wait Just To Be Sure
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
 
                 Log.d(interfaceTag, "Extending Slide");
                 // Extend Drop Retract
-                slideController.extendDropRetract(SlideTarget.THREE_CAROUSEL);
-
-                Log.d(interfaceTag, "Waiting for a few ms");
-                // Wait Just To Be Sure
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                slideController.extendDropRetract(SlideTarget.THREE_DEPOSIT);
 
                 Log.d(interfaceTag, "Turning back onto the wall");
                 // Turn Back Onto The Wall
                 drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToSplineHeading(new Pose2d(14,80,0))
+                        .lineToSplineHeading(new Pose2d(14,80,0), quickTurnVelocityConstraint, quickTurnAccelerationConstraint)
                         .build());
 
                 Log.d(interfaceTag, "Going back into the warehouse");
                 // Go Back Into The Warehouse
                 drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .addTemporalMarker(1, () -> {
+                            Log.d(interfaceTag, "Dropping blue intake");
+                            // Drop Blue Intake
+                            blueIntake.setState(IntakeState.BASE);
+                        })
                         .forward(24)
                         .build());
-
-                Log.d(interfaceTag, "Dropping blue intake");
-                // Drop Blue Intake
-                blueIntake.setState(IntakeState.BASE);
                 break;
         }
         scheduledMovement = MovementTypes.EMPTY;

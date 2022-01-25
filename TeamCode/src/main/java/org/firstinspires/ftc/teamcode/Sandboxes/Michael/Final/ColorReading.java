@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.gamepa
 import android.util.Log;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -42,23 +43,19 @@ public class ColorReading extends LinearOpMode
 
         while (opModeIsActive()) {
             if(color.getNormalizedColors().alpha > .8 && gamepad1.a){
-                drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .back(18)
-                        .build());
 
-                drive.setPoseEstimate(new Pose2d(14, 65.5, 0));
+                drive.setPoseEstimate(new Pose2d(32, 65.5, 0));
                 drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToSplineHeading(new Pose2d(5.58, 64.47, -Math.toRadians(58)), velocityConstraint, accelerationConstraint)
+                        .splineToConstantHeading(new Vector2d(14, 65.5), Math.toRadians(0))
+                        .splineToSplineHeading(new Pose2d(5.58, 64.47, -Math.toRadians(58)), Math.toRadians(0), velocityConstraint, accelerationConstraint)
                         .build());
 
                 Thread.sleep(2000);
 
-                drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToSplineHeading(new Pose2d(14,80,0))
-                        .build());
 
                 drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .forward(24)
+                        .splineToSplineHeading(new Pose2d(14,80,0), Math.toRadians(0))
+                        .splineToConstantHeading(new Vector2d(32, 80), Math.toRadians(0))
                         .build());
 
             }

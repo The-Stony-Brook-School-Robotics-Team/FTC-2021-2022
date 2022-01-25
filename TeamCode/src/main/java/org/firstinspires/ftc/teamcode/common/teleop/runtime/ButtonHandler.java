@@ -58,7 +58,7 @@ public class ButtonHandler {
                         isPressingA = false;
                     }
                     // B
-                    if(gamepad.b && controllerMode == ControllerModes.SECONDARY && OfficialTeleop.normalizedColorSensor.getNormalizedColors().alpha > Configuration.colorSensorWhiteAlpha) {
+                    if(gamepad.b && OfficialTeleop.normalizedColorSensor.getNormalizedColors().alpha > Configuration.colorSensorWhiteAlpha) {
                         if(!roadrunnerHandler.isBusy) {
                             roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.WAREHOUSE_AUTO_TURN);
                         }
