@@ -34,14 +34,11 @@ public class SlideHandler {
         }
     }
 
-    public void DuckToMiddle() {
+    public void DuckToTop() {
         if(slideMovementEnabled != true) { return; }
         if(!slideMoving) {
             slideMoving = true;
-            slideController.extendDropRetract(SlideTarget.TWO_CAROUSEL);
-            slideController.extendSlide();
-            slideController.dropCube();
-            slideController.retractSlide();
+            slideController.extendDropRetract(SlideTarget.THREE_CAROUSEL);
             slideMoving = false;
         }
     }

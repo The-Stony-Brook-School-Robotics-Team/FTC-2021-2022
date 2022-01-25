@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.common.teleop.runtime;
 
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.drive;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.movementHandler;
+import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideController;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideHandler;
 
 import android.util.Log;
@@ -14,6 +15,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityCons
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.sbs.bears.robotframework.enums.SlideTarget;
 
 /**
  * Brings Automatic Movement To TeleOp
@@ -31,7 +33,8 @@ public class RoadrunnerHandler {
         RIGHT(Configuration.inchesRight),
         FORWARD(Configuration.inchesForward),
         BACK(Configuration.inchesBack),
-        TURN_ABOUT_WHEEL(0);
+        TURN_ABOUT_WHEEL(0),
+        WAREHOUSE_AUTO_TURN(0);
 
         private int inches;
 
@@ -110,12 +113,60 @@ public class RoadrunnerHandler {
                         .lineToSplineHeading(target, velocityConstraint, accelerationConstraint)
                         .build());
                 Log.d(interfaceTag, "Finished pivoting");
+
+            case WAREHOUSE_AUTO_TURN:
+                Log.d(interfaceTag, "Going Forward");
+                // Go Forward 18 Inches From the Inside Of The Warehouse
+                drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .back(18)
+                        .build());
+
+                Log.d(interfaceTag, "Turning");
+                // Do The Turn
+                drive.setPoseEstimate(new Pose2d(14, 65.5, 0));
+                drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .lineToSplineHeading(new Pose2d(5.58, 64.47, -Math.toRadians(58)), velocityConstraint, accelerationConstraint)
+                        .build());
+
+                Log.d(interfaceTag, "Waiting for a few ms");
+                // Wait Just To Be Sure
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                Log.d(interfaceTag, "Extending Slide");
+                // Extend Drop Retract
+                slideController.extendDropRetract(SlideTarget.THREE_CAROUSEL);
+
+                Log.d(interfaceTag, "Waiting for a few ms");
+                // Wait Just To Be Sure
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                Log.d(interfaceTag, "Turning back onto the wall");
+                // Turn Back Onto The Wall
+                drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .lineToSplineHeading(new Pose2d(14,80,0))
+                        .build());
+
+                Log.d(interfaceTag, "Going back into the warehouse");
+                // Go Back Into The Warehouse
+                drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .forward(24)
+                        .build());
+
+                break;
         }
         scheduledMovement = MovementTypes.EMPTY;
-        isBusy = false;
         movementHandler.movementEnabled = true;
         movementHandler.autonomousRunning = false;
         slideHandler.slideMovementEnabled = true;
+        isBusy = false;
         requestKill();
     });
 
@@ -124,11 +175,10 @@ public class RoadrunnerHandler {
      */
     // TODO: Add an indicator showing if the robot took the movement
     public void scheduleMovement(MovementTypes movementType) {
-        isBusy = true;
-        if (movementHandler.autonomousRunning) {
-            isBusy = false;
+        if (movementHandler.autonomousRunning || isBusy) {
             return;
         }
+        isBusy = true;
         movementHandler.movementEnabled = false;
         slideHandler.slideMovementEnabled = false;
         if (scheduledMovement != MovementTypes.EMPTY) {

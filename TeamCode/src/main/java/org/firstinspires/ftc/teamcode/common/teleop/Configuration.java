@@ -26,6 +26,9 @@ public class Configuration {
     public static int maxRuntimeThreads = 10;
     public static boolean poolingEnabled = true;
 
+    /** Color Sensor Settings */
+    public static int colorSensorGain = 10;
+    public static double colorSensorWhiteAlpha = 0.8;
 
 
 }

@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 
 import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
@@ -45,7 +46,7 @@ public class OfficialTeleop extends OpMode {
     public static boolean systemStopRequested = false;
 
     /** Roadrunner Items */
-    public static SampleMecanumDrive drive;
+    public static SampleMecanumDrive    drive;
     public static FtcDashboard dashboard;
 
     /** Stupid Michael MIT License: Open Source For Everyone */
@@ -60,6 +61,9 @@ public class OfficialTeleop extends OpMode {
     public static SlideHandler slideHandler = new SlideHandler();
     public static IntakeHandler intakeHandler = new IntakeHandler();
     public static RoadrunnerHandler roadrunnerHandler = new RoadrunnerHandler();
+
+    /** Extra Components */
+    public static NormalizedColorSensor normalizedColorSensor;
 
     /**
      * 线程池
@@ -88,6 +92,7 @@ public class OfficialTeleop extends OpMode {
         blueIntake = new IntakeControllerBlue(hardwareMap, telemetry);
         slideController = new SlideController(hardwareMap, telemetry);
         carouselController = new DuckCarouselController(hardwareMap, telemetry);
+        normalizedColorSensor = hardwareMap.get(NormalizedColorSensor.class, "color");
 
         /**
          * Configuration
@@ -95,6 +100,7 @@ public class OfficialTeleop extends OpMode {
         slideController.initTeleop();
         redIntake.setState(IntakeState.PARK);
         blueIntake.setState(IntakeState.PARK);
+        normalizedColorSensor.setGain(Configuration.colorSensorGain);
 
         floodRuntimes();
     }

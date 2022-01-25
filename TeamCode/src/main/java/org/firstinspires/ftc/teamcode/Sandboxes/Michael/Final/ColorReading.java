@@ -23,32 +23,44 @@ public class ColorReading extends LinearOpMode
     private final TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
 
     public NormalizedColorSensor color;
+    private SampleMecanumDrive drive;
 
     final int GAIN = 10;
 
     /** Array order is red, green, blue, alpha */
-    final double[] RED = {.45, .13, .12, .62};
-    final double[] BLUE = {.10, .36, .25, .66};
-    final double[] WHITE = {.89, .86, .12, 1.00};
+
 
 
 
     @Override
     public void runOpMode() throws InterruptedException {
 
-
+        drive = new SampleMecanumDrive(hardwareMap);
         color = hardwareMap.get(NormalizedColorSensor.class, "color");
         color.setGain(GAIN);
         waitForStart();
 
         while (opModeIsActive()) {
             if(color.getNormalizedColors().alpha > .8 && gamepad1.a){
-                //drive.setPoseEstimate(new Pose2d(14, 65.5, 0));
-                Pose2d currentPos = drive.getPoseEstimate();
-                Pose2d target = new Pose2d(5.58, 64.47, -Math.toRadians(58));
-                drive.followTrajectory(drive.trajectoryBuilder(currentPos)
-                        .lineToSplineHeading(target, velocityConstraint, accelerationConstraint)
+                drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .back(18)
                         .build());
+
+                drive.setPoseEstimate(new Pose2d(14, 65.5, 0));
+                drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .lineToSplineHeading(new Pose2d(5.58, 64.47, -Math.toRadians(58)), velocityConstraint, accelerationConstraint)
+                        .build());
+
+                Thread.sleep(2000);
+
+                drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .lineToSplineHeading(new Pose2d(14,80,0))
+                        .build());
+
+                drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .forward(24)
+                        .build());
+
             }
 
 

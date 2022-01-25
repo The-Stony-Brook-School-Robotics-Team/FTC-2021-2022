@@ -15,6 +15,7 @@ import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideH
 import android.util.Log;
 
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
+import org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
 import org.sbs.bears.robotframework.enums.IntakeState;
@@ -137,10 +138,16 @@ public class ButtonHandler {
                     if(gamepad.right_stick_y > Configuration.rightStickXLimitTrigger || gamepad.right_stick_y < (Configuration.rightStickXLimitTrigger * -1)) {
                         slideHandler.manualSlideController((int)gamepad.right_stick_y);
                     }
+                    // X
+                    if(gamepad.x && controllerMode == ControllerModes.SECONDARY && OfficialTeleop.normalizedColorSensor.getNormalizedColors().alpha > Configuration.colorSensorWhiteAlpha) {
+                        if(!roadrunnerHandler.isBusy) {
+                            roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.WAREHOUSE_AUTO_TURN);
+                        }
+                    }
                     // A
                     if(gamepad.a && !isPressingA && controllerMode == ControllerModes.SECONDARY) {
                         if(!slideHandler.slideMoving) {
-                            slideHandler.DuckToMiddle();
+                            slideHandler.DuckToTop();
                         }
                         isPressingA = true;
                     } else if(!gamepad.a && isPressingA && controllerMode == ControllerModes.SECONDARY) {
