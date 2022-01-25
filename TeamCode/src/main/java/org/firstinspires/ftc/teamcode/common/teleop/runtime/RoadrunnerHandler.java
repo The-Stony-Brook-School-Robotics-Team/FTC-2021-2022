@@ -131,8 +131,6 @@ public class RoadrunnerHandler {
         }
         movementHandler.movementEnabled = false;
         slideHandler.slideMovementEnabled = false;
-        Log.d(interfaceTag, "I FINALLY SET THE MOVEMENT TO FALSE");
-        Log.d(interfaceTag, "---- Movement Enabled: " + movementHandler.movementEnabled);
         if (scheduledMovement != MovementTypes.EMPTY) {
             scheduledMovement = MovementTypes.EMPTY;
         }
