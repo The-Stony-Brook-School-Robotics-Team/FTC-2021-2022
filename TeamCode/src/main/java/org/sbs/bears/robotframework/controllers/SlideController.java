@@ -324,7 +324,7 @@ public class SlideController {
     double vertServoPosition_ONE_CAROUSEL = 0.175;
     double vertServoPosition_TWO_CAROUSEL = 0.3767; ///measured
     double vertServoPosition_THREE_CAROUSEL = 0.647;
-    double vertServoPosition_THREE_DEPOSIT = 0.754; // TODO //.92; //measured
+    double vertServoPosition_THREE_DEPOSIT = 0.8; // TODO //.754; //measured
     double vertServoPosition_TWO_DEPOSIT = .65; //.92; //measured
     double vertServoPosition_ONE_DEPOSIT = .47; //.92; //measured
     double incrementDelta = 0.004;

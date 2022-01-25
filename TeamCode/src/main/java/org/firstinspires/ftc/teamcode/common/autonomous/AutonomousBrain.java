@@ -273,7 +273,7 @@ public class AutonomousBrain {
                                // we know the x coordinate
                                Pose2d currentPos = RRctrl.getPos();
                                Log.d("AutonBrainThread","Current X: " + currentPos.getX());
-                               RRctrl.setPos(new Pose2d(29,currentPos.getY(),currentPos.getHeading()));
+                               RRctrl.setPos(new Pose2d(27,currentPos.getY(),currentPos.getHeading()));
                                Log.d("AutonBrainThread","New X: " + RRctrl.getPos().getX());
                            }
                        }
@@ -326,7 +326,7 @@ public class AutonomousBrain {
     public static Pose2d wareHousePickupPositionRSimpIntermediate = new Pose2d(-45,-66,0);
     public static Pose2d wareHousePickupPositionBSimp = new Pose2d(35,65.5,0);
     public static Pose2d wareHousePickupPositionBSimp2 = new Pose2d(38,65.5,0);
-    public static Pose2d finalPositionBSimp = new Pose2d(50,80,0);
+    public static Pose2d finalPositionBSimp = new Pose2d(52,80,0);
 
 
     public static Pose2d wareHousePickupPositionBSpl = new Pose2d(71, 34, -Math.PI/2);

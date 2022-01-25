@@ -129,7 +129,7 @@ public class RoadrunnerHandler {
                 // Do The Turn
                 drive.setPoseEstimate(new Pose2d(14, 65.5, 0));
                 drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToSplineHeading(new Pose2d(5.58, 64.47, -Math.toRadians(58)), turnVelocityConstraint, turnAccelerationConstraint)
+                        .lineToSplineHeading(new Pose2d(5.58, 64.47, -Math.toRadians(53)), turnVelocityConstraint, turnAccelerationConstraint)
                         .build());
 
                 Log.d(interfaceTag, "Extending Slide");
