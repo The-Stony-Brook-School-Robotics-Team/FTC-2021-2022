@@ -58,10 +58,15 @@ public class ButtonHandler {
                         isPressingA = false;
                     }
                     // B
-                    if(gamepad.b && OfficialTeleop.normalizedColorSensor.getNormalizedColors().alpha > Configuration.colorSensorWhiteAlpha) {
-                        if(!roadrunnerHandler.isBusy) {
-                            roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.WAREHOUSE_AUTO_TURN);
+                    if(gamepad.b && !isPressingB) {
+                        if(slideController.slideMotor.getCurrentPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
+                            slideController.extendSlide();
+                        } else if(slideController.slideMotor.getCurrentPosition() > slideController.slideMotorPosition_BUCKET_OUT) {
+                            slideController.retractSlide();
                         }
+                        isPressingB = true;
+                    } else if(!gamepad.b && isPressingB) {
+                        isPressingB = false;
                     }
                     // X
                     if(gamepad.x && !isPressingX) {
@@ -86,15 +91,10 @@ public class ButtonHandler {
                         isPressingY = false;
                     }
                     // rb
-                    if(gamepad.right_bumper && !isPressingRightBumper) {
-                        if(slideController.slideMotor.getCurrentPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
-                            slideController.extendSlide();
-                        } else if(slideController.slideMotor.getCurrentPosition() > slideController.slideMotorPosition_BUCKET_OUT) {
-                            slideController.retractSlide();
+                    if(gamepad.right_bumper && OfficialTeleop.normalizedColorSensor.getNormalizedColors().alpha > Configuration.colorSensorWhiteAlpha) {
+                        if(!roadrunnerHandler.isBusy) {
+                            roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.WAREHOUSE_AUTO_TURN);
                         }
-                        isPressingRightBumper = true;
-                    } else if(!gamepad.right_bumper && isPressingRightBumper) {
-                        isPressingRightBumper = false;
                     }
                     // Left dpad
                     if(gamepad.dpad_left && !isPressingLeftDpad) {

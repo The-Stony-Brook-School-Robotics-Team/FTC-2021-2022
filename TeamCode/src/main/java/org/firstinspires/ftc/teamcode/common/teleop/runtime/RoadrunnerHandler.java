@@ -14,6 +14,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAcceleration
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
+import org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.enums.IntakeState;
@@ -129,12 +130,12 @@ public class RoadrunnerHandler {
                 // Do The Turn
                 drive.setPoseEstimate(new Pose2d(14, 65.5, 0));
                 drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToSplineHeading(new Pose2d(5.58, 64.47, -Math.toRadians(53)), turnVelocityConstraint, turnAccelerationConstraint)
+                        .lineToSplineHeading(new Pose2d(5.58, 64.47, -Math.toRadians(51)), turnVelocityConstraint, turnAccelerationConstraint)
                         .build());
 
                 Log.d(interfaceTag, "Extending Slide");
                 // Extend Drop Retract
-                slideController.extendDropRetract(SlideTarget.THREE_DEPOSIT);
+                slideController.extendDropRetract(SlideTarget.THREE_DEPOSIT, OfficialTeleop.gamepad);
 
                 Log.d(interfaceTag, "Turning back onto the wall");
                 // Turn Back Onto The Wall

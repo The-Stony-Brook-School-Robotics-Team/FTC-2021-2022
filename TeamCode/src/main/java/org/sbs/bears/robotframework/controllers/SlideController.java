@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -78,6 +79,35 @@ public class SlideController {
         }
         retractSlide();
         this.targetParams = SlideTarget.NA;
+    }
+
+
+    public void extendDropRetract(SlideTarget target, Gamepad gamepad)
+    {
+        this.targetParams = target;
+        extendSlide();
+        if(flagToLeave) {
+            return;
+        }
+
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if(flagToLeave) {
+            return;
+        }
+
+        if(!gamepad.x){
+            dropCube();
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            retractSlide();
+        }
     }
 
     public void dropCube()
@@ -200,17 +230,13 @@ public class SlideController {
             double currentPos = verticalServo.getPosition();
             boolean qNeedsToGoUp = (currentPos < targetPos);
             if(qNeedsToGoUp) {
-                for(double i = verticalServo.getPosition(); i < targetPos; i+=incrementDelta){
+                for(double i = verticalServo.getPosition(); i < targetPos; i+=incrementDeltaExtend){
                     verticalServo.setPosition(Range.clip(i, 0, targetPos));
-                    try {
-                        Thread.sleep(1);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+
                 }
             }
             else {
-                for(double i = verticalServo.getPosition(); i > targetPos; i-=incrementDelta){
+                for(double i = verticalServo.getPosition(); i > targetPos; i-=incrementDeltaRetract){
                     verticalServo.setPosition(Range.clip(i, targetPos, 1));
                     try {
                         Thread.sleep(1);
@@ -324,13 +350,15 @@ public class SlideController {
     double vertServoPosition_ONE_CAROUSEL = 0.175;
     double vertServoPosition_TWO_CAROUSEL = 0.3767; ///measured
     double vertServoPosition_THREE_CAROUSEL = 0.647;
-    double vertServoPosition_THREE_DEPOSIT = 0.8; // TODO //.754; //measured
+    double vertServoPosition_THREE_DEPOSIT = 0.85; // TODO //.754; //measured
     double vertServoPosition_TWO_DEPOSIT = .65; //.92; //measured
     double vertServoPosition_ONE_DEPOSIT = .47; //.92; //measured
-    double incrementDelta = 0.004;
     double vertServoPosition_PARKED_MIN = 0;
     double vertServoPosition_PARKED_MAX = 0.3;
     double vertServoPosition_FULL_MAX = 1;
+
+    double incrementDeltaExtend = .01;
+    double incrementDeltaRetract = 0.004;
 
     // dumper servo
     double dumperPosition_DUMP = .91;
@@ -346,7 +374,7 @@ public class SlideController {
     int slideMotorPosition_FULL = 1980;
     int slideMotorPosition_START_LOWER = 400;
 
-    public double slideMotorPowerMoving = 1;
+    public double slideMotorPowerMoving = .5;
     public double slideMotorPowerMovingBack = 0.5;
     double slideMotorPowerStill = 0;
 
