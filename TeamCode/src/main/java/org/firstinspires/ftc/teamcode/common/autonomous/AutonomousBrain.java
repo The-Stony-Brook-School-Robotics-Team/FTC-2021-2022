@@ -91,6 +91,8 @@ public class AutonomousBrain {
     public void launch() // call this method before loop, so start method.
     {
         iniTime = NanoClock.system().seconds();
+        RRctrl.setPos(wareHousePickupPositionBSimp);
+        majorState = AutonomousStates.FIVE_BACK_FORTH;
     }
     public void doAutonAction() // call in loop (once per loop pls)
     {
@@ -165,7 +167,7 @@ public class AutonomousBrain {
                 Log.d("AutonBrain","parking2");
                 RRctrl.followLineToSpline(resetpositionWarehouseBsimp);
                 Log.d("AutonBrain","parking3");
-                RRctrl.followLineToSpline(wareHousePickupPositionBSimp2);
+                RRctrl.followLineToSpline(finalPositionBSimp);
                 Log.d("AutonBrain","parking4");
                 majorState = AutonomousStates.FINISHED;
                 return;
@@ -203,7 +205,7 @@ public class AutonomousBrain {
                     }
                 }).start();
                 Log.d("AutonBrain","Forward init");
-                RRctrl.forward(40,10);
+                RRctrl.forward(40,20);
                 Log.d("AutonBrain","Forward done");
                 RRctrl.stopRobot();
                 RRctrl.stopRobot();
@@ -262,6 +264,7 @@ public class AutonomousBrain {
     public static Pose2d wareHousePickupPositionRSimpIntermediate = new Pose2d(-45,-66,0);
     public static Pose2d wareHousePickupPositionBSimp = new Pose2d(35,65.5,0);
     public static Pose2d wareHousePickupPositionBSimp2 = new Pose2d(38,65.5,0);
+    public static Pose2d finalPositionBSimp = new Pose2d(40,80,0);
 
 
     public static Pose2d wareHousePickupPositionBSpl = new Pose2d(71, 34, -Math.PI/2);
