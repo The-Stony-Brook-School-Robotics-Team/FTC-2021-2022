@@ -2,12 +2,12 @@ package org.sbs.bears.robotframework.enums;
 
 public enum SlideTarget {
     NA,
-    ZERO_FLOOR,
-    ONE_CAROUSEL,
-    TWO_CAROUSEL,
+    FLOOR_SHARED_DEPOSIT,
+    BOTTOM_CAROUSEL,
+    MID_CAROUSEL,
+    TOP_CAROUSEL,
     TOP_DEPOSIT,
     MID_DEPOSIT,
     BOTTOM_DEPOSIT,
-    THREE_CAROUSEL,
-    FOUR_CAP,
+    CAP,
 }

@@ -152,15 +152,15 @@ public class SlideController {
                 return;
             case EXTENDING:
                 switch (targetParams) {
-                    case ONE_CAROUSEL:
+                    case BOTTOM_CAROUSEL:
                         targetPosFinal = slideMotorPosition_ONE_CAROUSEL;
                         verticalServoTargetPos = vertServoPosition_ONE_CAROUSEL;
                         break;
-                    case TWO_CAROUSEL:
+                    case MID_CAROUSEL:
                         targetPosFinal = slideMotorPosition_TWO_CAROUSEL;
                         verticalServoTargetPos = vertServoPosition_TWO_CAROUSEL;
                         break;
-                    case THREE_CAROUSEL:
+                    case TOP_CAROUSEL:
                         targetPosFinal = slideMotorPosition_THREE_CAROUSEL;
                         verticalServoTargetPos = vertServoPosition_THREE_CAROUSEL;
                         break;

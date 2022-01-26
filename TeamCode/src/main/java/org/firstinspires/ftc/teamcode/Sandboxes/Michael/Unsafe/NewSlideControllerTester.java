@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.Sandboxes.Michael.Unsafe;
 import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.sbs.bears.robotframework.controllers.SlideController;
@@ -26,7 +25,7 @@ public class NewSlideControllerTester extends LinearOpMode {
                 telemetry.update();
             }
         }).start();
-        ctrl.targetParams = SlideTarget.THREE_CAROUSEL;
+        ctrl.targetParams = SlideTarget.TOP_CAROUSEL;
         while(opModeIsActive() && !isStopRequested())
         {
 

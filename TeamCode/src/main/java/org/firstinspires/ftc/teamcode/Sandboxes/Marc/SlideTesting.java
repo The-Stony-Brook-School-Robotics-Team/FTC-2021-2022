@@ -1,9 +1,5 @@
 package org.firstinspires.ftc.teamcode.Sandboxes.Marc;
 
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideController;
-
-import android.util.Log;
-
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
@@ -100,7 +96,7 @@ drive = new SampleMecanumDrive(hardwareMap);
             }
             if(gamepad1.x && !qX) {
                 drive.setWeightedDrivePower(new Pose2d());
-                slideController.extendDropRetract(SlideTarget.THREE_CAROUSEL);
+                slideController.extendDropRetract(SlideTarget.TOP_CAROUSEL);
                 slideController.extendSlide();
                 slideController.dropCube();
                 slideController.retractSlide();
