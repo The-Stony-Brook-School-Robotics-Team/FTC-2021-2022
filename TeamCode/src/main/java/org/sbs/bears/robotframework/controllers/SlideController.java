@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.sbs.bears.robotframework.Beta;
 import org.sbs.bears.robotframework.Sleep;
 import org.sbs.bears.robotframework.enums.SlideState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
@@ -36,6 +37,7 @@ public class SlideController {
 
     public SlideController(HardwareMap hardwareMap, Telemetry telemetry)
     {
+        /** Initialization **/
         magswitch = hardwareMap.get(DigitalChannel.class, "stop");
         magswitch.setMode(DigitalChannel.Mode.INPUT);
         verticalServo = hardwareMap.get(Servo.class, "vt");
@@ -54,6 +56,10 @@ public class SlideController {
 
     }
 
+    /** Extracts the slide, drops, then retracts.
+     *
+     * @param target the target which represents the height and distance the slide should extend to.
+     */
     public void extendDropRetract(SlideTarget target)
     {
         this.targetParams = target;
@@ -82,6 +88,11 @@ public class SlideController {
     }
 
 
+    /** An overload of extendDropRetract that allows for interruption via the gamepad.
+     *
+     * @param target the target which represents height and distance the slide should extend to.
+     * @param gamepad the gamepad object needed to handle button presses.
+     */
     public void extendDropRetract(SlideTarget target, Gamepad gamepad)
     {
         this.targetParams = target;
@@ -89,7 +100,7 @@ public class SlideController {
         if(flagToLeave) {
             return;
         }
-
+        //Sleeps to avoid race conditions. Do not remove, might be possible to lessen
         try {
             Thread.sleep(10);
         } catch (InterruptedException e) {
@@ -99,6 +110,8 @@ public class SlideController {
             return;
         }
 
+        //Only proceed to drop and retract if not interrupted by a button
+        //TODO fix
         if(!gamepad.x){
             dropCube();
             try {
@@ -110,9 +123,11 @@ public class SlideController {
         }
     }
 
+    /** Moves the bucket servo to drop the cube, then returns the servo to original position. **/
     public void dropCube()
     {
 
+        //Checks to make sure the bucket is outside of the slide before dumping
         if(slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT) {
             dumperServo.setPosition(dumperPosition_DUMP);
             try {
@@ -124,6 +139,7 @@ public class SlideController {
         }
     }
 
+    /** Sets the slide state to retract, does the action for this state (retracts), then sets the state to park. **/
     public void retractSlide() {
         slideState = SlideState.RETRACTING;
         doStateAction();
@@ -131,6 +147,7 @@ public class SlideController {
         slideState = SlideState.PARKED;
     }
 
+    /** Sets the slide state to extend, does the action for this state (extends), then sets the state to out fully. **/
     public void extendSlide() {
         Log.d("SlideController","bucket should be out");
         slideState = SlideState.EXTENDING;
@@ -139,18 +156,21 @@ public class SlideController {
         slideState = SlideState.OUT_FULLY;
     }
 
-    // this method will execute tasks associated with a transition state such as extending and retracting.
-    // position states such as parked and out fully have no associated operations.
+    /** Called after a state change in order to change the robot's physical state.
+     * Resting states such as PARKED and OUT_FULLY have no associated operations.
+     */
     private void doStateAction()
     {
         int targetPos = 0;
         int targetPosFinal = 0;
         double verticalServoTargetPos = 0;
         switch(slideState) {
+            //Resting states, just return.
             case PARKED:
             case OUT_FULLY:
                 return;
             case EXTENDING:
+                //Switch to set the height and distance of extension depending on the target
                 switch (targetParams) {
                     case BOTTOM_CAROUSEL:
                         targetPosFinal = slideMotorPosition_ONE_CAROUSEL;
@@ -175,6 +195,7 @@ public class SlideController {
                 }
                 slideMotor.setTargetPosition(targetPosFinal);
                 slideMotor.setPower(slideMotorPowerMoving);
+                //Wait until the slide bucket is extended outside of the robot
                 while(slideMotor.getCurrentPosition() < slideMotorPosition_BUCKET_OUT){
                     try {
                         Thread.sleep(10);
@@ -182,21 +203,25 @@ public class SlideController {
                         e.printStackTrace();
                     }
                 }
+                //Now that the bucket is out, start lifting the slide
                 setHeightToParams(verticalServoTargetPos);
-
-               while(slideMotor.getCurrentPosition() < targetPosFinal){
+                //Wait until the slide has reached its final position
+                while(slideMotor.getCurrentPosition() < targetPosFinal){
                    try {
                        Thread.sleep(10);
                    } catch (InterruptedException e) {
                        e.printStackTrace();
                    }
-               }
+
+                }
+                //Kill the motor's PID and stop so it doesn't try to correct and jitter
                 hardStopReset();
                 return;
             case RETRACTING:
                 targetPos = slideMotorPosition_PARKED;
                 slideMotor.setPower(slideMotorPowerMoving);
                 slideMotor.setTargetPosition(targetPos);
+                //Wait until the slide is retracted to right outside the robot
                 while(slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT+300){
                     try {
                         Thread.sleep(10);
@@ -204,15 +229,17 @@ public class SlideController {
                         e.printStackTrace();
                     }
                 }
+                //Once right outside, slow down the slide and lower it.
                 slideMotor.setPower(slideMotorPowerMovingBack);
-
                 setHeightToParams(vertServoPosition_PARKED);
+                //Wait until the magnetic switch is triggered.
                 while(slideMotor.isBusy()){
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                    //Once triggered, kill the motor's PID and stop to prevent overshooting and hitting the robot.
                     if(!magswitch.getState())
                     {
                         hardStopReset();
@@ -224,20 +251,26 @@ public class SlideController {
     }
 
 
-
+    /** Increments the slide's height to the desired position. **/
     private void setHeightToParams(double targetPos) {
+        //Only alter the slide's height if not parked
+        //TODO if(slideState != PARKED)?
         if(slideState == SlideState.OUT_FULLY || slideState == SlideState.RETRACTING || slideState == SlideState.EXTENDING || slideState == SlideState.TELEOP) {
             double currentPos = verticalServo.getPosition();
+            //If the target position is higher than our current, it means we are going up, and vice versa.
             boolean qNeedsToGoUp = (currentPos < targetPos);
             if(qNeedsToGoUp) {
+                //Set the servo to a slightly higher position until it reaches its target
                 for(double i = verticalServo.getPosition(); i < targetPos; i+=incrementDeltaExtend){
                     verticalServo.setPosition(Range.clip(i, 0, targetPos));
 
                 }
             }
-            else {
+            else { //We are going down
                 for(double i = verticalServo.getPosition(); i > targetPos; i-=incrementDeltaRetract){
                     verticalServo.setPosition(Range.clip(i, targetPos, 1));
+                    //Sleep to slow things down a bit
+                    //TODO can be removed with a decrease of incrementDeltaRetract?
                     try {
                         Thread.sleep(1);
                     } catch (InterruptedException e) {
@@ -251,17 +284,17 @@ public class SlideController {
         }
     }
 
-
-    /** TeleOp Methods */
+    /** Sets state, position and target relative to teleOp (called in teleOp). **/
     public void initTeleop(){
         slideState = SlideState.TELEOP;
         verticalServo.setPosition(vertServoPosition_PARKED);
         this.targetParams = SlideTarget.TOP_DEPOSIT;
     }
-
+    /** Accessor methods for the slide servo and motor. **/
     public double getVerticalServoPosition(){return verticalServo.getPosition();}
     public double getSlideMotorPosition(){return slideMotor.getCurrentPosition();}
 
+    @Deprecated
     public void setToEncoderPosition(int encoderTicks){
         int oldPos = slideMotor.getCurrentPosition();
         slideState = SlideState.TELEOP;
@@ -288,7 +321,10 @@ public class SlideController {
     }
 
 
-
+    /** Sets the slide to a new position given a number of encoder ticks to alter it by.
+     *
+     * @param encoderTicks the number of ticks to increase or decrease the slide position.
+     */
     public void incrementEncoderPosition(int encoderTicks){
 
         slideState = SlideState.TELEOP;
@@ -297,6 +333,7 @@ public class SlideController {
         //Checks if the position given is a position that would put the box inside of the robot
         if(encoderTicks > slideMotorPosition_FULL || encoderTicks < slideMotorPosition_PARKED){return;}
 
+        //If the slide is to be incremented inside of the bucket and the slide height is not correct, first set it to the resting position.
         if(encoderTicks < slideMotorPosition_BUCKET_OUT && (verticalServo.getPosition() < vertServoPosition_PARKED-.01 || verticalServo.getPosition() > vertServoPosition_PARKED+.01)){
             setHeightToParams(vertServoPosition_PARKED);
         }
@@ -307,7 +344,10 @@ public class SlideController {
         return;
     }
 
-
+    /** Sets the slide to a new height given a fraction of the servo's range to alter it by.
+     *
+     * @param servoPosition A double that represents the servo's range expressed from 0 to 1.
+     */
     public void incrementVerticalServo(double servoPosition){
         servoPosition += verticalServo.getPosition();
         if(servoPosition > vertServoPosition_FULL_MAX){return;}
@@ -316,20 +356,21 @@ public class SlideController {
         return;
 
     }
-    /** End of TeleOp Methods */
 
 
-
+    @Beta
     public void calculateAngleAndExtensionFromPosition(Pose2d currentPos)
     {
         double deltaX = currentPos.getX() - positionOfBlueHub.getX();
         double deltaY = currentPos.getY() - positionOfBlueHub.getY();
     }
 
+    @Beta
     private double encoderInchesToTicks(double ticks) {
         return ticks * 145.1 / .785 / 2 / Math.PI;
     }
 
+    /** Stops any attempted PID correcting by setting the motor's desired position to itself, and resetting the runmode. **/
     private void hardStopReset(){
         //STOP!!!!!!!!!!!!
         slideMotor.setPower(0);

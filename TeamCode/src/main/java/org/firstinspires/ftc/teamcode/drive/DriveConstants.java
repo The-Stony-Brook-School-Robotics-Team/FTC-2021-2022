@@ -9,7 +9,7 @@ public class DriveConstants {
     public static final double TICKS_PER_REV = 384.5;
     public static final double MAX_RPM = 435;
 
-    public static boolean RUN_USING_ENCODER = false;
+    public static boolean RUN_USING_ENCODER = false; //true for odom + drive encoders
     public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(0, 0, 0,
             0);
 
