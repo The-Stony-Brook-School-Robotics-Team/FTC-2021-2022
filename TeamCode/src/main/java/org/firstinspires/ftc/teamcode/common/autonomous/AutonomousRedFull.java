@@ -14,11 +14,11 @@ public class AutonomousRedFull extends OpMode {
 
     @Override
     public void start() {
-        brain.launch();
+        brain.lance();
     }
 
     @Override
     public void loop() {
-        brain.doAutonAction();
+        brain.faitActionAutonome();
     }
 }

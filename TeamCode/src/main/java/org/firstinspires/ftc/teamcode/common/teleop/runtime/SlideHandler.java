@@ -5,8 +5,6 @@ import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideC
 
 import android.util.Log;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 
@@ -38,7 +36,7 @@ public class SlideHandler {
         if(slideMovementEnabled != true) { return; }
         if(!slideMoving) {
             slideMoving = true;
-            slideController.extendDropRetract(SlideTarget.THREE_DEPOSIT);
+            slideController.extendDropRetract(SlideTarget.TOP_DEPOSIT);
             slideMoving = false;
         }
     }

@@ -6,8 +6,6 @@ import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.sbs.bears.robotframework.controllers.OpenCVController;
@@ -30,28 +28,28 @@ public class AutonomousBlueFull extends LinearOpMode {
 
         waitForStart();
 
-        brain.launch();
+        brain.lance();
 
         autonBrainExecutor.start();
         while(opModeIsActive() && !isStopRequested())
         {
-            telemetry.addData("majorState", brain.majorState);
+            telemetry.addData("majorState", brain.etatMajeur);
             telemetry.addData("minorState", brain.minorState);
             telemetry.addData("CameraReading", brain.heightFromDuck);
-            telemetry.addData("DepositHeight", brain.targetCarousel);
+            telemetry.addData("DepositHeight", brain.butObjectInitiale);
             telemetry.update();
         }
         // stop requested
         autonBrainExecutor.interrupt();
-        brain.majorState = AutonomousBrain.AutonomousStates.FINISHED;
-        brain.minorState = AutonomousBrain.AutonomousBackForthSubStates.STOPPED;
+        brain.etatMajeur = AutonomousBrain.ÉtatsAutonomesMajeurs.FINIT;
+        brain.minorState = AutonomousBrain.ÉtatsAutonomesMineurs.ARRÊTÉ;
     }
 
 
     Thread autonBrainExecutor = new Thread(()->{
         while(opModeIsActive()&& !isStopRequested()){
                 if(qContinue) {
-                    brain.doAutonAction();
+                    brain.faitActionAutonome();
                     sleep(100);
                     qContinue = false;
                 }
@@ -64,7 +62,7 @@ public class AutonomousBlueFull extends LinearOpMode {
                 else if (!gamepad1.a && qA) {
                     qA = false;
                 }
-                if(brain.majorState.equals(AutonomousBrain.AutonomousStates.FINISHED))
+                if(brain.etatMajeur.equals(AutonomousBrain.ÉtatsAutonomesMajeurs.FINIT))
                 {
                     requestOpModeStop();
                 }
