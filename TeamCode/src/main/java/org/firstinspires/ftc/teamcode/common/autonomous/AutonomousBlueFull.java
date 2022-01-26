@@ -33,16 +33,16 @@ public class AutonomousBlueFull extends LinearOpMode {
         autonBrainExecutor.start();
         while(opModeIsActive() && !isStopRequested())
         {
-            telemetry.addData("majorState", brain.etatMajeur);
+            telemetry.addData("majorState", brain.majorState);
             telemetry.addData("minorState", brain.minorState);
             telemetry.addData("CameraReading", brain.heightFromDuck);
-            telemetry.addData("DepositHeight", brain.butObjectInitiale);
+            telemetry.addData("DepositHeight", brain.iniTarget);
             telemetry.update();
         }
         // stop requested
         autonBrainExecutor.interrupt();
-        brain.etatMajeur = AutonomousBrain.ÉtatsAutonomesMajeurs.FINIT;
-        brain.minorState = AutonomousBrain.ÉtatsAutonomesMineurs.ARRÊTÉ;
+        brain.majorState = AutonomousBrain.MajorAutonomousState.FINISHED;
+        brain.minorState = AutonomousBrain.MinorAutonomousState.STOPPED;
     }
 
 
@@ -62,7 +62,7 @@ public class AutonomousBlueFull extends LinearOpMode {
                 else if (!gamepad1.a && qA) {
                     qA = false;
                 }
-                if(brain.etatMajeur.equals(AutonomousBrain.ÉtatsAutonomesMajeurs.FINIT))
+                if(brain.majorState.equals(AutonomousBrain.MajorAutonomousState.FINISHED))
                 {
                     requestOpModeStop();
                 }

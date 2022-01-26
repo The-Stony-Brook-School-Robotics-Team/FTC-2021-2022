@@ -39,27 +39,27 @@ public class AutonomousBrain {
     HardwareMap hwMap;
     boolean qObjetDansRobot = false;
 
-    public ÉtatsAutonomesMajeurs etatMajeur = ÉtatsAutonomesMajeurs.ARRÊTÉ;
-    public ÉtatsAutonomesMineurs minorState = ÉtatsAutonomesMineurs.ARRÊTÉ;
+    public MajorAutonomousState majorState = MajorAutonomousState.STOPPED;
+    public MinorAutonomousState minorState = MinorAutonomousState.STOPPED;
     TowerHeightFromDuck heightFromDuck = TowerHeightFromDuck.NOT_YET_SET;
 
-    SlideTarget butObjectInitiale; // position va le decider. // randomizée
-    SlideTarget butNormale = SlideTarget.TOP_DEPOSIT;
+    SlideTarget iniTarget; // position va le decider. // randomizée
+    SlideTarget normalTarget = SlideTarget.TOP_DEPOSIT;
 
-    enum ÉtatsAutonomesMajeurs {
-        ARRÊTÉ,
-        UN_LIT_POSITION_DU_CANARD,
-        DEUX_TOURNE_DEPOSE_OBJET,
-        TROIS_ALLEZ_RETOUR,
-        QUATRE_PARKING_DANS_LE_WAREHOUSE,
-        FINIT
+    enum MajorAutonomousState {
+        STOPPED,
+        ONE_CAMERA_READ,
+        TWO_DEPOSIT_INI_BLOCK,
+        THREE_BACK_FORTH,
+        FOUR_PARKING_CLEANUP,
+        FINISHED
     }
-    enum ÉtatsAutonomesMineurs {
-        ARRÊTÉ,
-        UN_ACQUISITION,
-        DEUX_MOUVEMENT_VERS_DEPOSITION,
-        TROIS_DEPOSITION,
-        QUATRE_RETOUR_POUR_ACQUISITION
+    enum MinorAutonomousState {
+        STOPPED,
+        ONE_INTAKE,
+        TWO_PREP_DEPOSIT,
+        THREE_DEPOSIT,
+        FOUR_RETURN_TO_INTAKE
     }
 
     double iniTemps = 0;
@@ -76,7 +76,7 @@ public class AutonomousBrain {
         this.intakeCtrlBlue = robot.getIntakeCtrlBlue();
         this.intakeCtrlRed = robot.getIntakeCtrlRed();
         this.duckCtrl = robot.getDuckCtrl();
-        RRctrl.setPos(positionDépartBleu);
+        RRctrl.setPos(startPositionBlue);
         intakeCtrlBlue.setState(IntakeState.PARK);
         intakeCtrlRed.setState(IntakeState.PARK); // to prevent from moving around
         normalizedColorSensor = hardwareMap.get(NormalizedColorSensor.class, "color");
@@ -89,65 +89,65 @@ public class AutonomousBrain {
     }
     public void faitActionAutonome() // call in loop (once per loop pls)
     {
-        switch(etatMajeur) {
-            case ARRÊTÉ:
+        switch(majorState) {
+            case STOPPED:
                 doAnalysisMaster = true;
-                etatMajeur = ÉtatsAutonomesMajeurs.UN_LIT_POSITION_DU_CANARD;
+                majorState = MajorAutonomousState.ONE_CAMERA_READ;
                 return;
-            case UN_LIT_POSITION_DU_CANARD:
+            case ONE_CAMERA_READ:
                 heightFromDuck = CVctrl.getWhichTowerHeight();
                 Log.d("height: ", heightFromDuck.toString());
                 CVctrl.shutDown();
                 switch (heightFromDuck) {
                     case ONE:
-                        butObjectInitiale = SlideTarget.BOTTOM_DEPOSIT;
+                        iniTarget = SlideTarget.BOTTOM_DEPOSIT;
                         break;
                     case TWO:
-                        butObjectInitiale = SlideTarget.MID_DEPOSIT;
+                        iniTarget = SlideTarget.MID_DEPOSIT;
                         break;
                     case THREE:
-                        butObjectInitiale = SlideTarget.TOP_DEPOSIT;
+                        iniTarget = SlideTarget.TOP_DEPOSIT;
                         break;
                 }
-                etatMajeur = ÉtatsAutonomesMajeurs.DEUX_TOURNE_DEPOSE_OBJET;
+                majorState = MajorAutonomousState.TWO_DEPOSIT_INI_BLOCK;
                 return;
-            case DEUX_TOURNE_DEPOSE_OBJET:
-                RRctrl.followLineToSpline(positionDeposerBlocSurTourBleu);
-                slideCtrl.extendDropRetract(butNormale);
+            case TWO_DEPOSIT_INI_BLOCK:
+                RRctrl.followLineToSpline(depositPositionAllianceBlue);
+                slideCtrl.extendDropRetract(normalTarget);
                 Log.d("AutonBrain","Slide drop complete");
-                RRctrl.followLineToSpline(positionContreMurAvantWarehouseBleu);
-                RRctrl.setPos(new Pose2d(14,65.5,0));
+                RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
+                RRctrl.setPos(new Pose2d(resetPositionB4WarehouseBlue.getX(),65.5,0));
                 intakeCtrlBlue.setState(IntakeState.BASE);
-                RRctrl.followLineToSpline(positionCollectionDObjetBleu);
+                RRctrl.followLineToSpline(warehousePickupPositionBlue);
                 Log.d("AutonBrain","reset status and init for intake");
                 qObjetDansRobot = false; // reset
-                etatMajeur = ÉtatsAutonomesMajeurs.TROIS_ALLEZ_RETOUR;
+                majorState = MajorAutonomousState.THREE_BACK_FORTH;
                 return;
-            case TROIS_ALLEZ_RETOUR:
+            case THREE_BACK_FORTH:
                 faitAllezRetour();
-                if(minorState == ÉtatsAutonomesMineurs.ARRÊTÉ)
+                if(minorState == MinorAutonomousState.STOPPED)
                 {
-                    minorState = ÉtatsAutonomesMineurs.UN_ACQUISITION;
+                    minorState = MinorAutonomousState.ONE_INTAKE;
                     return;
                 }
                 // time check
                double currentTime = NanoClock.system().seconds();
                 if(currentTime- iniTemps > 35) {
                     Log.d("AutonBrain","Time Constraint: parking");
-                    etatMajeur = ÉtatsAutonomesMajeurs.QUATRE_PARKING_DANS_LE_WAREHOUSE;
+                    majorState = MajorAutonomousState.FOUR_PARKING_CLEANUP;
                 }
                 return;
-            case QUATRE_PARKING_DANS_LE_WAREHOUSE:
+            case FOUR_PARKING_CLEANUP:
                 Log.d("AutonBrain","parking1");
                 intakeCtrlBlue.setState(IntakeState.PARK);
                 Log.d("AutonBrain","parking2");
-                RRctrl.followLineToSpline(positionContreMurAvantWarehouseBleu);
+                RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
                 Log.d("AutonBrain","parking3");
-                RRctrl.followLineToSpline(positionFinaleBleu);
+                RRctrl.followLineToSpline(parkingPositionBlue);
                 Log.d("AutonBrain","parking4");
-                etatMajeur = ÉtatsAutonomesMajeurs.FINIT;
+                majorState = MajorAutonomousState.FINISHED;
                 return;
-            case FINIT:
+            case FINISHED:
                 return;
 
         }
@@ -157,27 +157,27 @@ public class AutonomousBrain {
     {
         switch(minorState)
         {
-            case ARRÊTÉ:
+            case STOPPED:
                 // fait rien; l'état majeur  va changer l'état si il y a besoin.
                 return;
-            case UN_ACQUISITION:
+            case ONE_INTAKE:
                 Log.d("AutonBrain","Current Status: itemBool: " + qObjetDansRobot + " intakeStatus " + intakeCtrlBlue.isObjectInPayload());
                 if(qObjetDansRobot || intakeCtrlBlue.isObjectInPayload())
                 {
                     // nous avons le bloc
                     Log.d("AutonBrain","Missed block on last run, proceeding.");
-                    minorState = ÉtatsAutonomesMineurs.DEUX_MOUVEMENT_VERS_DEPOSITION;
+                    minorState = MinorAutonomousState.TWO_PREP_DEPOSIT;
                     return;
                 }
 
                 intakeCtrlBlue.setState(IntakeState.BASE);
                 new Thread(()->{
-                    boolean isInState = minorState.equals(ÉtatsAutonomesMineurs.UN_ACQUISITION);
+                    boolean isInState = minorState.equals(MinorAutonomousState.ONE_INTAKE);
                     Log.d("AutonBrainThread","Status0: scoop: " + qObjetDansRobot +" state " + isInState);
                     while(!qObjetDansRobot && isInState)
                     {
                         Sleep.sleep(10);
-                        isInState = minorState.equals(ÉtatsAutonomesMineurs.UN_ACQUISITION);
+                        isInState = minorState.equals(MinorAutonomousState.ONE_INTAKE);
                         qObjetDansRobot = intakeCtrlBlue.isObjectInPayload();
                         Log.d("AutonBrainThread","Status: scoop: " + qObjetDansRobot +" state " + isInState);
                     }
@@ -197,61 +197,61 @@ public class AutonomousBrain {
                 // stopped
                 if(qObjetDansRobot)
                 {
-                    minorState = ÉtatsAutonomesMineurs.DEUX_MOUVEMENT_VERS_DEPOSITION;
+                    minorState = MinorAutonomousState.TWO_PREP_DEPOSIT;
                     Log.d("AutonBrain","Continuing to deposit");
                     return;
                 }
-                RRctrl.followLineToSpline(positionCollectionDObjetBleu);
+                RRctrl.followLineToSpline(warehousePickupPositionBlue);
                 Log.d("AutonBrain","Retrying to find a block");
                 return;
-            case DEUX_MOUVEMENT_VERS_DEPOSITION: // TODO implement go forward and then turn
+            case TWO_PREP_DEPOSIT: // TODO implement go forward and then turn
                 new Thread(()->{
-                       while(minorState == ÉtatsAutonomesMineurs.DEUX_MOUVEMENT_VERS_DEPOSITION)
+                       while(minorState == MinorAutonomousState.TWO_PREP_DEPOSIT)
                        {
                            if(normalizedColorSensor.getNormalizedColors().alpha > Configuration.colorSensorWhiteAlpha)
                            {
                                // we know the x coordinate
                                Pose2d currentPos = RRctrl.getPos();
                                Log.d("AutonBrainThread","Current X: " + currentPos.getX());
-                               RRctrl.setPos(new Pose2d(27,currentPos.getY(),currentPos.getHeading()));
+                               RRctrl.setPos(new Pose2d(27,currentPos.getY(),currentPos.getHeading())); //x determiné avec senseur.
                                Log.d("AutonBrainThread","New X: " + RRctrl.getPos().getX());
                            }
                        }
                        // finit l'état donc on arête le fil d'execution
                 }).start();
-                RRctrl.followLineToSpline(positionResetContreMurBleu);
+                RRctrl.followLineToSpline(resetPositionInWarehouseBlue);
                 Pose2d currentPos = RRctrl.getPos();
                 RRctrl.setPos(new Pose2d(currentPos.getX(),65.5,0));
-                RRctrl.followLineToSpline(positionDépartBleu);
-                RRctrl.followLineToSpline(positionDeposerBlocSurTourBleu);
+                RRctrl.followLineToSpline(startPositionBlue);
+                RRctrl.followLineToSpline(depositPositionAllianceBlue);
                 Log.d("AutonBrain","Prepare for drop off");
-                minorState = ÉtatsAutonomesMineurs.TROIS_DEPOSITION;
+                minorState = MinorAutonomousState.THREE_DEPOSIT;
                 return;
-            case TROIS_DEPOSITION:
-                slideCtrl.extendDropRetract(butNormale);
+            case THREE_DEPOSIT:
+                slideCtrl.extendDropRetract(normalTarget);
                 Log.d("AutonBrain","Slide drop complete");
-                minorState = ÉtatsAutonomesMineurs.QUATRE_RETOUR_POUR_ACQUISITION;
+                minorState = MinorAutonomousState.FOUR_RETURN_TO_INTAKE;
                 return;
-            case QUATRE_RETOUR_POUR_ACQUISITION:
-                RRctrl.followLineToSpline(positionContreMurAvantWarehouseBleu);
-                RRctrl.setPos(new Pose2d(positionContreMurAvantWarehouseBleu.getX(),65.5,0)); // reset contre mur.
+            case FOUR_RETURN_TO_INTAKE:
+                RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
+                RRctrl.setPos(new Pose2d(resetPositionB4WarehouseBlue.getX(),65.5,0)); // reset contre mur.
                 Log.d("AutonBrain","intake prepped");
                 intakeCtrlBlue.setState(IntakeState.BASE);
-                RRctrl.followLineToSpline(positionCollectionDObjetBleu);
+                RRctrl.followLineToSpline(warehousePickupPositionBlue);
                 Log.d("AutonBrain","reset status and init for intake");
                 qObjetDansRobot = false; // reset
-                minorState = ÉtatsAutonomesMineurs.UN_ACQUISITION;
+                minorState = MinorAutonomousState.ONE_INTAKE;
                 return;
 
         }
     }
 
-    public static Pose2d positionDépartBleu = new Pose2d(14,65.5,0);
-    public static Pose2d positionCollectionDObjetBleu = new Pose2d(35,65.5,0);
-    public static Pose2d positionResetContreMurBleu = new Pose2d(30,75,0);
-    public static Pose2d positionDeposerBlocSurTourBleu = new Pose2d(5.58,64.47,-Math.toRadians(58));
-    public static Pose2d positionContreMurAvantWarehouseBleu = new Pose2d(14,80,0);
-    public static Pose2d positionFinaleBleu = new Pose2d(52,80,0);
+    public static Pose2d startPositionBlue = new Pose2d(14,65.5,0);
+    public static Pose2d warehousePickupPositionBlue = new Pose2d(35,65.5,0);
+    public static Pose2d resetPositionInWarehouseBlue = new Pose2d(30,75,0);
+    public static Pose2d depositPositionAllianceBlue = new Pose2d(5.58,64.47,-Math.toRadians(58));
+    public static Pose2d resetPositionB4WarehouseBlue = new Pose2d(14,80,0);
+    public static Pose2d parkingPositionBlue = new Pose2d(52,80,0);
 
 
 }
