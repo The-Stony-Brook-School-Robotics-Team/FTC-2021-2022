@@ -5,9 +5,9 @@ public enum SlideTarget {
     ZERO_FLOOR,
     ONE_CAROUSEL,
     TWO_CAROUSEL,
-    THREE_DEPOSIT,
-    TWO_DEPOSIT,
-    ONE_DEPOSIT,
+    TOP_DEPOSIT,
+    MID_DEPOSIT,
+    BOTTOM_DEPOSIT,
     THREE_CAROUSEL,
     FOUR_CAP,
 }

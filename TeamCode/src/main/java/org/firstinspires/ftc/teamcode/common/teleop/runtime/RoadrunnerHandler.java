@@ -135,7 +135,7 @@ public class RoadrunnerHandler {
 
                 Log.d(interfaceTag, "Extending Slide");
                 // Extend Drop Retract
-                slideController.extendDropRetract(SlideTarget.THREE_DEPOSIT, OfficialTeleop.gamepad);
+                slideController.extendDropRetract(SlideTarget.TOP_DEPOSIT, OfficialTeleop.gamepad);
 
                 Log.d(interfaceTag, "Turning back onto the wall");
                 // Turn Back Onto The Wall

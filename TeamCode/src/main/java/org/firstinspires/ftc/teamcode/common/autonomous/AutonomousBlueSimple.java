@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.common.autonomous;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 //@Autonomous(name="A - Auton (Blue Simple)")
@@ -14,11 +13,11 @@ public class AutonomousBlueSimple extends OpMode {
 
     @Override
     public void start() {
-        brain.launch();
+        brain.lance();
     }
 
     @Override
     public void loop() {
-        brain.doAutonAction();
+        brain.faitActionAutonome();
     }
 }

@@ -184,7 +184,7 @@ public class SlideController {
                         targetPosFinal = slideMotorPosition_THREE_CAROUSEL;
                         verticalServoTargetPos = vertServoPosition_THREE_CAROUSEL;
                         break;
-                    case THREE_DEPOSIT:
+                    case TOP_DEPOSIT:
                         targetPosFinal = slideMotorPosition_THREE_DEPOSIT;
                         verticalServoTargetPos = vertServoPosition_THREE_DEPOSIT;
                         break;
@@ -288,7 +288,7 @@ public class SlideController {
     public void initTeleop(){
         slideState = SlideState.TELEOP;
         verticalServo.setPosition(vertServoPosition_PARKED);
-        this.targetParams = SlideTarget.THREE_DEPOSIT;
+        this.targetParams = SlideTarget.TOP_DEPOSIT;
     }
     /** Accessor methods for the slide servo and motor. **/
     public double getVerticalServoPosition(){return verticalServo.getPosition();}
