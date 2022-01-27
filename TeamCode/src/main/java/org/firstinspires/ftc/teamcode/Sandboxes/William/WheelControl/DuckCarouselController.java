@@ -92,6 +92,6 @@ public class DuckCarouselController {
      * @return The speed of the real-time target speed of the motor.
      */
     private double getFirstStageMotorSpeed() {
-        return MAGICAL_CONSTANT * (getCurrentSystemSecond() - initTime + MAGICAL_CONSTANT_TIME_OFFSET);
+        return MAGICAL_CONSTANT * (getCurrentSystemSecond() - initTime) + MAGICAL_CONSTANT_TIME_OFFSET;
     }
 }

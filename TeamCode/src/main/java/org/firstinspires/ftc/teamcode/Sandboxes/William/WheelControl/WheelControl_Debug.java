@@ -4,7 +4,6 @@ import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 /**
  * Created by William Tao on 10/18/2021.
@@ -37,6 +36,8 @@ public class WheelControl_Debug extends OpMode {
     private boolean isPressingDpadDown = false;
     private boolean isPressingDpadLeft = false;
     private boolean isPressingDpadRight = false;
+    private boolean isPressingLeftBumper = false;
+    private boolean isPressingRightBumper = false;
     private boolean hasStarted = false;
 
     private boolean NEED_EMERGENCY_STOP = false;
@@ -209,6 +210,24 @@ public class WheelControl_Debug extends OpMode {
         } else if (!gamepad1.dpad_right && isPressingDpadRight) {
             duckCarouselController.SECOND_STAGE_TIME_INTERVAL -= 0.005;
             isPressingDpadRight = false;
+        }
+    }
+
+    private void checkLeftBumper() {
+        if (gamepad1.left_bumper && !isPressingLeftBumper) {
+            isPressingLeftBumper = true;
+        } else if (!gamepad1.left_bumper && isPressingLeftBumper) {
+            duckCarouselController.MAGICAL_CONSTANT_TIME_OFFSET += 0.05;
+            isPressingLeftBumper = false;
+        }
+    }
+
+    private void checkRightBumper(){
+        if (gamepad1.right_bumper && !isPressingRightBumper) {
+            isPressingRightBumper = true;
+        } else if (!gamepad1.right_bumper && isPressingRightBumper) {
+            duckCarouselController.MAGICAL_CONSTANT_TIME_OFFSET -= 0.05;
+            isPressingRightBumper = false;
         }
     }
 }
