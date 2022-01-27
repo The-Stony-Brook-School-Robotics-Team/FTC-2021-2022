@@ -115,8 +115,6 @@ public class AutonomousBrain {
                 RRctrl.followLineToSpline(depositPositionAllianceBlue);
                 slideCtrl.extendDropRetract(normalTarget);
                 Log.d("AutonBrain","Slide drop complete");
-                RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
-                RRctrl.setPos(new Pose2d(resetPositionB4WarehouseBlue.getX(),65.5,0));
                 intakeCtrlBlue.setState(IntakeState.BASE);
                 RRctrl.followLineToSpline(warehousePickupPositionBlue);
                 Log.d("AutonBrain","reset status and init for intake");
@@ -205,23 +203,6 @@ public class AutonomousBrain {
                 Log.d("AutonBrain","Retrying to find a block");
                 return;
             case TWO_PREP_DEPOSIT: // TODO implement go forward and then turn
-                new Thread(()->{
-                       while(minorState == MinorAutonomousState.TWO_PREP_DEPOSIT)
-                       {
-                           if(normalizedColorSensor.getNormalizedColors().alpha > Configuration.colorSensorWhiteAlpha)
-                           {
-                               // we know the x coordinate
-                               Pose2d currentPos = RRctrl.getPos();
-                               Log.d("AutonBrainThread","Current X: " + currentPos.getX());
-                               RRctrl.setPos(new Pose2d(27,currentPos.getY(),currentPos.getHeading())); //x determiné avec senseur.
-                               Log.d("AutonBrainThread","New X: " + RRctrl.getPos().getX());
-                           }
-                       }
-                       // finit l'état donc on arête le fil d'execution
-                }).start();
-                RRctrl.followLineToSpline(resetPositionInWarehouseBlue);
-                Pose2d currentPos = RRctrl.getPos();
-                RRctrl.setPos(new Pose2d(currentPos.getX(),65.5,0));
                 RRctrl.followLineToSpline(startPositionBlue);
                 RRctrl.followLineToSpline(depositPositionAllianceBlue);
                 Log.d("AutonBrain","Prepare for drop off");
