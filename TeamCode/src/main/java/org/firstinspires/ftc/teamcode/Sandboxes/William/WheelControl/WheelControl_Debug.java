@@ -49,10 +49,10 @@ public class WheelControl_Debug extends OpMode {
     /**
      * MAGICAL_CONSTANT should be between 0.39 to 0.41. Because of the lack of enough torque, the wheel actually never achieve the ideal acceleration.
      */
-    private double MAGICAL_CONSTANT = 0.39;
+    private double MAGICAL_CONSTANT = 0.2;
 
-    private double FIRST_STAGE_TIME_INTERVAL = 1.43;
-    private double SECOND_STAGE_TIME_INTERVAL = 0.5;
+    private double FIRST_STAGE_TIME_INTERVAL = 1.15;
+    private double SECOND_STAGE_TIME_INTERVAL = 0.12;
 
     private double MAX_WHEEL_SPEED = 0;
 
@@ -83,14 +83,14 @@ public class WheelControl_Debug extends OpMode {
         //Detect keys on the game pad.
         checkKeyA();        //Start spinning.
         checkKeyB();        //Do nothing.
-        checkKeyX();        //Add 0.002 second to MAGICAL_CONSTANT.
-        checkKeyY();        //Sub 0.002 second to MAGICAL_CONSTANT.
-        checkDpadUp();      //Add 0.005 second to FIRST_STAGE_TIME_INTERVAL.
-        checkDpadDown();    //Sub 0.005 second to FIRST_STAGE_TIME_INTERVAL.
-        checkDpadLeft();    //Add 0.005 second to SECOND_STAGE_TIME_INTERVAL.
-        checkDpadRight();   //Add 0.005 second to SECOND_STAGE_TIME_INTERVAL.
-        checkLeftBumper();  //Add 0.05 second to MAGICAL_CONSTANT_TIME_OFFSET.
-        checkRightBumper(); //Sub 0.05 second to MAGICAL_CONSTANT_TIME_OFFSET.
+        checkKeyX();        //Add 0.001 second to MAGICAL_CONSTANT.
+        checkKeyY();        //Sub 0.001 second to MAGICAL_CONSTANT.
+        checkDpadUp();      //Add 0.001 second to FIRST_STAGE_TIME_INTERVAL.
+        checkDpadDown();    //Sub 0.001 second to FIRST_STAGE_TIME_INTERVAL.
+        checkDpadLeft();    //Add 0.001 second to SECOND_STAGE_TIME_INTERVAL.
+        checkDpadRight();   //Add 0.001 second to SECOND_STAGE_TIME_INTERVAL.
+        checkLeftBumper();  //Add 0.01 second to MAGICAL_CONSTANT_TIME_OFFSET.
+        checkRightBumper(); //Sub 0.01 second to MAGICAL_CONSTANT_TIME_OFFSET.
     }
 
     private void updateMotorSpeed() {
@@ -165,7 +165,7 @@ public class WheelControl_Debug extends OpMode {
         if (gamepad1.x && !isPressingX) {
             isPressingX = true;
         } else if (!gamepad1.x && isPressingX) {
-            duckCarouselController.MAGICAL_CONSTANT += 0.002;
+            duckCarouselController.MAGICAL_CONSTANT += 0.001;
             isPressingX = false;
         }
     }
@@ -174,7 +174,7 @@ public class WheelControl_Debug extends OpMode {
         if (gamepad1.y && !isPressingY) {
             isPressingY = true;
         } else if (!gamepad1.y && isPressingY) {
-            duckCarouselController.MAGICAL_CONSTANT -= 0.002;
+            duckCarouselController.MAGICAL_CONSTANT -= 0.001;
             isPressingY = false;
         }
     }
@@ -183,7 +183,7 @@ public class WheelControl_Debug extends OpMode {
         if (gamepad1.dpad_up && !isPressingDpadUp) {
             isPressingDpadUp = true;
         } else if (!gamepad1.dpad_up && isPressingDpadUp) {
-            duckCarouselController.FIRST_STAGE_TIME_INTERVAL += 0.005;
+            duckCarouselController.FIRST_STAGE_TIME_INTERVAL += 0.001;
             isPressingDpadUp = false;
         }
     }
@@ -192,7 +192,7 @@ public class WheelControl_Debug extends OpMode {
         if (gamepad1.dpad_down && !isPressingDpadDown) {
             isPressingDpadDown = true;
         } else if (!gamepad1.dpad_down && isPressingDpadDown) {
-            duckCarouselController.FIRST_STAGE_TIME_INTERVAL -= 0.005;
+            duckCarouselController.FIRST_STAGE_TIME_INTERVAL -= 0.001;
             isPressingDpadDown = false;
         }
     }
@@ -201,7 +201,7 @@ public class WheelControl_Debug extends OpMode {
         if (gamepad1.dpad_left && !isPressingDpadLeft) {
             isPressingDpadLeft = true;
         } else if (!gamepad1.dpad_left && isPressingDpadLeft) {
-            duckCarouselController.SECOND_STAGE_TIME_INTERVAL += 0.005;
+            duckCarouselController.SECOND_STAGE_TIME_INTERVAL += 0.001;
             isPressingDpadLeft = false;
         }
     }
@@ -210,7 +210,7 @@ public class WheelControl_Debug extends OpMode {
         if (gamepad1.dpad_right && !isPressingDpadRight) {
             isPressingDpadRight = true;
         } else if (!gamepad1.dpad_right && isPressingDpadRight) {
-            duckCarouselController.SECOND_STAGE_TIME_INTERVAL -= 0.005;
+            duckCarouselController.SECOND_STAGE_TIME_INTERVAL -= 0.001;
             isPressingDpadRight = false;
         }
     }
@@ -219,7 +219,7 @@ public class WheelControl_Debug extends OpMode {
         if (gamepad1.left_bumper && !isPressingLeftBumper) {
             isPressingLeftBumper = true;
         } else if (!gamepad1.left_bumper && isPressingLeftBumper) {
-            duckCarouselController.MAGICAL_CONSTANT_TIME_OFFSET += 0.05;
+            duckCarouselController.MAGICAL_CONSTANT_TIME_OFFSET += 0.01;
             isPressingLeftBumper = false;
         }
     }
@@ -228,7 +228,7 @@ public class WheelControl_Debug extends OpMode {
         if (gamepad1.right_bumper && !isPressingRightBumper) {
             isPressingRightBumper = true;
         } else if (!gamepad1.right_bumper && isPressingRightBumper) {
-            duckCarouselController.MAGICAL_CONSTANT_TIME_OFFSET -= 0.05;
+            duckCarouselController.MAGICAL_CONSTANT_TIME_OFFSET -= 0.01;
             isPressingRightBumper = false;
         }
     }
