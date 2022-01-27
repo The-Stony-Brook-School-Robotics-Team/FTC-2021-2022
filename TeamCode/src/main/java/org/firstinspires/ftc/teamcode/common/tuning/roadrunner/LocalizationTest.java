@@ -22,17 +22,17 @@ public class LocalizationTest extends LinearOpMode {
         while (!isStopRequested()) {
             drive.setWeightedDrivePower(
                     new Pose2d(
-                            -0.1*gamepad1.left_stick_y,
-                            -0.1*gamepad1.left_stick_x,
-                            -0.1*gamepad1.right_stick_x
+                            -gamepad1.left_stick_y,
+                            gamepad1.left_stick_x,
+                            -gamepad1.right_stick_x
                     )
             );
 
             drive.update();
 
             Pose2d poseEstimate = drive.getPoseEstimate();
-            telemetry.addData("x", poseEstimate.getX()*1.066*1.036*0.952);
-            telemetry.addData("y", poseEstimate.getY()*1.066*0.91*1.179);
+            telemetry.addData("x", poseEstimate.getX());
+            telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", poseEstimate.getHeading());
             telemetry.update();
         }
