@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.common.sharedResources.SharedData;
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.sbs.bears.robotframework.Robot;
 import org.sbs.bears.robotframework.Sleep;
@@ -115,6 +116,7 @@ public class AutonomousBrain {
                 RRctrl.followLineToSpline(depositPositionAllianceBlue);
                 slideCtrl.extendDropRetract(normalTarget);
                 Log.d("AutonBrain","Slide drop complete");
+                RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
                 intakeCtrlBlue.setState(IntakeState.BASE);
                 RRctrl.followLineToSpline(warehousePickupPositionBlue);
                 Log.d("AutonBrain","reset status and init for intake");
@@ -138,11 +140,15 @@ public class AutonomousBrain {
             case FOUR_PARKING_CLEANUP:
                 Log.d("AutonBrain","parking1");
                 intakeCtrlBlue.setState(IntakeState.PARK);
+                /*
                 Log.d("AutonBrain","parking2");
                 RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
                 Log.d("AutonBrain","parking3");
                 RRctrl.followLineToSpline(parkingPositionBlue);
                 Log.d("AutonBrain","parking4");
+                */
+                RRctrl.doBlueAutonomousParkingTrajectory();
+                SharedData.autonomousLastPosition = RRctrl.getPos();
                 majorState = MajorAutonomousState.FINISHED;
                 return;
             case FINISHED:
@@ -203,8 +209,10 @@ public class AutonomousBrain {
                 Log.d("AutonBrain","Retrying to find a block");
                 return;
             case TWO_PREP_DEPOSIT: // TODO implement go forward and then turn
-                RRctrl.followLineToSpline(startPositionBlue);
+                /*RRctrl.followLineToSpline(startPositionBlue);
                 RRctrl.followLineToSpline(depositPositionAllianceBlue);
+                */
+                RRctrl.doBlueDepositTrajectory();
                 Log.d("AutonBrain","Prepare for drop off");
                 minorState = MinorAutonomousState.THREE_DEPOSIT;
                 return;
@@ -230,9 +238,9 @@ public class AutonomousBrain {
     public static Pose2d startPositionBlue = new Pose2d(14,65.5,0);
     public static Pose2d warehousePickupPositionBlue = new Pose2d(35,65.5,0);
     public static Pose2d resetPositionInWarehouseBlue = new Pose2d(30,75,0);
-    public static Pose2d depositPositionAllianceBlue = new Pose2d(5.58,64.47,-Math.toRadians(58));
+    public static Pose2d depositPositionAllianceBlue = new Pose2d(5.58,64.47,-Math.toRadians(57));
     public static Pose2d resetPositionB4WarehouseBlue = new Pose2d(14,80,0);
-    public static Pose2d parkingPositionBlue = new Pose2d(52,80,0);
+    public static Pose2d parkingPositionBlue = new Pose2d(60,80,0);
 
 
 }

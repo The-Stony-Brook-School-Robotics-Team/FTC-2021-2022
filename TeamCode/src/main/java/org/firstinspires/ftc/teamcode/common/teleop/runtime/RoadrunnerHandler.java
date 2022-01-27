@@ -15,6 +15,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityCons
 
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop;
+import org.firstinspires.ftc.teamcode.common.teleop.Positions;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.enums.IntakeState;
@@ -37,7 +38,7 @@ public class RoadrunnerHandler {
         FORWARD(Configuration.inchesForward),
         BACK(Configuration.inchesBack),
         TURN_ABOUT_WHEEL(0),
-        WAREHOUSE_AUTO_TURN(0);
+        WAREHOUSE_AUTO_TURN_AND_DEPO(0);
 
         private int inches;
 
@@ -119,18 +120,12 @@ public class RoadrunnerHandler {
                         .build());
                 Log.d(interfaceTag, "Finished pivoting");
 
-            case WAREHOUSE_AUTO_TURN:
+            case WAREHOUSE_AUTO_TURN_AND_DEPO:
                 Log.d(interfaceTag, "Going Forward");
-                // Go Forward 18 Inches From the Inside Of The Warehouse
+                // Go Forward 18 Inches From the Inside Of The Warehouse And Turn
                 drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .back(18)
-                        .build());
-
-                Log.d(interfaceTag, "Turning");
-                // Do The Turn
-                drive.setPoseEstimate(new Pose2d(14, 65.5, 0));
-                drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToSplineHeading(new Pose2d(5.58, 64.47, -Math.toRadians(51)), turnVelocityConstraint, turnAccelerationConstraint)
+                        .lineToSplineHeading(Positions.autonStartPose)
+                        .splineToSplineHeading(Positions.blueDepositPosition, Math.PI)
                         .build());
 
                 Log.d(interfaceTag, "Extending Slide");
@@ -138,20 +133,15 @@ public class RoadrunnerHandler {
                 slideController.extendDropRetract(SlideTarget.TOP_DEPOSIT, OfficialTeleop.gamepad);
 
                 Log.d(interfaceTag, "Turning back onto the wall");
-                // Turn Back Onto The Wall
+                // Turn Back Onto The Wall And Go Into The Warehouse
                 drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToSplineHeading(new Pose2d(14,80,0), quickTurnVelocityConstraint, quickTurnAccelerationConstraint)
-                        .build());
-
-                Log.d(interfaceTag, "Going back into the warehouse");
-                // Go Back Into The Warehouse
-                drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .splineToSplineHeading(Positions.blueWarehouseResetPosition, 0)
                         .addTemporalMarker(1, () -> {
                             Log.d(interfaceTag, "Dropping blue intake");
                             // Drop Blue Intake
                             blueIntake.setState(IntakeState.BASE);
                         })
-                        .forward(24)
+                        .lineToSplineHeading(Positions.blueWarehouseParkPosition)
                         .build());
                 break;
         }
