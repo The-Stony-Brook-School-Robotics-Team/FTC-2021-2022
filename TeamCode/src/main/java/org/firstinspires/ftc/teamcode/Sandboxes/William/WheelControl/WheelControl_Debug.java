@@ -82,13 +82,15 @@ public class WheelControl_Debug extends OpMode {
 
         //Detect keys on the game pad.
         checkKeyA();        //Start spinning.
-        checkKeyB();        //Check if need emergency Stop.
+        checkKeyB();        //Do nothing.
         checkKeyX();        //Add 0.002 second to MAGICAL_CONSTANT.
         checkKeyY();        //Sub 0.002 second to MAGICAL_CONSTANT.
         checkDpadUp();      //Add 0.005 second to FIRST_STAGE_TIME_INTERVAL.
         checkDpadDown();    //Sub 0.005 second to FIRST_STAGE_TIME_INTERVAL.
         checkDpadLeft();    //Add 0.005 second to SECOND_STAGE_TIME_INTERVAL.
         checkDpadRight();   //Add 0.005 second to SECOND_STAGE_TIME_INTERVAL.
+        checkLeftBumper();  //Add 0.05 second to MAGICAL_CONSTANT_TIME_OFFSET.
+        checkRightBumper(); //Sub 0.05 second to MAGICAL_CONSTANT_TIME_OFFSET.
     }
 
     private void updateMotorSpeed() {
@@ -154,7 +156,7 @@ public class WheelControl_Debug extends OpMode {
         if (gamepad1.b && !isPressingB) {
             isPressingB = true;
         } else if (!gamepad1.b && isPressingB) {
-            duckCarouselController.MAGICAL_CONSTANT_TIME_OFFSET += 0.02;
+//            duckCarouselController.MAGICAL_CONSTANT_TIME_OFFSET += 0.02;
             isPressingB = false;
         }
     }
