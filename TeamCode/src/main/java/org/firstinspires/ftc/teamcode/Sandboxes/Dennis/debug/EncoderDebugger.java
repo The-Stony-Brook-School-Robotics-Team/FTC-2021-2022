@@ -26,7 +26,7 @@ public class EncoderDebugger extends LinearOpMode {
     /**
      * Public Configuration
      */
-    public static boolean DEBUG_THREE_WHEEL = false;
+    public static boolean DEBUG_THREE_WHEEL = true;
     public static String LEFT_ENCODER_NAME = "left";
     public static String RIGHT_ENCODER_NAME = "right";
     public static String CENTER_ENCODER_NAME = "center";

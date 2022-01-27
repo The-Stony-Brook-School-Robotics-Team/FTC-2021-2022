@@ -15,7 +15,8 @@ public class ihatemichael extends OpMode {
     private boolean pUp = false, pDown = false;
     private double openPosition = 0.35; // 0.5
     private double closedPosition = 0.05;
-    private double threshold = 70;
+    private double threshold = 50;
+    private boolean check = false;
 
     @Override
     public void init() {
@@ -54,13 +55,7 @@ public class ihatemichael extends OpMode {
         if(gamepad1.b){
             servo.setPosition(closedPosition);
         }
-        if(distanceSensor.getDistance(DistanceUnit.MM) < 50){
-            servo.setPosition(openPosition);
-            try {
-                    Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        if(distanceSensor.getDistance(DistanceUnit.MM) < threshold && !gamepad1.a){
             servo.setPosition(closedPosition);
         }
 
