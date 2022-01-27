@@ -38,7 +38,7 @@ public class RoadrunnerHandler {
         FORWARD(Configuration.inchesForward),
         BACK(Configuration.inchesBack),
         TURN_ABOUT_WHEEL(0),
-        WAREHOUSE_AUTO_TURN_AND_DEPO(0);
+        WAREHOUSE_AUTO_TURN(0);
 
         private int inches;
 
@@ -120,12 +120,18 @@ public class RoadrunnerHandler {
                         .build());
                 Log.d(interfaceTag, "Finished pivoting");
 
-            case WAREHOUSE_AUTO_TURN_AND_DEPO:
+            case WAREHOUSE_AUTO_TURN:
                 Log.d(interfaceTag, "Going Forward");
                 // Go Forward 18 Inches From the Inside Of The Warehouse And Turn
                 drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToSplineHeading(Positions.autonStartPose)
-                        .splineToSplineHeading(Positions.blueDepositPosition, Math.PI)
+                        .back(18)
+                        .build());
+
+                Log.d(interfaceTag, "Turning");
+                // Do The Turn
+                drive.setPoseEstimate(new Pose2d(14, 65.5, 0));
+                drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .lineToSplineHeading(new Pose2d(5.58, 64.47, -Math.toRadians(51)), turnVelocityConstraint, turnAccelerationConstraint)
                         .build());
 
                 Log.d(interfaceTag, "Extending Slide");
@@ -133,16 +139,21 @@ public class RoadrunnerHandler {
                 slideController.extendDropRetract(SlideTarget.TOP_DEPOSIT, OfficialTeleop.gamepad);
 
                 Log.d(interfaceTag, "Turning back onto the wall");
-                // Turn Back Onto The Wall And Go Into The Warehouse
+                // Turn Back Onto The Wall
                 drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .splineToSplineHeading(Positions.blueWarehouseResetPosition, 0)
+                        .lineToSplineHeading(new Pose2d(14,80,0), quickTurnVelocityConstraint, quickTurnAccelerationConstraint)
+                        .build());
+
+                Log.d(interfaceTag, "Going back into the warehouse");
+                drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
                         .addTemporalMarker(1, () -> {
                             Log.d(interfaceTag, "Dropping blue intake");
                             // Drop Blue Intake
                             blueIntake.setState(IntakeState.BASE);
                         })
-                        .lineToSplineHeading(Positions.blueWarehouseParkPosition)
+                        .forward(24)
                         .build());
+
                 break;
         }
         scheduledMovement = MovementTypes.EMPTY;

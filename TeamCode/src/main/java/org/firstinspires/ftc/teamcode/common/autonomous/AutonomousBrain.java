@@ -147,7 +147,8 @@ public class AutonomousBrain {
                 RRctrl.followLineToSpline(parkingPositionBlue);
                 Log.d("AutonBrain","parking4");
                 */
-                RRctrl.doBlueAutonomousParkingTrajectory();
+                RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
+                RRctrl.followLineToSpline(parkingPositionBlue);
                 SharedData.autonomousLastPosition = RRctrl.getPos();
                 majorState = MajorAutonomousState.FINISHED;
                 return;
@@ -237,8 +238,8 @@ public class AutonomousBrain {
 
     public static Pose2d startPositionBlue = new Pose2d(14,65.5,0);
     public static Pose2d warehousePickupPositionBlue = new Pose2d(35,65.5,0);
-    public static Pose2d resetPositionInWarehouseBlue = new Pose2d(30,75,0);
     public static Pose2d depositPositionAllianceBlue = new Pose2d(5.58,64.47,-Math.toRadians(57));
+    public static Pose2d depositPositionAllianceBlue2 = new Pose2d(5.58,64.47,-Math.toRadians(56));
     public static Pose2d resetPositionB4WarehouseBlue = new Pose2d(14,80,0);
     public static Pose2d parkingPositionBlue = new Pose2d(60,80,0);
 

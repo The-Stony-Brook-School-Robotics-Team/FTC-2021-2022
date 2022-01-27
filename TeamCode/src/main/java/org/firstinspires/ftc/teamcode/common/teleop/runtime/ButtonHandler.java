@@ -93,7 +93,7 @@ public class ButtonHandler {
                     // rb
                     if(gamepad.right_bumper && OfficialTeleop.normalizedColorSensor.getNormalizedColors().alpha > Configuration.colorSensorWhiteAlpha) {
                         if(!roadrunnerHandler.isBusy) {
-                            roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.WAREHOUSE_AUTO_TURN_AND_DEPO);
+                            roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.WAREHOUSE_AUTO_TURN);
                         }
                     }
                     // Left dpad
@@ -145,7 +145,7 @@ public class ButtonHandler {
                     // Y
                     // TODO: Remove this button, this was added for testing
                     if(gamepad.y && !isPressingY && controllerMode == ControllerModes.SECONDARY) {
-                        roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.WAREHOUSE_AUTO_TURN_AND_DEPO);
+                        roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.WAREHOUSE_AUTO_TURN);
                         isPressingY = true;
                     } else if(!gamepad.y && isPressingY) {
                         isPressingY = false;

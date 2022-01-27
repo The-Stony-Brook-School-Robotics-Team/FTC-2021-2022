@@ -270,7 +270,7 @@ public class RoadRunnerController {
         drive.followTrajectory(
                 drive.trajectoryBuilder(drive.getPoseEstimate())
                         .lineToSplineHeading(AutonomousBrain.startPositionBlue)
-                        .splineToSplineHeading(AutonomousBrain.depositPositionAllianceBlue,Math.PI)
+                        .splineToSplineHeading(AutonomousBrain.depositPositionAllianceBlue2,Math.PI)
                         .build()
         );
     }
@@ -278,7 +278,7 @@ public class RoadRunnerController {
     {
         drive.followTrajectory(
                 drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .splineToSplineHeading(AutonomousBrain.resetPositionB4WarehouseBlue,0)
+                        .splineToSplineHeading(AutonomousBrain.resetPositionB4WarehouseBlue,Math.PI)
                         .lineToSplineHeading(AutonomousBrain.parkingPositionBlue)
                         .build()
         );
