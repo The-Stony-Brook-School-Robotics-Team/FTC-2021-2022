@@ -4,6 +4,8 @@ import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 public class testOpMode extends OpMode {
+
+
     @Override
     public void init() {
 
@@ -11,7 +13,6 @@ public class testOpMode extends OpMode {
 
     @Override
     public void loop() {
-        telemetry.addData("This might work", NanoClock.system().seconds());
-        telemetry.update();
+
     }
 }
