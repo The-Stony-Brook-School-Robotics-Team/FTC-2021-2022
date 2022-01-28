@@ -18,30 +18,30 @@
         public void runOpMode() throws InterruptedException {
             blueIntake = new IntakeControllerBlue(hardwareMap, telemetry);
             redIntake = new IntakeControllerRed(hardwareMap, telemetry);
-            blueIntake.setState(IntakeState.BASE);
-            redIntake.setState(IntakeState.BASE);
+            blueIntake.setState(IntakeState.PARK);
+            redIntake.setState(IntakeState.PARK);
             waitForStart();
 
             while(opModeIsActive()){
-                    blueIntake.checkIntake();
+                    //blueIntake.checkIntake();
                     redIntake.checkIntake();
 
 
 
 
                 if(gamepad1.x){
-                    blueIntake.changeStatePosiiton(IntakeState.BASE, position);
+                    //blueIntake.changeStatePosiiton(IntakeState.BASE, position);
                     redIntake.changeStatePosiiton(IntakeState.BASE, position);
                 }
                 if(gamepad1.b){
-                    blueIntake.setState(IntakeState.DUMP);
+                    //blueIntake.setState(IntakeState.DUMP);
                     redIntake.setState(IntakeState.DUMP);
                 }
                 else if(gamepad1.a){
-                    blueIntake.setState(IntakeState.BASE);
+                    //blueIntake.setState(IntakeState.BASE);
                     redIntake.setState(IntakeState.BASE);}
                 else if(gamepad1.y){
-                    blueIntake.setState(IntakeState.PARK);
+                    //blueIntake.setState(IntakeState.PARK);
                     redIntake.setState(IntakeState.PARK);
                 }
                 else if(gamepad1.dpad_up){
