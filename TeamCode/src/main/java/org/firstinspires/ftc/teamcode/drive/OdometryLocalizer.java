@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.util.Encoder;
+import org.openftc.revextensions2.ExpansionHubEx;
+import org.openftc.revextensions2.RevBulkData;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,12 +25,18 @@ public class OdometryLocalizer extends com.acmerobotics.roadrunner.localization.
 
     private Encoder leftEncoder, rightEncoder, frontEncoder;
 
+    RevBulkData bulkData;
+
+    ExpansionHubEx expansionHub;
+
     public OdometryLocalizer(HardwareMap hardwareMap) {
         super(Arrays.asList(
                 new Pose2d(0, LATERAL_DISTANCE / 2, 0), // left
                 new Pose2d(0, -LATERAL_DISTANCE / 2, 0), // right
                 new Pose2d(FORWARD_OFFSET, 0, Math.toRadians(90)) // front
         ));
+
+        expansionHub = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 4");
 
         leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "leftodom"));
         rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rightodom"));
@@ -46,20 +54,22 @@ public class OdometryLocalizer extends com.acmerobotics.roadrunner.localization.
     @NonNull
     @Override
     public List<Double> getWheelPositions() {
+        RevBulkData bulk = expansionHub.getBulkInputData();
         return Arrays.asList(
-                encoderTicksToInches(leftEncoder.getCurrentPosition()),
-                encoderTicksToInches(rightEncoder.getCurrentPosition()),
-                encoderTicksToInches(frontEncoder.getCurrentPosition())
+                encoderTicksToInches(bulk.getMotorCurrentPosition(1)), // L
+                encoderTicksToInches(bulk.getMotorCurrentPosition(2)), // R
+                encoderTicksToInches(bulk.getMotorCurrentPosition(0)) // C
         );
     }
 
     @NonNull
     @Override
     public List<Double> getWheelVelocities() {
+        RevBulkData bulk = expansionHub.getBulkInputData();
         return Arrays.asList(
-                encoderTicksToInches(leftEncoder.getCorrectedVelocity()),
-                encoderTicksToInches(rightEncoder.getCorrectedVelocity()),
-                encoderTicksToInches(frontEncoder.getCorrectedVelocity())
+                encoderTicksToInches(bulk.getMotorVelocity(1)),
+                encoderTicksToInches(bulk.getMotorVelocity(2)),
+                encoderTicksToInches(bulk.getMotorVelocity(0))
         );
     }
 }
