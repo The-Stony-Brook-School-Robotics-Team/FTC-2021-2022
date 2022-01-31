@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -23,7 +24,8 @@ import org.sbs.bears.robotframework.enums.SlideTarget;
 public class SlideController {
     public Servo verticalServo;
     private Servo horizontalServo;
-    private Servo dumperServo;
+    public  Servo dumperServo;
+    private ColorRangeSensor blueColorRangeSensor;
     DigitalChannel magswitch;
 
 
@@ -44,6 +46,7 @@ public class SlideController {
         // horizontalServo = hardwareMap.get(Servo.class, "hz");
         dumperServo = hardwareMap.get(Servo.class, "du");
         slideMotor = hardwareMap.get(DcMotorEx.class, "spool");
+        blueColorRangeSensor = hardwareMap.get(ColorRangeSensor.class, "bc");
 
 
         slideMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION,new PIDFCoefficients(10,0,0,0));
@@ -53,6 +56,8 @@ public class SlideController {
         slideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         slideMotor.setTargetPosition(0); // should be where it reset to
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        dumperServo.setPosition(dumperPosition_READY);
 
     }
 
@@ -96,6 +101,7 @@ public class SlideController {
     public void extendDropRetract(SlideTarget target, Gamepad gamepad)
     {
         this.targetParams = target;
+        checkForBucketObject();
         extendSlide();
         if(flagToLeave) {
             return;
@@ -129,13 +135,13 @@ public class SlideController {
 
         //Checks to make sure the bucket is outside of the slide before dumping
         if(slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT) {
-            dumperServo.setPosition(dumperPosition_DUMP);
+            dumperServo.setPosition(dumperPosition_EJECT);
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            dumperServo.setPosition(dumperPosition_HOLDBLOCK);
+            dumperServo.setPosition(dumperPosition_CLOSED);
         }
     }
 
@@ -239,6 +245,7 @@ public class SlideController {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                    dumperServo.setPosition(dumperPosition_READY);
                     //Once triggered, kill the motor's PID and stop to prevent overshooting and hitting the robot.
                     if(!magswitch.getState())
                     {
@@ -383,6 +390,12 @@ public class SlideController {
 
     }
 
+    public void checkForBucketObject(){
+        if(blueColorRangeSensor.alpha() > 160 ){
+            dumperServo.setPosition(dumperPosition_CLOSED);
+        }
+    }
+
 
     // TODO MEASURE ALL CONSTANTS
     
@@ -404,6 +417,9 @@ public class SlideController {
     // dumper servo
     double dumperPosition_DUMP = .91;
     double dumperPosition_HOLDBLOCK = 0;
+    double dumperPosition_CLOSED = .55;
+    double dumperPosition_READY = .2;
+    double dumperPosition_EJECT = 0;
 
     // slide motor
     int slideMotorPosition_PARKED =  10;

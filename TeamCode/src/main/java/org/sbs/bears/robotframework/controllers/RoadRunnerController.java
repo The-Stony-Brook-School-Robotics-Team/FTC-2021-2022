@@ -14,6 +14,7 @@ import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousBrain;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
@@ -264,6 +265,26 @@ public class RoadRunnerController {
                         .build()
         );
     }
+    public void doBlueDepositTrajectory()
+    {
+        drive.followTrajectory(
+                drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .lineToSplineHeading(AutonomousBrain.startPositionBlue)
+                        .splineToSplineHeading(AutonomousBrain.depositPositionAllianceBlue2,Math.PI)
+                        .build()
+        );
+    }
+    public void doBlueAutonomousParkingTrajectory()
+    {
+        drive.followTrajectory(
+                drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .splineToSplineHeading(AutonomousBrain.resetPositionB4WarehouseBlue,Math.PI)
+                        .lineToSplineHeading(AutonomousBrain.parkingPositionBlue)
+                        .build()
+        );
+    }
+
+
     public void followLineToSpline(Pose2d finalPos)
     {
         drive.followTrajectory(

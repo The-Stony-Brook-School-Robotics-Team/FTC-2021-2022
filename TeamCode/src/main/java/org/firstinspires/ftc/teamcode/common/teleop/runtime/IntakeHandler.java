@@ -14,6 +14,10 @@ public class IntakeHandler {
         while(!OfficialTeleop.systemStopRequested && OfficialTeleop.currentState == TeleOpRobotStates.RUNNING || OfficialTeleop.currentState == TeleOpRobotStates.INITIALIZING) {
             OfficialTeleop.redIntake.checkIntake();
             OfficialTeleop.blueIntake.checkIntake();
+
+            OfficialTeleop.slideController.checkForBucketObject();
+
+
         }
     });
 

@@ -181,11 +181,9 @@ class MovementHandlers {
 
     private static void defaultRunner() {
         if (!MovementHandler.movementEnabled) {
-            Log.d(interfaceTag, "nonce: MOVEMENT DISABLED");
             return;
         }
         if (MovementHandler.autonomousRunning) {
-            Log.d(interfaceTag, "nonce: AUTONOMOUS RUNNING");
             return;
         }
         drive.setWeightedDrivePower(
@@ -195,7 +193,6 @@ class MovementHandlers {
                         -gamepad.right_stick_x
                 )
         );
-        Log.d(interfaceTag, "ABLE TO DRIVE");
         drive.update();
     }
 

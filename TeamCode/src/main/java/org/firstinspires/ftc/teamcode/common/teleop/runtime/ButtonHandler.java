@@ -142,6 +142,14 @@ public class ButtonHandler {
                     } else if(!gamepad.a && isPressingA && controllerMode == ControllerModes.SECONDARY) {
                         isPressingA = false;
                     }
+                    // Y
+                    // TODO: Remove this button, this was added for testing
+                    if(gamepad.y && !isPressingY && controllerMode == ControllerModes.SECONDARY) {
+                        roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.WAREHOUSE_AUTO_TURN);
+                        isPressingY = true;
+                    } else if(!gamepad.y && isPressingY) {
+                        isPressingY = false;
+                    }
                     // Left Dpad
                     if(gamepad.dpad_left && !isPressingLeftDpad) {
                         if(!roadrunnerHandler.isBusy) {

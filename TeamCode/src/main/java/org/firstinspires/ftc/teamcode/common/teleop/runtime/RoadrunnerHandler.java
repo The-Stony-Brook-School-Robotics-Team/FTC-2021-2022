@@ -15,6 +15,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityCons
 
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop;
+import org.firstinspires.ftc.teamcode.common.teleop.Positions;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.enums.IntakeState;
@@ -121,7 +122,7 @@ public class RoadrunnerHandler {
 
             case WAREHOUSE_AUTO_TURN:
                 Log.d(interfaceTag, "Going Forward");
-                // Go Forward 18 Inches From the Inside Of The Warehouse
+                // Go Forward 18 Inches From the Inside Of The Warehouse And Turn
                 drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
                         .back(18)
                         .build());
@@ -144,7 +145,6 @@ public class RoadrunnerHandler {
                         .build());
 
                 Log.d(interfaceTag, "Going back into the warehouse");
-                // Go Back Into The Warehouse
                 drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
                         .addTemporalMarker(1, () -> {
                             Log.d(interfaceTag, "Dropping blue intake");
@@ -153,6 +153,7 @@ public class RoadrunnerHandler {
                         })
                         .forward(24)
                         .build());
+
                 break;
         }
         scheduledMovement = MovementTypes.EMPTY;
