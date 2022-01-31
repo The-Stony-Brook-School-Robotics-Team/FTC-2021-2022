@@ -5,23 +5,36 @@
     import com.qualcomm.robotcore.hardware.DcMotor;
     import com.qualcomm.robotcore.hardware.Servo;
 
-    @TeleOp(name="Savox", group="Linear Opmode")
+    @TeleOp(name="Servo lolk", group="Linear Opmode")
     public class SavoxTester extends LinearOpMode {
-        private DcMotor spool;
+        private Servo dumper;
+        private boolean qA = false;
+        private boolean qB = false;
 
         public void runOpMode() throws InterruptedException {
 
-            spool = hardwareMap.get(DcMotor.class, "spool");
+            dumper = hardwareMap.get(Servo.class, "du");
 
             waitForStart();
 
             while (opModeIsActive()) {
 
-                if(gamepad1.a){
-                    spool.setPower(1);
+                if(gamepad1.a && !qA){
+                    dumper.setPosition(dumper.getPosition() + .05);
+                    qA = true;
                 }
-                else{spool.setPower(0);}
-                telemetry.addData("pos: ", spool.getPower());
+                if(!gamepad1.a && qA){
+                    qA = false;
+                }
+                if(gamepad1.b && !qB){
+                    dumper.setPosition(dumper.getPosition() - .05);
+                    qB = true;
+                }
+                if(!gamepad1.a && qB){
+                    qB = false;
+                }
+
+                telemetry.addData("pos: ", dumper.getPosition());
                 telemetry.update();
             }
         }

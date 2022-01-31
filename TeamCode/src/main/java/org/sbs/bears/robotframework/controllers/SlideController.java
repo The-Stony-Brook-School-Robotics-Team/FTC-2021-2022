@@ -194,6 +194,10 @@ public class SlideController {
                         targetPosFinal = slideMotorPosition_THREE_DEPOSIT;
                         verticalServoTargetPos = vertServoPosition_THREE_DEPOSIT;
                         break;
+                    case CAP_FROM_CAROUSEL:
+                        targetPosFinal= slideMotorPosition_CAP_FROM_CAROUSEL;
+                        verticalServoTargetPos = vertServoPosition_CAP_CAROUSEL_HIGHER;
+                        break;
                     case NA:
                         Log.d("SlideController","Slide Extension failed: did not specify target. Exiting");
                         flagToLeave = true;
@@ -222,6 +226,12 @@ public class SlideController {
                 }
                 //Kill the motor's PID and stop so it doesn't try to correct and jitter
                 hardStopReset();
+                if(targetParams == SlideTarget.CAP_FROM_CAROUSEL)
+                {
+                    //  lower to plop capstone
+                    verticalServoTargetPos = vertServoPosition_CAP_CAROUSEL;
+                    setHeightToParams(verticalServoTargetPos); //drop
+                }
                 return;
             case RETRACTING:
                 targetPos = slideMotorPosition_PARKED;
@@ -409,6 +419,8 @@ public class SlideController {
     double vertServoPosition_ONE_DEPOSIT = .47; //.92; //measured
     double vertServoPosition_PARKED_MIN = 0;
     double vertServoPosition_PARKED_MAX = 0.3;
+    double vertServoPosition_CAP_CAROUSEL_HIGHER = 0.8;
+    double vertServoPosition_CAP_CAROUSEL = 0.75;
     double vertServoPosition_FULL_MAX = 1;
 
     double incrementDeltaExtend = .01;
@@ -417,7 +429,7 @@ public class SlideController {
     // dumper servo
     double dumperPosition_DUMP = .91;
     double dumperPosition_HOLDBLOCK = 0;
-    double dumperPosition_CLOSED = .55;
+    double dumperPosition_CLOSED = .45;  // remeasured on jan 31 at 16h08
     double dumperPosition_READY = .2;
     double dumperPosition_EJECT = 0;
 
@@ -428,6 +440,7 @@ public class SlideController {
     int slideMotorPosition_THREE_CAROUSEL = 1713;
     int slideMotorPosition_TWO_CAROUSEL = 1650;
     int slideMotorPosition_ONE_CAROUSEL = 1665;
+    int slideMotorPosition_CAP_FROM_CAROUSEL = 1650;
     int slideMotorPosition_FULL = 1980;
     int slideMotorPosition_START_LOWER = 400;
 
