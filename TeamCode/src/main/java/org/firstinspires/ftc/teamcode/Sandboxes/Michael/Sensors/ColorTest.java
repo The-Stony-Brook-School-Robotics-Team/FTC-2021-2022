@@ -24,16 +24,17 @@ public class ColorTest extends LinearOpMode
 
         waitForStart();
 
-        if(gamepad1.a){
-            dumper.setPosition(.2);
-        }
-        if(gamepad1.b){
-            dumper.setPosition(.55);
-        }
-        if(gamepad1.x){
-            dumper.setPosition(0);
-        }
+        
         while (opModeIsActive()) {
+            if(gamepad1.a){
+                dumper.setPosition(.2);
+            }
+            if(gamepad1.b){
+                dumper.setPosition(.55);
+            }
+            if(gamepad1.x){
+                dumper.setPosition(0);
+            }
             telemetry.addData("position: ", dumper.getPosition());
             telemetry.update();
         }
