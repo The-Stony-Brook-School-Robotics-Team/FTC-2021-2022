@@ -96,9 +96,9 @@ drive = new SampleMecanumDrive(hardwareMap);
             }
             if(gamepad1.x && !qX) {
                 drive.setWeightedDrivePower(new Pose2d());
-                slideController.extendDropRetract(SlideTarget.TOP_CAROUSEL);
+                slideController.extendDropRetract(SlideTarget.CAP_FROM_CAROUSEL);
                 slideController.extendSlide();
-                slideController.dropCube();
+                //slideController.dropCube();
                 slideController.retractSlide();
                 qX = true;
             } else if(!gamepad1.x && qX) {
