@@ -24,8 +24,11 @@ public class ColorTest extends LinearOpMode
 
         waitForStart();
 
-        
+
         while (opModeIsActive()) {
+            if(blueColor.alpha() > 160){
+                dumper.setPosition(.55);
+            }
             if(gamepad1.a){
                 dumper.setPosition(.2);
             }
