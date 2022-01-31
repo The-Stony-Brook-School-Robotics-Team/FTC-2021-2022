@@ -20,6 +20,10 @@ public class ColorTest extends LinearOpMode
         redColor = hardwareMap.get(ColorRangeSensor.class, "rc");
         blueColor = hardwareMap.get(ColorRangeSensor.class, "bc");
         dumper = hardwareMap.get(Servo.class, "du");
+
+
+        waitForStart();
+
         if(gamepad1.a){
             dumper.setPosition(.2);
         }
@@ -29,9 +33,6 @@ public class ColorTest extends LinearOpMode
         if(gamepad1.x){
             dumper.setPosition(0);
         }
-
-        waitForStart();
-
         while (opModeIsActive()) {
             telemetry.addData("position: ", dumper.getPosition());
             telemetry.update();
