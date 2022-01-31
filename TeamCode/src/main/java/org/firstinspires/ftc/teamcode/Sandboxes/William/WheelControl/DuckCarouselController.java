@@ -32,7 +32,7 @@ public class DuckCarouselController {
 
     //MAGICAL_CONSTANT should be between 0.30 to 0.40. Because of the lack of enough torque, the wheel actually never achieve the ideal acceleration.
     public double MAGICAL_CONSTANT = 0.20;
-    public double MAGICAL_CONSTANT_TIME_OFFSET = 0.27;
+    public double MAGICAL_CONSTANT_TIME_OFFSET = 0.275;
 
     public double FIRST_STAGE_TIME_FLAG = -1;
     public double FIRST_STAGE_TIME_INTERVAL = 1.15;
@@ -72,7 +72,7 @@ public class DuckCarouselController {
             wheelMover.setPower(getFirstStageMotorSpeed());
             return true;
         } else if (currentTime >= FIRST_STAGE_TIME_FLAG && currentTime < SECOND_STAGE_TIME_FLAG) {
-            wheelMover.setPower(-1);
+            wheelMover.setPower(-0.8);
             return true;
         } else {
             //Ending
