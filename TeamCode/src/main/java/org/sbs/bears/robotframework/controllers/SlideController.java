@@ -151,7 +151,20 @@ public class SlideController {
 
         //Checks to make sure the bucket is outside of the slide before dumping
         if(slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT) {
-            if(targetParams != SlideTarget.CAP_FROM_CAROUSEL){
+            if(targetParams == SlideTarget.CAP_FROM_CAROUSEL){
+                setHeightToParams(vertServoPosition_CAP_CAROUSEL);
+                slideMotor.setTargetPosition(slideMotorPosition_CAP_FROM_CAROUSEL_RET);
+                slideMotor.setPower(slideMotorPowerMovingBack);
+                while(slideMotor.getCurrentPosition() < slideMotorPosition_CAP_FROM_CAROUSEL_RET){
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                slideMotor.setPower(0);
+             }
+            else {
                 dumperServo.setPosition(dumperPosition_EJECT);
                 try {
                     Thread.sleep(250);
@@ -159,20 +172,6 @@ public class SlideController {
                     e.printStackTrace();
                 }
             }
-        if(targetParams == SlideTarget.CAP_FROM_CAROUSEL){
-            setHeightToParams(vertServoPosition_CAP_CAROUSEL);
-            slideMotor.setTargetPosition(slideMotorPosition_CAP_FROM_CAROUSEL_RET);
-            slideMotor.setPower(slideMotorPowerMovingBack);
-            while(slideMotor.getCurrentPosition() < slideMotorPosition_CAP_FROM_CAROUSEL_RET){
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            slideMotor.setPower(0);
-        }
-
             dumperServo.setPosition(dumperPosition_RETRACTING);
         }
     }
@@ -245,7 +244,7 @@ public class SlideController {
                 }
 
                 //Wait until the slide bucket is extended outside of the robot
-                while(slideMotor.getCurrentPosition() < slideMotorPosition_BUCKET_OUT){
+                while(slideMotor.getCurrentPosition() <= slideMotorPosition_BUCKET_OUT){
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException e) {
@@ -253,8 +252,8 @@ public class SlideController {
                     }
                 }
                 //Now that the bucket is out, start lifting the slide
-                //setHeightToParams(verticalServoTargetPos);
-                verticalServo.setPosition(verticalServoTargetPos);
+                setHeightToParams(verticalServoTargetPos);
+                //verticalServo.setPosition(verticalServoTargetPos);
                 //Wait until the slide has reached its final position
                 while(slideMotor.getCurrentPosition() < targetPosFinal){
                    try {
@@ -321,9 +320,14 @@ public class SlideController {
                 //Set the servo to a slightly higher position until it reaches its target
                 for(double i = verticalServo.getPosition(); i < targetPos; i+=incrementDeltaExtend){
                     verticalServo.setPosition(Range.clip(i, 0, targetPos));
-
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    Log.d("SlideController","Lifted VerticalServo position to " + verticalServo.getPosition());
                 }
-               // verticalServo.setPosition(targetPos); // it works don't ask don't tell
+               verticalServo.setPosition(targetPos); // it works don't ask don't tell
             }
             else { //We are going down
                 for(double i = verticalServo.getPosition(); i > targetPos; i-=incrementDeltaRetract){
@@ -445,7 +449,9 @@ public class SlideController {
 
     public void checkForBucketObject(){
         Log.d("SlideController", "I just got called");
-        if(blueColorRangeSensor.alpha() > 160 ){
+        Log.d("SlideController", "Color sensor value: " + blueColorRangeSensor.alpha());
+        if(blueColorRangeSensor.alpha() > 160)
+        {
             dumperServo.setPosition(dumperPosition_CLOSED);
         }
     }
@@ -467,7 +473,7 @@ public class SlideController {
     double vertServoPosition_CAP_CAROUSEL = 0.71; // TODO
     double vertServoPosition_FULL_MAX = 1;
 
-    double incrementDeltaExtend = .08;
+    double incrementDeltaExtend = .2;
     double incrementDeltaRetract = 0.007;
 
     // dumper servo
@@ -479,8 +485,8 @@ public class SlideController {
     double dumperPosition_RETRACTING = .75;
 
     // slide motor
-    int slideMotorPosition_PARKED =  10;
-    public int slideMotorPosition_BUCKET_OUT = 310; // minimum position for the bucket to be out, measured
+    int slideMotorPosition_PARKED =  5;
+    public int slideMotorPosition_BUCKET_OUT = 250; // minimum position for the bucket to be out, measured
     int slideMotorPosition_THREE_DEPOSIT = 1360; //measured
     int slideMotorPosition_THREE_CAROUSEL = 1713;
     int slideMotorPosition_TWO_CAROUSEL = 1650;
@@ -490,7 +496,7 @@ public class SlideController {
     int slideMotorPosition_FULL = 1980;
     int slideMotorPosition_START_LOWER = 400;
 
-    public double slideMotorPowerMoving = .7;
+    public double slideMotorPowerMoving = .8;
     public double slideMotorPowerCarousel = .5;
     public double slideMotorPowerMovingBack = .5;
     double slideMotorPowerStill = 0;

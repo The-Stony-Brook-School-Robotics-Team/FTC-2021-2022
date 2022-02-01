@@ -38,8 +38,8 @@ drive = new SampleMecanumDrive(hardwareMap);
         bu = new IntakeControllerBlue(hardwareMap,telemetry);
         red = new IntakeControllerRed(hardwareMap,telemetry);
 
-        bu.setState(IntakeState.PARK);
-        red.setState(IntakeState.PARK);
+        //bu.setState(IntakeState.PARK);
+//        red.setState(IntakeState.PARK);
 
         slideController.targetParams = SlideTarget.TOP_DEPOSIT;
 
@@ -100,9 +100,8 @@ drive = new SampleMecanumDrive(hardwareMap);
                 pDown = false;
             }
             if(gamepad1.x && !qX) {
-                drive.setWeightedDrivePower(new Pose2d());
-                slideController.extendDropRetract(SlideTarget.CAP_FROM_CAROUSEL);
                 qX = true;
+                slideController.checkForBucketObject();
             } else if(!gamepad1.x && qX) {
                 qX = false;
             }
