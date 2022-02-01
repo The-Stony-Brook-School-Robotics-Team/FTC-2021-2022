@@ -278,7 +278,7 @@ public class SlideController {
                 slideMotor.setPower(slideMotorPowerMoving);
                 slideMotor.setTargetPosition(targetPos);
                 //Wait until the slide is retracted to right outside the robot
-                while(slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT+400){
+                while(slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT_RET){
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException e) {
@@ -320,12 +320,16 @@ public class SlideController {
                 //Set the servo to a slightly higher position until it reaches its target
                 for(double i = verticalServo.getPosition(); i < targetPos; i+=incrementDeltaExtend){
                     verticalServo.setPosition(Range.clip(i, 0, targetPos));
+
                    // try {
                       //  Thread.sleep(1);
                     //} catch (InterruptedException e) {
                   //      e.printStackTrace();
                 //    }
                     Log.d("SlideController","Lifted VerticalServo position to " + verticalServo.getPosition());
+                    Log.d("SlideController","Lifted VerticalServo position to " + Range.clip(i, 0, targetPos));
+
+
                 }
                verticalServo.setPosition(targetPos); // it works don't ask don't tell
             }
@@ -422,12 +426,12 @@ public class SlideController {
     }
 
 
-    @Beta
+    /*@Beta
     public void calculateAngleAndExtensionFromPosition(Pose2d currentPos)
     {
         double deltaX = currentPos.getX() - positionOfBlueHub.getX();
         double deltaY = currentPos.getY() - positionOfBlueHub.getY();
-    }
+    }*/
 
     @Beta
     private double encoderInchesToTicks(double ticks) {
@@ -477,16 +481,17 @@ public class SlideController {
     double incrementDeltaRetract = .007;//0.007;
 
     // dumper servo
-    double dumperPosition_DUMP = .91;
+/*    double dumperPosition_DUMP = .91;
     double dumperPosition_HOLDBLOCK = 0;
-    public double dumperPosition_CLOSED = .45;  // remeasured on jan 31 at 16h08
+*/    public double dumperPosition_CLOSED = .45;  // remeasured on jan 31 at 16h08
     public double dumperPosition_READY = .2;
     double dumperPosition_EJECT = 0;
     double dumperPosition_RETRACTING = .75;
 
     // slide motor
     int slideMotorPosition_PARKED =  5;
-    public int slideMotorPosition_BUCKET_OUT = 250; // minimum position for the bucket to be out, measured
+    public int slideMotorPosition_BUCKET_OUT = 200; // minimum position for the bucket to be out, measured
+    public int slideMotorPosition_BUCKET_OUT_RET = 650; // minimum position for the bucket to be out, measured
     int slideMotorPosition_THREE_DEPOSIT = 1360; //measured
     int slideMotorPosition_THREE_CAROUSEL = 1713;
     int slideMotorPosition_TWO_CAROUSEL = 1650;
@@ -494,19 +499,19 @@ public class SlideController {
     int slideMotorPosition_CAP_FROM_CAROUSEL = 1476; // TODO
     int slideMotorPosition_CAP_FROM_CAROUSEL_RET = 1442; // TODO
     int slideMotorPosition_FULL = 1980;
-    int slideMotorPosition_START_LOWER = 400;
+    //int slideMotorPosition_START_LOWER = 400;
 
     public double slideMotorPowerMoving = .8;
     public double slideMotorPowerCarousel = .5;
     public double slideMotorPowerMovingBack = .5;
     double slideMotorPowerStill = 0;
 
-    double deltaZForLevel3 = 12; // in
+    /*double deltaZForLevel3 = 12; // in
     double deltaZForLevel2 = 5; // in
     double deltaZForLevel1 = 0; // in
 
     static final Vector2d positionOfBlueHub = new Vector2d(24,12);
-
+*/
 
 
 

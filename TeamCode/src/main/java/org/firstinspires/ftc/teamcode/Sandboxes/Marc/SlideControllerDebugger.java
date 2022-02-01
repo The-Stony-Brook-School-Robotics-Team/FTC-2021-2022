@@ -12,27 +12,27 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
 import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
 import org.sbs.bears.robotframework.controllers.SlideController;
-import org.sbs.bears.robotframework.enums.IntakeState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 
-@TeleOp(name = "A - Backup TeleOp")
-public class SlideTesting extends LinearOpMode
+@TeleOp(name = "A - Slide Controller Debugger")
+public class SlideControllerDebugger extends LinearOpMode
 {
     boolean pA = false, pUp = false, pDown = false;
     boolean pY = false;
     SlideController slideController;
-SampleMecanumDrive drive;
-IntakeControllerBlue bu;
-IntakeControllerRed red;
+    SampleMecanumDrive drive;
+    IntakeControllerBlue bu;
+    IntakeControllerRed red;
     boolean slideOut = false;
     private boolean qX;
     private boolean pB;
     private boolean pRB;
 
+    State state = State.OFF;
     @Override
     public void runOpMode() throws InterruptedException {
         slideController = new SlideController(hardwareMap, telemetry);
-drive = new SampleMecanumDrive(hardwareMap);
+        drive = new SampleMecanumDrive(hardwareMap);
         TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(30, 2,DriveConstants.TRACK_WIDTH);
         TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
         bu = new IntakeControllerBlue(hardwareMap,telemetry);
@@ -41,11 +41,21 @@ drive = new SampleMecanumDrive(hardwareMap);
         //bu.setState(IntakeState.PARK);
 //        red.setState(IntakeState.PARK);
 
-        slideController.targetParams = SlideTarget.TOP_DEPOSIT;
+        slideController.targetParams = SlideTarget.CAP_FROM_CAROUSEL;
 
         waitForStart();
 
         while(!isStopRequested()) {
+
+            drive.setWeightedDrivePower(
+                    new Pose2d(
+                            -gamepad1.left_stick_x,
+                            gamepad1.left_stick_y,
+                            state.equals(State.DEPOSIT) ? -gamepad1.right_stick_x*0.2 : -gamepad1.right_stick_x
+                    )
+            );
+
+
             if(gamepad1.y && !pY) {
                 slideController.retractSlide();
                 pY = true;
@@ -53,7 +63,6 @@ drive = new SampleMecanumDrive(hardwareMap);
                 pY = false;
             }
 
-            //slideController.collectCapstone();
 
             if(gamepad1.right_bumper && !pRB) {
                 slideController.collectCapstone();
@@ -101,7 +110,29 @@ drive = new SampleMecanumDrive(hardwareMap);
             }
             if(gamepad1.x && !qX) {
                 qX = true;
-                slideController.checkForBucketObject();
+                switch(state) {
+                    case OFF:
+                        slideController.collectCapstone();
+                        state = State.LIFT;
+                        break;
+                    case LIFT:
+                        slideController.incrementVerticalServo(0.1);
+                        state = State.DEPOSIT;
+                        break;
+                    case DEPOSIT:
+                        slideController.targetParams = SlideTarget.CAP_FROM_CAROUSEL;
+                        slideController.extendSlide();
+                        state = State.DROP;
+                        break;
+                    case DROP:
+                        slideController.dropCube();
+                        slideController.retractSlide();
+                        state = State.PULLBACK;
+                        break;
+                    case PULLBACK:
+                        state = State.OFF;
+                        break;
+                }
             } else if(!gamepad1.x && qX) {
                 qX = false;
             }
@@ -117,4 +148,12 @@ drive = new SampleMecanumDrive(hardwareMap);
 
 
     }
+}
+enum State {
+    OFF,
+    REACH,
+    LIFT,
+    DEPOSIT,
+    DROP,
+    PULLBACK,
 }
