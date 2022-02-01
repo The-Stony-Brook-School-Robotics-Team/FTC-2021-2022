@@ -40,9 +40,17 @@ public class AutonomousBlueFull extends LinearOpMode {
             telemetry.update();
         }
         // stop requested
+
         autonBrainExecutor.interrupt();
+        try {
+            autonBrainExecutor.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         brain.majorState = AutonomousBrain.MajorAutonomousState.FINISHED;
         brain.minorState = AutonomousBrain.MinorAutonomousState.STOPPED;
+        requestOpModeStop();
+        stop();
     }
 
 

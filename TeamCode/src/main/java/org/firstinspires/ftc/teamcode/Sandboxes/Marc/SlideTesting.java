@@ -26,6 +26,8 @@ IntakeControllerBlue bu;
 IntakeControllerRed red;
     boolean slideOut = false;
     private boolean qX;
+    private boolean pB;
+    private boolean pRB;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -38,14 +40,12 @@ drive = new SampleMecanumDrive(hardwareMap);
 
         bu.setState(IntakeState.PARK);
         red.setState(IntakeState.PARK);
+
+        slideController.targetParams = SlideTarget.TOP_DEPOSIT;
+
+        waitForStart();
+
         while(!isStopRequested()) {
-            drive.setWeightedDrivePower(
-                    new Pose2d(
-                            -gamepad1.left_stick_y,
-                            -gamepad1.left_stick_x,
-                            -gamepad1.right_stick_x
-                    )
-            );
             if(gamepad1.y && !pY) {
                 slideController.retractSlide();
                 pY = true;
@@ -53,11 +53,26 @@ drive = new SampleMecanumDrive(hardwareMap);
                 pY = false;
             }
 
+            //slideController.collectCapstone();
+
+            if(gamepad1.right_bumper && !pRB) {
+                slideController.collectCapstone();
+                pRB = true;
+            } else if(!gamepad1.right_bumper && pRB) {
+                pRB = false;
+            }
+
             if(gamepad1.a && !pA) {
                 slideController.dropCube();
                 pA = true;
             } else if(!gamepad1.a && pA) {
                 pA = false;
+            }
+            if(gamepad1.b && !pB) {
+                slideController.extendSlide();
+                pB = true;
+            } else if(!gamepad1.b && pB) {
+                pB = false;
             }
 
             if(gamepad1.right_stick_y < -0.02 || gamepad1.right_stick_y > -0.02) {
@@ -87,9 +102,6 @@ drive = new SampleMecanumDrive(hardwareMap);
             if(gamepad1.x && !qX) {
                 drive.setWeightedDrivePower(new Pose2d());
                 slideController.extendDropRetract(SlideTarget.CAP_FROM_CAROUSEL);
-                //slideController.extendSlide();
-                //slideController.dropCube();
-                //slideController.retractSlide();
                 qX = true;
             } else if(!gamepad1.x && qX) {
                 qX = false;

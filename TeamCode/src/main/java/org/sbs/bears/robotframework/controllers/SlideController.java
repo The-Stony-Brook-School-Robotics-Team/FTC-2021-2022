@@ -129,18 +129,50 @@ public class SlideController {
         }
     }
 
+    public void collectCapstone()
+    {
+        // extend a certain amount, then lift, then chill.
+        setHeightToParams(0.09);
+        slideMotor.setTargetPosition(473);
+        slideMotor.setPower(0.7);
+        while(slideMotor.getCurrentPosition() < 473){
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        slideMotor.setPower(0);
+    }
+
     /** Moves the bucket servo to drop the cube, then returns the servo to original position. **/
     public void dropCube()
     {
 
         //Checks to make sure the bucket is outside of the slide before dumping
         if(slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT) {
-            dumperServo.setPosition(dumperPosition_EJECT);
-            try {
-                Thread.sleep(250);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            if(targetParams != SlideTarget.CAP_FROM_CAROUSEL){
+                dumperServo.setPosition(dumperPosition_EJECT);
+                try {
+                    Thread.sleep(250);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
+        if(targetParams == SlideTarget.CAP_FROM_CAROUSEL){
+            setHeightToParams(vertServoPosition_CAP_CAROUSEL);
+            slideMotor.setTargetPosition(slideMotorPosition_CAP_FROM_CAROUSEL_RET);
+            slideMotor.setPower(slideMotorPowerMovingBack);
+            while(slideMotor.getCurrentPosition() < slideMotorPosition_CAP_FROM_CAROUSEL_RET){
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            slideMotor.setPower(0);
+        }
+
             dumperServo.setPosition(dumperPosition_RETRACTING);
         }
     }
@@ -204,7 +236,14 @@ public class SlideController {
                         return;
                 }
                 slideMotor.setTargetPosition(targetPosFinal);
-                slideMotor.setPower(slideMotorPowerMoving);
+                if(targetParams == SlideTarget.CAP_FROM_CAROUSEL)
+                {
+                    slideMotor.setPower(slideMotorPowerCarousel);
+                }
+                else  {
+                    slideMotor.setPower(slideMotorPowerMoving);
+                }
+
                 //Wait until the slide bucket is extended outside of the robot
                 while(slideMotor.getCurrentPosition() < slideMotorPosition_BUCKET_OUT){
                     try {
@@ -214,7 +253,8 @@ public class SlideController {
                     }
                 }
                 //Now that the bucket is out, start lifting the slide
-                setHeightToParams(verticalServoTargetPos);
+                //setHeightToParams(verticalServoTargetPos);
+                verticalServo.setPosition(verticalServoTargetPos);
                 //Wait until the slide has reached its final position
                 while(slideMotor.getCurrentPosition() < targetPosFinal){
                    try {
@@ -226,14 +266,15 @@ public class SlideController {
                 }
                 //Kill the motor's PID and stop so it doesn't try to correct and jitter
                 hardStopReset();
-                if(targetParams == SlideTarget.CAP_FROM_CAROUSEL)
-                {
+               // if(targetParams == SlideTarget.CAP_FROM_CAROUSEL)
+                //{
                     //  lower to plop capstone
-                    verticalServoTargetPos = vertServoPosition_CAP_CAROUSEL;
-                    setHeightToParams(verticalServoTargetPos); //drop
-                }
+                  //  verticalServoTargetPos = vertServoPosition_CAP_CAROUSEL;
+                    //setHeightToParams(verticalServoTargetPos); //drop
+                //}
                 return;
             case RETRACTING:
+                dumperServo.setPosition(dumperPosition_RETRACTING);
                 targetPos = slideMotorPosition_PARKED;
                 slideMotor.setPower(slideMotorPowerMoving);
                 slideMotor.setTargetPosition(targetPos);
@@ -282,6 +323,7 @@ public class SlideController {
                     verticalServo.setPosition(Range.clip(i, 0, targetPos));
 
                 }
+               // verticalServo.setPosition(targetPos); // it works don't ask don't tell
             }
             else { //We are going down
                 for(double i = verticalServo.getPosition(); i > targetPos; i-=incrementDeltaRetract){
@@ -305,6 +347,7 @@ public class SlideController {
     public void initTeleop(){
         slideState = SlideState.TELEOP;
         verticalServo.setPosition(vertServoPosition_PARKED);
+        this.dumperServo.setPosition(dumperPosition_READY);
         this.targetParams = SlideTarget.TOP_DEPOSIT;
     }
     /** Accessor methods for the slide servo and motor. **/
@@ -401,6 +444,7 @@ public class SlideController {
     }
 
     public void checkForBucketObject(){
+        Log.d("SlideController", "I just got called");
         if(blueColorRangeSensor.alpha() > 160 ){
             dumperServo.setPosition(dumperPosition_CLOSED);
         }
@@ -419,11 +463,11 @@ public class SlideController {
     double vertServoPosition_ONE_DEPOSIT = .47; //.92; //measured
     double vertServoPosition_PARKED_MIN = 0;
     double vertServoPosition_PARKED_MAX = 0.3;
-    double vertServoPosition_CAP_CAROUSEL_HIGHER = 0.8; //TODO
-    double vertServoPosition_CAP_CAROUSEL = 0.75; // TODO
+    double vertServoPosition_CAP_CAROUSEL_HIGHER = 0.9; //TODO
+    double vertServoPosition_CAP_CAROUSEL = 0.71; // TODO
     double vertServoPosition_FULL_MAX = 1;
 
-    double incrementDeltaExtend = .01;
+    double incrementDeltaExtend = .08;
     double incrementDeltaRetract = 0.007;
 
     // dumper servo
@@ -441,11 +485,13 @@ public class SlideController {
     int slideMotorPosition_THREE_CAROUSEL = 1713;
     int slideMotorPosition_TWO_CAROUSEL = 1650;
     int slideMotorPosition_ONE_CAROUSEL = 1665;
-    int slideMotorPosition_CAP_FROM_CAROUSEL = 1650; // TODO
+    int slideMotorPosition_CAP_FROM_CAROUSEL = 1476; // TODO
+    int slideMotorPosition_CAP_FROM_CAROUSEL_RET = 1442; // TODO
     int slideMotorPosition_FULL = 1980;
     int slideMotorPosition_START_LOWER = 400;
 
-    public double slideMotorPowerMoving = 1;
+    public double slideMotorPowerMoving = .7;
+    public double slideMotorPowerCarousel = .5;
     public double slideMotorPowerMovingBack = .5;
     double slideMotorPowerStill = 0;
 
