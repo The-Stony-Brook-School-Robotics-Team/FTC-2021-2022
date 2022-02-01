@@ -26,6 +26,8 @@ IntakeControllerBlue bu;
 IntakeControllerRed red;
     boolean slideOut = false;
     private boolean qX;
+    private boolean pB;
+    private boolean pRB;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -38,14 +40,12 @@ drive = new SampleMecanumDrive(hardwareMap);
 
         bu.setState(IntakeState.PARK);
         red.setState(IntakeState.PARK);
+
+        slideController.targetParams = SlideTarget.TOP_DEPOSIT;
+
+        waitForStart();
+
         while(!isStopRequested()) {
-            drive.setWeightedDrivePower(
-                    new Pose2d(
-                            -gamepad1.left_stick_y,
-                            -gamepad1.left_stick_x,
-                            -gamepad1.right_stick_x
-                    )
-            );
             if(gamepad1.y && !pY) {
                 slideController.retractSlide();
                 pY = true;
@@ -53,21 +53,26 @@ drive = new SampleMecanumDrive(hardwareMap);
                 pY = false;
             }
 
+            //slideController.collectCapstone();
+
+            if(gamepad1.right_bumper && !pRB) {
+                slideController.collectCapstone();
+                pRB = true;
+            } else if(!gamepad1.right_bumper && pRB) {
+                pRB = false;
+            }
+
             if(gamepad1.a && !pA) {
-                //drive.setWeightedDrivePower(new Pose2d());
-                double angle= Math.toRadians(51);
-                double sideOfRobot = 6;
-                drive.setPoseEstimate(new Pose2d(14,65.5,0));
-                //drive.setWeightedDrivePower(new Pose2d()); // stop robot
-                Pose2d currentPos = drive.getPoseEstimate();
-                //Pose2d targetPos = new Pose2d(currentPos.getX()-(sideOfRobot*Math.cos(angle)+sideOfRobot*Math.sin(angle)),currentPos.getY()-(sideOfRobot*Math.sin(angle)-sideOfRobot*Math.cos(angle)),currentPos.getHeading() - angle);
-                Pose2d target = new Pose2d(5.58,64.47,-Math.toRadians(52));
-                drive.followTrajectory(drive.trajectoryBuilder(currentPos)
-                        .lineToSplineHeading(target,velocityConstraint,accelerationConstraint)
-                        .build());
+                slideController.dropCube();
                 pA = true;
             } else if(!gamepad1.a && pA) {
                 pA = false;
+            }
+            if(gamepad1.b && !pB) {
+                slideController.extendSlide();
+                pB = true;
+            } else if(!gamepad1.b && pB) {
+                pB = false;
             }
 
             if(gamepad1.right_stick_y < -0.02 || gamepad1.right_stick_y > -0.02) {
@@ -96,10 +101,7 @@ drive = new SampleMecanumDrive(hardwareMap);
             }
             if(gamepad1.x && !qX) {
                 drive.setWeightedDrivePower(new Pose2d());
-                slideController.extendDropRetract(SlideTarget.TOP_CAROUSEL);
-                slideController.extendSlide();
-                slideController.dropCube();
-                slideController.retractSlide();
+                slideController.extendDropRetract(SlideTarget.CAP_FROM_CAROUSEL);
                 qX = true;
             } else if(!gamepad1.x && qX) {
                 qX = false;

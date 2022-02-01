@@ -66,6 +66,7 @@ public class IntakeControllerBlue {
             e.printStackTrace();
         }
         setState(IntakeState.PARK);
+
     }
 
     /** Autonomous method-- waits until object is seen, dumps, then sets to park. **/

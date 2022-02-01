@@ -20,7 +20,6 @@ public class Configuration {
     public static int inchesForward = 12;
     public static int inchesBack = 12;
 
-
     /** Thread Management */
     public static int maxInternalThreads = 5;
     public static int maxRuntimeThreads = 10;

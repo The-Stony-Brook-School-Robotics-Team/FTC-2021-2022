@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.common.sharedResources.SharedData;
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.sbs.bears.robotframework.Robot;
 import org.sbs.bears.robotframework.Sleep;
@@ -81,6 +82,7 @@ public class AutonomousBrain {
         intakeCtrlRed.setState(IntakeState.PARK); // to prevent from moving around
         normalizedColorSensor = hardwareMap.get(NormalizedColorSensor.class, "color");
         normalizedColorSensor.setGain(Configuration.colorSensorGain);
+        slideCtrl.dumperServo.setPosition(slideCtrl.dumperPosition_CLOSED); // init only
 
     }
     public void lance() // call this method before loop, so start method.
@@ -116,7 +118,6 @@ public class AutonomousBrain {
                 slideCtrl.extendDropRetract(normalTarget);
                 Log.d("AutonBrain","Slide drop complete");
                 RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
-                RRctrl.setPos(new Pose2d(resetPositionB4WarehouseBlue.getX(),65.5,0));
                 intakeCtrlBlue.setState(IntakeState.BASE);
                 RRctrl.followLineToSpline(warehousePickupPositionBlue);
                 Log.d("AutonBrain","reset status and init for intake");
@@ -140,11 +141,16 @@ public class AutonomousBrain {
             case FOUR_PARKING_CLEANUP:
                 Log.d("AutonBrain","parking1");
                 intakeCtrlBlue.setState(IntakeState.PARK);
+                /*
                 Log.d("AutonBrain","parking2");
                 RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
                 Log.d("AutonBrain","parking3");
                 RRctrl.followLineToSpline(parkingPositionBlue);
                 Log.d("AutonBrain","parking4");
+                */
+                RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
+                RRctrl.followLineToSpline(parkingPositionBlue);
+                SharedData.autonomousLastPosition = RRctrl.getPos();
                 majorState = MajorAutonomousState.FINISHED;
                 return;
             case FINISHED:
@@ -173,6 +179,14 @@ public class AutonomousBrain {
                 intakeCtrlBlue.setState(IntakeState.BASE);
                 new Thread(()->{
                     boolean isInState = minorState.equals(MinorAutonomousState.ONE_INTAKE);
+                    while(isInState)
+                    {
+                        slideCtrl.checkForBucketObject();
+                        isInState = minorState.equals(MinorAutonomousState.ONE_INTAKE);
+                    }
+                }).start();
+                new Thread(()->{
+                    boolean isInState = minorState.equals(MinorAutonomousState.ONE_INTAKE);
                     Log.d("AutonBrainThread","Status0: scoop: " + qObjetDansRobot +" state " + isInState);
                     while(!qObjetDansRobot && isInState)
                     {
@@ -190,7 +204,7 @@ public class AutonomousBrain {
                     }
                 }).start();
                 Log.d("AutonBrain","Forward init");
-                RRctrl.forward(40,10);
+                RRctrl.forward(40,15);
                 Log.d("AutonBrain","Forward done");
                 RRctrl.stopRobot();
                 RRctrl.stopRobot();
@@ -205,25 +219,10 @@ public class AutonomousBrain {
                 Log.d("AutonBrain","Retrying to find a block");
                 return;
             case TWO_PREP_DEPOSIT: // TODO implement go forward and then turn
-                new Thread(()->{
-                       while(minorState == MinorAutonomousState.TWO_PREP_DEPOSIT)
-                       {
-                           if(normalizedColorSensor.getNormalizedColors().alpha > Configuration.colorSensorWhiteAlpha)
-                           {
-                               // we know the x coordinate
-                               Pose2d currentPos = RRctrl.getPos();
-                               Log.d("AutonBrainThread","Current X: " + currentPos.getX());
-                               RRctrl.setPos(new Pose2d(27,currentPos.getY(),currentPos.getHeading())); //x determiné avec senseur.
-                               Log.d("AutonBrainThread","New X: " + RRctrl.getPos().getX());
-                           }
-                       }
-                       // finit l'état donc on arête le fil d'execution
-                }).start();
-                RRctrl.followLineToSpline(resetPositionInWarehouseBlue);
-                Pose2d currentPos = RRctrl.getPos();
-                RRctrl.setPos(new Pose2d(currentPos.getX(),65.5,0));
-                RRctrl.followLineToSpline(startPositionBlue);
+                /*RRctrl.followLineToSpline(startPositionBlue);
                 RRctrl.followLineToSpline(depositPositionAllianceBlue);
+                */
+                RRctrl.doBlueDepositTrajectory();
                 Log.d("AutonBrain","Prepare for drop off");
                 minorState = MinorAutonomousState.THREE_DEPOSIT;
                 return;
@@ -248,10 +247,10 @@ public class AutonomousBrain {
 
     public static Pose2d startPositionBlue = new Pose2d(14,65.5,0);
     public static Pose2d warehousePickupPositionBlue = new Pose2d(35,65.5,0);
-    public static Pose2d resetPositionInWarehouseBlue = new Pose2d(30,75,0);
-    public static Pose2d depositPositionAllianceBlue = new Pose2d(5.58,64.47,-Math.toRadians(58));
+    public static Pose2d depositPositionAllianceBlue = new Pose2d(5.58,64.47,-Math.toRadians(56));
+    public static Pose2d depositPositionAllianceBlue2 = new Pose2d(5.58,64.47,-Math.toRadians(56));
     public static Pose2d resetPositionB4WarehouseBlue = new Pose2d(14,80,0);
-    public static Pose2d parkingPositionBlue = new Pose2d(52,80,0);
+    public static Pose2d parkingPositionBlue = new Pose2d(60,80,0);
 
 
 }

@@ -9,5 +9,5 @@ public enum SlideTarget {
     TOP_DEPOSIT,
     MID_DEPOSIT,
     BOTTOM_DEPOSIT,
-    CAP,
+    CAP_FROM_CAROUSEL,
 }

@@ -14,12 +14,13 @@ import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideH
 
 import android.util.Log;
 
+import org.firstinspires.ftc.robotserver.internal.webserver.SessionParametersGenerator;
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
 import org.sbs.bears.robotframework.enums.IntakeState;
-
+import org.sbs.bears.robotframework.enums.SlideTarget;
 
 
 public class ButtonHandler {
@@ -35,6 +36,17 @@ public class ButtonHandler {
     private static boolean isPressingX = false, isPressingY = false, isPressingB = false, isPressingA = false;
     private static boolean isPressingLeftDpad = false, isPressingRightDpad = false, isPressingUpDpad = false, isPressingDownDpad = false;
     private static boolean isPressingLeftBumper = false, isPressingRightBumper = false;
+
+    /**
+     * Segment Enums
+     */
+    private enum SegmentPositions {
+        EXTEND,
+        DROP,
+        RETRACT
+    }
+    private static SegmentPositions currentSegmentPosition = SegmentPositions.EXTEND;
+
 
     /**
      * Working Button Handler Runtime
@@ -142,6 +154,44 @@ public class ButtonHandler {
                     } else if(!gamepad.a && isPressingA && controllerMode == ControllerModes.SECONDARY) {
                         isPressingA = false;
                     }
+                    // Y
+                    // TODO: Remove this button, this was added for testing
+                    if(gamepad.y && !isPressingY && controllerMode == ControllerModes.SECONDARY) {
+                        roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.WAREHOUSE_AUTO_TURN);
+                        isPressingY = true;
+                    } else if(!gamepad.y && isPressingY) {
+                        isPressingY = false;
+                    }
+                    // B
+                    // TODO: Add auto extend for endgame capstone (segment this as well)
+                    if(gamepad.b && !isPressingB) {
+                        switch (currentSegmentPosition) {
+
+                            case EXTEND:
+                                slideController.targetParams = SlideTarget.CAP_FROM_CAROUSEL;
+                                currentSegmentPosition = SegmentPositions.DROP;
+                                break;
+
+                            case DROP:
+                                slideController.dropCube();
+                                currentSegmentPosition = SegmentPositions.RETRACT;
+                                break;
+
+                            case RETRACT:
+                                slideController.retractSlide();
+                                slideController.targetParams = SlideTarget.TOP_CAROUSEL;
+                                currentSegmentPosition = SegmentPositions.EXTEND;
+                                break;
+                        }
+                        isPressingB = true;
+                    } else if(!gamepad.b && isPressingB) {
+                        isPressingB = false;
+                    }
+                    // slideController.targetParams = SlideTarget.CAP_FROM_CAROUSEL;
+                    // slideController.extendSlide();
+                    // slideController.dropCube();
+                    // slideController.retractSlide();
+                    // slideController.targetParams = SlideTarget.TOP_CAROUSEL;
                     // Left Dpad
                     if(gamepad.dpad_left && !isPressingLeftDpad) {
                         if(!roadrunnerHandler.isBusy) {
