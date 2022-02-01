@@ -320,11 +320,11 @@ public class SlideController {
                 //Set the servo to a slightly higher position until it reaches its target
                 for(double i = verticalServo.getPosition(); i < targetPos; i+=incrementDeltaExtend){
                     verticalServo.setPosition(Range.clip(i, 0, targetPos));
-                    try {
-                        Thread.sleep(1);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                   // try {
+                      //  Thread.sleep(1);
+                    //} catch (InterruptedException e) {
+                  //      e.printStackTrace();
+                //    }
                     Log.d("SlideController","Lifted VerticalServo position to " + verticalServo.getPosition());
                 }
                verticalServo.setPosition(targetPos); // it works don't ask don't tell
@@ -334,11 +334,11 @@ public class SlideController {
                     verticalServo.setPosition(Range.clip(i, targetPos, 1));
                     //Sleep to slow things down a bit
                     //TODO can be removed with a decrease of incrementDeltaRetract?
-                    try {
-                        Thread.sleep(1);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    //try {
+                     //   Thread.sleep(1);
+                   // } catch (InterruptedException e) {
+                 //       e.printStackTrace();
+               //     }
                 }
             }
         }
@@ -473,8 +473,8 @@ public class SlideController {
     double vertServoPosition_CAP_CAROUSEL = 0.71; // TODO
     double vertServoPosition_FULL_MAX = 1;
 
-    double incrementDeltaExtend = .2;
-    double incrementDeltaRetract = 0.007;
+    double incrementDeltaExtend = .0001;//.2;
+    double incrementDeltaRetract = .007;//0.007;
 
     // dumper servo
     double dumperPosition_DUMP = .91;
