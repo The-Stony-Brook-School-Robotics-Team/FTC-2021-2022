@@ -28,6 +28,7 @@ public class SlideControllerDebugger extends LinearOpMode
     private boolean pB;
     private boolean pRB;
 
+    State state = State.OFF;
     @Override
     public void runOpMode() throws InterruptedException {
         slideController = new SlideController(hardwareMap, telemetry);
@@ -40,11 +41,21 @@ public class SlideControllerDebugger extends LinearOpMode
         //bu.setState(IntakeState.PARK);
 //        red.setState(IntakeState.PARK);
 
-        slideController.targetParams = SlideTarget.TOP_DEPOSIT;
+        slideController.targetParams = SlideTarget.CAP_FROM_CAROUSEL;
 
         waitForStart();
 
         while(!isStopRequested()) {
+
+            drive.setWeightedDrivePower(
+                    new Pose2d(
+                            -gamepad1.left_stick_x,
+                            gamepad1.left_stick_y,
+                            -gamepad1.right_stick_x
+                    )
+            );
+
+
             if(gamepad1.y && !pY) {
                 slideController.retractSlide();
                 pY = true;
@@ -52,7 +63,6 @@ public class SlideControllerDebugger extends LinearOpMode
                 pY = false;
             }
 
-            //slideController.collectCapstone();
 
             if(gamepad1.right_bumper && !pRB) {
                 slideController.collectCapstone();
@@ -100,7 +110,22 @@ public class SlideControllerDebugger extends LinearOpMode
             }
             if(gamepad1.x && !qX) {
                 qX = true;
-                slideController.checkForBucketObject();
+                switch(state) {
+                    case OFF:
+                        slideController.collectCapstone();
+                        state = State.DEPOSIT;
+                        break;
+                    case DEPOSIT:
+                        slideController.targetParams = SlideTarget.CAP_FROM_CAROUSEL;
+                        slideController.extendSlide();
+                        state = State.DROP;
+                    case DROP:
+                        slideController.dropCube();
+                        state = State.PULLBACK;
+                    case PULLBACK:
+                        slideController.retractSlide();
+                        state = State.OFF;
+                }
             } else if(!gamepad1.x && qX) {
                 qX = false;
             }
@@ -116,4 +141,11 @@ public class SlideControllerDebugger extends LinearOpMode
 
 
     }
+}
+enum State {
+    OFF,
+    REACH,
+    DEPOSIT,
+    DROP,
+    PULLBACK,
 }
