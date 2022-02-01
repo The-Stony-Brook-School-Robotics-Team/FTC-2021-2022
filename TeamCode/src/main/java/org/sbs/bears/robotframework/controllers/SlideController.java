@@ -278,7 +278,7 @@ public class SlideController {
                 slideMotor.setPower(slideMotorPowerMoving);
                 slideMotor.setTargetPosition(targetPos);
                 //Wait until the slide is retracted to right outside the robot
-                while(slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT+400){
+                while(slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT_RET){
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException e) {
@@ -325,7 +325,9 @@ public class SlideController {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    Log.d("SlideController","Lifted VerticalServo position to " + verticalServo.getPosition());
+                    Log.d("SlideController","Lifted VerticalServo position to " + Range.clip(i, 0, targetPos));
+                    Log.d("SlideController","Actual VerticalServo position to " + verticalServo.getPosition());
+
                 }
                verticalServo.setPosition(targetPos); // it works don't ask don't tell
             }
@@ -486,7 +488,8 @@ public class SlideController {
 
     // slide motor
     int slideMotorPosition_PARKED =  5;
-    public int slideMotorPosition_BUCKET_OUT = 250; // minimum position for the bucket to be out, measured
+    public int slideMotorPosition_BUCKET_OUT = 200; // minimum position for the bucket to be out, measured
+    public int slideMotorPosition_BUCKET_OUT_RET = 650; // minimum position for the bucket to be out, measured
     int slideMotorPosition_THREE_DEPOSIT = 1360; //measured
     int slideMotorPosition_THREE_CAROUSEL = 1713;
     int slideMotorPosition_TWO_CAROUSEL = 1650;

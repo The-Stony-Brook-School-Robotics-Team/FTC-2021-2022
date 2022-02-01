@@ -20,9 +20,9 @@ public class SlideControllerDebugger extends LinearOpMode
     boolean pA = false, pUp = false, pDown = false;
     boolean pY = false;
     SlideController slideController;
-SampleMecanumDrive drive;
-IntakeControllerBlue bu;
-IntakeControllerRed red;
+    SampleMecanumDrive drive;
+    IntakeControllerBlue bu;
+    IntakeControllerRed red;
     boolean slideOut = false;
     private boolean qX;
     private boolean pB;
@@ -31,7 +31,7 @@ IntakeControllerRed red;
     @Override
     public void runOpMode() throws InterruptedException {
         slideController = new SlideController(hardwareMap, telemetry);
-drive = new SampleMecanumDrive(hardwareMap);
+        drive = new SampleMecanumDrive(hardwareMap);
         TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(30, 2,DriveConstants.TRACK_WIDTH);
         TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
         bu = new IntakeControllerBlue(hardwareMap,telemetry);
