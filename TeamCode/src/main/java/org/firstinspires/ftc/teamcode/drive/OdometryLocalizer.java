@@ -44,6 +44,7 @@ public class OdometryLocalizer extends com.acmerobotics.roadrunner.localization.
 
         leftEncoder.setDirection(Encoder.Direction.REVERSE);
         frontEncoder.setDirection(Encoder.Direction.REVERSE);
+       // rightEncoder.setDirection(Encoder.Direction.REVERSE);
 
     }
 
@@ -54,11 +55,11 @@ public class OdometryLocalizer extends com.acmerobotics.roadrunner.localization.
     @NonNull
     @Override
     public List<Double> getWheelPositions() {
-        RevBulkData bulk = expansionHub.getBulkInputData();
+        //RevBulkData bulk = expansionHub.getBulkInputData();
         return Arrays.asList(
-                encoderTicksToInches(bulk.getMotorCurrentPosition(1)), // L
-                encoderTicksToInches(bulk.getMotorCurrentPosition(2)), // R
-                encoderTicksToInches(bulk.getMotorCurrentPosition(0)) // C
+                encoderTicksToInches(leftEncoder.getCurrentPosition()), // L
+                encoderTicksToInches(rightEncoder.getCurrentPosition()), // R
+                encoderTicksToInches(frontEncoder.getCurrentPosition()) // C
         );
     }
 
@@ -67,9 +68,9 @@ public class OdometryLocalizer extends com.acmerobotics.roadrunner.localization.
     public List<Double> getWheelVelocities() {
         RevBulkData bulk = expansionHub.getBulkInputData();
         return Arrays.asList(
-                encoderTicksToInches(bulk.getMotorVelocity(1)),
-                encoderTicksToInches(bulk.getMotorVelocity(2)),
-                encoderTicksToInches(bulk.getMotorVelocity(0))
+                encoderTicksToInches(leftEncoder.getCorrectedVelocity()),
+                encoderTicksToInches(rightEncoder.getCorrectedVelocity()),
+                encoderTicksToInches(frontEncoder.getCorrectedVelocity())
         );
     }
 }

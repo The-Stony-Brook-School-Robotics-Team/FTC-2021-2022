@@ -82,6 +82,7 @@ public class AutonomousBrain {
         intakeCtrlRed.setState(IntakeState.PARK); // to prevent from moving around
         normalizedColorSensor = hardwareMap.get(NormalizedColorSensor.class, "color");
         normalizedColorSensor.setGain(Configuration.colorSensorGain);
+        slideCtrl.dumperServo.setPosition(slideCtrl.dumperPosition_CLOSED); // init only
 
     }
     public void lance() // call this method before loop, so start method.
@@ -178,6 +179,14 @@ public class AutonomousBrain {
                 intakeCtrlBlue.setState(IntakeState.BASE);
                 new Thread(()->{
                     boolean isInState = minorState.equals(MinorAutonomousState.ONE_INTAKE);
+                    while(isInState)
+                    {
+                        slideCtrl.checkForBucketObject();
+                        isInState = minorState.equals(MinorAutonomousState.ONE_INTAKE);
+                    }
+                }).start();
+                new Thread(()->{
+                    boolean isInState = minorState.equals(MinorAutonomousState.ONE_INTAKE);
                     Log.d("AutonBrainThread","Status0: scoop: " + qObjetDansRobot +" state " + isInState);
                     while(!qObjetDansRobot && isInState)
                     {
@@ -238,7 +247,7 @@ public class AutonomousBrain {
 
     public static Pose2d startPositionBlue = new Pose2d(14,65.5,0);
     public static Pose2d warehousePickupPositionBlue = new Pose2d(35,65.5,0);
-    public static Pose2d depositPositionAllianceBlue = new Pose2d(5.58,64.47,-Math.toRadians(57));
+    public static Pose2d depositPositionAllianceBlue = new Pose2d(5.58,64.47,-Math.toRadians(56));
     public static Pose2d depositPositionAllianceBlue2 = new Pose2d(5.58,64.47,-Math.toRadians(56));
     public static Pose2d resetPositionB4WarehouseBlue = new Pose2d(14,80,0);
     public static Pose2d parkingPositionBlue = new Pose2d(60,80,0);

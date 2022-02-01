@@ -54,17 +54,7 @@ drive = new SampleMecanumDrive(hardwareMap);
             }
 
             if(gamepad1.a && !pA) {
-                //drive.setWeightedDrivePower(new Pose2d());
-                double angle= Math.toRadians(51);
-                double sideOfRobot = 6;
-                drive.setPoseEstimate(new Pose2d(14,65.5,0));
-                //drive.setWeightedDrivePower(new Pose2d()); // stop robot
-                Pose2d currentPos = drive.getPoseEstimate();
-                //Pose2d targetPos = new Pose2d(currentPos.getX()-(sideOfRobot*Math.cos(angle)+sideOfRobot*Math.sin(angle)),currentPos.getY()-(sideOfRobot*Math.sin(angle)-sideOfRobot*Math.cos(angle)),currentPos.getHeading() - angle);
-                Pose2d target = new Pose2d(5.58,64.47,-Math.toRadians(52));
-                drive.followTrajectory(drive.trajectoryBuilder(currentPos)
-                        .lineToSplineHeading(target,velocityConstraint,accelerationConstraint)
-                        .build());
+                slideController.dropCube();
                 pA = true;
             } else if(!gamepad1.a && pA) {
                 pA = false;
@@ -97,9 +87,9 @@ drive = new SampleMecanumDrive(hardwareMap);
             if(gamepad1.x && !qX) {
                 drive.setWeightedDrivePower(new Pose2d());
                 slideController.extendDropRetract(SlideTarget.CAP_FROM_CAROUSEL);
-                slideController.extendSlide();
+                //slideController.extendSlide();
                 //slideController.dropCube();
-                slideController.retractSlide();
+                //slideController.retractSlide();
                 qX = true;
             } else if(!gamepad1.x && qX) {
                 qX = false;

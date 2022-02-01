@@ -137,11 +137,11 @@ public class SlideController {
         if(slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT) {
             dumperServo.setPosition(dumperPosition_EJECT);
             try {
-                Thread.sleep(500);
+                Thread.sleep(250);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            dumperServo.setPosition(dumperPosition_CLOSED);
+            dumperServo.setPosition(dumperPosition_RETRACTING);
         }
     }
 
@@ -238,7 +238,7 @@ public class SlideController {
                 slideMotor.setPower(slideMotorPowerMoving);
                 slideMotor.setTargetPosition(targetPos);
                 //Wait until the slide is retracted to right outside the robot
-                while(slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT+300){
+                while(slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT+400){
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException e) {
@@ -255,7 +255,6 @@ public class SlideController {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    dumperServo.setPosition(dumperPosition_READY);
                     //Once triggered, kill the motor's PID and stop to prevent overshooting and hitting the robot.
                     if(!magswitch.getState())
                     {
@@ -263,6 +262,7 @@ public class SlideController {
                         break;
                     }
                 }
+                dumperServo.setPosition(dumperPosition_READY);
                 return;
            }
     }
@@ -419,19 +419,20 @@ public class SlideController {
     double vertServoPosition_ONE_DEPOSIT = .47; //.92; //measured
     double vertServoPosition_PARKED_MIN = 0;
     double vertServoPosition_PARKED_MAX = 0.3;
-    double vertServoPosition_CAP_CAROUSEL_HIGHER = 0.8;
-    double vertServoPosition_CAP_CAROUSEL = 0.75;
+    double vertServoPosition_CAP_CAROUSEL_HIGHER = 0.8; //TODO
+    double vertServoPosition_CAP_CAROUSEL = 0.75; // TODO
     double vertServoPosition_FULL_MAX = 1;
 
     double incrementDeltaExtend = .01;
-    double incrementDeltaRetract = 0.004;
+    double incrementDeltaRetract = 0.007;
 
     // dumper servo
     double dumperPosition_DUMP = .91;
     double dumperPosition_HOLDBLOCK = 0;
-    double dumperPosition_CLOSED = .45;  // remeasured on jan 31 at 16h08
-    double dumperPosition_READY = .2;
+    public double dumperPosition_CLOSED = .45;  // remeasured on jan 31 at 16h08
+    public double dumperPosition_READY = .2;
     double dumperPosition_EJECT = 0;
+    double dumperPosition_RETRACTING = .75;
 
     // slide motor
     int slideMotorPosition_PARKED =  10;
@@ -440,12 +441,12 @@ public class SlideController {
     int slideMotorPosition_THREE_CAROUSEL = 1713;
     int slideMotorPosition_TWO_CAROUSEL = 1650;
     int slideMotorPosition_ONE_CAROUSEL = 1665;
-    int slideMotorPosition_CAP_FROM_CAROUSEL = 1650;
+    int slideMotorPosition_CAP_FROM_CAROUSEL = 1650; // TODO
     int slideMotorPosition_FULL = 1980;
     int slideMotorPosition_START_LOWER = 400;
 
-    public double slideMotorPowerMoving = .5;
-    public double slideMotorPowerMovingBack = 0.5;
+    public double slideMotorPowerMoving = 1;
+    public double slideMotorPowerMovingBack = .5;
     double slideMotorPowerStill = 0;
 
     double deltaZForLevel3 = 12; // in
