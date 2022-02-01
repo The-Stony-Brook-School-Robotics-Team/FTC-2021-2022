@@ -115,7 +115,7 @@ public class AutonomousBrain {
                 return;
             case TWO_DEPOSIT_INI_BLOCK:
                 RRctrl.followLineToSpline(depositPositionAllianceBlue);
-                slideCtrl.extendDropRetract(normalTarget);
+                slideCtrl.extendDropRetract(iniTarget);
                 Log.d("AutonBrain","Slide drop complete");
                 RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
                 intakeCtrlBlue.setState(IntakeState.BASE);

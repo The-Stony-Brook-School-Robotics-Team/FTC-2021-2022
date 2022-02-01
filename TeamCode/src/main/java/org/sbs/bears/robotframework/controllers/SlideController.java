@@ -225,6 +225,14 @@ public class SlideController {
                         targetPosFinal = slideMotorPosition_THREE_DEPOSIT;
                         verticalServoTargetPos = vertServoPosition_THREE_DEPOSIT;
                         break;
+                    case MID_DEPOSIT:
+                        targetPosFinal = slideMotorPosition_TWO_DEPOSIT;
+                        verticalServoTargetPos = vertServoPosition_TWO_DEPOSIT;
+                        break;
+                    case BOTTOM_DEPOSIT:
+                        targetPosFinal = slideMotorPosition_ONE_DEPOSIT;
+                        verticalServoTargetPos = vertServoPosition_ONE_DEPOSIT;
+                        break;
                     case CAP_FROM_CAROUSEL:
                         targetPosFinal= slideMotorPosition_CAP_FROM_CAROUSEL;
                         verticalServoTargetPos = vertServoPosition_CAP_CAROUSEL_HIGHER;
@@ -331,6 +339,7 @@ public class SlideController {
 
 
                 }
+                //double iniTime
                verticalServo.setPosition(targetPos); // it works don't ask don't tell
             }
             else { //We are going down
@@ -469,16 +478,16 @@ public class SlideController {
     double vertServoPosition_TWO_CAROUSEL = 0.3767; ///measured
     double vertServoPosition_THREE_CAROUSEL = 0.647;
     double vertServoPosition_THREE_DEPOSIT = 0.85; // TODO //.754; //measured
-    double vertServoPosition_TWO_DEPOSIT = .65; //.92; //measured
-    double vertServoPosition_ONE_DEPOSIT = .47; //.92; //measured
+    double vertServoPosition_TWO_DEPOSIT = 0.3688; //.92; //measured
+    double vertServoPosition_ONE_DEPOSIT = 0.06; //.92; //measured
     double vertServoPosition_PARKED_MIN = 0;
     double vertServoPosition_PARKED_MAX = 0.3;
     double vertServoPosition_CAP_CAROUSEL_HIGHER = 0.9; //TODO
     double vertServoPosition_CAP_CAROUSEL = 0.71; // TODO
     double vertServoPosition_FULL_MAX = 1;
 
-    double incrementDeltaExtend = .0001;//.2;
-    double incrementDeltaRetract = .007;//0.007;
+    double incrementDeltaExtend = .003;//.2;
+    double incrementDeltaRetract = .006;//0.007;
 
     // dumper servo
 /*    double dumperPosition_DUMP = .91;
@@ -490,9 +499,11 @@ public class SlideController {
 
     // slide motor
     int slideMotorPosition_PARKED =  5;
-    public int slideMotorPosition_BUCKET_OUT = 200; // minimum position for the bucket to be out, measured
+    public int slideMotorPosition_BUCKET_OUT = 150; // minimum position for the bucket to be out, measured
     public int slideMotorPosition_BUCKET_OUT_RET = 650; // minimum position for the bucket to be out, measured
     int slideMotorPosition_THREE_DEPOSIT = 1360; //measured
+    int slideMotorPosition_TWO_DEPOSIT = 1156; //measured
+    int slideMotorPosition_ONE_DEPOSIT = 1000; //measured
     int slideMotorPosition_THREE_CAROUSEL = 1713;
     int slideMotorPosition_TWO_CAROUSEL = 1650;
     int slideMotorPosition_ONE_CAROUSEL = 1665;
@@ -501,7 +512,7 @@ public class SlideController {
     int slideMotorPosition_FULL = 1980;
     //int slideMotorPosition_START_LOWER = 400;
 
-    public double slideMotorPowerMoving = .8;
+    public double slideMotorPowerMoving = 1;
     public double slideMotorPowerCarousel = .5;
     public double slideMotorPowerMovingBack = .5;
     double slideMotorPowerStill = 0;

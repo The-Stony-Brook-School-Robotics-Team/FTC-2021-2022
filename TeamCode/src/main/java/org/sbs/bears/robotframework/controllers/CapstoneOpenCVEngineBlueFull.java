@@ -79,7 +79,7 @@ public class CapstoneOpenCVEngineBlueFull extends DuckOpenCVEngine {
     /**
      * This variable represents the XOffset of the rectangle about barcode A.
      */
-    public static int XOffsetA = -845; // -500
+    public static int XOffsetA = -520; // -500
     /**
      * This variable represents the YOffset of the rectangle about barcode A.
      */
@@ -100,7 +100,7 @@ public class CapstoneOpenCVEngineBlueFull extends DuckOpenCVEngine {
     /**
      * This variable represents the XOffset of the rectangle about barcode B.
      */
-    public static int XOffsetB = -350;
+    public static int XOffsetB = 20;
     /**
      * This variable represents the YOffset of the rectangle about barcode B.
      */
@@ -121,7 +121,7 @@ public class CapstoneOpenCVEngineBlueFull extends DuckOpenCVEngine {
     /**
      * This variable represents the XOffset of the rectangle about barcode C.
      */
-    public static int XOffsetC = 180;
+    public static int XOffsetC = 550;
     /**
      * This variable represents the YOffset of the rectangle about barcode C.
      */

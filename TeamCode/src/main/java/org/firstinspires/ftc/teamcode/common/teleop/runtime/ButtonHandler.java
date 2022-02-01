@@ -169,7 +169,7 @@ public class ButtonHandler {
 
                             case EXTEND:
                                 slideController.collectCapstone();
-                                slideController.incrementVerticalServo(0.1);
+                               // slideController.incrementVerticalServo(0.1);
                                 currentSegmentPosition = SegmentPositions.EXTEND_TO_HUB;
                                 break;
 
