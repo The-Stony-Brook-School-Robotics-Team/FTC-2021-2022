@@ -51,7 +51,7 @@ public class SlideControllerDebugger extends LinearOpMode
                     new Pose2d(
                             -gamepad1.left_stick_x,
                             gamepad1.left_stick_y,
-                            -gamepad1.right_stick_x
+                            state.equals(State.DEPOSIT) ? -gamepad1.right_stick_x*0.2 : -gamepad1.right_stick_x
                     )
             );
 
@@ -113,6 +113,10 @@ public class SlideControllerDebugger extends LinearOpMode
                 switch(state) {
                     case OFF:
                         slideController.collectCapstone();
+                        state = State.LIFT;
+                        break;
+                    case LIFT:
+                        slideController.incrementVerticalServo(0.1);
                         state = State.DEPOSIT;
                         break;
                     case DEPOSIT:
@@ -122,10 +126,10 @@ public class SlideControllerDebugger extends LinearOpMode
                         break;
                     case DROP:
                         slideController.dropCube();
+                        slideController.retractSlide();
                         state = State.PULLBACK;
                         break;
                     case PULLBACK:
-                        slideController.retractSlide();
                         state = State.OFF;
                         break;
                 }
@@ -148,6 +152,7 @@ public class SlideControllerDebugger extends LinearOpMode
 enum State {
     OFF,
     REACH,
+    LIFT,
     DEPOSIT,
     DROP,
     PULLBACK,
