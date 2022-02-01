@@ -422,12 +422,12 @@ public class SlideController {
     }
 
 
-    @Beta
+    /*@Beta
     public void calculateAngleAndExtensionFromPosition(Pose2d currentPos)
     {
         double deltaX = currentPos.getX() - positionOfBlueHub.getX();
         double deltaY = currentPos.getY() - positionOfBlueHub.getY();
-    }
+    }*/
 
     @Beta
     private double encoderInchesToTicks(double ticks) {
@@ -477,9 +477,9 @@ public class SlideController {
     double incrementDeltaRetract = 0.007;
 
     // dumper servo
-    double dumperPosition_DUMP = .91;
+/*    double dumperPosition_DUMP = .91;
     double dumperPosition_HOLDBLOCK = 0;
-    public double dumperPosition_CLOSED = .45;  // remeasured on jan 31 at 16h08
+*/    public double dumperPosition_CLOSED = .45;  // remeasured on jan 31 at 16h08
     public double dumperPosition_READY = .2;
     double dumperPosition_EJECT = 0;
     double dumperPosition_RETRACTING = .75;
@@ -494,19 +494,19 @@ public class SlideController {
     int slideMotorPosition_CAP_FROM_CAROUSEL = 1476; // TODO
     int slideMotorPosition_CAP_FROM_CAROUSEL_RET = 1442; // TODO
     int slideMotorPosition_FULL = 1980;
-    int slideMotorPosition_START_LOWER = 400;
+    //int slideMotorPosition_START_LOWER = 400;
 
     public double slideMotorPowerMoving = .8;
     public double slideMotorPowerCarousel = .5;
     public double slideMotorPowerMovingBack = .5;
     double slideMotorPowerStill = 0;
 
-    double deltaZForLevel3 = 12; // in
+    /*double deltaZForLevel3 = 12; // in
     double deltaZForLevel2 = 5; // in
     double deltaZForLevel1 = 0; // in
 
     static final Vector2d positionOfBlueHub = new Vector2d(24,12);
-
+*/
 
 
 

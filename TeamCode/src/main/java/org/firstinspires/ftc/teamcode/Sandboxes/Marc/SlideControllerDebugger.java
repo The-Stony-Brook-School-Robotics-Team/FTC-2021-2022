@@ -12,11 +12,10 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
 import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
 import org.sbs.bears.robotframework.controllers.SlideController;
-import org.sbs.bears.robotframework.enums.IntakeState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 
-@TeleOp(name = "A - Backup TeleOp")
-public class SlideTesting extends LinearOpMode
+@TeleOp(name = "A - Slide Controller Debugger")
+public class SlideControllerDebugger extends LinearOpMode
 {
     boolean pA = false, pUp = false, pDown = false;
     boolean pY = false;
