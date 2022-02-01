@@ -42,6 +42,7 @@ public class ButtonHandler {
      */
     private enum SegmentPositions {
         EXTEND,
+        EXTEND_TO_HUB,
         DROP,
         RETRACT
     }
@@ -168,10 +169,16 @@ public class ButtonHandler {
                         switch (currentSegmentPosition) {
 
                             case EXTEND:
-                                slideController.targetParams = SlideTarget.CAP_FROM_CAROUSEL;
-                                currentSegmentPosition = SegmentPositions.DROP;
+                                slideController.collectCapstone();
+                                currentSegmentPosition = SegmentPositions.EXTEND_TO_HUB;
                                 break;
 
+                            case EXTEND_TO_HUB:
+                                slideController.targetParams = SlideTarget.CAP_FROM_CAROUSEL;
+                                slideController.extendSlide();
+                                currentSegmentPosition = SegmentPositions.DROP;
+                                break;
+                                
                             case DROP:
                                 slideController.dropCube();
                                 currentSegmentPosition = SegmentPositions.RETRACT;
