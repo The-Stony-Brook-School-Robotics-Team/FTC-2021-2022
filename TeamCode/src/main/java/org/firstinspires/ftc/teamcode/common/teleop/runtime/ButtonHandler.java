@@ -163,13 +163,13 @@ public class ButtonHandler {
                     } else if(!gamepad.y && isPressingY) {
                         isPressingY = false;
                     }
-                    // B
-                    // TODO: Add auto extend for endgame capstone (segment this as well)
-                    if(gamepad.b && !isPressingB) {
+                    // X
+                    if(gamepad.x && !isPressingX) {
                         switch (currentSegmentPosition) {
 
                             case EXTEND:
                                 slideController.collectCapstone();
+                                slideController.incrementVerticalServo(0.1);
                                 currentSegmentPosition = SegmentPositions.EXTEND_TO_HUB;
                                 break;
 
@@ -190,15 +190,10 @@ public class ButtonHandler {
                                 currentSegmentPosition = SegmentPositions.EXTEND;
                                 break;
                         }
-                        isPressingB = true;
-                    } else if(!gamepad.b && isPressingB) {
-                        isPressingB = false;
+                        isPressingX = true;
+                    } else if(!gamepad.x && isPressingX) {
+                        isPressingX = false;
                     }
-                    // slideController.targetParams = SlideTarget.CAP_FROM_CAROUSEL;
-                    // slideController.extendSlide();
-                    // slideController.dropCube();
-                    // slideController.retractSlide();
-                    // slideController.targetParams = SlideTarget.TOP_CAROUSEL;
                     // Left Dpad
                     if(gamepad.dpad_left && !isPressingLeftDpad) {
                         if(!roadrunnerHandler.isBusy) {
