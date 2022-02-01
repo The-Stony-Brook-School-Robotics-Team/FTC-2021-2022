@@ -119,12 +119,15 @@ public class SlideControllerDebugger extends LinearOpMode
                         slideController.targetParams = SlideTarget.CAP_FROM_CAROUSEL;
                         slideController.extendSlide();
                         state = State.DROP;
+                        break;
                     case DROP:
                         slideController.dropCube();
                         state = State.PULLBACK;
+                        break;
                     case PULLBACK:
                         slideController.retractSlide();
                         state = State.OFF;
+                        break;
                 }
             } else if(!gamepad1.x && qX) {
                 qX = false;
