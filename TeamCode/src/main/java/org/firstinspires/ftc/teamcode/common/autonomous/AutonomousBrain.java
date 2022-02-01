@@ -165,6 +165,9 @@ public class AutonomousBrain {
         {
             case STOPPED:
                 // fait rien; l'état majeur  va changer l'état si il y a besoin.
+                // Pouvez-vous utiliser l'anglais?
+                // 你能使用英文吗？
+                // CAN YOU SPEAK ENGLISH?
                 return;
             case ONE_INTAKE:
                 Log.d("AutonBrain","Current Status: itemBool: " + qObjetDansRobot + " intakeStatus " + intakeCtrlBlue.isObjectInPayload());
