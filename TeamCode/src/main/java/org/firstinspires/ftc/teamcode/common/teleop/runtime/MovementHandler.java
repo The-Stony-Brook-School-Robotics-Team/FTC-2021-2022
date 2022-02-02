@@ -213,9 +213,9 @@ class MovementHandlers {
         }
         drive.setWeightedDrivePower(
                 new Pose2d(
-                        -gamepad.left_stick_y * Configuration.SlowMovementMultiplier,
-                        gamepad.left_stick_x * Configuration.SlowMovementMultiplier,
-                        -gamepad.right_stick_x * Configuration.SlowMovementMultiplier
+                        -gamepad.left_stick_x * 0.75,
+                        gamepad.left_stick_y * 0.75,
+                        -gamepad.right_stick_x * 0.75
                 )
         );
         drive.update();
