@@ -61,6 +61,7 @@ public class SlideController {
 
     }
 
+
     /** Extracts the slide, drops, then retracts.
      *
      * @param target the target which represents the height and distance the slide should extend to.
@@ -469,6 +470,14 @@ public class SlideController {
         }
     }
 
+    public boolean teleopIsObjectInBucket() {
+        if(blueColorRangeSensor.alpha() > 160) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     // TODO MEASURE ALL CONSTANTS
     
@@ -494,8 +503,8 @@ public class SlideController {
     double dumperPosition_HOLDBLOCK = 0;
 */    public double dumperPosition_CLOSED = .45;  // remeasured on jan 31 at 16h08
     public double dumperPosition_READY = .2;
-    double dumperPosition_EJECT = 0;
-    double dumperPosition_RETRACTING = .75;
+    public double dumperPosition_EJECT = 0;
+    public double dumperPosition_RETRACTING = .75;
 
     // slide motor
     int slideMotorPosition_PARKED =  5;
