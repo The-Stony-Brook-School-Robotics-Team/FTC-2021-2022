@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name = "Michael Color Test")
+@TeleOp(name = "Michael Color Test- Testing for update")
 public class ColorTest extends LinearOpMode
 {
     public ColorRangeSensor redColor;
