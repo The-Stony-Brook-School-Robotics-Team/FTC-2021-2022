@@ -14,6 +14,8 @@ import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideH
 
 import android.util.Log;
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+
 import org.firstinspires.ftc.robotserver.internal.webserver.SessionParametersGenerator;
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop;
@@ -63,9 +65,10 @@ public class ButtonHandler {
 
             switch(controllerMode) {
                 case PRIMARY:
-                    // A
+                    // A  
                     if(gamepad.a && !isPressingA && controllerMode == ControllerModes.PRIMARY) {
                         slideController.dropCube();
+                        OfficialTeleop.resetColor();
                         isPressingA = true;
                     } else if(!gamepad.a && isPressingA && controllerMode == ControllerModes.PRIMARY) {
                         isPressingA = false;

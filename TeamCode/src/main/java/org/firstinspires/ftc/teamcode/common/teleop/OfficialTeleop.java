@@ -230,5 +230,11 @@ public class OfficialTeleop extends OpMode {
         }
     }
 
+    /**
+     * Color Things
+     */
+    public static void resetColor() {
+        revBlinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+    }
 
 }

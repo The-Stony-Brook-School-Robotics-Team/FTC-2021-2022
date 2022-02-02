@@ -99,8 +99,6 @@ public class MovementHandler {
     });
 
 
-
-
     /**
      * Lets you set the current run type
      * @param runType the robot drive type
