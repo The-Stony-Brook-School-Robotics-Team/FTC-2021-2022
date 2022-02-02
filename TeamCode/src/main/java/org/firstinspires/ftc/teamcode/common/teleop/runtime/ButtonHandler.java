@@ -156,13 +156,7 @@ public class ButtonHandler {
                         isPressingA = false;
                     }
                     // Y
-                    // TODO: Remove this button, this was added for testing
-                    if(gamepad.y && !isPressingY && controllerMode == ControllerModes.SECONDARY) {
-                        roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.WAREHOUSE_AUTO_TURN);
-                        isPressingY = true;
-                    } else if(!gamepad.y && isPressingY) {
-                        isPressingY = false;
-                    }
+                    // TODO: Move [PRIMARY] [X] to [PRIMARY] [Y], to put [SECONDARY] [X] on [PRIMARY] [X]
                     // X
                     if(gamepad.x && !isPressingX) {
                         switch (currentSegmentPosition) {
@@ -240,7 +234,7 @@ public class ButtonHandler {
                     }
                     break;
             }
+            Log.d(interfaceTag, "Interface still running");
         }
-
     });
 }

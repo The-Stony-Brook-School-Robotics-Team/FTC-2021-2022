@@ -94,6 +94,7 @@ public class MovementHandler {
                     Log.e(interfaceTag, ": Internal Logic Error @runtime -> Drive Handler Checks");
                     Log.e(interfaceTag, "Log Info: " + currentRunType);
             }
+            Log.d(interfaceTag, "Interface still running");
         }
     });
 
@@ -194,6 +195,7 @@ class MovementHandlers {
                 )
         );
         drive.update();
+        Log.d(interfaceTag, "Interface still running");
     }
 
     private static void slowRunner() {

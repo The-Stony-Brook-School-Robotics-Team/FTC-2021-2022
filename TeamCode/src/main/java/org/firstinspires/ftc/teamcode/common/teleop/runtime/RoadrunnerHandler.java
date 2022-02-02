@@ -162,6 +162,7 @@ public class RoadrunnerHandler {
         slideHandler.slideMovementEnabled = true;
         isBusy = false;
         requestKill();
+        Log.d(interfaceTag, "Interface still running");
     });
 
     /**

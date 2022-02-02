@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.common.teleop.runtime;
 
+import android.util.Log;
+
 import org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
 
@@ -17,7 +19,7 @@ public class IntakeHandler {
 
             OfficialTeleop.slideController.checkForBucketObject();
 
-
+            Log.d(interfaceTag, "Interface Still Running");
         }
     });
 
