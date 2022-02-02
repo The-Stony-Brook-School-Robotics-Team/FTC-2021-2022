@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.common.teleop;
 import android.util.Log;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -64,6 +65,7 @@ public class OfficialTeleop extends OpMode {
 
     /** Extra Components */
     public static NormalizedColorSensor normalizedColorSensor;
+    public static RevBlinkinLedDriver revBlinkinLedDriver;
 
     /**
      * 线程池
@@ -93,6 +95,7 @@ public class OfficialTeleop extends OpMode {
         slideController = new SlideController(hardwareMap, telemetry);
         carouselController = new DuckCarouselController(hardwareMap, telemetry);
         normalizedColorSensor = hardwareMap.get(NormalizedColorSensor.class, "color");
+        revBlinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "rgb");
 
         /**
          * Configuration
@@ -107,6 +110,7 @@ public class OfficialTeleop extends OpMode {
 
     @Override
     public void init_loop() {
+        revBlinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
     }
 
     @Override
@@ -126,6 +130,7 @@ public class OfficialTeleop extends OpMode {
                 break;
 
             case RUNNING:
+
                 telemetry.update();
                 break;
 
