@@ -21,7 +21,6 @@ public class IntakeHandler {
              */
             OfficialTeleop.redIntake.checkIntake();
             OfficialTeleop.blueIntake.checkIntake();
-            OfficialTeleop.slideController.checkForBucketObject();
 
             /**
              * Update Color

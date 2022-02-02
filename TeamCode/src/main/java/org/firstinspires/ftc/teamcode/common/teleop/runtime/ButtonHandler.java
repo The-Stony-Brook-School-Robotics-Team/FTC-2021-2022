@@ -65,7 +65,7 @@ public class ButtonHandler {
 
             switch(controllerMode) {
                 case PRIMARY:
-                    // A  
+                    // A
                     if(gamepad.a && !isPressingA && controllerMode == ControllerModes.PRIMARY) {
                         slideController.dropCube();
                         OfficialTeleop.resetColor();

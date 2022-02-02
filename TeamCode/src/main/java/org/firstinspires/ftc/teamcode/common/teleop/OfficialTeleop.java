@@ -130,6 +130,13 @@ public class OfficialTeleop extends OpMode {
                 break;
 
             case RUNNING:
+                /**
+                 * Bucket Logic
+                 */
+                if(slideController.teleopIsObjectInBucket() && slideController.slideMotor.getCurrentPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
+                    slideController.dumperServo.setPosition(slideController.dumperPosition_CLOSED);
+                }
+
 
                 telemetry.update();
                 break;
