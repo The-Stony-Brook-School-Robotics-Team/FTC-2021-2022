@@ -39,6 +39,7 @@ public class OfficialTeleop extends OpMode {
     /** Controller Modes */
     public static Gamepad gamepad;
     public static ControllerModes controllerMode = ControllerModes.PRIMARY;
+    public static double driveSpeed = 1;
 
     /**
      * Information Provisioning
@@ -137,6 +138,8 @@ public class OfficialTeleop extends OpMode {
                     slideController.dumperServo.setPosition(slideController.dumperPosition_CLOSED);
                 }
 
+                Log.d(interfaceTag, "Current Encoder Position: " + slideController.slideMotor.getCurrentPosition());
+                telemetry.addData("Slide Motor Position: ", slideController.slideMotor.getCurrentPosition());
 
                 telemetry.update();
                 break;

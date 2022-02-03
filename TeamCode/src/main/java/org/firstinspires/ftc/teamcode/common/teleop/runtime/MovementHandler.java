@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.common.teleop.runtime;
 
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.currentState;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.drive;
+import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.driveSpeed;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.gamepad;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.movementHandler;
 
@@ -170,9 +171,9 @@ class MovementHandlers {
         }
         drive.setWeightedDrivePower(
                 new Pose2d(
-                        -gamepad.left_stick_x,
-                        gamepad.left_stick_y,
-                        -gamepad.right_stick_x
+                        -gamepad.left_stick_x * driveSpeed,
+                        gamepad.left_stick_y * driveSpeed,
+                        -gamepad.right_stick_x * driveSpeed
                 )
         );
         drive.update();
@@ -187,9 +188,9 @@ class MovementHandlers {
         }
         drive.setWeightedDrivePower(
                 new Pose2d(
-                        -gamepad.left_stick_x,
-                        gamepad.left_stick_y,
-                        -gamepad.right_stick_x
+                        -gamepad.left_stick_x * driveSpeed,
+                        gamepad.left_stick_y * driveSpeed,
+                        -gamepad.right_stick_x * driveSpeed
                 )
         );
         drive.update();

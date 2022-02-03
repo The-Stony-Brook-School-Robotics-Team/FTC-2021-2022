@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.blueIn
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.carouselController;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.controllerMode;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.currentState;
+import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.driveSpeed;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.gamepad;
 
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.movementHandler;
@@ -39,6 +40,7 @@ public class ButtonHandler {
     private static boolean isPressingLeftDpad = false, isPressingRightDpad = false, isPressingUpDpad = false, isPressingDownDpad = false;
     private static boolean isPressingLeftBumper = false, isPressingRightBumper = false;
 
+
     /**
      * Segment Enums
      */
@@ -65,6 +67,19 @@ public class ButtonHandler {
 
             switch(controllerMode) {
                 case PRIMARY:
+                    // B
+                    if(gamepad.b && !isPressingB) {
+                        if(slideController.slideMotor.getCurrentPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
+                            slideController.extendSlide();
+                            driveSpeed = 0.3;
+                        } else if(slideController.slideMotor.getCurrentPosition() > slideController.slideMotorPosition_BUCKET_OUT) {
+                            slideController.retractSlide();
+                            driveSpeed = 1;
+                        }
+                        isPressingB = true;
+                    } else if(!gamepad.b && isPressingB) {
+                        isPressingB = false;
+                    }
                     // A
                     if(gamepad.a && !isPressingA && controllerMode == ControllerModes.PRIMARY) {
                         slideController.dropCube();
@@ -72,17 +87,6 @@ public class ButtonHandler {
                         isPressingA = true;
                     } else if(!gamepad.a && isPressingA && controllerMode == ControllerModes.PRIMARY) {
                         isPressingA = false;
-                    }
-                    // B
-                    if(gamepad.b && !isPressingB) {
-                        if(slideController.slideMotor.getCurrentPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
-                            slideController.extendSlide();
-                        } else if(slideController.slideMotor.getCurrentPosition() > slideController.slideMotorPosition_BUCKET_OUT) {
-                            slideController.retractSlide();
-                        }
-                        isPressingB = true;
-                    } else if(!gamepad.b && isPressingB) {
-                        isPressingB = false;
                     }
                     // X
                     if(gamepad.x && !isPressingX) {
@@ -158,7 +162,23 @@ public class ButtonHandler {
                     } else if(!gamepad.a && isPressingA && controllerMode == ControllerModes.SECONDARY) {
                         isPressingA = false;
                     }
+
+
                     // Y
+
+                    if(gamepad.y && !isPressingY && controllerMode == ControllerModes.SECONDARY) {
+                        OfficialTeleop.driveSpeed += .01;
+                        isPressingY = true;
+                    } else if(!gamepad.y && isPressingY && controllerMode == ControllerModes.SECONDARY) {
+                        isPressingY = false;
+                    }
+                    if(gamepad.b && !isPressingB && controllerMode == ControllerModes.SECONDARY) {
+                        OfficialTeleop.driveSpeed -= .01;
+                        isPressingB = true;
+                    } else if(!gamepad.b && isPressingB && controllerMode == ControllerModes.SECONDARY) {
+                        isPressingB = false;
+                    }
+
                     // TODO: Move [PRIMARY] [X] to [PRIMARY] [Y], to put [SECONDARY] [X] on [PRIMARY] [X]
                     // X
                     if(gamepad.x && !isPressingX) {
