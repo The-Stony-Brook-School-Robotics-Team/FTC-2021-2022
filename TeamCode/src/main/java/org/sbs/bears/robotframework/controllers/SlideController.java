@@ -17,6 +17,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop;
 import org.sbs.bears.robotframework.Beta;
 import org.sbs.bears.robotframework.Sleep;
 import org.sbs.bears.robotframework.enums.SlideState;
@@ -41,6 +42,8 @@ public class SlideController {
     public static double SERVO_VELOCITY_CONSTANT = 0.8;
     public static boolean SERVO_TEST = true;
 
+
+
     public SlideController(HardwareMap hardwareMap, Telemetry telemetry) {
         /** Initialization **/
         magswitch = hardwareMap.get(DigitalChannel.class, "stop");
@@ -60,7 +63,9 @@ public class SlideController {
         slideMotor.setTargetPosition(0); // should be where it reset to
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+
         dumperServo.setPosition(dumperPosition_READY);
+        Log.d("SlideController", "Set the dumper servo to ready");
     }
 
     /**
@@ -421,6 +426,7 @@ public class SlideController {
                 }
                 //Kill the motor's PID and stop so it doesn't try to correct and jitter
                 hardStopReset();
+                OfficialTeleop.driveSpeed = .3;
                 // if(targetParams == SlideTarget.CAP_FROM_CAROUSEL)
                 //{
                 //  lower to plop capstone
@@ -464,6 +470,7 @@ public class SlideController {
                         break;
                     }
                 }
+                OfficialTeleop.driveSpeed = 1;
                 slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 slideMotor.setPower(-.3);
                 try {
@@ -473,8 +480,9 @@ public class SlideController {
                 }
                 slideMotor.setPower(0);
                 slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slideMotor.setTargetPosition(0);
-                slideMotor.setPower(.9);
+                //slideMotor.setTargetPosition(0);
+                //slideMotor.setPower(.9);
+                Log.d("SlideController", "Set the dumper servo to ready (485)");
                 dumperServo.setPosition(dumperPosition_READY);
                 return;
         }
@@ -604,9 +612,9 @@ public class SlideController {
     }
 
     public void checkForBucketObject() {
-        Log.d("SlideController", "I just got called");
-        Log.d("SlideController", "Color sensor value: " + blueColorRangeSensor.alpha());
+        Log.d("SlideController", "Found an object in the bucket");
         if (blueColorRangeSensor.alpha() > 160) {
+            Log.d("SlideController", "Closing the dumper servo");
             dumperServo.setPosition(dumperPosition_CLOSED);
         }
     }
@@ -646,7 +654,7 @@ public class SlideController {
     double vertServoPosition_FULL_MAX = 1;
 
     double incrementDeltaExtend = .003;//.2;
-    double incrementDeltaRetract = .02;//0.007;
+    double incrementDeltaRetract = .007;//0.007;
 
     double incrementDeltaExtendTeleOp = .025;//.2;
     double incrementDeltaRetractTeleop = .02;//0.007;
