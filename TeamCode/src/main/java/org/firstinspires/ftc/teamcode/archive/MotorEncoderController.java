@@ -2,26 +2,12 @@ package org.firstinspires.ftc.teamcode.archive;
 
 //import android.opengl.Matrix;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.apache.commons.math3.exception.DimensionMismatchException;
-import org.apache.commons.math3.exception.NoDataException;
-import org.apache.commons.math3.exception.NotPositiveException;
-import org.apache.commons.math3.exception.NotStrictlyPositiveException;
-import org.apache.commons.math3.exception.NullArgumentException;
-import org.apache.commons.math3.exception.NumberIsTooSmallException;
-import org.apache.commons.math3.exception.OutOfRangeException;
-import org.apache.commons.math3.linear.MatrixDimensionMismatchException;
-import org.apache.commons.math3.linear.NonSquareMatrixException;
-import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.linear.RealMatrixChangingVisitor;
-import org.apache.commons.math3.linear.RealMatrixPreservingVisitor;
-import org.apache.commons.math3.linear.RealVector;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /**

@@ -1,8 +1,4 @@
-<<<<<<< HEAD:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/sandboxes/William/WheelControl/GamePadControlHelper.java
-package org.firstinspires.ftc.teamcode.Sandboxes.William.WheelControl;
-=======
 package org.firstinspires.ftc.teamcode.Sandboxes.William.Util;
->>>>>>> new-drivetrain:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Sandboxes/William/Util/GamePadControlHelper.java
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 
