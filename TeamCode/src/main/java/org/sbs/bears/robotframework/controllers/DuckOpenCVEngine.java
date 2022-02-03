@@ -1,4 +1,8 @@
+<<<<<<< HEAD:TeamCode/src/main/java/org/firstinspires/ftc/teamcode/common/util/DuckOpenCVEngine.java
+package org.firstinspires.ftc.teamcode.common.util;
+=======
 package org.sbs.bears.robotframework.controllers;
+>>>>>>> new-drivetrain:TeamCode/src/main/java/org/sbs/bears/robotframework/controllers/DuckOpenCVEngineRedSimple.java
 
 import android.util.Log;
 
