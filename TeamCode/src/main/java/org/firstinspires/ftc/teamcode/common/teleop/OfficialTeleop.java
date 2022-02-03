@@ -122,7 +122,6 @@ public class OfficialTeleop extends OpMode {
                 telemetry.addLine("robot stopped");
                 telemetry.update();
                 break;
-
             case INITIALIZING:
                 movementHandler.movementEnabled = true;
                 slideHandler.slideMovementEnabled = true;
@@ -143,9 +142,7 @@ public class OfficialTeleop extends OpMode {
 
                 telemetry.update();
                 break;
-
         }
-
     }
 
     /**

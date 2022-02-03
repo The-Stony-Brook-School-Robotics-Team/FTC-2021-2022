@@ -83,7 +83,6 @@ public class AutonomousBrain {
         normalizedColorSensor = hardwareMap.get(NormalizedColorSensor.class, "color");
         normalizedColorSensor.setGain(Configuration.colorSensorGain);
         slideCtrl.dumperServo.setPosition(slideCtrl.dumperPosition_CLOSED); // init only
-
     }
     public void lance() // call this method before loop, so start method.
     {
@@ -117,10 +116,12 @@ public class AutonomousBrain {
                 RRctrl.followLineToSpline(depositPositionAllianceBlue);
                 slideCtrl.extendDropRetract(iniTarget);
                 Log.d("AutonBrain","Slide drop complete");
+
                 RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
                 intakeCtrlBlue.setState(IntakeState.BASE);
                 RRctrl.followLineToSpline(warehousePickupPositionBlue);
                 Log.d("AutonBrain","reset status and init for intake");
+
                 qObjetDansRobot = false; // reset
                 majorState = MajorAutonomousState.THREE_BACK_FORTH;
                 return;

@@ -37,7 +37,7 @@ public class SlideController {
     private boolean flagToLeave = false;
     private double changePositionSlope;
 
-
+public static long SERVO_VELOCITY_CONSTANT = 10;
 
     public SlideController(HardwareMap hardwareMap, Telemetry telemetry)
     {
@@ -350,11 +350,11 @@ public class SlideController {
                 for(double i = verticalServo.getPosition(); i < targetPos; i+=incrementDeltaExtend){
                     verticalServo.setPosition(Range.clip(i, 0, targetPos));
 
-                   // try {
-                      //  Thread.sleep(1);
-                    //} catch (InterruptedException e) {
-                  //      e.printStackTrace();
-                //    }
+                    try {
+                        Thread.sleep(SERVO_VELOCITY_CONSTANT);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     Log.d("SlideController","Lifted VerticalServo position to " + verticalServo.getPosition());
                     Log.d("SlideController","Lifted VerticalServo position to " + Range.clip(i, 0, targetPos));
 
@@ -368,11 +368,11 @@ public class SlideController {
                     verticalServo.setPosition(Range.clip(i, targetPos, 1));
                     //Sleep to slow things down a bit
                     //TODO can be removed with a decrease of incrementDeltaRetract?
-                    //try {
-                     //   Thread.sleep(1);
-                   // } catch (InterruptedException e) {
-                 //       e.printStackTrace();
-               //     }
+                    try {
+                        Thread.sleep(SERVO_VELOCITY_CONSTANT);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
