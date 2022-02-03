@@ -13,11 +13,11 @@ public class AutonomousBlueSimple extends OpMode {
 
     @Override
     public void start() {
-        brain.lance();
+        brain.start();
     }
 
     @Override
     public void loop() {
-        brain.faitActionAutonome();
+        brain.doStateAction();
     }
 }

@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.common.teleop;
 
 import android.util.Log;
-
+import org.sbs.bears.robotframework.Print;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -22,6 +22,7 @@ import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
 import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
 import org.sbs.bears.robotframework.controllers.SlideController;
 import org.sbs.bears.robotframework.enums.IntakeState;
+import org.sbs.bears.robotframework.enums.SlideState;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -80,6 +81,7 @@ public class OfficialTeleop extends OpMode {
 
     @Override
     public void init() {
+        Print.print("Hello");
         currentState = TeleOpRobotStates.INITIALIZING;
         /**
          * Roadrunner initialization
@@ -133,12 +135,17 @@ public class OfficialTeleop extends OpMode {
                 /**
                  * Bucket Logic
                  */
-                if(slideController.teleopIsObjectInBucket() && slideController.slideMotor.getCurrentPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
+                if(slideController.teleopIsObjectInBucket() && slideController.slideState == SlideState.PARKED) {
                     slideController.dumperServo.setPosition(slideController.dumperPosition_CLOSED);
                 }
 
+                /**
+                 * Telemetry
+                 */
                 Log.d(interfaceTag, "Current Encoder Position: " + slideController.slideMotor.getCurrentPosition());
                 telemetry.addData("Slide Motor Position: ", slideController.slideMotor.getCurrentPosition());
+                telemetry.addData("Magswitch", slideController.magswitch.getState());
+                telemetry.addData("IsObjectInBucket", slideController.teleopIsObjectInBucket());
 
                 telemetry.update();
                 break;

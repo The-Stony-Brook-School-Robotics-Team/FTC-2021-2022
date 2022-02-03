@@ -135,23 +135,24 @@ public class RoadrunnerHandler {
 
                 Log.d(interfaceTag, "Extending Slide");
                 // Extend Drop Retract
-                slideController.extendDropRetract(SlideTarget.TOP_DEPOSIT, OfficialTeleop.gamepad);
+                slideController.extendSlide();
 
-                Log.d(interfaceTag, "Turning back onto the wall");
-                // Turn Back Onto The Wall
-                drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToSplineHeading(new Pose2d(14,80,0), quickTurnVelocityConstraint, quickTurnAccelerationConstraint)
-                        .build());
-
-                Log.d(interfaceTag, "Going back into the warehouse");
-                drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .addTemporalMarker(1, () -> {
-                            Log.d(interfaceTag, "Dropping blue intake");
-                            // Drop Blue Intake
-                            blueIntake.setState(IntakeState.BASE);
-                        })
-                        .forward(24)
-                        .build());
+//                slideController.extendDropRetract(SlideTarget.TOP_DEPOSIT, OfficialTeleop.gamepad);
+//                Log.d(interfaceTag, "Turning back onto the wall");
+//                // Turn Back Onto The Wall
+//                drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
+//                        .lineToSplineHeading(new Pose2d(14,80,0), quickTurnVelocityConstraint, quickTurnAccelerationConstraint)
+//                        .build());
+//
+//                Log.d(interfaceTag, "Going back into the warehouse");
+//                drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
+//                        .addTemporalMarker(1, () -> {
+//                            Log.d(interfaceTag, "Dropping blue intake");
+//                            // Drop Blue Intake
+//                            blueIntake.setState(IntakeState.BASE);
+//                        })
+//                        .forward(24)
+//                        .build());
 
                 break;
         }

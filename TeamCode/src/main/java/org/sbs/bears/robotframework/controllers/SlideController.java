@@ -16,7 +16,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop;
 import org.sbs.bears.robotframework.Beta;
 import org.sbs.bears.robotframework.Sleep;
 import org.sbs.bears.robotframework.enums.SlideState;
@@ -27,7 +26,7 @@ public class SlideController {
     private Servo horizontalServo;
     public  Servo dumperServo;
     private ColorRangeSensor blueColorRangeSensor;
-    DigitalChannel magswitch;
+    public DigitalChannel magswitch;
 
 
     public DcMotorEx slideMotor;
@@ -36,8 +35,9 @@ public class SlideController {
     public SlideTarget targetParams = SlideTarget.NA;
     private boolean flagToLeave = false;
     private double changePositionSlope;
+    private boolean isTeleop;
 
-public static long SERVO_VELOCITY_CONSTANT = 10;
+public static long SERVO_VELOCITY_CONSTANT = 2;
 
     public SlideController(HardwareMap hardwareMap, Telemetry telemetry)
     {
@@ -246,6 +246,10 @@ public static long SERVO_VELOCITY_CONSTANT = 10;
                         flagToLeave = true;
                         return;
                 }
+                if(isTeleop){
+                    incrementDeltaExtend = incrementDeltaExtendTeleOp;
+                    incrementDeltaRetract = incrementDeltaRetractTeleop;
+                }
                 slideMotor.setTargetPosition(targetPosFinal);
                 if(targetParams == SlideTarget.CAP_FROM_CAROUSEL)
                 {
@@ -265,7 +269,8 @@ public static long SERVO_VELOCITY_CONSTANT = 10;
                 }
                 //Now that the bucket is out, start lifting the slide
                 //setHeightToParams(verticalServoTargetPos);
-                verticalServo.setPosition(verticalServoTargetPos);
+                setHeightToParams(verticalServoTargetPos);
+                //verticalServo.setPosition(verticalServoTargetPos);
                 //setHeightWithSlope(targetPosFinal, verticalServoTargetPos);
 
                 //Wait until the slide has reached its final position
@@ -292,6 +297,9 @@ public static long SERVO_VELOCITY_CONSTANT = 10;
                 slideMotor.setPower(slideMotorPowerMoving);
                 slideMotor.setTargetPosition(targetPos);
                 //Wait until the slide is retracted to right outside the robot
+                //setHeightWithSlope(slideMotorPosition_PARKED, vertServoPosition_PARKED);
+
+
                 while(slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT_RET){
                     try {
                         Thread.sleep(10);
@@ -299,11 +307,13 @@ public static long SERVO_VELOCITY_CONSTANT = 10;
                         e.printStackTrace();
                     }
                 }
+                setHeightToParams(vertServoPosition_PARKED);
                 //Once right outside, slow down the slide and lower it.
                 slideMotor.setPower(slideMotorPowerMovingBack);
                 //setHeightToParams(vertServoPosition_PARKED);
 
-                verticalServo.setPosition(vertServoPosition_PARKED);
+                //verticalServo.setPosition(vertServoPosition_PARKED);
+                //setHeightWithSlope(slideMotorPosition_PARKED, vertServoPosition_PARKED);
                 //Wait until the magnetic switch is triggered.
                 while(slideMotor.isBusy()){
                     try {
@@ -330,8 +340,6 @@ public static long SERVO_VELOCITY_CONSTANT = 10;
                 slideMotor.setTargetPosition(0);
                 slideMotor.setPower(.9);
                 dumperServo.setPosition(dumperPosition_READY);
-
-                dumperServo.setPosition(dumperPosition_READY);
                 return;
            }
     }
@@ -350,11 +358,11 @@ public static long SERVO_VELOCITY_CONSTANT = 10;
                 for(double i = verticalServo.getPosition(); i < targetPos; i+=incrementDeltaExtend){
                     verticalServo.setPosition(Range.clip(i, 0, targetPos));
 
-                    try {
-                        Thread.sleep(SERVO_VELOCITY_CONSTANT);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                //    try {
+               //         Thread.sleep(1);
+               //     } catch (InterruptedException e) {
+               //         e.printStackTrace();
+              //      }
                     Log.d("SlideController","Lifted VerticalServo position to " + verticalServo.getPosition());
                     Log.d("SlideController","Lifted VerticalServo position to " + Range.clip(i, 0, targetPos));
 
@@ -368,11 +376,11 @@ public static long SERVO_VELOCITY_CONSTANT = 10;
                     verticalServo.setPosition(Range.clip(i, targetPos, 1));
                     //Sleep to slow things down a bit
                     //TODO can be removed with a decrease of incrementDeltaRetract?
-                    try {
-                        Thread.sleep(SERVO_VELOCITY_CONSTANT);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                //    try {
+                //        Thread.sleep(1);
+               //     } catch (InterruptedException e) {
+               //         e.printStackTrace();
+                  //  }
                 }
             }
         }
@@ -383,6 +391,7 @@ public static long SERVO_VELOCITY_CONSTANT = 10;
 
     /** Sets state, position and target relative to teleOp (called in teleOp). **/
     public void initTeleop(){
+        isTeleop = true;
         slideState = SlideState.TELEOP;
         verticalServo.setPosition(vertServoPosition_PARKED);
         this.dumperServo.setPosition(dumperPosition_READY);
@@ -434,7 +443,7 @@ public static long SERVO_VELOCITY_CONSTANT = 10;
         //If the slide is to be incremented inside of the bucket and the slide height is not correct, first set it to the resting position.
         if(encoderTicks < slideMotorPosition_BUCKET_OUT && (verticalServo.getPosition() < vertServoPosition_PARKED-.01 || verticalServo.getPosition() > vertServoPosition_PARKED+.01)){
             setHeightToParams(vertServoPosition_PARKED);
-            OfficialTeleop.driveSpeed = 1;
+
         }
         slideMotor.setPower(slideMotorPowerMoving);
         slideMotor.setTargetPosition(encoderTicks);
@@ -499,20 +508,20 @@ public static long SERVO_VELOCITY_CONSTANT = 10;
         }
     }
 
- /**   public void setHeightWithSlope(int finalEncoderTicks, double finalServoPos){
-        while(slideMotor.getCurrentPosition() < finalEncoderTicks){
+    public void setHeightWithSlope(int finalEncoderTicks, double finalServoPos){
+        while(slideMotor.getCurrentPosition() > finalEncoderTicks){
             changePositionSlope = (0.85/1050) * (slideMotor.getCurrentPosition() - 150);
             verticalServo.setPosition(changePositionSlope);
             Log.d("throw", String.valueOf(changePositionSlope));
         }
         verticalServo.setPosition(finalServoPos);
-    } **/
+    }
 
 
     // TODO MEASURE ALL CONSTANTS
-    
 
-    double vertServoPosition_PARKED = 0.1;
+
+    double vertServoPosition_PARKED = 0.05;
     double vertServoPosition_ONE_CAROUSEL = 0.175;
     double vertServoPosition_TWO_CAROUSEL = 0.3767; ///measured
     double vertServoPosition_THREE_CAROUSEL = 0.647;
@@ -526,7 +535,10 @@ public static long SERVO_VELOCITY_CONSTANT = 10;
     double vertServoPosition_FULL_MAX = 1;
 
     double incrementDeltaExtend = .003;//.2;
-    double incrementDeltaRetract = .006;//0.007;
+    double incrementDeltaRetract = .02;//0.007;
+
+    double incrementDeltaExtendTeleOp = .025;//.2;
+    double incrementDeltaRetractTeleop = .02;//0.007;
 
     // dumper servo
 /*    double dumperPosition_DUMP = .91;
@@ -538,7 +550,7 @@ public static long SERVO_VELOCITY_CONSTANT = 10;
 
     // slide motor
     int slideMotorPosition_PARKED =  5;
-    public int slideMotorPosition_BUCKET_OUT = 380;//250;//150; // minimum position for the bucket to be out, measured
+    public int slideMotorPosition_BUCKET_OUT = 250;//380//150; // minimum position for the bucket to be out, measured
     public int slideMotorPosition_BUCKET_OUT_RET = 650; // minimum position for the bucket to be out, measured
     int slideMotorPosition_THREE_DEPOSIT = 1330; // remeasured // last 1360
     int slideMotorPosition_TWO_DEPOSIT = 1156; //measured

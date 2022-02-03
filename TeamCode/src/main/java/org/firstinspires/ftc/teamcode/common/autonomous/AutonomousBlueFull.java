@@ -28,7 +28,7 @@ public class AutonomousBlueFull extends LinearOpMode {
 
         waitForStart();
 
-        brain.lance();
+        brain.start();
 
         autonBrainExecutor.start();
         while(opModeIsActive() && !isStopRequested())
@@ -57,7 +57,7 @@ public class AutonomousBlueFull extends LinearOpMode {
     Thread autonBrainExecutor = new Thread(()->{
         while(opModeIsActive()&& !isStopRequested()){
                 if(qContinue) {
-                    brain.faitActionAutonome();
+                    brain.doStateAction();
                     sleep(100);
                     qContinue = false;
                 }

@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.blueIn
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.carouselController;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.controllerMode;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.currentState;
+import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.drive;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.driveSpeed;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.gamepad;
 
@@ -177,10 +178,16 @@ public class ButtonHandler {
                     }
 
                     // A
+                    // TODO: Find a location for the previous commented method
                     if(gamepad.a && !isPressingA && controllerMode == ControllerModes.SECONDARY) {
-                        if(!slideHandler.slideMoving) {
-                            slideHandler.DuckToTop();
+                        if(driveSpeed == 0.3) {
+                            driveSpeed = 1;
+                        } else if(driveSpeed == 1) {
+                            driveSpeed = 0.3;
                         }
+//                        if(!slideHandler.slideMoving) {
+//                            slideHandler.DuckToTop();
+//                        }
                         isPressingA = true;
                     } else if(!gamepad.a && isPressingA && controllerMode == ControllerModes.SECONDARY) {
                         isPressingA = false;
@@ -202,16 +209,9 @@ public class ButtonHandler {
                     }
 
                     // X
+                    // TODO: FREE BUTTON
                     if(gamepad.x && !isPressingX) {
-                        MovementHandler.RunType runType = MovementHandler.getRunType();
-                        switch (runType) {
-                            case DEFAULT:
-                                MovementHandler.setRunType(MovementHandler.RunType.SLOW);
 
-                            case SLOW:
-                                MovementHandler.setRunType(MovementHandler.RunType.DEFAULT);
-                                break;
-                        }
                         isPressingX = true;
                     } else if(!gamepad.x && isPressingX) {
                         isPressingX = false;

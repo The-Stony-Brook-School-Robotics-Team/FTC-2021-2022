@@ -20,9 +20,7 @@ public class MovementHandler {
      * Run Type for Movement
      */
     public enum RunType {
-        SLOW,
-        DEFAULT,
-        SPRINT
+        DEFAULT
     }
 
     public enum DriverMode {
@@ -58,37 +56,9 @@ public class MovementHandler {
     public static Thread runtime = new Thread(() -> {
         while(currentState.equals(TeleOpRobotStates.RUNNING) || currentState.equals(TeleOpRobotStates.INITIALIZING)) {
             switch (currentRunType) {
-                case SLOW:
-                    if(!MovementHandlers.slowDriving.isAlive()) {
-                        if(MovementHandlers.defaultDriving.isAlive()) {
-                            MovementHandlers.defaultDriving.interrupt();
-                        }
-                        if(MovementHandlers.sprintDriving.isAlive()) {
-                            MovementHandlers.sprintDriving.interrupt();
-                        }
-                        MovementHandlers.slowDriving.start();
-                    }
-                    break;
                 case DEFAULT:
                     if(!MovementHandlers.defaultDriving.isAlive()) {
-                        if(MovementHandlers.slowDriving.isAlive()) {
-                            MovementHandlers.slowDriving.interrupt();
-                        }
-                        if(MovementHandlers.sprintDriving.isAlive()) {
-                            MovementHandlers.sprintDriving.interrupt();
-                        }
                         MovementHandlers.defaultDriving.start();
-                    }
-                    break;
-                case SPRINT:
-                    if(!MovementHandlers.sprintDriving.isAlive()) {
-                        if(MovementHandlers.slowDriving.isAlive()) {
-                            MovementHandlers.slowDriving.interrupt();
-                        }
-                        if(MovementHandlers.defaultDriving.isAlive()) {
-                            MovementHandlers.defaultDriving.interrupt();
-                        }
-                        MovementHandlers.sprintDriving.start();
                     }
                     break;
                 default:
@@ -121,8 +91,6 @@ public class MovementHandler {
      */
     public static void sendKillSignal() {
         MovementHandler.runtime.interrupt();
-        MovementHandlers.slowDriving.interrupt();
-        MovementHandlers.sprintDriving.interrupt();
         MovementHandlers.defaultDriving.interrupt();
     }
 
@@ -152,32 +120,7 @@ public class MovementHandler {
 class MovementHandlers {
     public static String interfaceTag = "Movement Handlers";
 
-    public static Thread sprintDriving = new Thread(MovementHandlers::sprintRunner);
     public static Thread defaultDriving = new Thread(MovementHandlers::defaultRunner);
-    public static Thread slowDriving = new Thread(MovementHandlers::slowRunner);
-
-    private static void sprintRunner() {
-        if (!MovementHandler.movementEnabled) {
-            drive.setWeightedDrivePower(new Pose2d());
-            return;
-        }
-        if (MovementHandler.autonomousRunning) {
-            drive.setWeightedDrivePower(new Pose2d());
-            return;
-        }
-        if (MovementHandler.currentDriverMode != MovementHandler.DriverMode.DRIVER) {
-            drive.setWeightedDrivePower(new Pose2d());
-            return;
-        }
-        drive.setWeightedDrivePower(
-                new Pose2d(
-                        -gamepad.left_stick_x * driveSpeed,
-                        gamepad.left_stick_y * driveSpeed,
-                        -gamepad.right_stick_x * driveSpeed
-                )
-        );
-        drive.update();
-    }
 
     private static void defaultRunner() {
         if (!MovementHandler.movementEnabled) {
@@ -195,28 +138,5 @@ class MovementHandlers {
         );
         drive.update();
         Log.d(interfaceTag, "Interface still running");
-    }
-
-    private static void slowRunner() {
-        if (!MovementHandler.movementEnabled) {
-            drive.setWeightedDrivePower(new Pose2d());
-            return;
-        }
-        if (MovementHandler.autonomousRunning) {
-            drive.setWeightedDrivePower(new Pose2d());
-            return;
-        }
-        if (MovementHandler.currentDriverMode != MovementHandler.DriverMode.DRIVER) {
-            drive.setWeightedDrivePower(new Pose2d());
-            return;
-        }
-        drive.setWeightedDrivePower(
-                new Pose2d(
-                        -gamepad.left_stick_x * 0.75,
-                        gamepad.left_stick_y * 0.75,
-                        -gamepad.right_stick_x * 0.75
-                )
-        );
-        drive.update();
     }
 }

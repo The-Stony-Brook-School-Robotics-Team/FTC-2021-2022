@@ -38,13 +38,13 @@ public class AutonomousBrain {
 
     Telemetry tel;
     HardwareMap hwMap;
-    boolean qObjetDansRobot = false;
+    boolean qObjectInRobot = false;
 
     public MajorAutonomousState majorState = MajorAutonomousState.STOPPED;
     public MinorAutonomousState minorState = MinorAutonomousState.STOPPED;
     TowerHeightFromDuck heightFromDuck = TowerHeightFromDuck.NOT_YET_SET;
 
-    SlideTarget iniTarget; // position va le decider. // randomizée
+    SlideTarget iniTarget; // decides randomized position
     SlideTarget normalTarget = SlideTarget.TOP_DEPOSIT;
 
     enum MajorAutonomousState {
@@ -84,11 +84,11 @@ public class AutonomousBrain {
         normalizedColorSensor.setGain(Configuration.colorSensorGain);
         slideCtrl.dumperServo.setPosition(slideCtrl.dumperPosition_CLOSED); // init only
     }
-    public void lance() // call this method before loop, so start method.
+    public void start() // call this method before loop, so start method.
     {
         iniTemps = NanoClock.system().seconds();
     }
-    public void faitActionAutonome() // call in loop (once per loop pls)
+    public void doStateAction() // call in loop (once per loop pls)
     {
         switch(majorState) {
             case STOPPED:
@@ -122,11 +122,12 @@ public class AutonomousBrain {
                 RRctrl.followLineToSpline(warehousePickupPositionBlue);
                 Log.d("AutonBrain","reset status and init for intake");
 
-                qObjetDansRobot = false; // reset
+                qObjectInRobot = false; // reset
+
                 majorState = MajorAutonomousState.THREE_BACK_FORTH;
                 return;
             case THREE_BACK_FORTH:
-                faitAllezRetour();
+                doGoBack();
                 if(minorState == MinorAutonomousState.STOPPED)
                 {
                     minorState = MinorAutonomousState.ONE_INTAKE;
@@ -160,18 +161,18 @@ public class AutonomousBrain {
         }
     }
 
-    public void faitAllezRetour()
+    public void doGoBack()
     {
         switch(minorState)
         {
             case STOPPED:
-                // fait rien; l'état majeur  va changer l'état si il y a besoin.
+                // No associated action
                 return;
             case ONE_INTAKE:
-                Log.d("AutonBrain","Current Status: itemBool: " + qObjetDansRobot + " intakeStatus " + intakeCtrlBlue.isObjectInPayload());
-                if(qObjetDansRobot || intakeCtrlBlue.isObjectInPayload())
+                Log.d("AutonBrain","Current Status: itemBool: " + qObjectInRobot + " intakeStatus " + intakeCtrlBlue.isObjectInPayload());
+                if(qObjectInRobot || intakeCtrlBlue.isObjectInPayload())
                 {
-                    // nous avons le bloc
+                    //We have a block
                     Log.d("AutonBrain","Missed block on last run, proceeding.");
                     minorState = MinorAutonomousState.TWO_PREP_DEPOSIT;
                     return;
@@ -188,16 +189,16 @@ public class AutonomousBrain {
                 }).start();
                 new Thread(()->{
                     boolean isInState = minorState.equals(MinorAutonomousState.ONE_INTAKE);
-                    Log.d("AutonBrainThread","Status0: scoop: " + qObjetDansRobot +" state " + isInState);
-                    while(!qObjetDansRobot && isInState)
+                    Log.d("AutonBrainThread","Status0: scoop: " + qObjectInRobot +" state " + isInState);
+                    while(!qObjectInRobot && isInState)
                     {
                         Sleep.sleep(10);
                         isInState = minorState.equals(MinorAutonomousState.ONE_INTAKE);
-                        qObjetDansRobot = intakeCtrlBlue.isObjectInPayload();
-                        Log.d("AutonBrainThread","Status: scoop: " + qObjetDansRobot +" state " + isInState);
+                        qObjectInRobot = intakeCtrlBlue.isObjectInPayload();
+                        Log.d("AutonBrainThread","Status: scoop: " + qObjectInRobot +" state " + isInState);
                     }
-                    Log.d("AutonBrainThread","Status2: scoop: " + qObjetDansRobot +" state " + isInState);
-                    if(qObjetDansRobot)
+                    Log.d("AutonBrainThread","Status2: scoop: " + qObjectInRobot +" state " + isInState);
+                    if(qObjectInRobot)
                     {
                         RRctrl.stopTrajectory();
                         intakeCtrlBlue.loadItemIntoSlideForAutonomousOnly();
@@ -210,7 +211,7 @@ public class AutonomousBrain {
                 RRctrl.stopRobot();
                 RRctrl.stopRobot();
                 // stopped
-                if(qObjetDansRobot)
+                if(qObjectInRobot)
                 {
                     minorState = MinorAutonomousState.TWO_PREP_DEPOSIT;
                     Log.d("AutonBrain","Continuing to deposit");
@@ -239,7 +240,7 @@ public class AutonomousBrain {
                 intakeCtrlBlue.setState(IntakeState.BASE);
                 RRctrl.followLineToSpline(warehousePickupPositionBlue);
                 Log.d("AutonBrain","reset status and init for intake");
-                qObjetDansRobot = false; // reset
+                qObjectInRobot = false; // reset
                 minorState = MinorAutonomousState.ONE_INTAKE;
                 return;
 
