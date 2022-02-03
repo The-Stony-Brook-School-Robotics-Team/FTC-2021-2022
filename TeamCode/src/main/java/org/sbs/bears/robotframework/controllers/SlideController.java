@@ -395,6 +395,8 @@ public static long SERVO_VELOCITY_CONSTANT = 2;
         slideState = SlideState.TELEOP;
         verticalServo.setPosition(vertServoPosition_PARKED);
         this.dumperServo.setPosition(dumperPosition_READY);
+        
+
         this.targetParams = SlideTarget.TOP_DEPOSIT;
     }
     /** Accessor methods for the slide servo and motor. **/
@@ -521,7 +523,7 @@ public static long SERVO_VELOCITY_CONSTANT = 2;
     // TODO MEASURE ALL CONSTANTS
 
 
-    double vertServoPosition_PARKED = 0.05;
+    double vertServoPosition_PARKED = 0.1;
     double vertServoPosition_ONE_CAROUSEL = 0.175;
     double vertServoPosition_TWO_CAROUSEL = 0.3767; ///measured
     double vertServoPosition_THREE_CAROUSEL = 0.647;
