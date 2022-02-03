@@ -201,6 +201,8 @@ public class ButtonHandler {
                     } else if(!gamepad.y && isPressingY && controllerMode == ControllerModes.SECONDARY) {
                         isPressingY = false;
                     }
+
+                    // B
                     if(gamepad.b && !isPressingB && controllerMode == ControllerModes.SECONDARY) {
                         OfficialTeleop.driveSpeed -= .01;
                         isPressingB = true;

@@ -9,8 +9,10 @@ import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.moveme
 import android.util.Log;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
+import org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
 import org.firstinspires.ftc.teamcode.common.teleop.misc.Beta;
 
@@ -129,6 +131,11 @@ class MovementHandlers {
         if (MovementHandler.autonomousRunning) {
             return;
         }
+
+        if(driveSpeed < 1) {
+            OfficialTeleop.revBlinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
+        }
+        
         drive.setWeightedDrivePower(
                 new Pose2d(
                         -gamepad.left_stick_x * driveSpeed,
