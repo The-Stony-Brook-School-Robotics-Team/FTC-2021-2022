@@ -540,7 +540,7 @@ public class SlideController {
     int slideMotorPosition_PARKED =  5;
     public int slideMotorPosition_BUCKET_OUT = 380;//250;//150; // minimum position for the bucket to be out, measured
     public int slideMotorPosition_BUCKET_OUT_RET = 650; // minimum position for the bucket to be out, measured
-    int slideMotorPosition_THREE_DEPOSIT = 1360; //measured
+    int slideMotorPosition_THREE_DEPOSIT = 1330; // remeasured // last 1360
     int slideMotorPosition_TWO_DEPOSIT = 1156; //measured
     int slideMotorPosition_ONE_DEPOSIT = 1000; //measured
     int slideMotorPosition_THREE_CAROUSEL = 1713;

@@ -44,13 +44,13 @@ public class ButtonHandler {
     /**
      * Segment Enums
      */
-    private enum SegmentPositions {
+    public enum SegmentPositions {
         EXTEND,
         EXTEND_TO_HUB,
         DROP,
         RETRACT
     }
-    private static SegmentPositions currentSegmentPosition = SegmentPositions.EXTEND;
+    public static SegmentPositions currentSegmentPosition = SegmentPositions.EXTEND;
 
 
     /**
@@ -67,6 +67,7 @@ public class ButtonHandler {
 
             switch(controllerMode) {
                 case PRIMARY:
+
                     // B
                     if(gamepad.b && !isPressingB) {
                         if(slideController.slideMotor.getCurrentPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
@@ -80,6 +81,7 @@ public class ButtonHandler {
                     } else if(!gamepad.b && isPressingB) {
                         isPressingB = false;
                     }
+
                     // A
                     if(gamepad.a && !isPressingA && controllerMode == ControllerModes.PRIMARY) {
                         slideController.dropCube();
@@ -88,21 +90,38 @@ public class ButtonHandler {
                     } else if(!gamepad.a && isPressingA && controllerMode == ControllerModes.PRIMARY) {
                         isPressingA = false;
                     }
+
                     // X
                     if(gamepad.x && !isPressingX) {
-                        MovementHandler.RunType runType = MovementHandler.getRunType();
-                        switch (runType) {
-                            case DEFAULT:
-                                MovementHandler.setRunType(MovementHandler.RunType.SLOW);
+                        switch (currentSegmentPosition) {
+                            case EXTEND:
+                                slideController.collectCapstone();
+                                // slideController.incrementVerticalServo(0.1);
+                                currentSegmentPosition = SegmentPositions.EXTEND_TO_HUB;
                                 break;
-                            case SLOW:
-                                MovementHandler.setRunType(MovementHandler.RunType.DEFAULT);
+
+                            case EXTEND_TO_HUB:
+                                slideController.targetParams = SlideTarget.CAP_FROM_CAROUSEL;
+                                slideController.extendSlide();
+                                currentSegmentPosition = SegmentPositions.DROP;
+                                break;
+
+                            case DROP:
+                                slideController.dropCube();
+                                currentSegmentPosition = SegmentPositions.RETRACT;
+                                break;
+
+                            case RETRACT:
+                                slideController.retractSlide();
+                                slideController.targetParams = SlideTarget.TOP_CAROUSEL;
+                                currentSegmentPosition = SegmentPositions.EXTEND;
                                 break;
                         }
                         isPressingX = true;
                     } else if(!gamepad.x && isPressingX) {
                         isPressingX = false;
                     }
+
                     // Y
                     if(gamepad.y && !isPressingY) {
                         carouselController.spinOneDuck();
@@ -110,6 +129,7 @@ public class ButtonHandler {
                     } else if(!gamepad.y && isPressingY) {
                         isPressingY = false;
                     }
+
                     // rb
                     if(gamepad.right_bumper && OfficialTeleop.normalizedColorSensor.getNormalizedColors().alpha > Configuration.colorSensorWhiteAlpha) {
                         if(!roadrunnerHandler.isBusy) {
@@ -127,7 +147,7 @@ public class ButtonHandler {
                     } else if(!gamepad.dpad_left && isPressingLeftDpad) {
                         isPressingLeftDpad = false;
                     }
-                    redIntake.checkIntake();
+
                     // Right dpad
                     if(gamepad.dpad_right && !isPressingRightDpad) {
                         if(redIntake.getState() == IntakeState.PARK && slideController.getSlideMotorPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
@@ -139,10 +159,12 @@ public class ButtonHandler {
                     } else if(!gamepad.dpad_right && isPressingRightDpad) {
                         isPressingRightDpad = false;
                     }
+
                     // Up dpad
                     if(gamepad.dpad_up) {
                         slideController.incrementVerticalServo(Configuration.DefaultVerticalSlideIncrement);
                     }
+
                     // Down dpad
                     if(gamepad.dpad_down) {
                         slideController.incrementVerticalServo(Configuration.DefaultVerticalSlideIncrement * -1);
@@ -153,6 +175,7 @@ public class ButtonHandler {
                     if(gamepad.right_stick_y > Configuration.rightStickXLimitTrigger || gamepad.right_stick_y < (Configuration.rightStickXLimitTrigger * -1)) {
                         slideHandler.manualSlideController((int)gamepad.right_stick_y);
                     }
+
                     // A
                     if(gamepad.a && !isPressingA && controllerMode == ControllerModes.SECONDARY) {
                         if(!slideHandler.slideMoving) {
@@ -165,7 +188,6 @@ public class ButtonHandler {
 
 
                     // Y
-
                     if(gamepad.y && !isPressingY && controllerMode == ControllerModes.SECONDARY) {
                         OfficialTeleop.driveSpeed += .01;
                         isPressingY = true;
@@ -179,32 +201,15 @@ public class ButtonHandler {
                         isPressingB = false;
                     }
 
-                    // TODO: Move [PRIMARY] [X] to [PRIMARY] [Y], to put [SECONDARY] [X] on [PRIMARY] [X]
                     // X
                     if(gamepad.x && !isPressingX) {
-                        switch (currentSegmentPosition) {
+                        MovementHandler.RunType runType = MovementHandler.getRunType();
+                        switch (runType) {
+                            case DEFAULT:
+                                MovementHandler.setRunType(MovementHandler.RunType.SLOW);
 
-                            case EXTEND:
-                                slideController.collectCapstone();
-                               // slideController.incrementVerticalServo(0.1);
-                                currentSegmentPosition = SegmentPositions.EXTEND_TO_HUB;
-                                break;
-
-                            case EXTEND_TO_HUB:
-                                slideController.targetParams = SlideTarget.CAP_FROM_CAROUSEL;
-                                slideController.extendSlide();
-                                currentSegmentPosition = SegmentPositions.DROP;
-                                break;
-                                
-                            case DROP:
-                                slideController.dropCube();
-                                currentSegmentPosition = SegmentPositions.RETRACT;
-                                break;
-
-                            case RETRACT:
-                                slideController.retractSlide();
-                                slideController.targetParams = SlideTarget.TOP_CAROUSEL;
-                                currentSegmentPosition = SegmentPositions.EXTEND;
+                            case SLOW:
+                                MovementHandler.setRunType(MovementHandler.RunType.DEFAULT);
                                 break;
                         }
                         isPressingX = true;
