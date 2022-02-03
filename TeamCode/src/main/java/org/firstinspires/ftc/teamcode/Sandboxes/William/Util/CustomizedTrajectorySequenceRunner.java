@@ -23,32 +23,18 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.TurnSeg
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.WaitSegment;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-import java.util.ArrayList;
-=======
-import androidx.annotation.NonNull;
-
-=======
->>>>>>> new-drivetrain
 import java.util.ArrayList;
 import java.util.List;
 
->>>>>>> new-drivetrain
 import java.util.Collections;
 import java.util.LinkedList;
 
 @Config
 public class CustomizedTrajectorySequenceRunner {
-<<<<<<< HEAD
-    private final double EMERGENCY_STOP_ACCELERATION = 1;
-    private boolean needEmergencyStop = false;
-=======
     public static boolean needEmergencyStop = false;
 
     public static double EMERGENCY_STOP_ACCELERATION = 1;
     private boolean hasSetEmergencyStopStartPosition = false;
->>>>>>> new-drivetrain
     private boolean hasSetEmergencyStopStartValues = false;
     private Pose2d emergencyStopStartPosition;
     private Pose2d emergencyStopStartVelocity;
@@ -173,8 +159,6 @@ public class CustomizedTrajectorySequenceRunner {
             double deltaTime = now - currentSegmentStartTime;
 
             if (currentSegment instanceof TrajectorySegment) {
-                System.out.println("CustomizedTrajectorySequenceRunner: ------>Running TrajectorySegment<------");
-
                 Trajectory currentTrajectory = ((TrajectorySegment) currentSegment).getTrajectory();
 
                 if (isNewTransition)
@@ -203,13 +187,7 @@ public class CustomizedTrajectorySequenceRunner {
                     double currentTargetX = emergencyStopStartPosition.getX() + emergencyStopStartVelocity.getX() * emergencyStopDeltaTime + 0.5 * EMERGENCY_STOP_ACCELERATION * Math.pow(emergencyStopDeltaTime, 2);
                     double currentTargetY = emergencyStopStartPosition.getY() + emergencyStopStartVelocity.getY() * emergencyStopDeltaTime + 0.5 * EMERGENCY_STOP_ACCELERATION * Math.pow(emergencyStopDeltaTime, 2);
                     targetPose = new Pose2d(currentTargetX, currentTargetY, emergencyStopStartPosition.getHeading());
-<<<<<<< HEAD
-
-                    if(emergencyStopStartVelocity.getX() - EMERGENCY_STOP_ACCELERATION*deltaTime <= 0)
-                    {
-=======
                     if (emergencyStopStartVelocity.getX() - EMERGENCY_STOP_ACCELERATION * deltaTime <= 0) {
->>>>>>> new-drivetrain
                         needEmergencyStop = false;
                         return new DriveSignal();
                     }
@@ -219,14 +197,9 @@ public class CustomizedTrajectorySequenceRunner {
                 /**
                  * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
                  */
-<<<<<<< HEAD
-=======
 
 
->>>>>>> new-drivetrain
             } else if (currentSegment instanceof TurnSegment) {
-                System.out.println("CustomizedTrajectorySequenceRunner: ------>Running TurnSegment<------");
-
                 MotionState targetState = ((TurnSegment) currentSegment).getMotionProfile().get(deltaTime);
 
                 turnController.setTargetPosition(targetState.getX());
@@ -251,8 +224,6 @@ public class CustomizedTrajectorySequenceRunner {
                     driveSignal = new DriveSignal();
                 }
             } else if (currentSegment instanceof WaitSegment) {
-                System.out.println("CustomizedTrajectorySequenceRunner: ------>Running WaitSegment<------");
-
                 lastPoseError = new Pose2d();
 
                 targetPose = currentSegment.getStartPose();
