@@ -130,14 +130,7 @@ public class SampleMecanumDrive extends MecanumDrive {
             rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
-
-        // TODO: if desired, use setLocalizer() to change the localization method
-        /*if(!isUsingT265) {
-        setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));}
-        else {
-            setLocalizer(new T265Localizer(hardwareMap));
-        }*/
-
+        setLocalizer(new OdometryLocalizer(hardwareMap));
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
     }
 

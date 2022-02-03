@@ -30,7 +30,9 @@ public class WheelControl {
     private static double MAGICAL_CONSTANT = 0.39;
 
     private static double FIRST_STAGE_TIME;
+    private static double SECOND_STAGE_TIME;
     private static double FIRST_STAGE_TIME_INTERVAL = 1.43;
+    private static double SECOND_STAGE_TIME_INTERVAL = 1.0;
     private static double MAX_WHEEL_SPEED = 0;
     private static double timer;
     private static double runTime;
@@ -39,6 +41,7 @@ public class WheelControl {
 
     /**
      * Start the program for spinning the wheel.
+     *
      * @param wheelMover
      */
     public static void start(DcMotor wheelMover) {
@@ -48,7 +51,7 @@ public class WheelControl {
             MAX_WHEEL_SPEED = wheelMover.getPower();
 
         //Control the movement of the wheel.
-        while (updateMotorSpeed() != 2) ;
+        while (updateMotorSpeed()) ;
     }
 
     private static void initializeEnvironment(DcMotor wheelMover) {
@@ -57,16 +60,21 @@ public class WheelControl {
         WheelControl.wheelMover = wheelMover;
     }
 
-    private static int updateMotorSpeed() {
+    private static boolean updateMotorSpeed() {
         updateRunTime();
-        if (runTime >= 0 && runTime < FIRST_STAGE_TIME) {
-            //First Stage
-            wheelMover.setPower(getFirstStageMotorSpeed(runTime));
-            return 1;
-        } else {
+        if (runTime > SECOND_STAGE_TIME) {
             //Ending
             wheelMover.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            return 2;
+            return false;
+        }
+        else if (runTime >= 0 && runTime < FIRST_STAGE_TIME) {
+            //First Stage.
+            wheelMover.setPower(getFirstStageMotorSpeed(runTime));
+            return true;
+        } else {
+            //Second Stage.
+            wheelMover.setPower(-1);
+            return true;
         }
     }
 
@@ -77,6 +85,7 @@ public class WheelControl {
 
     private static void initializeVariables() {
         FIRST_STAGE_TIME = FIRST_STAGE_TIME_INTERVAL;
+        SECOND_STAGE_TIME = FIRST_STAGE_TIME + SECOND_STAGE_TIME_INTERVAL;
         timer = getCurrentSystemSecond();
     }
 

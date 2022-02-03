@@ -4,36 +4,40 @@
     import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
     import com.qualcomm.robotcore.hardware.Servo;
 
-    @TeleOp(name="Savox", group="Linear Opmode")
+    @TeleOp(name="Servo lolk", group="Linear Opmode")
     public class SavoxTester extends LinearOpMode {
-        private Servo savox;
-        boolean pressingUp = false;
-        boolean pressingDown = false;
+        private Servo slideLifter;
+        private boolean qA = false;
+        private boolean qB = false;
 
         public void runOpMode() throws InterruptedException {
 
-            savox = hardwareMap.get(Servo.class, "vt");
+            slideLifter = hardwareMap.get(Servo.class, "vt");
 
             waitForStart();
 
             while (opModeIsActive()) {
-                if (gamepad1.dpad_up && !pressingUp) {
-                    pressingUp = true;
-                } else if (!gamepad1.dpad_up && pressingUp) {
-                    savox.setPosition(savox.getPosition() + .05);
-                    pressingUp = false;
+
+                if(gamepad1.a && !qA){
+                    slideLifter.setPosition(slideLifter.getPosition() + .05);
+                    qA = true;
                 }
-                if (gamepad1.dpad_down && !pressingDown) {
-                    pressingDown = true;
-                } else if (!gamepad1.dpad_down && pressingDown) {
-                    savox.setPosition(savox.getPosition() - .05);
-                    pressingDown = false;
+                if(!gamepad1.a && qA){
+                    qA = false;
                 }
-                telemetry.addData("pos: ", savox.getPosition());
+                if(gamepad1.b && !qB){
+                    slideLifter.setPosition(slideLifter.getPosition() - .05);
+                    qB = true;
+                }
+                if(!gamepad1.a && qB){
+                    qB = false;
+                }
+                if(gamepad1.x)  slideLifter.setPosition(.8);
+                if(gamepad1.y)  slideLifter.setPosition(.2);
+
+
+                telemetry.addData("pos: ", slideLifter.getPosition());
                 telemetry.update();
-
-
-
             }
         }
     }

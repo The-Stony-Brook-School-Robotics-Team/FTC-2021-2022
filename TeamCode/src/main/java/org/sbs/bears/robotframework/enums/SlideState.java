@@ -1,8 +1,12 @@
 package org.sbs.bears.robotframework.enums;
 
 public enum SlideState {
-    TOP,
-    MIDDLE,
-    BOTTOM,
-    IN
+    PARKED,
+    EXT_BUCKET_IN,
+    EXTENDING,
+    OUT_FULLY,
+    RETRACTING,
+    RET_BUCKET_IN,
+    TELEOP
+
 }

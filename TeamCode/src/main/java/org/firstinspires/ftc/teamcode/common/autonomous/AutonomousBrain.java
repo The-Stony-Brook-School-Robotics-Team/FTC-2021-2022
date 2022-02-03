@@ -1,166 +1,159 @@
 package org.firstinspires.ftc.teamcode.common.autonomous;
 
+import android.util.Log;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 
-import org.apache.commons.math3.analysis.integration.IterativeLegendreGaussIntegrator;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.common.sharedResources.SharedData;
+import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.sbs.bears.robotframework.Robot;
-import org.sbs.bears.robotframework.controllers.IntakeController;
+import org.sbs.bears.robotframework.Sleep;
+import org.sbs.bears.robotframework.controllers.DuckCarouselController;
+import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
+import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 import org.sbs.bears.robotframework.controllers.RoadRunnerController;
-import org.sbs.bears.robotframework.controllers.SlideExtensionController;
-import org.sbs.bears.robotframework.enums.SlideHeight;
-import org.sbs.bears.robotframework.controllers.SlideHeightController;
+import org.sbs.bears.robotframework.controllers.SlideController;
+import org.sbs.bears.robotframework.enums.IntakeState;
+import org.sbs.bears.robotframework.enums.SlideTarget;
 import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
+import static org.sbs.bears.robotframework.controllers.OpenCVController.doAnalysisMaster;
+
 
 public class AutonomousBrain {
     AutonomousMode mode;
     Robot robot;
     OpenCVController CVctrl;
     RoadRunnerController RRctrl;
-    SlideHeightController slideHCtrl;
-    SlideExtensionController slideExtCtrl;
-    IntakeController intakeCtrl;
+    SlideController slideCtrl;
+    IntakeControllerBlue intakeCtrlBlue;
+    IntakeControllerRed intakeCtrlRed;
+    DuckCarouselController duckCtrl;
 
+    NormalizedColorSensor normalizedColorSensor;
 
-    AutonomousStates majorState = AutonomousStates.STOPPED;
-    AutonomousBackForthSubStates minorState = AutonomousBackForthSubStates.STOPPED;
+    Telemetry tel;
+    HardwareMap hwMap;
+    boolean qObjectInRobot = false;
+
+    public MajorAutonomousState majorState = MajorAutonomousState.STOPPED;
+    public MinorAutonomousState minorState = MinorAutonomousState.STOPPED;
     TowerHeightFromDuck heightFromDuck = TowerHeightFromDuck.NOT_YET_SET;
 
+    SlideTarget iniTarget; // decides randomized position
+    SlideTarget normalTarget = SlideTarget.TOP_DEPOSIT;
 
-
-    enum AutonomousStates {
+    enum MajorAutonomousState {
         STOPPED,
-        ONE_READ_DUCK,
-        TWO_SET_SLIDE_HEIGHT,
-        THREE_DEPOSIT_BOX,
-        THREE_OPT_CAROUSEL,
-        FOUR_DRIVE_TO_WAREHOUSE,
-        FOUR_SPLINE_THROUGH_WAREHOUSE,
-        FOUR_B_SET_SLIDE_HEIGHT_3,
-        FIVE_BACK_FORTH,
-        SIX_PARKING_WAREHOUSE,
+        ONE_CAMERA_READ,
+        TWO_DEPOSIT_INI_BLOCK,
+        THREE_BACK_FORTH,
+        FOUR_PARKING_CLEANUP,
         FINISHED
     }
-    enum AutonomousBackForthSubStates {
+    enum MinorAutonomousState {
         STOPPED,
         ONE_INTAKE,
-        TWO_FORWARD,
-        THREE_SLIDE_OUT_IN,
-        FOUR_BACKWARD
+        TWO_PREP_DEPOSIT,
+        THREE_DEPOSIT,
+        FOUR_RETURN_TO_INTAKE
     }
 
-    double iniTime= 0;
+    double iniTemps = 0;
 
-    public AutonomousBrain(HardwareMap hardwareMap, Telemetry telemetry, AutonomousMode mode)
+    public AutonomousBrain(HardwareMap hardwareMap, Telemetry telemetry, AutonomousMode mode) // call in init.
     {
         this.mode = mode;
+        this.hwMap = hardwareMap;
+        this.tel = telemetry;
         this.robot = new Robot(hardwareMap,telemetry,mode);
         this.CVctrl = robot.getCVctrl();
         this.RRctrl = robot.getRRctrl();
-        this.slideHCtrl = robot.getSlideHCtrl();
-        this.slideExtCtrl = robot.getSlideExtCtrl();
-        this.intakeCtrl = robot.getIntakeCtrl();
+        this.slideCtrl = robot.getSlideCtrl();
+        this.intakeCtrlBlue = robot.getIntakeCtrlBlue();
+        this.intakeCtrlRed = robot.getIntakeCtrlRed();
+        this.duckCtrl = robot.getDuckCtrl();
+        RRctrl.setPos(startPositionBlue);
+        intakeCtrlBlue.setState(IntakeState.PARK);
+        intakeCtrlRed.setState(IntakeState.PARK); // to prevent from moving around
+        normalizedColorSensor = hardwareMap.get(NormalizedColorSensor.class, "color");
+        normalizedColorSensor.setGain(Configuration.colorSensorGain);
+        slideCtrl.dumperServo.setPosition(slideCtrl.dumperPosition_CLOSED); // init only
     }
-    public void launch()
+    public void start() // call this method before loop, so start method.
     {
-        iniTime = NanoClock.system().seconds();
+        iniTemps = NanoClock.system().seconds();
     }
-    public void doAutonAction()
+    public void doStateAction() // call in loop (once per loop pls)
     {
-        switch(majorState)
-        {
+        switch(majorState) {
             case STOPPED:
-                switch(mode) {
-                    case BlueSimple:
-                        RRctrl.setPos(startPositionBSimp);
-                        break;
-                    case BlueSpline:
-                        RRctrl.setPos(startPositionBSpl);
-                        break;
-                    case RedSimple:
-                        RRctrl.setPos(startPositionRSimp);
-                        break;
-                    case RedSpline:
-                        RRctrl.setPos(startPositionRSpl);
-                        break;
-
-                }
-                majorState = AutonomousStates.ONE_READ_DUCK;
+                doAnalysisMaster = true;
+                majorState = MajorAutonomousState.ONE_CAMERA_READ;
                 return;
-            case ONE_READ_DUCK:
+            case ONE_CAMERA_READ:
                 heightFromDuck = CVctrl.getWhichTowerHeight();
-                majorState = AutonomousStates.TWO_SET_SLIDE_HEIGHT;
-                return;
-            case TWO_SET_SLIDE_HEIGHT:
-                switch(heightFromDuck)
-                {
+                Log.d("height: ", heightFromDuck.toString());
+                CVctrl.shutDown();
+                switch (heightFromDuck) {
                     case ONE:
-                        slideHCtrl.setSlideHeight(SlideHeight.ONE);
+                        iniTarget = SlideTarget.BOTTOM_DEPOSIT;
                         break;
                     case TWO:
-                        slideHCtrl.setSlideHeight(SlideHeight.TWO);
+                        iniTarget = SlideTarget.MID_DEPOSIT;
                         break;
-                    default:
-                        slideHCtrl.setSlideHeight(SlideHeight.THREE_CLOSE);
+                    case THREE:
+                        iniTarget = SlideTarget.TOP_DEPOSIT;
+                        break;
                 }
-                majorState = AutonomousStates.THREE_DEPOSIT_BOX;
+                majorState = MajorAutonomousState.TWO_DEPOSIT_INI_BLOCK;
                 return;
-            case THREE_DEPOSIT_BOX:
-                slideExtCtrl.extendDropRetract();
-                if(mode.equals(AutonomousMode.RedSimple) || mode.equals(AutonomousMode.BlueSimple)) {
-                    majorState = AutonomousStates.FOUR_DRIVE_TO_WAREHOUSE;
-                }
-                else {
-                    majorState = AutonomousStates.FOUR_B_SET_SLIDE_HEIGHT_3;
-                }
-                return;
-            case FOUR_B_SET_SLIDE_HEIGHT_3:
-                slideHCtrl.setSlideHeight(SlideHeight.THREE_CLOSE);
-                majorState = AutonomousStates.FOUR_DRIVE_TO_WAREHOUSE;
-                return;
-            case FOUR_DRIVE_TO_WAREHOUSE:
-                switch(mode) {
-                    case BlueSimple:
-                        RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
-                    case BlueSpline:
-                        RRctrl.followSplineTrajWarehouse(true);
-                        RRctrl.followLineToSpline(wareHousePickupPositionBSpl);
-                    case RedSimple:
-                        RRctrl.followLineToSpline(wareHousePickupPositionRSimp);
-                    case RedSpline:
-                        RRctrl.followSplineTrajWarehouse(false);
-                        RRctrl.followLineToSpline(wareHousePickupPositionRSpl);
+            case TWO_DEPOSIT_INI_BLOCK:
+                RRctrl.followLineToSpline(depositPositionAllianceBlue);
+                slideCtrl.extendDropRetract(iniTarget);
+                Log.d("AutonBrain","Slide drop complete");
 
-                }
-                majorState = AutonomousStates.FIVE_BACK_FORTH;
+                RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
+                intakeCtrlBlue.setState(IntakeState.BASE);
+                RRctrl.followLineToSpline(warehousePickupPositionBlue);
+                Log.d("AutonBrain","reset status and init for intake");
+
+                qObjectInRobot = false; // reset
+
+                majorState = MajorAutonomousState.THREE_BACK_FORTH;
                 return;
-            case FIVE_BACK_FORTH:
-                doBackForth();
-                if(minorState == AutonomousBackForthSubStates.STOPPED)
+            case THREE_BACK_FORTH:
+                doGoBack();
+                if(minorState == MinorAutonomousState.STOPPED)
                 {
-                    minorState = AutonomousBackForthSubStates.ONE_INTAKE;
+                    minorState = MinorAutonomousState.ONE_INTAKE;
                     return;
                 }
-                double currentTime = NanoClock.system().seconds();
-                if(currentTime-iniTime > 25) {
-                    majorState = AutonomousStates.SIX_PARKING_WAREHOUSE;
+                // time check
+               double currentTime = NanoClock.system().seconds();
+                if(currentTime- iniTemps > 35) {
+                    Log.d("AutonBrain","Time Constraint: parking");
+                    majorState = MajorAutonomousState.FOUR_PARKING_CLEANUP;
                 }
                 return;
-            case SIX_PARKING_WAREHOUSE:
-                switch(mode) {
-                    case BlueSimple:
-                        RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
-                    case BlueSpline:
-                        RRctrl.followLineToSpline(wareHousePickupPositionBSpl);
-                    case RedSimple:
-                        RRctrl.followLineToSpline(wareHousePickupPositionRSimp);
-                    case RedSpline:
-                        RRctrl.followLineToSpline(wareHousePickupPositionRSpl);
-                }
-                majorState = AutonomousStates.FINISHED;
+            case FOUR_PARKING_CLEANUP:
+                Log.d("AutonBrain","parking1");
+                intakeCtrlBlue.setState(IntakeState.PARK);
+                /*
+                Log.d("AutonBrain","parking2");
+                RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
+                Log.d("AutonBrain","parking3");
+                RRctrl.followLineToSpline(parkingPositionBlue);
+                Log.d("AutonBrain","parking4");
+                */
+                RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
+                RRctrl.followLineToSpline(parkingPositionBlue);
+                SharedData.autonomousLastPosition = RRctrl.getPos();
+                majorState = MajorAutonomousState.FINISHED;
                 return;
             case FINISHED:
                 return;
@@ -168,76 +161,98 @@ public class AutonomousBrain {
         }
     }
 
-    public void doBackForth()
+    public void doGoBack()
     {
         switch(minorState)
         {
+            case STOPPED:
+                // No associated action
+                return;
             case ONE_INTAKE:
-                intakeCtrl.waitForIntake();
-                minorState = AutonomousBackForthSubStates.TWO_FORWARD;
-                return;
-            case TWO_FORWARD:
-                switch(mode) {
-                    case BlueSimple:
-                        RRctrl.followLineToSpline(depositObjectPositionBsimp);
-                    case BlueSpline:
-                        RRctrl.followLineToSpline(depositObjectPositionBspl);
-                    case RedSimple:
-                        RRctrl.followLineToSpline(depositObjectPositionRsimp);
-                    case RedSpline:
-                        RRctrl.followLineToSpline(depositObjectPositionRspl);
-                }
-                minorState = AutonomousBackForthSubStates.THREE_SLIDE_OUT_IN;
-                return;
-            case THREE_SLIDE_OUT_IN:
-                switch(mode)
+                Log.d("AutonBrain","Current Status: itemBool: " + qObjectInRobot + " intakeStatus " + intakeCtrlBlue.isObjectInPayload());
+                if(qObjectInRobot || intakeCtrlBlue.isObjectInPayload())
                 {
-                    case BlueSimple:
-                    case RedSimple:
-                        slideHCtrl.setSlideHeight(SlideHeight.THREE_CLOSE);
-                        break;
-                    case RedSpline:
-                    case BlueSpline:
-                        slideHCtrl.setSlideHeight(SlideHeight.THREE_FAR);
+                    //We have a block
+                    Log.d("AutonBrain","Missed block on last run, proceeding.");
+                    minorState = MinorAutonomousState.TWO_PREP_DEPOSIT;
+                    return;
                 }
-                slideExtCtrl.extendDropRetract();
-                minorState = AutonomousBackForthSubStates.FOUR_BACKWARD;
+
+                intakeCtrlBlue.setState(IntakeState.BASE);
+                new Thread(()->{
+                    boolean isInState = minorState.equals(MinorAutonomousState.ONE_INTAKE);
+                    while(isInState)
+                    {
+                        slideCtrl.checkForBucketObject();
+                        isInState = minorState.equals(MinorAutonomousState.ONE_INTAKE);
+                    }
+                }).start();
+                new Thread(()->{
+                    boolean isInState = minorState.equals(MinorAutonomousState.ONE_INTAKE);
+                    Log.d("AutonBrainThread","Status0: scoop: " + qObjectInRobot +" state " + isInState);
+                    while(!qObjectInRobot && isInState)
+                    {
+                        Sleep.sleep(10);
+                        isInState = minorState.equals(MinorAutonomousState.ONE_INTAKE);
+                        qObjectInRobot = intakeCtrlBlue.isObjectInPayload();
+                        Log.d("AutonBrainThread","Status: scoop: " + qObjectInRobot +" state " + isInState);
+                    }
+                    Log.d("AutonBrainThread","Status2: scoop: " + qObjectInRobot +" state " + isInState);
+                    if(qObjectInRobot)
+                    {
+                        RRctrl.stopTrajectory();
+                        intakeCtrlBlue.loadItemIntoSlideForAutonomousOnly();
+                        Log.d("AutonBrainThread","Status: loaded");
+                    }
+                }).start();
+                Log.d("AutonBrain","Forward init");
+                RRctrl.forward(40,15);
+                Log.d("AutonBrain","Forward done");
+                RRctrl.stopRobot();
+                RRctrl.stopRobot();
+                // stopped
+                if(qObjectInRobot)
+                {
+                    minorState = MinorAutonomousState.TWO_PREP_DEPOSIT;
+                    Log.d("AutonBrain","Continuing to deposit");
+                    return;
+                }
+                RRctrl.followLineToSpline(warehousePickupPositionBlue);
+                Log.d("AutonBrain","Retrying to find a block");
                 return;
-            case FOUR_BACKWARD:
-                switch(mode) {
-                    case BlueSimple:
-                        RRctrl.followLineToSpline(wareHousePickupPositionBSimp);
-                    case BlueSpline:
-                        RRctrl.followLineToSpline(wareHousePickupPositionBSpl);
-                    case RedSimple:
-                        RRctrl.followLineToSpline(wareHousePickupPositionRSimp);
-                    case RedSpline:
-                        RRctrl.followLineToSpline(wareHousePickupPositionRSpl);
-                }
-                minorState = AutonomousBackForthSubStates.ONE_INTAKE;
+            case TWO_PREP_DEPOSIT: // TODO implement go forward and then turn
+                /*RRctrl.followLineToSpline(startPositionBlue);
+                RRctrl.followLineToSpline(depositPositionAllianceBlue);
+                */
+                RRctrl.doBlueDepositTrajectory();
+                Log.d("AutonBrain","Prepare for drop off");
+                minorState = MinorAutonomousState.THREE_DEPOSIT;
+                return;
+            case THREE_DEPOSIT:
+                slideCtrl.extendDropRetract(normalTarget);
+                Log.d("AutonBrain","Slide drop complete");
+                minorState = MinorAutonomousState.FOUR_RETURN_TO_INTAKE;
+                return;
+            case FOUR_RETURN_TO_INTAKE:
+                RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
+                RRctrl.setPos(new Pose2d(resetPositionB4WarehouseBlue.getX(),65.5,0)); // reset contre mur.
+                Log.d("AutonBrain","intake prepped");
+                intakeCtrlBlue.setState(IntakeState.BASE);
+                RRctrl.followLineToSpline(warehousePickupPositionBlue);
+                Log.d("AutonBrain","reset status and init for intake");
+                qObjectInRobot = false; // reset
+                minorState = MinorAutonomousState.ONE_INTAKE;
                 return;
 
         }
     }
 
-
-
-
-    public static Pose2d startPositionBSimp = new Pose2d(6.5,65.5,0);
-    public static Pose2d startPositionBSpl = new Pose2d(6.5,65.5,0);
-    public static Pose2d startPositionRSimp = new Pose2d(6.5,-65.5,Math.PI);
-    public static Pose2d startPositionRSpl = new Pose2d(6.5,-65.5,Math.PI);
-
-    public static Pose2d wareHousePickupPositionBSimp = new Pose2d(54.5,65.5,0);
-    public static Pose2d wareHousePickupPositionBSpl = new Pose2d(71, 34, -Math.PI/2);
-    public static Pose2d wareHousePickupPositionRSimp = new Pose2d(54.5,-65.5,Math.PI);
-    public static Pose2d wareHousePickupPositionRSpl = new Pose2d(71, -34, Math.PI/2);
-
-    public static Pose2d depositObjectPositionBsimp = new Pose2d(-12.25,65.5,0);
-    public static Pose2d depositObjectPositionBspl = new Pose2d(71,19,-Math.PI/2);
-    public static Pose2d depositObjectPositionRsimp = new Pose2d(-12.25,-65.5,Math.PI);
-    public static Pose2d depositObjectPositionRspl = new Pose2d(71,-10,Math.PI/2);
-
+    public static Pose2d startPositionBlue = new Pose2d(14,65.5,0);
+    public static Pose2d warehousePickupPositionBlue = new Pose2d(35,65.5,0);
+    public static Pose2d depositPositionAllianceBlue = new Pose2d(5.58,64.47,-Math.toRadians(55));
+    public static Pose2d depositPositionAllianceBlue2 = new Pose2d(5.58,64.47,-Math.toRadians(55));
+    public static Pose2d resetPositionB4WarehouseBlue = new Pose2d(14,80,0);
+    public static Pose2d parkingPositionBlue = new Pose2d(60,80,0);
 
 
 }

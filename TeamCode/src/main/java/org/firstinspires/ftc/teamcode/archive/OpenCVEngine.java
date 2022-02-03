@@ -36,15 +36,15 @@ public class OpenCVEngine  extends OpenCvPipeline {
      */
     static final int WidthRectA = 130; // for ini rings window
     static final int HeightRectA = 110; // for ini rings window
-    static final Point RectATopLeftAnchor = new Point((STREAM_WIDTH - WidthRectA) / 2 + 300, ((STREAM_HEIGHT - HeightRectA) / 2) - 100);
+    static final Point RectATopLeftAnchor = new Point((STREAM_WIDTH - WidthRectA) / 2 + 125, ((STREAM_HEIGHT - HeightRectA) / 2) - 100);
 
     static final int WidthRectB = 130; // for goal alignment window
     static final int HeightRectB = 110; // for goal alignment window
-    static final Point RectBTopLeftAnchor = new Point((STREAM_WIDTH - WidthRectB) / 2 + 200, ((STREAM_HEIGHT - HeightRectA) / 2) - 100);
+    static final Point RectBTopLeftAnchor = new Point((STREAM_WIDTH - WidthRectB) / 2 + 25, ((STREAM_HEIGHT - HeightRectA) / 2) - 100);
 
     static final int WidthRectC = 130; // for goal alignment window
     static final int HeightRectC = 110; // for goal alignment window
-    static final Point RectCTopLeftAnchor = new Point((STREAM_WIDTH - WidthRectB) / 2 + 100, ((STREAM_HEIGHT - HeightRectA) / 2) - 100);
+    static final Point RectCTopLeftAnchor = new Point((STREAM_WIDTH - WidthRectB) / 2 - 75, ((STREAM_HEIGHT - HeightRectA) / 2) - 100);
 
 
     final int PresentThreshold = 127;
