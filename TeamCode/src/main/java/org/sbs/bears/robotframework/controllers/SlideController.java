@@ -38,7 +38,7 @@ public class SlideController {
     private double changePositionSlope;
     private boolean isTeleop;
 
-    public static double SERVO_VELOCITY_CONSTANT = 0.08;
+    public static double SERVO_VELOCITY_CONSTANT = 0.8;
     public static boolean SERVO_TEST = true;
 
     public SlideController(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -111,6 +111,76 @@ public class SlideController {
                     while (currentServoPosition >= 0.1) {
                         verticalServo.setPosition(currentServoPosition);
                         currentServoPosition = beginningServoPosition - (NanoClock.system().seconds() - beginningServoTime) * SERVO_VELOCITY_CONSTANT;
+                    }
+                    verticalServo.setPosition(0.8);
+                } else {
+                    for (double i = verticalServo.getPosition(); i > targetPos; i -= incrementDeltaRetract) {
+                        verticalServo.setPosition(Range.clip(i, targetPos, 1));
+                        //Sleep to slow things down a bit
+                        //TODO can be removed with a decrease of incrementDeltaRetract?
+                        //    try {
+                        //        Thread.sleep(1);
+                        //     } catch (InterruptedException e) {
+                        //         e.printStackTrace();
+                        //  }
+                    }
+                }
+            }
+        } else {
+            Log.d("SlideController", "Assert for slide box outside of robot failed; dont lift the slide while the box is inside the robot!");
+        }
+    }
+
+    /**
+     *
+     * @param targetPos
+     * @param servoVelocity 0.8 is one second of lifting. Using a velocity below 0.8 for capping.
+     */
+    private void setHeightToParams(double targetPos, double servoVelocity) {
+        //Only alter the slide's height if not parked
+        //TODO if(slideState != PARKED)?
+        if (slideState == SlideState.OUT_FULLY || slideState == SlideState.RETRACTING || slideState == SlideState.EXTENDING || slideState == SlideState.TELEOP) {
+            double currentPos = verticalServo.getPosition();
+            //If the target position is higher than our current, it means we are going up, and vice versa.
+            boolean qNeedsToGoUp = (currentPos < targetPos);
+
+            if (qNeedsToGoUp) {
+                if (SERVO_TEST) {
+                    double beginningServoTime = NanoClock.system().seconds();
+                    double beginningServoPosition = verticalServo.getPosition();
+                    double currentServoPosition = beginningServoPosition;
+                    while (currentServoPosition <= 0.8) {
+                        verticalServo.setPosition(currentServoPosition);
+                        currentServoPosition = beginningServoPosition + (NanoClock.system().seconds() - beginningServoTime) * servoVelocity;
+                    }
+                    verticalServo.setPosition(0.8);
+                } else {
+                    //TODO: Warning STUPID S STUFFS BELOW
+                    //Set the servo to a slightly higher position until it reaches its target
+                    for (double i = verticalServo.getPosition(); i < targetPos; i += incrementDeltaExtend) {
+                        verticalServo.setPosition(Range.clip(i, 0, targetPos));
+
+                        //    try {
+                        //         Thread.sleep(1);
+                        //     } catch (InterruptedException e) {
+                        //         e.printStackTrace();
+                        //      }
+                        Log.d("SlideController", "Lifted VerticalServo position to " + verticalServo.getPosition());
+                        Log.d("SlideController", "Lifted VerticalServo position to " + Range.clip(i, 0, targetPos));
+
+
+                    }
+                    //double iniTime
+                    verticalServo.setPosition(targetPos); // it works don't ask don't tell
+                }
+            } else { //We are going down
+                if (SERVO_TEST) {
+                    double beginningServoTime = NanoClock.system().seconds();
+                    double beginningServoPosition = verticalServo.getPosition();
+                    double currentServoPosition = beginningServoPosition;
+                    while (currentServoPosition >= 0.1) {
+                        verticalServo.setPosition(currentServoPosition);
+                        currentServoPosition = beginningServoPosition - (NanoClock.system().seconds() - beginningServoTime) * servoVelocity;
                     }
                     verticalServo.setPosition(0.8);
                 } else {
