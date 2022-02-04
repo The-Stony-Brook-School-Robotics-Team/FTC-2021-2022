@@ -37,9 +37,10 @@ public class OfficialTeleop extends OpMode {
     private static Object stateMutex = new Object();
 
     /** Controller Modes */
-    public static Gamepad gamepad1;
-    public static Gamepad gamepad2;
-    public static ControllerModes controllerMode = ControllerModes.PRIMARY;
+    public static Gamepad primaryGamepad;
+    public static Gamepad secondaryGamepad;
+    public static ControllerModes primaryControllerMode = ControllerModes.PRIMARY;
+    public static ControllerModes secondaryControllerMode = ControllerModes.PRIMARY;
     public static double driveSpeed = 1;
 
     /**
@@ -87,8 +88,8 @@ public class OfficialTeleop extends OpMode {
          * */
         drive = new SampleMecanumDrive(hardwareMap);
         dashboard = FtcDashboard.getInstance();
-        this.gamepad1 = gamepad1;
-        this.gamepad2 = gamepad2;
+        this.primaryGamepad = gamepad1;
+        this.secondaryGamepad = gamepad2;
 
         /**
          * Initialization
@@ -107,8 +108,6 @@ public class OfficialTeleop extends OpMode {
         redIntake.setState(IntakeState.PARK);
         blueIntake.setState(IntakeState.PARK);
         normalizedColorSensor.setGain(Configuration.colorSensorGain);
-
-        telemetry.addLine("For debug mode, hold A as you click play");
         telemetry.update();
 
         floodRuntimes();
@@ -132,14 +131,7 @@ public class OfficialTeleop extends OpMode {
                 slideHandler.slideMovementEnabled = true;
                 startThreadPool();
 
-                /**
-                 * Let whoever is running the program choose debug or not
-                 */
-                if(gamepad1.a) {
-                    synchronized (stateMutex) { currentState = TeleOpRobotStates.DEBUG; }
-                } else {
-                    synchronized (stateMutex) { currentState = TeleOpRobotStates.RUNNING; }
-                }
+                synchronized (stateMutex) { currentState = TeleOpRobotStates.RUNNING; }
                 break;
 
             case RUNNING:
