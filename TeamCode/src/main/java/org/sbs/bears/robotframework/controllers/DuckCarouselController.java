@@ -50,10 +50,11 @@ public class DuckCarouselController {
     }
 
     public void spinOneDuck() {
+
         initTime = getCurrentSystemSecond();
         FIRST_STAGE_TIME_FLAG = initTime + FIRST_STAGE_TIME_INTERVAL;
         SECOND_STAGE_TIME_FLAG = FIRST_STAGE_TIME_FLAG + SECOND_STAGE_TIME_INTERVAL;
-        while (updateMotorSpeed()) ;
+        while (updateMotorSpeed());
     }
 
     private double getCurrentSystemSecond() {

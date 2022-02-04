@@ -37,7 +37,15 @@ public class ButtonHandler {
     private static boolean isPressingLeftDpad = false, isPressingRightDpad = false, isPressingUpDpad = false, isPressingDownDpad = false;
     private static boolean isPressingLeftBumper = false, isPressingRightBumper = false;
 
+    /**
+     * Secondary Button Logic
+     */
     private static boolean isPressingSecondaryY = false;
+
+    /**
+     * Duck Spinner Logic
+     */
+    public static boolean duckspinnerSpinning = false;
 
     /**
      * Segment Enums
@@ -70,7 +78,13 @@ public class ButtonHandler {
              * Secondary Gamepad
              */
             if(secondaryGamepad.y && !isPressingSecondaryY) {
-                carouselController.spinOneDuck();
+                if(duckspinnerSpinning == false) {
+                    new Thread(() -> {
+                        duckspinnerSpinning = true;
+                        carouselController.spinOneDuck();
+                        duckspinnerSpinning = false;
+                    }).run();
+                }
                 isPressingSecondaryY = true;
             } else if(!secondaryGamepad.y && isPressingSecondaryY) {
                 isPressingSecondaryY = false;
@@ -141,7 +155,13 @@ public class ButtonHandler {
 
                     // Y
                     if(primaryGamepad.y && !isPressingY) {
-                        carouselController.spinOneDuck();
+                        if(duckspinnerSpinning == false) {
+                            new Thread(() -> {
+                                duckspinnerSpinning = true;
+                                carouselController.spinOneDuck();
+                                duckspinnerSpinning = false;
+                            }).run();
+                        }
                         isPressingY = true;
                     } else if(!primaryGamepad.y && isPressingY) {
                         isPressingY = false;
