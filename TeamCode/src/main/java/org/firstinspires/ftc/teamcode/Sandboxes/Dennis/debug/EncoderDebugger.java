@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+@Disabled
 @Config
 @TeleOp(name="U - Encoder Debugger", group="default")
 public class EncoderDebugger extends LinearOpMode {

@@ -17,6 +17,7 @@ import com.arcrobotics.ftclib.purepursuit.waypoints.EndWaypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.GeneralWaypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.InterruptWaypoint;
 import com.arcrobotics.ftclib.purepursuit.waypoints.PointTurnWaypoint;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
@@ -40,6 +41,8 @@ import java.util.Queue;
  * @version 1.3
  * @see Waypoint
  */
+
+@Disabled
 @SuppressWarnings("serial")
 public class customPath extends ArrayList<Waypoint> {
 

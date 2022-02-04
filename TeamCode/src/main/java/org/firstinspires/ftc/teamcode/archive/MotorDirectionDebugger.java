@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.archive;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -36,6 +37,8 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  *
  * Uncomment the @Disabled tag below to use this opmode.
  */
+
+@Disabled
 @TeleOp
 public class MotorDirectionDebugger extends LinearOpMode {
     public static double MOTOR_POWER = 0.7;

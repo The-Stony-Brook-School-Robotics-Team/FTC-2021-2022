@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Sandboxes.Dennis;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.ml.HubModel;
 import org.tensorflow.lite.DataType;
@@ -9,6 +11,8 @@ import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+@Disabled
+@TeleOp(name = "B - Tensorflow Testing")
 public class TensorflowTesting extends LinearOpMode {
 
 

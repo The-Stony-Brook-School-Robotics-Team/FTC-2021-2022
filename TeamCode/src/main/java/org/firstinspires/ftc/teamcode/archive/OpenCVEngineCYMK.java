@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.archive;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -10,6 +12,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.ArrayList;
 
+@Disabled
 public class OpenCVEngineCYMK extends OpenCvPipeline {
     static final int STREAM_WIDTH = 1920;
     static final int STREAM_HEIGHT = 1080;
