@@ -76,6 +76,9 @@ public class ButtonHandler {
                             driveSpeed = 0.3;
                         } else if(slideController.slideMotor.getCurrentPosition() > slideController.slideMotorPosition_BUCKET_OUT) {
                             slideController.retractSlide();
+                            if(currentSegmentPosition != SegmentPositions.EXTEND) {
+                                currentSegmentPosition = SegmentPositions.EXTEND;
+                            }
                             driveSpeed = 1;
                         }
                         isPressingB = true;

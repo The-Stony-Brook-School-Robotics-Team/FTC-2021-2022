@@ -4,8 +4,6 @@ package org.sbs.bears.robotframework.controllers;
 import android.util.Log;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -279,10 +277,11 @@ public class SlideController {
 
     public void collectCapstone() {
         // extend a certain amount, then lift, then chill.
-        setHeightToParams(0.09);
-        slideMotor.setTargetPosition(473);
-        slideMotor.setPower(0.7);
-        while (slideMotor.getCurrentPosition() < 473) {
+        //setHeightToParams(vertServoPosition_GRAB_CAP);
+        verticalServo.setPosition(vertServoPosition_GRAB_CAP);
+        slideMotor.setTargetPosition(slideMotorPosition_CAP_ON_GROUND);
+        slideMotor.setPower(slideMotorPowerGrabCap);
+        while (slideMotor.getCurrentPosition() < slideMotorPosition_CAP_ON_GROUND) {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
@@ -399,6 +398,11 @@ public class SlideController {
                     incrementDeltaExtend = incrementDeltaExtendTeleOp;
                     incrementDeltaRetract = incrementDeltaRetractTeleop;
                 }
+                if(targetParams == SlideTarget.CAP_FROM_CAROUSEL){
+                    incrementDeltaExtend = incrementDeltaExtendCapstone;
+                }
+                else{incrementDeltaExtend = incrementDeltaExtendTeleOp;}
+
                 slideMotor.setTargetPosition(targetPosFinal);
                 if (targetParams == SlideTarget.CAP_FROM_CAROUSEL) {
                     slideMotor.setPower(slideMotorPowerCarousel);
@@ -432,6 +436,7 @@ public class SlideController {
                 //Kill the motor's PID and stop so it doesn't try to correct and jitter
                 hardStopReset();
                 OfficialTeleop.driveSpeed = .3;
+
                 // if(targetParams == SlideTarget.CAP_FROM_CAROUSEL)
                 //{
                 //  lower to plop capstone
@@ -633,7 +638,7 @@ public class SlideController {
     }
 
     public void setHeightWithSlope(int finalEncoderTicks, double finalServoPos) {
-        while (slideMotor.getCurrentPosition() > finalEncoderTicks) {
+        while(slideMotor.getCurrentPosition() > finalEncoderTicks) {
             changePositionSlope = (0.85 / 1050) * (slideMotor.getCurrentPosition() - 150);
             verticalServo.setPosition(changePositionSlope);
             Log.d("throw", String.valueOf(changePositionSlope));
@@ -649,20 +654,24 @@ public class SlideController {
     double vertServoPosition_ONE_CAROUSEL = 0.175;
     double vertServoPosition_TWO_CAROUSEL = 0.3767; ///measured
     double vertServoPosition_THREE_CAROUSEL = 0.647;
-    double vertServoPosition_THREE_DEPOSIT = .8; // 0.85; // TODO //.754; //measured
-    double vertServoPosition_TWO_DEPOSIT = .4188;//0.3688;
-    double vertServoPosition_ONE_DEPOSIT = .11;//0.06;
+    public double vertServoPosition_THREE_DEPOSIT = .89; // 0.85; // TODO //.754; //measured
+    public double vertServoPosition_TWO_DEPOSIT = .58;//.4188;//0.3688;
+    public double vertServoPosition_ONE_DEPOSIT = .24;//11;//0.06;
+    public double vertServoPosition_GRAB_CAP = .19; //.09
+
     double vertServoPosition_PARKED_MIN = 0;
     double vertServoPosition_PARKED_MAX = 0.3;
-    double vertServoPosition_CAP_CAROUSEL_HIGHER = 0.9; //TODO
-    double vertServoPosition_CAP_CAROUSEL = 0.71; // TODO
+    public double vertServoPosition_CAP_CAROUSEL_HIGHER = 1; //TODO
+    public double vertServoPosition_CAP_CAROUSEL = 0.85; // TODO
     double vertServoPosition_FULL_MAX = 1;
 
-    double incrementDeltaExtend = .003;//.2;
-    double incrementDeltaRetract = .007;//0.007;
+    public double incrementDeltaExtend = .003;//.2;
+    public double incrementDeltaRetract = .007;//0.007;
 
-    public static double incrementDeltaExtendTeleOp = .025;//.2;
-    public static double incrementDeltaRetractTeleop = .01;//.02;//0.007;
+    public double incrementDeltaExtendTeleOp = .025;//.2;
+    public double incrementDeltaRetractTeleop = .02;//0.007;
+
+    public double incrementDeltaExtendCapstone = .025;
 
     // dumper servo
 /*    double dumperPosition_DUMP = .91;
@@ -674,22 +683,24 @@ public class SlideController {
 
     // slide motor
     int slideMotorPosition_PARKED = 5;
-    public static int slideMotorPosition_BUCKET_OUT = 250;//380//150; // minimum position for the bucket to be out, measured
+    public static int slideMotorPosition_BUCKET_OUT = 225;//250;//380//150; // minimum position for the bucket to be out, measured
     public int slideMotorPosition_BUCKET_OUT_RET = 650; // minimum position for the bucket to be out, measured
-    int slideMotorPosition_THREE_DEPOSIT = 1330; // remeasured // last 1360
-    int slideMotorPosition_TWO_DEPOSIT = 1156; //measured
-    int slideMotorPosition_ONE_DEPOSIT = 1000; //measured
+    public int slideMotorPosition_THREE_DEPOSIT = 1330; // remeasured // last 1360
+    public int slideMotorPosition_TWO_DEPOSIT = 1156; //measured
+    public int slideMotorPosition_ONE_DEPOSIT = 1170;//1000; //measured
     int slideMotorPosition_THREE_CAROUSEL = 1713;
     int slideMotorPosition_TWO_CAROUSEL = 1650;
     int slideMotorPosition_ONE_CAROUSEL = 1665;
-    int slideMotorPosition_CAP_FROM_CAROUSEL = 1476; // TODO
-    int slideMotorPosition_CAP_FROM_CAROUSEL_RET = 1442; // TODO
+    public int slideMotorPosition_CAP_FROM_CAROUSEL = 1476; // TODO
+    public int slideMotorPosition_CAP_FROM_CAROUSEL_RET = 1442; // TODO
     int slideMotorPosition_FULL = 1980;
     //int slideMotorPosition_START_LOWER = 400;
+    public int slideMotorPosition_CAP_ON_GROUND = 473;
 
     public double slideMotorPowerMoving = .9;
     public double slideMotorPowerCarousel = .5;
     public double slideMotorPowerMovingBack = .5;
+    public double slideMotorPowerGrabCap = .7;
     double slideMotorPowerStill = 0;
 
     /*double deltaZForLevel3 = 12; // in
