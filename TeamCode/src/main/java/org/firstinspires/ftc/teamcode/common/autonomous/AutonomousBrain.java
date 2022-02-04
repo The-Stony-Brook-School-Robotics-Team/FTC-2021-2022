@@ -173,6 +173,7 @@ public class AutonomousBrain {
                 // No associated action
                 return;
             case ONE_INTAKE:
+                /*
                 Log.d("AutonBrain","Current Status: itemBool: " + qObjectInRobot + " intakeStatus " + intakeCtrlBlue.isObjectInPayload());
                 if(qObjectInRobot || intakeCtrlBlue.isObjectInPayload())
                 {
@@ -223,6 +224,9 @@ public class AutonomousBrain {
                 }
                 RRctrl.followLineToSpline(warehousePickupPositionBlue);
                 Log.d("AutonBrain","Retrying to find a block");
+                return;*/
+                // DEBUGGING
+                minorState = MinorAutonomousState.TWO_PREP_DEPOSIT;
                 return;
             case TWO_PREP_DEPOSIT: // TODO implement go forward and then turn
                 /*RRctrl.followLineToSpline(startPositionBlue);
