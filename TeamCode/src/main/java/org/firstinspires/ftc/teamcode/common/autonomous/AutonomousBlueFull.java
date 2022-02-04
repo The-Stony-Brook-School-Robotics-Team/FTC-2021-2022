@@ -15,6 +15,7 @@ public class AutonomousBlueFull extends LinearOpMode {
     AutonomousBrain brain;
     boolean qA = false;
     boolean qContinue = false;
+    boolean masterQContinue = true;
     public static Gamepad gamepad;
 
     @Override
@@ -40,7 +41,7 @@ public class AutonomousBlueFull extends LinearOpMode {
             telemetry.update();
         }
         // stop requested
-
+        masterQContinue = false; // master switch
         autonBrainExecutor.interrupt();
         try {
             autonBrainExecutor.join();
@@ -56,24 +57,12 @@ public class AutonomousBlueFull extends LinearOpMode {
 
     Thread autonBrainExecutor = new Thread(()->{
         while(opModeIsActive()&& !isStopRequested()){
-                if(qContinue) {
-                    brain.doStateAction();
-                    sleep(100);
-                    qContinue = false;
-                }
-                qContinue = true;
-                if(gamepad1.a && !qA) {
-                    qA = true;
-                    qContinue = true;
-                    return;
-                }
-                else if (!gamepad1.a && qA) {
-                    qA = false;
-                }
-                if(brain.majorState.equals(AutonomousBrain.MajorAutonomousState.FINISHED))
-                {
-                    requestOpModeStop();
-                }
+            if(!masterQContinue) {break;}
+            brain.doStateAction();
+            sleep(100);
+            if(brain.majorState.equals(AutonomousBrain.MajorAutonomousState.FINISHED)) { requestOpModeStop(); }
+            if(!masterQContinue) { break; }
+
         }
     });
 

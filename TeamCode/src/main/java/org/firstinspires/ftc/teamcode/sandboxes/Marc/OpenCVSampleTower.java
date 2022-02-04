@@ -12,7 +12,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.sbs.bears.robotframework.controllers.TowerOpenCVEngine;
 
 
-@Autonomous(name="A - OpenCV Tower Analysis")
+//@Autonomous(name="A - OpenCV Tower Analysis")
 public class OpenCVSampleTower extends OpMode {
 
     // MARK - Class Variables
