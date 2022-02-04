@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Sandboxes.Dennis.debug;
 
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorRangeSensor;
@@ -8,8 +9,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@TeleOp(name="AUHGEUWSHG you -m -uwu")
-public class ihatemichael extends OpMode {
+@Disabled
+@TeleOp(name="U - Color Sensor Testing")
+public class ColorSensorTesting extends OpMode {
     private Servo servo;
     private Rev2mDistanceSensor distanceSensor;
     private ColorRangeSensor blueColorRangeSensor;

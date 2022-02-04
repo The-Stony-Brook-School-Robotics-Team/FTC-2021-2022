@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.archive;
 
 import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -15,6 +16,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * common functions such as simple movements and actions.
  */
 
+@Disabled
 public class MotorEncoderController {
     public static String[] motorNames = new String[]{"rightodom","backodom","leftodom","lf"}; // rb lb rf lf
     public static String[] odomNames = new String[]{"rightodom","backodom","leftodom"};

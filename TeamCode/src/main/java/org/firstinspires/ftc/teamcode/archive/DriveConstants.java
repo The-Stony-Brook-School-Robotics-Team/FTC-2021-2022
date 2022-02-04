@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.archive;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 /*
@@ -14,7 +15,8 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
  * These are not the only parameters; some are located in the localizer classes, drive base classes,
  * and op modes themselves.
  */
-@Config
+
+@Disabled
 public class DriveConstants {
     public static final double TICKS_PER_REV = 8192; // added
     public static final double MAX_RPM = 1150; // was 1100

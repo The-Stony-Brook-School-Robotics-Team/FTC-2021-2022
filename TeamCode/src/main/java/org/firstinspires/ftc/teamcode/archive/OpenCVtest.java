@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.archive;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -9,7 +10,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-
+@Disabled
 public class OpenCVtest extends OpMode {
     //Continuation<? extends Consumer<Bitmap>> continuation;
 
