@@ -678,7 +678,7 @@ public class SlideController {
     double dumperPosition_HOLDBLOCK = 0;
 */    public double dumperPosition_CLOSED = .45;  // remeasured on jan 31 at 16h08
     public double dumperPosition_READY = .2;
-    public double dumperPosition_EJECT = 0;
+    public double dumperPosition_EJECT = 0.0025;
     public double dumperPosition_RETRACTING = .75;
 
     // slide motor

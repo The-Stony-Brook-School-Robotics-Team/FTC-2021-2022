@@ -142,12 +142,13 @@ public class OfficialTeleop extends OpMode {
 
                 /**
                  * Telemetry
-                 */
+
                 telemetry.addData("Slide Motor Position: ", slideController.slideMotor.getCurrentPosition());
                 telemetry.addData("Magswitch", slideController.magswitch.getState());
                 telemetry.addData("IsObjectInBucket", slideController.teleopIsObjectInBucket());
+                telemetry.addData("Bucket Position: ", slideController.dumperServo.getPosition());
 
-                telemetry.update();
+                telemetry.update(); */
                 break;
         }
     }

@@ -1,21 +1,22 @@
 package org.firstinspires.ftc.teamcode.Sandboxes.Michael.Final;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.sbs.bears.robotframework.controllers.SlideController;
-
+@Config
 @TeleOp(name="B- BUCKET TESTING", group="Linear Opmode")
 public class BucketTester extends LinearOpMode {
     private Servo bucket;
     private boolean qA = false;
     private boolean qB = false;
 
-    private double dumperPosition_CLOSED = .45;  // remeasured on jan 31 at 16h08
-    private double dumperPosition_READY = .2;
-    private double dumperPosition_EJECT = 0;
-    private double dumperPosition_RETRACTING = .75;
+    public static double dumperPosition_CLOSED = .45;  // remeasured on jan 31 at 16h08
+    public static double dumperPosition_READY = .2;
+    public static double dumperPosition_EJECT = 0.0025;
+    public static double dumperPosition_RETRACTING = .75;
 
     public void runOpMode() throws InterruptedException {
 
