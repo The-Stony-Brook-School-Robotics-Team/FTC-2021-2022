@@ -42,6 +42,8 @@ public class SlideController {
     public static double SERVO_VELOCITY_CONSTANT = 0.8;
     public static boolean SERVO_TEST = false;
 
+    //TODO: Put back at the bottom or michael will kill me
+    public static double vertServoPosition_GRAB_CAP = 0.09; //.09
 
 
     public SlideController(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -657,7 +659,7 @@ public class SlideController {
     public double vertServoPosition_THREE_DEPOSIT = .89; // 0.85; // TODO //.754; //measured
     public double vertServoPosition_TWO_DEPOSIT = .58;//.4188;//0.3688;
     public double vertServoPosition_ONE_DEPOSIT = .24;//11;//0.06;
-    public double vertServoPosition_GRAB_CAP = .19; //.09
+
 
     double vertServoPosition_PARKED_MIN = 0;
     double vertServoPosition_PARKED_MAX = 0.3;

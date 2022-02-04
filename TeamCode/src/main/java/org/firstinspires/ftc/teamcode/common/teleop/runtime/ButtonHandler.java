@@ -2,13 +2,12 @@ package org.firstinspires.ftc.teamcode.common.teleop.runtime;
 
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.blueIntake;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.carouselController;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.controllerMode;
+import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.primaryControllerMode;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.currentState;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.drive;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.driveSpeed;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.gamepad;
+import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.primaryGamepad;
 
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.movementHandler;
+import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.secondaryGamepad;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.redIntake;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.roadrunnerHandler;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideController;
@@ -16,9 +15,6 @@ import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideH
 
 import android.util.Log;
 
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
-
-import org.firstinspires.ftc.robotserver.internal.webserver.SessionParametersGenerator;
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
@@ -41,6 +37,15 @@ public class ButtonHandler {
     private static boolean isPressingLeftDpad = false, isPressingRightDpad = false, isPressingUpDpad = false, isPressingDownDpad = false;
     private static boolean isPressingLeftBumper = false, isPressingRightBumper = false;
 
+    /**
+     * Secondary Button Logic
+     */
+    private static boolean isPressingSecondaryY = false;
+
+    /**
+     * Duck Spinner Logic
+     */
+    public static boolean duckspinnerSpinning = false;
 
     /**
      * Segment Enums
@@ -60,17 +65,39 @@ public class ButtonHandler {
     public static Thread runtime = new Thread(() -> {
         while(currentState == TeleOpRobotStates.RUNNING || currentState.equals(TeleOpRobotStates.INITIALIZING)) {
 
-            if(gamepad.left_bumper) {
-                controllerMode = ControllerModes.SECONDARY;
+            /**
+             * Primary Gamepad Shift
+             */
+            if(primaryGamepad.left_bumper) {
+                primaryControllerMode = ControllerModes.SECONDARY;
             } else {
-                controllerMode = ControllerModes.PRIMARY;
+                primaryControllerMode = ControllerModes.PRIMARY;
             }
 
-            switch(controllerMode) {
+            /**
+             * Secondary Gamepad
+             */
+            if(secondaryGamepad.y && !isPressingSecondaryY) {
+                if(duckspinnerSpinning == false) {
+                    new Thread(() -> {
+                        duckspinnerSpinning = true;
+                        carouselController.spinOneDuck();
+                        duckspinnerSpinning = false;
+                    }).run();
+                }
+                isPressingSecondaryY = true;
+            } else if(!secondaryGamepad.y && isPressingSecondaryY) {
+                isPressingSecondaryY = false;
+            }
+
+            /**
+             * Primary Gamepad
+             */
+            switch(primaryControllerMode) {
                 case PRIMARY:
 
                     // B
-                    if(gamepad.b && !isPressingB) {
+                    if(primaryGamepad.b && !isPressingB) {
                         if(slideController.slideMotor.getCurrentPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
                             slideController.extendSlide();
                             driveSpeed = 0.3;
@@ -82,21 +109,21 @@ public class ButtonHandler {
                             driveSpeed = 1;
                         }
                         isPressingB = true;
-                    } else if(!gamepad.b && isPressingB) {
+                    } else if(!primaryGamepad.b && isPressingB) {
                         isPressingB = false;
                     }
 
                     // A
-                    if(gamepad.a && !isPressingA && controllerMode == ControllerModes.PRIMARY) {
+                    if(primaryGamepad.a && !isPressingA && primaryControllerMode == ControllerModes.PRIMARY) {
                         slideController.dropCube();
                         OfficialTeleop.resetColor();
                         isPressingA = true;
-                    } else if(!gamepad.a && isPressingA && controllerMode == ControllerModes.PRIMARY) {
+                    } else if(!primaryGamepad.a && isPressingA && primaryControllerMode == ControllerModes.PRIMARY) {
                         isPressingA = false;
                     }
 
                     // X
-                    if(gamepad.x && !isPressingX) {
+                    if(primaryGamepad.x && !isPressingX) {
                         switch (currentSegmentPosition) {
                             case EXTEND:
                                 slideController.collectCapstone();
@@ -122,147 +149,150 @@ public class ButtonHandler {
                                 break;
                         }
                         isPressingX = true;
-                    } else if(!gamepad.x && isPressingX) {
+                    } else if(!primaryGamepad.x && isPressingX) {
                         isPressingX = false;
                     }
 
                     // Y
-                    if(gamepad.y && !isPressingY) {
-                        carouselController.spinOneDuck();
+                    if(primaryGamepad.y && !isPressingY) {
+                        if(duckspinnerSpinning == false) {
+                            new Thread(() -> {
+                                duckspinnerSpinning = true;
+                                carouselController.spinOneDuck();
+                                duckspinnerSpinning = false;
+                            }).run();
+                        }
                         isPressingY = true;
-                    } else if(!gamepad.y && isPressingY) {
+                    } else if(!primaryGamepad.y && isPressingY) {
                         isPressingY = false;
                     }
 
                     // rb
-                    if(gamepad.right_bumper && OfficialTeleop.normalizedColorSensor.getNormalizedColors().alpha > Configuration.colorSensorWhiteAlpha) {
+                    if(primaryGamepad.right_bumper && OfficialTeleop.normalizedColorSensor.getNormalizedColors().alpha > Configuration.colorSensorWhiteAlpha) {
                         if(!roadrunnerHandler.isBusy) {
                             roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.WAREHOUSE_AUTO_TURN);
                         }
                     }
                     // Left dpad
-                    if(gamepad.dpad_left && !isPressingLeftDpad) {
+                    if(primaryGamepad.dpad_left && !isPressingLeftDpad) {
                         if(blueIntake.getState() == IntakeState.PARK && slideController.getSlideMotorPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
                             blueIntake.setState(IntakeState.BASE);
                         } else {
                             blueIntake.setState(IntakeState.PARK);
                         }
                         isPressingLeftDpad = true;
-                    } else if(!gamepad.dpad_left && isPressingLeftDpad) {
+                    } else if(!primaryGamepad.dpad_left && isPressingLeftDpad) {
                         isPressingLeftDpad = false;
                     }
 
                     // Right dpad
-                    if(gamepad.dpad_right && !isPressingRightDpad) {
+                    if(primaryGamepad.dpad_right && !isPressingRightDpad) {
                         if(redIntake.getState() == IntakeState.PARK && slideController.getSlideMotorPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
                             redIntake.setState(IntakeState.BASE);
                         } else {
                             redIntake.setState(IntakeState.PARK);
                         }
                         isPressingRightDpad = true;
-                    } else if(!gamepad.dpad_right && isPressingRightDpad) {
+                    } else if(!primaryGamepad.dpad_right && isPressingRightDpad) {
                         isPressingRightDpad = false;
                     }
 
                     // Up dpad
-                    if(gamepad.dpad_up) {
+                    if(primaryGamepad.dpad_up) {
                         slideController.incrementVerticalServo(Configuration.DefaultVerticalSlideIncrement);
                     }
 
                     // Down dpad
-                    if(gamepad.dpad_down) {
-                        slideController.incrementVerticalServo(Configuration.DefaultVerticalSlideIncrement * -1);
+                    if(primaryGamepad.dpad_down) {
+                        slideController.incrementVerticalServo(-Configuration.DefaultVerticalSlideIncrement);
                     }
                     break;
                 case SECONDARY:
+
                     // Manual Extension
-                    if(gamepad.right_stick_y > Configuration.rightStickXLimitTrigger || gamepad.right_stick_y < (Configuration.rightStickXLimitTrigger * -1)) {
-                        slideHandler.manualSlideController((int)gamepad.right_stick_y);
+                    if(primaryGamepad.right_stick_y > Configuration.rightStickXLimitTrigger || primaryGamepad.right_stick_y < (Configuration.rightStickXLimitTrigger * -1)) {
+                        slideHandler.manualSlideController((int) primaryGamepad.right_stick_y);
                     }
 
                     // A
-                    // TODO: Find a location for the previous commented method
-                    if(gamepad.a && !isPressingA && controllerMode == ControllerModes.SECONDARY) {
+                    if(primaryGamepad.a && !isPressingA && primaryControllerMode == ControllerModes.SECONDARY) {
                         if(driveSpeed == 0.3) {
                             driveSpeed = 1;
                         } else if(driveSpeed == 1) {
                             driveSpeed = 0.3;
                         }
-//                        if(!slideHandler.slideMoving) {
-//                            slideHandler.DuckToTop();
-//                        }
                         isPressingA = true;
-                    } else if(!gamepad.a && isPressingA && controllerMode == ControllerModes.SECONDARY) {
+                    } else if(!primaryGamepad.a && isPressingA && primaryControllerMode == ControllerModes.SECONDARY) {
                         isPressingA = false;
                     }
 
 
                     // Y
-                    if(gamepad.y && !isPressingY && controllerMode == ControllerModes.SECONDARY) {
+                    if(primaryGamepad.y && !isPressingY && primaryControllerMode == ControllerModes.SECONDARY) {
                         OfficialTeleop.driveSpeed += .01;
                         isPressingY = true;
-                    } else if(!gamepad.y && isPressingY && controllerMode == ControllerModes.SECONDARY) {
+                    } else if(!primaryGamepad.y && isPressingY && primaryControllerMode == ControllerModes.SECONDARY) {
                         isPressingY = false;
                     }
 
                     // B
-                    if(gamepad.b && !isPressingB && controllerMode == ControllerModes.SECONDARY) {
+                    if(primaryGamepad.b && !isPressingB && primaryControllerMode == ControllerModes.SECONDARY) {
                         OfficialTeleop.driveSpeed -= .01;
                         isPressingB = true;
-                    } else if(!gamepad.b && isPressingB && controllerMode == ControllerModes.SECONDARY) {
+                    } else if(!primaryGamepad.b && isPressingB && primaryControllerMode == ControllerModes.SECONDARY) {
                         isPressingB = false;
                     }
 
                     // X
                     // TODO: FREE BUTTON
-                    if(gamepad.x && !isPressingX) {
+                    if(primaryGamepad.x && !isPressingX) {
 
                         isPressingX = true;
-                    } else if(!gamepad.x && isPressingX) {
+                    } else if(!primaryGamepad.x && isPressingX) {
                         isPressingX = false;
                     }
                     // Left Dpad
-                    if(gamepad.dpad_left && !isPressingLeftDpad) {
+                    if(primaryGamepad.dpad_left && !isPressingLeftDpad) {
                         if(!roadrunnerHandler.isBusy) {
                             roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.FORWARD);
                         } else {
                             Log.d(interfaceTag, "Tried scheduling a movement while executor was busy, Movement: " + RoadrunnerHandler.MovementTypes.FORWARD);
                         }
                         isPressingLeftDpad = true;
-                    } else if(!gamepad.dpad_left && isPressingLeftDpad) {
+                    } else if(!primaryGamepad.dpad_left && isPressingLeftDpad) {
                         isPressingLeftDpad = false;
                     }
                     // Right Dpad
-                    if(gamepad.dpad_right && !isPressingRightDpad) {
+                    if(primaryGamepad.dpad_right && !isPressingRightDpad) {
                         if(!roadrunnerHandler.isBusy) {
                             roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.BACK);
                         } else {
                             Log.d(interfaceTag, "Tried scheduling a movement while executor was busy, Movement: " + RoadrunnerHandler.MovementTypes.BACK);
                         }
                         isPressingRightDpad = true;
-                    } else if(!gamepad.dpad_right && isPressingRightDpad) {
+                    } else if(!primaryGamepad.dpad_right && isPressingRightDpad) {
                         isPressingRightDpad = false;
                     }
                     // Up Dpad
-                    if(gamepad.dpad_up && !isPressingUpDpad) {
+                    if(primaryGamepad.dpad_up && !isPressingUpDpad) {
                         if(!roadrunnerHandler.isBusy) {
                             roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.RIGHT);
                         } else {
                             Log.d(interfaceTag, "Tried scheduling a movement while executor was busy, Movement: " + RoadrunnerHandler.MovementTypes.RIGHT);
                         }
                         isPressingUpDpad = true;
-                    } else if(!gamepad.dpad_up && isPressingUpDpad) {
+                    } else if(!primaryGamepad.dpad_up && isPressingUpDpad) {
                         isPressingUpDpad = false;
                     }
                     // Down Dpad
-                    if(gamepad.dpad_down && !isPressingDownDpad) {
+                    if(primaryGamepad.dpad_down && !isPressingDownDpad) {
                         if(!roadrunnerHandler.isBusy) {
                             roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.LEFT);
                         } else {
                             Log.d(interfaceTag, "Tried scheduling a movement while executor was busy, Movement: " + RoadrunnerHandler.MovementTypes.LEFT);
                         }
                         isPressingDownDpad = true;
-                    } else if(!gamepad.dpad_down && isPressingDownDpad) {
+                    } else if(!primaryGamepad.dpad_down && isPressingDownDpad) {
                         isPressingDownDpad = false;
                     }
                     break;

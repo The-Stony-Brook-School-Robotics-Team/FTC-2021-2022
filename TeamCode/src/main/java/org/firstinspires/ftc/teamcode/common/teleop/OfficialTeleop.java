@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.common.teleop;
 
 import android.util.Log;
-import org.sbs.bears.robotframework.Print;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -22,7 +22,6 @@ import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
 import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
 import org.sbs.bears.robotframework.controllers.SlideController;
 import org.sbs.bears.robotframework.enums.IntakeState;
-import org.sbs.bears.robotframework.enums.SlideState;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,8 +37,10 @@ public class OfficialTeleop extends OpMode {
     private static Object stateMutex = new Object();
 
     /** Controller Modes */
-    public static Gamepad gamepad;
-    public static ControllerModes controllerMode = ControllerModes.PRIMARY;
+    public static Gamepad primaryGamepad;
+    public static Gamepad secondaryGamepad;
+    public static ControllerModes primaryControllerMode = ControllerModes.PRIMARY;
+    public static ControllerModes secondaryControllerMode = ControllerModes.PRIMARY;
     public static double driveSpeed = 1;
 
     /**
@@ -49,7 +50,7 @@ public class OfficialTeleop extends OpMode {
     public static boolean systemStopRequested = false;
 
     /** Roadrunner Items */
-    public static SampleMecanumDrive    drive;
+    public static SampleMecanumDrive drive;
     public static FtcDashboard dashboard;
 
     /** Stupid Michael MIT License: Open Source For Everyone */
@@ -81,14 +82,14 @@ public class OfficialTeleop extends OpMode {
 
     @Override
     public void init() {
-        Print.print("Hello");
         currentState = TeleOpRobotStates.INITIALIZING;
         /**
          * Roadrunner initialization
          * */
         drive = new SampleMecanumDrive(hardwareMap);
         dashboard = FtcDashboard.getInstance();
-        this.gamepad = gamepad1;
+        this.primaryGamepad = gamepad1;
+        this.secondaryGamepad = gamepad2;
 
         /**
          * Initialization
@@ -107,6 +108,7 @@ public class OfficialTeleop extends OpMode {
         redIntake.setState(IntakeState.PARK);
         blueIntake.setState(IntakeState.PARK);
         normalizedColorSensor.setGain(Configuration.colorSensorGain);
+        telemetry.update();
 
         floodRuntimes();
     }
@@ -128,6 +130,7 @@ public class OfficialTeleop extends OpMode {
                 movementHandler.movementEnabled = true;
                 slideHandler.slideMovementEnabled = true;
                 startThreadPool();
+
                 synchronized (stateMutex) { currentState = TeleOpRobotStates.RUNNING; }
                 break;
 
@@ -136,19 +139,27 @@ public class OfficialTeleop extends OpMode {
                  * Bucket Logic
                  */
                 if(slideController.teleopIsObjectInBucket()) {
-                    Log.d("SlideController", "Set servo to closed");
+                    Log.d(interfaceTag, "Set servo to closed");
                     slideController.dumperServo.setPosition(slideController.dumperPosition_CLOSED);
                 }
 
+                telemetry.update();
+                break;
+
+            case DEBUG:
                 /**
-                 * Telemetry
+                 * Bucket Logic
+                 */
+                if(slideController.teleopIsObjectInBucket()) {
+                    Log.d(interfaceTag, "Set servo to closed");
+                    slideController.dumperServo.setPosition(slideController.dumperPosition_CLOSED);
+                }
 
                 telemetry.addData("Slide Motor Position: ", slideController.slideMotor.getCurrentPosition());
                 telemetry.addData("Magswitch", slideController.magswitch.getState());
                 telemetry.addData("IsObjectInBucket", slideController.teleopIsObjectInBucket());
                 telemetry.addData("Bucket Position: ", slideController.dumperServo.getPosition());
-
-                telemetry.update(); */
+                telemetry.update();
                 break;
         }
     }
