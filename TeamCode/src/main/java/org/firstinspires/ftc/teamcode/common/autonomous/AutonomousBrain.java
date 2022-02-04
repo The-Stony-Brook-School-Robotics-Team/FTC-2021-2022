@@ -33,6 +33,7 @@ public class AutonomousBrain {
     IntakeControllerBlue intakeCtrlBlue;
     IntakeControllerRed intakeCtrlRed;
     DuckCarouselController duckCtrl;
+    Pose2d iniDropPosition = depositPositionAllianceBlueTOP;
 
     NormalizedColorSensor normalizedColorSensor;
 
@@ -102,18 +103,21 @@ public class AutonomousBrain {
                 switch (heightFromDuck) {
                     case ONE:
                         iniTarget = SlideTarget.BOTTOM_DEPOSIT;
+                        iniDropPosition = depositPositionAllianceBlueBOT;
                         break;
                     case TWO:
                         iniTarget = SlideTarget.MID_DEPOSIT;
+                        iniDropPosition = depositPositionAllianceBlueMID;
                         break;
                     case THREE:
                         iniTarget = SlideTarget.TOP_DEPOSIT;
+                        iniDropPosition = depositPositionAllianceBlueTOP;
                         break;
                 }
                 majorState = MajorAutonomousState.TWO_DEPOSIT_INI_BLOCK;
                 return;
             case TWO_DEPOSIT_INI_BLOCK:
-                RRctrl.followLineToSpline(depositPositionAllianceBlue);
+                RRctrl.followLineToSpline(iniDropPosition);
                 slideCtrl.extendDropRetract(iniTarget);
                 Log.d("AutonBrain","Slide drop complete");
 
@@ -248,8 +252,10 @@ public class AutonomousBrain {
     }
 
     public static Pose2d startPositionBlue = new Pose2d(14,65.5,0);
-    public static Pose2d warehousePickupPositionBlue = new Pose2d(35,65.5,0);
-    public static Pose2d depositPositionAllianceBlue = new Pose2d(5.58,64.47,-Math.toRadians(55));
+    public static Pose2d warehousePickupPositionBlue = new Pose2d(35,70,0);
+    public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(5.58,64.47,-Math.toRadians(55));
+    public static Pose2d depositPositionAllianceBlueMID = new Pose2d(5.58,64.47,-Math.toRadians(56));
+    public static Pose2d depositPositionAllianceBlueBOT = new Pose2d(5.58,64.47,-Math.toRadians(58));
     public static Pose2d depositPositionAllianceBlue2 = new Pose2d(5.58,64.47,-Math.toRadians(55));
     public static Pose2d resetPositionB4WarehouseBlue = new Pose2d(14,80,0);
     public static Pose2d parkingPositionBlue = new Pose2d(60,80,0);
