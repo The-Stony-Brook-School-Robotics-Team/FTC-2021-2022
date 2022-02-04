@@ -14,6 +14,8 @@ public class IntakeHandler {
      */
     public static String interfaceTag = "Intake Handler";
 
+    public static boolean objectInBucket = false;
+
     public Thread runtime = new Thread(() -> {
         while(!OfficialTeleop.systemStopRequested && OfficialTeleop.currentState == TeleOpRobotStates.RUNNING || OfficialTeleop.currentState == TeleOpRobotStates.INITIALIZING) {
             /**
@@ -26,7 +28,10 @@ public class IntakeHandler {
              * Update Color
              */
             if(OfficialTeleop.redIntake.isObjectInPayload() == true || OfficialTeleop.blueIntake.isObjectInPayload() == true) {
+                objectInBucket = true;
                 OfficialTeleop.revBlinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+            } else {
+                objectInBucket = false;
             }
         }
     });

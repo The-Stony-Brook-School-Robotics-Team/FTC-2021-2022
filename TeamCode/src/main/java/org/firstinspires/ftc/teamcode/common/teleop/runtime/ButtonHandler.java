@@ -28,7 +28,8 @@ public class ButtonHandler {
     /**
      * Interface Tag
      */
-    public static String interfaceTag = "Button Handler";
+    public static String primaryInterfaceTag = "Primary Button Handler";
+    public static String secondaryInterfaceTag = "Secondary Button Handler";
 
     /**
      * Button Logic
@@ -58,25 +59,11 @@ public class ButtonHandler {
     }
     public static SegmentPositions currentSegmentPosition = SegmentPositions.EXTEND;
 
-
     /**
-     * Working Button Handler Runtime
+     * Secondary Gamepad
      */
-    public static Thread runtime = new Thread(() -> {
+    public static Thread secondaryRuntime = new Thread(() -> {
         while(currentState == TeleOpRobotStates.RUNNING || currentState.equals(TeleOpRobotStates.INITIALIZING)) {
-
-            /**
-             * Primary Gamepad Shift
-             */
-            if(primaryGamepad.left_bumper) {
-                primaryControllerMode = ControllerModes.SECONDARY;
-            } else {
-                primaryControllerMode = ControllerModes.PRIMARY;
-            }
-
-            /**
-             * Secondary Gamepad
-             */
             if(secondaryGamepad.y && !isPressingSecondaryY) {
                 if(duckspinnerSpinning == false) {
                     new Thread(() -> {
@@ -88,6 +75,23 @@ public class ButtonHandler {
                 isPressingSecondaryY = true;
             } else if(!secondaryGamepad.y && isPressingSecondaryY) {
                 isPressingSecondaryY = false;
+            }
+        }
+    });
+
+    /**
+     * Primary Gamepad
+     */
+    public static Thread primaryRuntime = new Thread(() -> {
+        while(currentState == TeleOpRobotStates.RUNNING || currentState.equals(TeleOpRobotStates.INITIALIZING)) {
+
+            /**
+             * Primary Gamepad Shift
+             */
+            if(primaryGamepad.left_bumper) {
+                primaryControllerMode = ControllerModes.SECONDARY;
+            } else {
+                primaryControllerMode = ControllerModes.PRIMARY;
             }
 
             /**
@@ -246,7 +250,7 @@ public class ButtonHandler {
                     // X
                     // TODO: FREE BUTTON
                     if(primaryGamepad.x && !isPressingX) {
-
+                        slideController.dumperServo.setPosition(slideController.dumperPosition_READY);
                         isPressingX = true;
                     } else if(!primaryGamepad.x && isPressingX) {
                         isPressingX = false;
@@ -256,7 +260,7 @@ public class ButtonHandler {
                         if(!roadrunnerHandler.isBusy) {
                             roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.FORWARD);
                         } else {
-                            Log.d(interfaceTag, "Tried scheduling a movement while executor was busy, Movement: " + RoadrunnerHandler.MovementTypes.FORWARD);
+                            Log.d(primaryInterfaceTag, "Tried scheduling a movement while executor was busy, Movement: " + RoadrunnerHandler.MovementTypes.FORWARD);
                         }
                         isPressingLeftDpad = true;
                     } else if(!primaryGamepad.dpad_left && isPressingLeftDpad) {
@@ -267,7 +271,7 @@ public class ButtonHandler {
                         if(!roadrunnerHandler.isBusy) {
                             roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.BACK);
                         } else {
-                            Log.d(interfaceTag, "Tried scheduling a movement while executor was busy, Movement: " + RoadrunnerHandler.MovementTypes.BACK);
+                            Log.d(primaryInterfaceTag, "Tried scheduling a movement while executor was busy, Movement: " + RoadrunnerHandler.MovementTypes.BACK);
                         }
                         isPressingRightDpad = true;
                     } else if(!primaryGamepad.dpad_right && isPressingRightDpad) {
@@ -278,7 +282,7 @@ public class ButtonHandler {
                         if(!roadrunnerHandler.isBusy) {
                             roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.RIGHT);
                         } else {
-                            Log.d(interfaceTag, "Tried scheduling a movement while executor was busy, Movement: " + RoadrunnerHandler.MovementTypes.RIGHT);
+                            Log.d(primaryInterfaceTag, "Tried scheduling a movement while executor was busy, Movement: " + RoadrunnerHandler.MovementTypes.RIGHT);
                         }
                         isPressingUpDpad = true;
                     } else if(!primaryGamepad.dpad_up && isPressingUpDpad) {
@@ -289,7 +293,7 @@ public class ButtonHandler {
                         if(!roadrunnerHandler.isBusy) {
                             roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.LEFT);
                         } else {
-                            Log.d(interfaceTag, "Tried scheduling a movement while executor was busy, Movement: " + RoadrunnerHandler.MovementTypes.LEFT);
+                            Log.d(primaryInterfaceTag, "Tried scheduling a movement while executor was busy, Movement: " + RoadrunnerHandler.MovementTypes.LEFT);
                         }
                         isPressingDownDpad = true;
                     } else if(!primaryGamepad.dpad_down && isPressingDownDpad) {

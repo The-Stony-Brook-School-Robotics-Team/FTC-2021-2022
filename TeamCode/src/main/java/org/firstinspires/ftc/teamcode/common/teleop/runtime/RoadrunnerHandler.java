@@ -13,6 +13,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 
+import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousBrain;
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
@@ -70,8 +71,8 @@ public class RoadrunnerHandler {
     private final TrajectoryVelocityConstraint turnVelocityConstraint = SampleMecanumDrive.getVelocityConstraint(30, 2, DriveConstants.TRACK_WIDTH);
     private final TrajectoryAccelerationConstraint turnAccelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
 
-    private final TrajectoryVelocityConstraint quickTurnVelocityConstraint = SampleMecanumDrive.getVelocityConstraint(50, 5, DriveConstants.TRACK_WIDTH);
-    private final TrajectoryAccelerationConstraint quickTurnAccelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
+    private final TrajectoryVelocityConstraint quickMoveVelocityConstraint = SampleMecanumDrive.getVelocityConstraint(80, 3, DriveConstants.TRACK_WIDTH);
+    private final TrajectoryAccelerationConstraint quickMoveAccelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
 
     /**
      * Internal executor
@@ -121,17 +122,14 @@ public class RoadrunnerHandler {
 
             case WAREHOUSE_AUTO_TURN:
                 Log.d(interfaceTag, "Going Forward");
-                // Go Forward 18 Inches From the Inside Of The Warehouse And Turn
-                drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .back(18)
-                        .build());
+                drive.setPoseEstimate(new Pose2d(28.5, 65.5, 0));
 
-                Log.d(interfaceTag, "Turning");
-                // Do The Turn
-                drive.setPoseEstimate(new Pose2d(14, 65.5, 0));
-                drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToSplineHeading(new Pose2d(5.58, 64.47, -Math.toRadians(51)), turnVelocityConstraint, turnAccelerationConstraint)
-                        .build());
+                drive.followTrajectory(
+                        drive.trajectoryBuilder(drive.getPoseEstimate())
+                                .lineToSplineHeading(new Pose2d(14,65.5,0), quickMoveVelocityConstraint, quickMoveAccelerationConstraint)
+                                .splineToSplineHeading(new Pose2d(5.58,64.47,-Math.toRadians(55)), Math.PI)
+                                .build());
+
 
                 Log.d(interfaceTag, "Extending Slide");
                 // Extend Drop Retract
