@@ -1,4 +1,4 @@
-<h1>Stonybrook School Bears Robotics Team 2021-2022 Repository</h1>
+<h1>Stonybrook School Bears Robotics Team 2021-2022</h1>
 
 <h2> Main </h2>
 <h3>Current build status of the main branch:</h3>
