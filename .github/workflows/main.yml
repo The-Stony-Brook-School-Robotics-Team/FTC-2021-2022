@@ -1,7 +1,7 @@
 name: Google Backup
 on:
   schedule:
-  - cron: "5 * * * *"
+  - cron: "0 5 * * 5"
 
 jobs:
   my_job:
