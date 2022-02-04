@@ -9,7 +9,7 @@ on:
     - cron: "*/30 * * * *"
 
 jobs:
-  teamcode:
+  Teamcode:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
