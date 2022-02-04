@@ -1,7 +1,9 @@
+
 package org.sbs.bears.robotframework.controllers;
 
 import android.util.Log;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.util.NanoClock;
@@ -22,7 +24,7 @@ import org.sbs.bears.robotframework.Beta;
 import org.sbs.bears.robotframework.Sleep;
 import org.sbs.bears.robotframework.enums.SlideState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
-
+@Config
 public class SlideController {
     public Servo verticalServo;
     private Servo horizontalServo;
@@ -40,7 +42,7 @@ public class SlideController {
     private boolean isTeleop;
 
     public static double SERVO_VELOCITY_CONSTANT = 0.8;
-    public static boolean SERVO_TEST = true;
+    public static boolean SERVO_TEST = false;
 
 
 
@@ -101,7 +103,7 @@ public class SlideController {
                         //         e.printStackTrace();
                         //      }
                         Log.d("SlideController", "Lifted VerticalServo position to " + verticalServo.getPosition());
-                        Log.d("SlideController", "Lifted VerticalServo position to " + Range.clip(i, 0, targetPos));
+
 
 
                     }
@@ -121,6 +123,7 @@ public class SlideController {
                 } else {
                     for (double i = verticalServo.getPosition(); i > targetPos; i -= incrementDeltaRetract) {
                         verticalServo.setPosition(Range.clip(i, targetPos, 1));
+                        Log.d("SlideController", "Lowered VerticalServo position to " + verticalServo.getPosition());
                         //Sleep to slow things down a bit
                         //TODO can be removed with a decrease of incrementDeltaRetract?
                         //    try {
@@ -309,6 +312,7 @@ public class SlideController {
                 }
                 slideMotor.setPower(0);
             } else {
+                Log.d("SlideController", "Bucket Eject");
                 dumperServo.setPosition(dumperPosition_EJECT);
                 try {
                     Thread.sleep(250);
@@ -316,6 +320,7 @@ public class SlideController {
                     e.printStackTrace();
                 }
             }
+            Log.d("SlideController", "Bucket in retract position");
             dumperServo.setPosition(dumperPosition_RETRACTING);
         }
     }
@@ -656,8 +661,8 @@ public class SlideController {
     double incrementDeltaExtend = .003;//.2;
     double incrementDeltaRetract = .007;//0.007;
 
-    double incrementDeltaExtendTeleOp = .025;//.2;
-    double incrementDeltaRetractTeleop = .02;//0.007;
+    public static double incrementDeltaExtendTeleOp = .025;//.2;
+    public static double incrementDeltaRetractTeleop = .01;//.02;//0.007;
 
     // dumper servo
 /*    double dumperPosition_DUMP = .91;
@@ -669,7 +674,7 @@ public class SlideController {
 
     // slide motor
     int slideMotorPosition_PARKED = 5;
-    public int slideMotorPosition_BUCKET_OUT = 250;//380//150; // minimum position for the bucket to be out, measured
+    public static int slideMotorPosition_BUCKET_OUT = 250;//380//150; // minimum position for the bucket to be out, measured
     public int slideMotorPosition_BUCKET_OUT_RET = 650; // minimum position for the bucket to be out, measured
     int slideMotorPosition_THREE_DEPOSIT = 1330; // remeasured // last 1360
     int slideMotorPosition_TWO_DEPOSIT = 1156; //measured

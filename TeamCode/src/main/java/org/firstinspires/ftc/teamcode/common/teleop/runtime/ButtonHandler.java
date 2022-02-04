@@ -264,7 +264,6 @@ public class ButtonHandler {
                     }
                     break;
             }
-            Log.d(interfaceTag, "Interface still running");
         }
     });
 }

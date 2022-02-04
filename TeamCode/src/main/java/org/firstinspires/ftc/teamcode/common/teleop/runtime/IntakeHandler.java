@@ -28,8 +28,6 @@ public class IntakeHandler {
             if(OfficialTeleop.redIntake.isObjectInPayload() == true || OfficialTeleop.blueIntake.isObjectInPayload() == true) {
                 OfficialTeleop.revBlinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
             }
-
-            Log.d(interfaceTag, "Interface Still Running");
         }
     });
 

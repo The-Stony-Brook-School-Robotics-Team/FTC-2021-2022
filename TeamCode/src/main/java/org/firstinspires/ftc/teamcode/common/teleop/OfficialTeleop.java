@@ -135,14 +135,14 @@ public class OfficialTeleop extends OpMode {
                 /**
                  * Bucket Logic
                  */
-                if(slideController.teleopIsObjectInBucket() && slideController.slideState == SlideState.PARKED) {
+                if(slideController.teleopIsObjectInBucket()) {
+                    Log.d("SlideController", "Set servo to closed");
                     slideController.dumperServo.setPosition(slideController.dumperPosition_CLOSED);
                 }
 
                 /**
                  * Telemetry
                  */
-                Log.d(interfaceTag, "Current Encoder Position: " + slideController.slideMotor.getCurrentPosition());
                 telemetry.addData("Slide Motor Position: ", slideController.slideMotor.getCurrentPosition());
                 telemetry.addData("Magswitch", slideController.magswitch.getState());
                 telemetry.addData("IsObjectInBucket", slideController.teleopIsObjectInBucket());
