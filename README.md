@@ -6,6 +6,13 @@ Current build status of the main branch:
 
 [![Build Status](https://github.com/The-Stony-Brook-School-Robotics-Team/FTC-2021-2022/actions/workflows/android.yml/badge.svg)](https://github.com/The-Stony-Brook-School-Robotics-Team/FTC-2021-2022/actions/workflows/android.yml)
 
+<h2> Qualifier One </h2>
+Current build status of the qualifier one branch:
+<br></br>
+
+[![Build Status](https://github.com/The-Stony-Brook-School-Robotics-Team/FTC-2021-2022/actions/workflows/android.yml/badge.svg?branch=qualifier-one)](https://github.com/The-Stony-Brook-School-Robotics-Team/FTC-2021-2022/actions/workflows/android.yml)
+
+
 <h2> Qualifier Two </h2>
 Current build status of the qualifier two branch:
 <br></br>
