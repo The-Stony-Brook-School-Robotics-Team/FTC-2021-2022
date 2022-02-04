@@ -3,15 +3,13 @@ package org.firstinspires.ftc.teamcode.common.teleop.runtime;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.currentState;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.drive;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.driveSpeed;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.gamepad;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.movementHandler;
+import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.gamepad1;
 
 import android.util.Log;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 
-import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
 import org.firstinspires.ftc.teamcode.common.teleop.misc.Beta;
@@ -137,9 +135,9 @@ class MovementHandlers {
         
         drive.setWeightedDrivePower(
                 new Pose2d(
-                        -gamepad.left_stick_x * driveSpeed,
-                        gamepad.left_stick_y * driveSpeed,
-                        -gamepad.right_stick_x * driveSpeed
+                        -gamepad1.left_stick_x * driveSpeed,
+                        gamepad1.left_stick_y * driveSpeed,
+                        -gamepad1.right_stick_x * driveSpeed
                 )
         );
         drive.update();
