@@ -15,6 +15,7 @@
     android:label="@string/app_name"
     android:theme="@style/AppThemeRedRC"
     android:usesCleartextTraffic="true">
+    android:showAsAction="never"
 
     <!-- Indicates to the ControlHubUpdater what the latest version of the Control Hub is that this app supports -->
     <meta-data
