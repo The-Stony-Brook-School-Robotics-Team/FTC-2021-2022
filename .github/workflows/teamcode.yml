@@ -2,9 +2,10 @@ name: Teamcode Status
 
 on:
   push:
-    branches: [ main, qualifier-two, qualifier-one ]
-  pull_request:
-    branches: [ main, qualifier-two, qualifier-one ]
+    branches: 
+    - main
+    - qualifier-two
+    - qualifier-one
   schedule:
     - cron: "*/30 * * * *"
 
