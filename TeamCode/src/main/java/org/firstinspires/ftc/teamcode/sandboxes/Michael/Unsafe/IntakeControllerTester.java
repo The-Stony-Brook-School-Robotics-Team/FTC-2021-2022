@@ -24,8 +24,8 @@
             waitForStart();
 
             while(opModeIsActive()){
-                    blueIntake.checkIntake();
-                    //redIntake.checkIntake();
+                    //blueIntake.checkIntake();
+                    redIntake.checkIntake();
 
 
 
