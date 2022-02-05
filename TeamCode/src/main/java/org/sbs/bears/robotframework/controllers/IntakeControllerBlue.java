@@ -17,7 +17,7 @@ public class IntakeControllerBlue {
 
     private Servo scooper;
     private DcMotor compliantWheel;
-    private Rev2mDistanceSensor distanceSensor;
+    public Rev2mDistanceSensor distanceSensor;
     private Servo mini;
 
     /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/

@@ -12,10 +12,10 @@ public class BucketTester extends LinearOpMode {
     private boolean qA = false;
     private boolean qB = false;
 
-    public static double dumperPosition_CLOSED = .45;  // remeasured on jan 31 at 16h08
-    public static double dumperPosition_READY = .2;
-    public static double dumperPosition_EJECT = 0.0025;
-    public static double dumperPosition_RETRACTING = .75;
+    public double dumperPosition_CLOSED = 0.33;  // remeasured on jan 31 at 16h08
+    public double dumperPosition_READY = 0.53;
+    public double dumperPosition_EJECT = 0.74;
+    public double dumperPosition_RETRACTING = 0.05;
 
     public void runOpMode() throws InterruptedException {
 
@@ -26,14 +26,14 @@ public class BucketTester extends LinearOpMode {
         while (opModeIsActive()) {
 
             if(gamepad1.dpad_up && !qA){
-                bucket.setPosition(bucket.getPosition() + .05);
+                bucket.setPosition(bucket.getPosition() + .01);
                 qA = true;
             }
             if(!gamepad1.dpad_up && qA){
                 qA = false;
             }
             if(gamepad1.dpad_down && !qB){
-                bucket.setPosition(bucket.getPosition() - .05);
+                bucket.setPosition(bucket.getPosition() - .01);
                 qB = true;
             }
             if(!gamepad1.dpad_down && qB){

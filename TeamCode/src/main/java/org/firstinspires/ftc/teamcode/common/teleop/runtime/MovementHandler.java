@@ -3,11 +3,12 @@ package org.firstinspires.ftc.teamcode.common.teleop.runtime;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.currentState;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.drive;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.driveSpeed;
+import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.intakeHandler;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.primaryGamepad;
 
 import android.util.Log;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.coyote.framework.core.geometry.Pose2d;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 
 import org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop;
@@ -117,8 +118,8 @@ public class MovementHandler {
  * Driver Movement
  */
 class MovementHandlers {
-    public static String interfaceTag = "Movement Handlers";
 
+    public static String interfaceTag = "Movement Handlers";
     public static Thread defaultDriving = new Thread(MovementHandlers::defaultRunner);
 
     private static void defaultRunner() {
@@ -131,6 +132,8 @@ class MovementHandlers {
 
         if(driveSpeed < 1) {
             OfficialTeleop.revBlinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
+        } else if(!intakeHandler.objectInBucket) {
+            OfficialTeleop.resetColor();
         }
         
         drive.setWeightedDrivePower(

@@ -4,7 +4,7 @@ package org.sbs.bears.robotframework.controllers;
 import android.util.Log;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.util.NanoClock;
+import com.coyote.framework.core.util.NanoClock;
 import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -362,6 +362,7 @@ public class SlideController {
                 return;
             case EXTENDING:
                 //Switch to set the height and distance of extension depending on the target
+                OfficialTeleop.driveSpeed = .3;
                 switch (targetParams) {
                     case BOTTOM_CAROUSEL:
                         targetPosFinal = slideMotorPosition_ONE_CAROUSEL;
@@ -404,7 +405,7 @@ public class SlideController {
                     incrementDeltaExtend = incrementDeltaExtendCapstone;
                 }
                 else{incrementDeltaExtend = incrementDeltaExtendTeleOp;}
-
+                dumperServo.setPosition(dumperPosition_CLOSED);
                 slideMotor.setTargetPosition(targetPosFinal);
                 if (targetParams == SlideTarget.CAP_FROM_CAROUSEL) {
                     slideMotor.setPower(slideMotorPowerCarousel);
@@ -437,7 +438,7 @@ public class SlideController {
                 }
                 //Kill the motor's PID and stop so it doesn't try to correct and jitter
                 hardStopReset();
-                OfficialTeleop.driveSpeed = .3;
+
 
                 // if(targetParams == SlideTarget.CAP_FROM_CAROUSEL)
                 //{
@@ -448,6 +449,7 @@ public class SlideController {
                 return;
             case RETRACTING:
                 dumperServo.setPosition(dumperPosition_RETRACTING);
+                OfficialTeleop.driveSpeed = 1;
                 targetPos = slideMotorPosition_PARKED;
                 slideMotor.setPower(slideMotorPowerMoving);
                 slideMotor.setTargetPosition(targetPos);
@@ -482,7 +484,7 @@ public class SlideController {
                         break;
                     }
                 }
-                OfficialTeleop.driveSpeed = 1;
+
                 slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 slideMotor.setPower(-.3);
                 try {
@@ -663,25 +665,25 @@ public class SlideController {
 
     double vertServoPosition_PARKED_MIN = 0;
     double vertServoPosition_PARKED_MAX = 0.3;
-    public double vertServoPosition_CAP_CAROUSEL_HIGHER = 1; //TODO
-    public double vertServoPosition_CAP_CAROUSEL = 0.85; // TODO
+    public static double vertServoPosition_CAP_CAROUSEL_HIGHER = 1; //TODO
+    public static double vertServoPosition_CAP_CAROUSEL = 0.76; // TODO
     double vertServoPosition_FULL_MAX = 1;
 
-    public double incrementDeltaExtend = .003;//.2;
-    public double incrementDeltaRetract = .007;//0.007;
+    public double incrementDeltaExtend = 0.025;//.2;
+    public double incrementDeltaRetract = 0.02;//0.007;
 
     public double incrementDeltaExtendTeleOp = .025;//.2;
     public double incrementDeltaRetractTeleop = .02;//0.007;
 
-    public double incrementDeltaExtendCapstone = .025;
+    public static double incrementDeltaExtendCapstone = .014;
 
     // dumper servo
 /*    double dumperPosition_DUMP = .91;
     double dumperPosition_HOLDBLOCK = 0;
-*/    public double dumperPosition_CLOSED = .45;  // remeasured on jan 31 at 16h08
-    public double dumperPosition_READY = .2;
-    public double dumperPosition_EJECT = 0.0025;
-    public double dumperPosition_RETRACTING = .75;
+*/    public static double dumperPosition_CLOSED = 0.33;  // remeasured on jan 31 at 16h08
+    public static double dumperPosition_READY = 0.53;
+    public static double dumperPosition_EJECT = 0.74;
+    public static double dumperPosition_RETRACTING = 0.05;
 
     // slide motor
     int slideMotorPosition_PARKED = 5;
@@ -702,7 +704,7 @@ public class SlideController {
     public double slideMotorPowerMoving = .9;
     public double slideMotorPowerCarousel = .5;
     public double slideMotorPowerMovingBack = .5;
-    public double slideMotorPowerGrabCap = .7;
+    public static double slideMotorPowerGrabCap = .6;
     double slideMotorPowerStill = 0;
 
     /*double deltaZForLevel3 = 12; // in

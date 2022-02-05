@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
 import org.firstinspires.ftc.teamcode.common.teleop.runtime.ButtonHandler;
@@ -142,24 +143,14 @@ public class OfficialTeleop extends OpMode {
                     Log.d(interfaceTag, "Set servo to closed");
                     slideController.dumperServo.setPosition(slideController.dumperPosition_CLOSED);
                 }
+                telemetry.addData("IsObjectInBucket", blueIntake.isObjectInPayload());
+                telemetry.addData("Distance Sensor", blueIntake.distanceSensor.getDistance(DistanceUnit.MM));
+                telemetry.update();
 
                 telemetry.update();
                 break;
 
             case DEBUG:
-                /**
-                 * Bucket Logic
-                 */
-                if(slideController.teleopIsObjectInBucket()) {
-                    Log.d(interfaceTag, "Set servo to closed");
-                    slideController.dumperServo.setPosition(slideController.dumperPosition_CLOSED);
-                }
-
-                telemetry.addData("Slide Motor Position: ", slideController.slideMotor.getCurrentPosition());
-                telemetry.addData("Magswitch", slideController.magswitch.getState());
-                telemetry.addData("IsObjectInBucket", slideController.teleopIsObjectInBucket());
-                telemetry.addData("Bucket Position: ", slideController.dumperServo.getPosition());
-                telemetry.update();
                 break;
         }
     }
@@ -179,7 +170,8 @@ public class OfficialTeleop extends OpMode {
      * Flood Thread Pool
      */
     private static void floodRuntimes() {
-        registerThread(buttonHandler.interfaceTag, buttonHandler.runtime);
+        registerThread(buttonHandler.primaryInterfaceTag, buttonHandler.primaryRuntime);
+        registerThread(buttonHandler.secondaryInterfaceTag, buttonHandler.secondaryRuntime);
         registerThread(movementHandler.interfaceTag, movementHandler.runtime);
         registerThread(intakeHandler.interfaceTag, intakeHandler.runtime);
     }

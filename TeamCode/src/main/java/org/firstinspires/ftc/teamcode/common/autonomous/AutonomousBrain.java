@@ -2,8 +2,9 @@ package org.firstinspires.ftc.teamcode.common.autonomous;
 
 import android.util.Log;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.util.NanoClock;
+import com.coyote.framework.core.geometry.Pose2d;
+import com.coyote.framework.core.util.NanoClock;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 
@@ -35,6 +36,7 @@ public class AutonomousBrain {
     DuckCarouselController duckCtrl;
     Pose2d iniDropPosition = depositPositionAllianceBlueTOP;
 
+    RevBlinkinLedDriver leds;
     NormalizedColorSensor normalizedColorSensor;
 
     Telemetry tel;
@@ -78,6 +80,8 @@ public class AutonomousBrain {
         this.intakeCtrlBlue = robot.getIntakeCtrlBlue();
         this.intakeCtrlRed = robot.getIntakeCtrlRed();
         this.duckCtrl = robot.getDuckCtrl();
+        this.leds = hardwareMap.get(RevBlinkinLedDriver.class, "rgb");
+
         RRctrl.setPos(startPositionBlue);
         intakeCtrlBlue.setState(IntakeState.PARK);
         intakeCtrlRed.setState(IntakeState.PARK); // to prevent from moving around
@@ -97,6 +101,7 @@ public class AutonomousBrain {
                 majorState = MajorAutonomousState.ONE_CAMERA_READ;
                 return;
             case ONE_CAMERA_READ:
+                leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_OCEAN_PALETTE);
                 heightFromDuck = CVctrl.getWhichTowerHeight();
                 Log.d("height: ", heightFromDuck.toString());
                 CVctrl.shutDown();
@@ -117,6 +122,7 @@ public class AutonomousBrain {
                 majorState = MajorAutonomousState.TWO_DEPOSIT_INI_BLOCK;
                 return;
             case TWO_DEPOSIT_INI_BLOCK:
+                leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_FOREST_PALETTE);
                 RRctrl.followLineToSpline(iniDropPosition);
                 slideCtrl.extendDropRetract(iniTarget);
                 Log.d("AutonBrain","Slide drop complete");
@@ -173,7 +179,7 @@ public class AutonomousBrain {
                 // No associated action
                 return;
             case ONE_INTAKE:
-                /*
+                leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
                 Log.d("AutonBrain","Current Status: itemBool: " + qObjectInRobot + " intakeStatus " + intakeCtrlBlue.isObjectInPayload());
                 if(qObjectInRobot || intakeCtrlBlue.isObjectInPayload())
                 {
@@ -212,21 +218,21 @@ public class AutonomousBrain {
                 }).start();
                 Log.d("AutonBrain","Forward init");
                 RRctrl.forward(40,15);
+                leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
                 Log.d("AutonBrain","Forward done");
                 RRctrl.stopRobot();
                 RRctrl.stopRobot();
                 // stopped
                 if(qObjectInRobot)
                 {
+                    leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
                     minorState = MinorAutonomousState.TWO_PREP_DEPOSIT;
                     Log.d("AutonBrain","Continuing to deposit");
                     return;
                 }
+                leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
                 RRctrl.followLineToSpline(warehousePickupPositionBlue);
                 Log.d("AutonBrain","Retrying to find a block");
-                return;*/
-                // DEBUGGING
-                minorState = MinorAutonomousState.TWO_PREP_DEPOSIT;
                 return;
             case TWO_PREP_DEPOSIT: // TODO implement go forward and then turn
                 /*RRctrl.followLineToSpline(startPositionBlue);
@@ -242,6 +248,7 @@ public class AutonomousBrain {
                 minorState = MinorAutonomousState.FOUR_RETURN_TO_INTAKE;
                 return;
             case FOUR_RETURN_TO_INTAKE:
+                leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE_VIOLET);
                 RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
                 RRctrl.setPos(new Pose2d(resetPositionB4WarehouseBlue.getX(),65.5,0)); // reset contre mur.
                 Log.d("AutonBrain","intake prepped");
@@ -259,10 +266,10 @@ public class AutonomousBrain {
     public static Pose2d warehousePickupPositionBlue = new Pose2d(35,70,0);
     public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(5.58,64.47,-Math.toRadians(55));
     public static Pose2d depositPositionAllianceBlueMID = new Pose2d(5.58,64.47,-Math.toRadians(56));
-    public static Pose2d depositPositionAllianceBlueBOT = new Pose2d(5.58,64.47,-Math.toRadians(58));
+    public static Pose2d depositPositionAllianceBlueBOT = new Pose2d(5.58,64.47,-Math.toRadians(59));
     public static Pose2d depositPositionAllianceBlue2 = new Pose2d(5.58,64.47,-Math.toRadians(55));
-    public static Pose2d resetPositionB4WarehouseBlue = new Pose2d(14,80,0);
-    public static Pose2d parkingPositionBlue = new Pose2d(60,80,0);
+    public static Pose2d resetPositionB4WarehouseBlue = new Pose2d(14,85,0);
+    public static Pose2d parkingPositionBlue = new Pose2d(60,90,0);
 
 
 }

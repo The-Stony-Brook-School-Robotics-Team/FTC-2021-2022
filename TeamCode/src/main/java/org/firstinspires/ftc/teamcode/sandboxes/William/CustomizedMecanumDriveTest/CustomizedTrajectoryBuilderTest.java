@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.sandboxes.William.CustomizedMecanumDriveTest;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.coyote.framework.core.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
