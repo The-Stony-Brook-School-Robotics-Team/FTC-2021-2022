@@ -1,5 +1,4 @@
 package org.sbs.bears.robotframework.controllers;
-
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -15,7 +14,7 @@ public class IntakeControllerRed {
 
     private Servo scooper;
     private DcMotor compliantWheel;
-    private Rev2mDistanceSensor distanceSensor;
+    public Rev2mDistanceSensor distanceSensor;
     private Servo mini;
 
     /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/
@@ -59,11 +58,12 @@ public class IntakeControllerRed {
     public void loadItemIntoSlideForAutonomousOnly() {
         setState(IntakeState.DUMP);
         try {
-            Thread.sleep(1000);
+            Thread.sleep(1500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         setState(IntakeState.PARK);
+
     }
 
     /** Autonomous method-- waits until object is seen, dumps, then sets to park. **/
@@ -139,6 +139,8 @@ public class IntakeControllerRed {
 
     /** Accessor for current state **/
     public IntakeState getState(){return state;}
+
+    public double getServoPos(){return scooper.getPosition();}
 
 
 
