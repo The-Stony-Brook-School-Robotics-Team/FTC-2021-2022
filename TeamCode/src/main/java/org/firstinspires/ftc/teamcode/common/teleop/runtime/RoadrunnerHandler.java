@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.common.teleop.runtime;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.blueIntake;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.drive;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.movementHandler;
+import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.roadRunnerController;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideController;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideHandler;
 
@@ -18,6 +19,7 @@ import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.sbs.bears.robotframework.controllers.RoadRunnerController;
 import org.sbs.bears.robotframework.enums.IntakeState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 
@@ -123,13 +125,15 @@ public class RoadrunnerHandler {
             case WAREHOUSE_AUTO_TURN:
                 Log.d(interfaceTag, "Going Forward");
                 drive.setPoseEstimate(new Pose2d(28.5, 65.5, 0));
+                roadRunnerController.doOptimizedTeleOpDepositTraj(quickMoveVelocityConstraint,quickMoveAccelerationConstraint);
 
-                drive.followTrajectory(
+
+                /*drive.followTrajectory(
                         drive.trajectoryBuilder(drive.getPoseEstimate())
                                 .lineToSplineHeading(new Pose2d(14,65.5,0), quickMoveVelocityConstraint, quickMoveAccelerationConstraint)
                                 .splineToSplineHeading(new Pose2d(5.58,64.47,-Math.toRadians(55)), Math.PI)
                                 .build());
-
+*/
 
                 Log.d(interfaceTag, "Extending Slide");
                 // Extend Drop Retract
