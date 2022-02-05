@@ -2,9 +2,9 @@ name: Main Compiler
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, qualifier-two ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, qualifier-two ]
   schedule:
     - cron: "*/30 * * * *"
 
