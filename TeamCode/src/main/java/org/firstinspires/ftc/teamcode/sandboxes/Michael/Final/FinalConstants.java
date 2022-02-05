@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.sandboxes.Michael.Final;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.coyote.framework.core.control.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 @Config

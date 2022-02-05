@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.common;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.coyote.framework.core.geometry.Pose2d;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;

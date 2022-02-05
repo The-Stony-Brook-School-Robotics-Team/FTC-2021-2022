@@ -3,10 +3,11 @@ package org.firstinspires.ftc.teamcode.drive;
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.coyote.framework.core.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import com.coyote.framework.core.localization.ThreeTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.RevBulkData;
@@ -15,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Config
-public class OdometryLocalizer extends com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer {
+public class OdometryLocalizer extends ThreeTrackingWheelLocalizer {
     public static double TICKS_PER_REV = 8192;
     public static double WHEEL_RADIUS = .738188976; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed

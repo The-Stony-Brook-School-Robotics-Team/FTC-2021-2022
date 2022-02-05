@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.drive.testing;
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.coyote.framework.core.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Config
-public class ThreeTrackingWheelLocalizer extends com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer {
+public class ThreeTrackingWheelLocalizer extends com.coyote.framework.core.localization.ThreeTrackingWheelLocalizer {
     public static double TICKS_PER_REV = 8192;
     public static double WHEEL_RADIUS = 1; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed

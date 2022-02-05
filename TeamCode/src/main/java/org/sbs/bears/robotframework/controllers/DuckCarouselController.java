@@ -1,6 +1,6 @@
 package org.sbs.bears.robotframework.controllers;
 
-import com.acmerobotics.roadrunner.util.NanoClock;
+import com.coyote.framework.core.util.NanoClock;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 

@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.util;
 
-import com.acmerobotics.roadrunner.util.NanoClock;
+import com.coyote.framework.core.util.NanoClock;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 

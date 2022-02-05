@@ -8,10 +8,10 @@ import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideH
 
 import android.util.Log;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
-import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
+import com.coyote.framework.core.geometry.Pose2d;
+import com.coyote.framework.core.trajectory.Trajectory;
+import com.coyote.framework.core.trajectory.constraints.TrajectoryAccelerationConstraint;
+import com.coyote.framework.core.trajectory.constraints.TrajectoryVelocityConstraint;
 
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousBrain;
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
