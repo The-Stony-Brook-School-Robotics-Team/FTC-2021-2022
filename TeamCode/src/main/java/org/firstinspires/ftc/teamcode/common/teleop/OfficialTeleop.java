@@ -72,7 +72,7 @@ public class OfficialTeleop extends OpMode {
     public static RevBlinkinLedDriver revBlinkinLedDriver;
 
     /**
-     * 线程池
+     * Thread Pool
      */
     private static HashMap<String, Thread> threadPool = new HashMap<>();
 
