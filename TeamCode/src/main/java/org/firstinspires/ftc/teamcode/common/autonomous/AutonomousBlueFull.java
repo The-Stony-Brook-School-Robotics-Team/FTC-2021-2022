@@ -59,7 +59,6 @@ public class AutonomousBlueFull extends LinearOpMode {
         while(opModeIsActive()&& !isStopRequested()){
             if(!masterQContinue) {break;}
             brain.doStateAction();
-            sleep(100);
             if(brain.majorState.equals(AutonomousBrain.MajorAutonomousState.FINISHED)) { requestOpModeStop(); }
             if(!masterQContinue) { break; }
 

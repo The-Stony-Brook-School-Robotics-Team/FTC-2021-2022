@@ -230,7 +230,6 @@ public class ButtonHandler {
                         isPressingA = false;
                     }
 
-
                     // Y
                     if(primaryGamepad.y && !isPressingY && primaryControllerMode == ControllerModes.SECONDARY) {
                         OfficialTeleop.driveSpeed += .01;

@@ -680,10 +680,10 @@ public class SlideController {
     // dumper servo
 /*    double dumperPosition_DUMP = .91;
     double dumperPosition_HOLDBLOCK = 0;
-*/    public double dumperPosition_CLOSED = 0.33;  // remeasured on jan 31 at 16h08
-    public double dumperPosition_READY = 0.53;
-    public double dumperPosition_EJECT = 0.74;
-    public double dumperPosition_RETRACTING = 0.05;
+*/    public static double dumperPosition_CLOSED = 0.33;  // remeasured on jan 31 at 16h08
+    public static double dumperPosition_READY = 0.53;
+    public static double dumperPosition_EJECT = 0.74;
+    public static double dumperPosition_RETRACTING = 0.05;
 
     // slide motor
     int slideMotorPosition_PARKED = 5;
