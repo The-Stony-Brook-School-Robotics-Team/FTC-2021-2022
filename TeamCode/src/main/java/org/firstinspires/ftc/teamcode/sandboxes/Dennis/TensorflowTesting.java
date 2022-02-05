@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 @Disabled
-@TeleOp(name = "B - Tensorflow Testing")
+@TeleOp(name = "B - Tensorflow Testing (test)!")
 public class TensorflowTesting extends LinearOpMode {
 
 
