@@ -1,10 +1,10 @@
-name: Qualifier Two Compiler
+name: Build Status
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, qualifier-two ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, qualifier-two ]
   schedule:
     - cron: "*/30 * * * *"
 
