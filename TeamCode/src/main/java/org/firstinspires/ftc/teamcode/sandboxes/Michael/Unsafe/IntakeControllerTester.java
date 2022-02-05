@@ -30,8 +30,8 @@
 
 
                 if(gamepad1.x){
-                    //blueIntake.changeStatePosiiton(IntakeState.BASE, position);
-                    blueIntake.changeStatePosiiton(IntakeState.BASE, position);
+                    //blueIntake.changeStatePosition(IntakeState.BASE, position);
+                    redIntake.changeStatePosition(IntakeState.BASE, position);
                 }
                 if(gamepad1.b){
                     //blueIntake.setState(IntakeState.DUMP);
