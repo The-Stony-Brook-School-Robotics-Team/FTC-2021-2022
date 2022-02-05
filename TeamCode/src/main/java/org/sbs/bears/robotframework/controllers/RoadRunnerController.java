@@ -447,6 +447,29 @@ public class RoadRunnerController {
                         .lineToSplineHeading(target) // this should now be smooth!!!)
                         .build());
     }
+    public void doOptimizedTeleOpDepositTraj(TrajectoryVelocityConstraint quickMoveVelocityConstraint, TrajectoryAccelerationConstraint quickMoveAccelerationConstraint)
+    {
+        Pose2d vels = drive.getPoseVelocity();
+        double v0 = Math.sqrt(vels.getX()*vels.getX() + vels.getY()*vels.getY()); // ini vel mag
+        Pose2d current = getPos();
+        // Create a spoofed trajectory
+        double delta = v0*VEL_ACCOUNT_CT; // to determine
+        Trajectory spoofed = createSpoofedTraj(current,vels,new Vector2d(delta,0),0.5);
+        // Follow the trajectory sequence
+        TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
+        TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
+        TrajectoryBuilder engine = new TrajectoryBuilder(new Pose2d(current.getX()+delta,current.getY(),current.getHeading()),0.0,spoofed,0.0,velocityConstraint,accelerationConstraint,new MotionState(0,v0,0),0.25);
+
+        drive.followTrajectory(engine
+                .lineToSplineHeading(new Pose2d(14,65.5,0), quickMoveVelocityConstraint, quickMoveAccelerationConstraint)
+                .splineToSplineHeading(new Pose2d(5.58,64.47,-Math.toRadians(55)), Math.PI)
+                .build());
+    }
+
+    /*
+
+
+    */
     public Trajectory createSpoofedTraj(Pose2d inipos, Pose2d inivel, Vector2d dPos, double dt) {
         double x = inipos.getX(); // current pos
         double y = inipos.getY(); // current pos
