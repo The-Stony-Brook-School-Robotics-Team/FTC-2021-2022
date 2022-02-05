@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Collections;
 import java.util.LinkedList;
 
-@Config
+//@Config
 public class CustomizedTrajectorySequenceRunner {
     public static boolean needEmergencyStop = false;
 
