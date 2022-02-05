@@ -43,7 +43,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import java.util.Locale;
 
-@TeleOp(name = "Michael Gyro Test")
+///@TeleOp(name = "Michael Gyro Test")
 @Disabled
 @Deprecated
 public class SensorBNO055IMU extends LinearOpMode

@@ -11,8 +11,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.sandboxes.William.Util.CustomizedMecanumDrive;
 import org.firstinspires.ftc.teamcode.sandboxes.William.Util.CustomizedTrajectorySequenceRunner;
 
-@Config
-@Autonomous(group = "drive", name = "Customized Drive Emergency Stop Test")
+//@Config
+//@Autonomous(group = "drive", name = "Customized Drive Emergency Stop Test")
 public class CustomizedDriveEmergencyStopTest extends LinearOpMode {
     private final PIDFController turnController;
     private final PIDCoefficients PIDCoefficient = new PIDCoefficients();
