@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@TeleOp(name = "Distance Test")
+//@TeleOp(name = "Distance Test")
 public class DistanceTest extends LinearOpMode
 {
     public Rev2mDistanceSensor rev;

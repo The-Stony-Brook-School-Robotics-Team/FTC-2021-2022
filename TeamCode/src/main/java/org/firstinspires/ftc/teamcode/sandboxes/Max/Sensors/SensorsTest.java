@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 
-@TeleOp(name="SensorTest", group = "drive")
+//@TeleOp(name="SensorTest", group = "drive")
 public class SensorsTest extends OpMode {
 
     byte[] RangeCache;

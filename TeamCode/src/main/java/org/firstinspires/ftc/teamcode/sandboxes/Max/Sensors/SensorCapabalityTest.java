@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@TeleOp
+//@TeleOp
 public class SensorCapabalityTest extends OpMode {
     byte[] RangeCache;
     public static final int UltrasonicSensorStartReadingValue = 0x04;
