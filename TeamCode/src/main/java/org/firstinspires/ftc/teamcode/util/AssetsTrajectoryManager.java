@@ -2,11 +2,11 @@ package org.firstinspires.ftc.teamcode.util;
 
 import androidx.annotation.Nullable;
 
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
-import com.acmerobotics.roadrunner.trajectory.config.TrajectoryConfig;
-import com.acmerobotics.roadrunner.trajectory.config.TrajectoryConfigManager;
-import com.acmerobotics.roadrunner.trajectory.config.TrajectoryGroupConfig;
+import com.coyote.framework.core.trajectory.Trajectory;
+import com.coyote.framework.core.trajectory.TrajectoryBuilder;
+import com.coyote.framework.core.trajectory.config.TrajectoryConfig;
+import com.coyote.framework.core.trajectory.config.TrajectoryConfigManager;
+import com.coyote.framework.core.trajectory.config.TrajectoryGroupConfig;
 
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 

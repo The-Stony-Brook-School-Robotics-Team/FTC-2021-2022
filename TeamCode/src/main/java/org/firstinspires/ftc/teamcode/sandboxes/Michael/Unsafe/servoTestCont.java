@@ -34,7 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="S - Cont Servo", group="Linear Opmode")
+//@TeleOp(name="S - Cont Servo", group="Linear Opmode")
 @Disabled
 @Deprecated
 public class servoTestCont extends LinearOpMode {

@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode.common.autonomous;
 
 import android.util.Log;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.util.NanoClock;
+import com.coyote.framework.core.geometry.Pose2d;
+import com.coyote.framework.core.util.NanoClock;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;

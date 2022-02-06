@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.common.teleop;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.coyote.framework.core.geometry.Pose2d;
 
 public class Configuration {
 

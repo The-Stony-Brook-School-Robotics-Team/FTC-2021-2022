@@ -33,7 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="S - servoTestDouble", group="Linear Opmode")
+//@TeleOp(name="S - servoTestDouble", group="Linear Opmode")
 @Deprecated
 public class servoTest extends LinearOpMode {
     boolean pressingUp = false;

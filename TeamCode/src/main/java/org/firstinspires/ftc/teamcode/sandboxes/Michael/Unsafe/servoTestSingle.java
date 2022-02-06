@@ -35,7 +35,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 @Deprecated
 @Disabled
-@TeleOp(name="S - Single Servo", group="Linear Opmode")
+//@TeleOp(name="S - Single Servo", group="Linear Opmode")
 //@Disabled
 public class servoTestSingle extends LinearOpMode {
     // you should treat yourself NOW

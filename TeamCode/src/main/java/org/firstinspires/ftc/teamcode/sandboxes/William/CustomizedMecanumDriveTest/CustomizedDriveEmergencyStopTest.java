@@ -1,18 +1,18 @@
 package org.firstinspires.ftc.teamcode.sandboxes.William.CustomizedMecanumDriveTest;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.control.PIDCoefficients;
-import com.acmerobotics.roadrunner.control.PIDFController;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.util.NanoClock;
+import com.coyote.framework.core.control.PIDCoefficients;
+import com.coyote.framework.core.control.PIDFController;
+import com.coyote.framework.core.trajectory.Trajectory;
+import com.coyote.framework.core.util.NanoClock;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.sandboxes.William.Util.CustomizedMecanumDrive;
 import org.firstinspires.ftc.teamcode.sandboxes.William.Util.CustomizedTrajectorySequenceRunner;
 
-@Config
-@Autonomous(group = "drive", name = "Customized Drive Emergency Stop Test")
+//@Config
+//@Autonomous(group = "drive", name = "Customized Drive Emergency Stop Test")
 public class CustomizedDriveEmergencyStopTest extends LinearOpMode {
     private final PIDFController turnController;
     private final PIDCoefficients PIDCoefficient = new PIDCoefficients();

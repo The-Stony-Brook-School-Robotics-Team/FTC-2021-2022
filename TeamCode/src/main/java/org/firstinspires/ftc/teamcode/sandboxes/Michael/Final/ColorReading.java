@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.sandboxes.Michael.Final;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
-import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
+import com.coyote.framework.core.geometry.Pose2d;
+import com.coyote.framework.core.geometry.Vector2d;
+import com.coyote.framework.core.trajectory.constraints.TrajectoryAccelerationConstraint;
+import com.coyote.framework.core.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-@TeleOp(name = "Color Tape Detection")
+//@TeleOp(name = "Color Tape Detection")
 public class ColorReading extends LinearOpMode
 {
     private final TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(30, 2, DriveConstants.TRACK_WIDTH);
