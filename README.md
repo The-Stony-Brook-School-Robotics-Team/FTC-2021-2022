@@ -3,7 +3,7 @@
 <h2> Main </h2>
 <h3>Current build status of the main branch:</h3>
 
-[![Build Status](https://github.com/The-Stony-Brook-School-Robotics-Team/FTC-2021-2022/actions/workflows/android.yml/badge.svg)](https://github.com/The-Stony-Brook-School-Robotics-Team/FTC-2021-2022/actions/workflows/android.yml)
+[![Build Status](https://github.com/The-Stony-Brook-School-Robotics-Team/FTC-2021-2022/actions/workflows/android.yml/badge.svg?branch=main)](https://github.com/The-Stony-Brook-School-Robotics-Team/FTC-2021-2022/actions/workflows/android.yml)
 
 <h2> Qualifier One </h2>
 <h3>Current build status of the qualifier one branch:</h3>

@@ -28,7 +28,7 @@ import org.sbs.bears.robotframework.enums.IntakeState;
 import java.util.HashMap;
 import java.util.Map;
 
-@TeleOp(name = "A - Qualifier One TeleOp ")
+@TeleOp(name = "A - Qualifier One TeleOp")
 public class OfficialTeleop extends OpMode {
 
 
