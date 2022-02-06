@@ -458,7 +458,7 @@ public class RoadRunnerController {
         // Follow the trajectory sequence
         TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
         TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
-        TrajectoryBuilder engine = new TrajectoryBuilder(new Pose2d(current.getX()+delta,current.getY(),current.getHeading()),0.0,spoofed,0.0,velocityConstraint,accelerationConstraint,new MotionState(0,v0,0),0.25);
+        TrajectoryBuilder engine = new TrajectoryBuilder(new Pose2d(current.getX()+delta,current.getY(),current.getHeading()),0.0,spoofed,0.0,velocityConstraint,accelerationConstraint,new MotionState(0,0,0),0.25);
 
         drive.followTrajectory(engine
                 .lineToSplineHeading(new Pose2d(14,65.5,0), quickMoveVelocityConstraint, quickMoveAccelerationConstraint)
