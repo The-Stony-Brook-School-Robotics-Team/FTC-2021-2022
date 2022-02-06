@@ -20,13 +20,13 @@ public class IntakeControllerRed {
     /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/
 //    private double[] basePos = {.025, 0.7}; //.141 // COMMENTED OUT BY MARC ON SUN JAN 9 2022 AT 22h12m54s
 
-    private double[] basePos = {.03, 0.7}; //.141 // CHANGED BY MARC ON SUN JAN 9 2022 AT 22h12m54s
+    private double[] basePos = {.03, .7}; //.141 // CHANGED BY MARC ON SUN JAN 9 2022 AT 22h12m54s
 
-    private double[] dumpPos = {.45, 0.4}; //.87
-    private double[] parkPos = {.39, 0.0}; //75
+    private double[] dumpPos = {.45, 0}; //.4
+    private double[] parkPos = {.33, 0.0}; //75
 
     /** Distance needed to switch states (mm) **/
-    private double distThreshold = 50.0;
+    private double distThreshold = 60;
 
     private boolean qIsObjectInPayload = false;
 
@@ -149,12 +149,17 @@ public class IntakeControllerRed {
         switch(state){
             case BASE:
                 scooper.setPosition(basePos[0]);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 compliantWheel.setPower(basePos[1]);
                 return;
 
             case DUMP:
-                scooper.setPosition(dumpPos[0]);
                 compliantWheel.setPower(dumpPos[1]);
+                scooper.setPosition(dumpPos[0]);
                 return;
 
             case PARK:

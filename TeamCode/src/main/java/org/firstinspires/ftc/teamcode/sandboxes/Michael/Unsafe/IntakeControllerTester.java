@@ -4,6 +4,7 @@
     import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
+    import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
     import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
     import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
     import org.sbs.bears.robotframework.enums.IntakeState;
@@ -19,19 +20,20 @@
         public void runOpMode() throws InterruptedException {
             blueIntake = new IntakeControllerBlue(hardwareMap, telemetry);
             redIntake = new IntakeControllerRed(hardwareMap, telemetry);
-            blueIntake.setState(IntakeState.PARK);
+            blueIntake.setState(IntakeState.BASE);
             redIntake.setState(IntakeState.PARK);
             waitForStart();
 
             while(opModeIsActive()){
-                    //blueIntake.checkIntake();
+                if(gamepad1.right_bumper){
+                    blueIntake.checkIntake();
                     redIntake.checkIntake();
 
-
+                }
 
                 if(gamepad1.x){
-                    //blueIntake.changeStatePosition(IntakeState.BASE, position);
-                    redIntake.changeStatePosition(IntakeState.BASE, position);
+                    blueIntake.changeStatePosiiton(IntakeState.BASE, position);
+                    //redIntake.changeStatePosition(IntakeState.BASE, position);
                 }
                 if(gamepad1.b){
                     //blueIntake.setState(IntakeState.DUMP);
@@ -69,7 +71,10 @@
                 telemetry.addData("blue State: ", blueIntake.getState());
                 telemetry.addData("red State: ", redIntake.getState());
                 telemetry.addData("Desired Position: ", position);
-                telemetry.addData("servo ", blueIntake.getServoPos());
+                telemetry.addData("blue servo ", blueIntake.getServoPos());
+                telemetry.addData("red servo ", redIntake.getServoPos());
+                telemetry.addData("red distance", redIntake.distanceSensor.getDistance(DistanceUnit.MM));
+                telemetry.addData("blue distance", blueIntake.distanceSensor.getDistance(DistanceUnit.MM));
 
                 telemetry.update();
             }

@@ -19,17 +19,18 @@ public class IntakeControllerBlue {
     private DcMotor compliantWheel;
     public Rev2mDistanceSensor distanceSensor;
     private Servo mini;
+    private Servo sweeper;
 
     /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/
 //    private double[] basePos = {.025, 0.7}; //.141 // COMMENTED OUT BY MARC ON SUN JAN 9 2022 AT 22h12m54s
 
-    private double[] basePos = {.03, 0.7}; //.141 // CHANGED BY MARC ON SUN JAN 9 2022 AT 22h12m54s
+    private double[] basePos = {.03, .7}; //.141 // CHANGED BY MARC ON SUN JAN 9 2022 AT 22h12m54s
 
-    private double[] dumpPos = {.45, 0.4}; //.87
-    private double[] parkPos = {.39, 0.0}; //75
+    private double[] dumpPos = {.45, 0}; //.87
+    private double[] parkPos = {.33, 0.0}; //75
 
     /** Distance needed to switch states (mm) **/
-    private double distThreshold = 50.0;
+    private double distThreshold = 60;
 
     private boolean qIsObjectInPayload = false;
 
@@ -43,8 +44,10 @@ public class IntakeControllerBlue {
         compliantWheel = hardwareMap.get(DcMotor.class, "leftodom");
         distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "bd");
         mini = hardwareMap.get(Servo.class, "vout");
+        sweeper = hardwareMap.get(Servo.class, "sweep");
         scooper.setDirection(Servo.Direction.FORWARD);
         compliantWheel.setDirection(DcMotorSimple.Direction.FORWARD);
+        sweeper.setDirection(Servo.Direction.FORWARD);
         compliantWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
@@ -92,12 +95,6 @@ public class IntakeControllerBlue {
     public void checkIntake(){
         if(state == IntakeState.BASE && isObjectInPayload()){
             setState(IntakeState.DUMP);
-            //mini.setPosition(1);
-            try {
-                Thread.sleep(800);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             //mini.setPosition(0);
             try {
                 Thread.sleep(450);
@@ -105,6 +102,7 @@ public class IntakeControllerBlue {
                 e.printStackTrace();
             }
             setState(IntakeState.PARK);
+
 
         }
     }
@@ -152,17 +150,25 @@ public class IntakeControllerBlue {
         switch(state){
             case BASE:
                 scooper.setPosition(basePos[0]);
+               sweeper.setPosition(1);
                 compliantWheel.setPower(basePos[1]);
                 return;
 
             case DUMP:
-                scooper.setPosition(dumpPos[0]);
                 compliantWheel.setPower(dumpPos[1]);
+                scooper.setPosition(dumpPos[0]);
+                try {
+                    Thread.sleep(800);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                sweeper.setPosition(.75);
                 return;
 
             case PARK:
                 scooper.setPosition(parkPos[0]);
                 compliantWheel.setPower(parkPos[1]);
+
                 return;
         }
     }

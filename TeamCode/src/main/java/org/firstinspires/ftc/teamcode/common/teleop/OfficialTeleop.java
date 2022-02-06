@@ -143,8 +143,10 @@ public class OfficialTeleop extends OpMode {
                     Log.d(interfaceTag, "Set servo to closed");
                     slideController.dumperServo.setPosition(slideController.dumperPosition_CLOSED);
                 }
-                telemetry.addData("IsObjectInBucket", blueIntake.isObjectInPayload());
-                telemetry.addData("Distance Sensor", blueIntake.distanceSensor.getDistance(DistanceUnit.MM));
+               telemetry.addData("blue Distance Sensor", blueIntake.distanceSensor.getDistance(DistanceUnit.MM));
+                telemetry.addData("red Distance Sensor", blueIntake.distanceSensor.getDistance(DistanceUnit.MM));
+                telemetry.addData("Red Servo Position", redIntake.getServoPos());
+                telemetry.addData("Blue Servo Position", blueIntake.getServoPos());
                 telemetry.update();
 
                 telemetry.update();
