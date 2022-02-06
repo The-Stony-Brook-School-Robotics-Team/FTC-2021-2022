@@ -1,12 +1,8 @@
 name: Build Status
 
 on:
-  push:
-    branches: [ qualifier-two ]
-  pull_request:
-    branches: [ qualifier-two ]
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: "*/10 * * * *"
 
 jobs:
   Teamcode:
