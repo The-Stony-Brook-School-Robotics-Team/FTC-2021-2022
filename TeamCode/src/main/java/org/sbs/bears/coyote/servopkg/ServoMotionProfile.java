@@ -60,9 +60,9 @@ public class ServoMotionProfile {
     public void generateProfile(Polynomial poly, double dt, double iniX, double deltaX, double iniT, double finT)
     {
         segments = new ArrayList<>();
-        for(int t = iniT; t < finT; t+= dt)
+        for(double t = iniT; t < finT; t+= dt)
         {
-            segments.add(new ServoMotionSegment());
+            segments.add(new ServoMotionSegment(poly.getY(t),dt));
         }
     }
     public String toString()
