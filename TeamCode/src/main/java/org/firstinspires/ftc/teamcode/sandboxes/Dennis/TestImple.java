@@ -1,22 +1,23 @@
 package org.firstinspires.ftc.teamcode.sandboxes.Dennis;
 
 
-import org.sbs.bears.coyote.servopkg.ServoMotionProfile;
-import org.sbs.bears.coyote.servopkg.ServoMotionSegment;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class TestImple {
+@TeleOp(name = "A - Coyote Servo Package")
+public class TestImple extends LinearOpMode {
 
 
-    List<ServoMotionSegment> segments = new ArrayList<>();
 
-    public void staewnlksjnd() {
-        ServoMotionProfile prof = new ServoMotionProfile(segments);
+    @Override
+    public void runOpMode() throws InterruptedException {
+
+        waitForStart();
+
+        while(!isStopRequested()) {
 
 
+        }
 
     }
-
 }
