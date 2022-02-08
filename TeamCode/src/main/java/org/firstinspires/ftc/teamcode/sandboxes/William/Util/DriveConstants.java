@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
  * These are not the only parameters; some are located in the localizer classes, drive base classes,
  * and op modes themselves.
  */
-//@Config
+@Config
 public class DriveConstants {
     private static final double CENTER_WHEEL_OFFSET = -8.7; //Actual measurement: -7.5.
     private static final double WHEEL_DIAMETER = 2.0;       //Actual measurement: 2.0.

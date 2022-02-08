@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
-//@TeleOp(name="BLINK BLINK BLINK LIGHT GO BRRR", group="Linear Opmode")
+@TeleOp(name="BLINK BLINK BLINK LIGHT GO BRRR", group="Linear Opmode")
 public class MotorTester extends LinearOpMode {
     private Servo mini;
 

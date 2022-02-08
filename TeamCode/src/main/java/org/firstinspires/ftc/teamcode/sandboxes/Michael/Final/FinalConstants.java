@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.sandboxes.Michael.Final;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.coyote.framework.core.control.PIDCoefficients;
+import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-//@Config
+@Config
 @Deprecated
 public class FinalConstants {
 

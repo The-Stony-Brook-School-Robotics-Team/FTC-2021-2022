@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
-//@Config
-//@TeleOp(name="B- BUCKET TESTING", group="Linear Opmode")
+@Config
+@TeleOp(name="B- BUCKET TESTING", group="Linear Opmode")
 public class BucketTester extends LinearOpMode {
     private Servo bucket;
     private boolean qA = false;
