@@ -25,10 +25,9 @@ public class ServoMotionFollower {
         for(ServoMotionSegment segment : profile.getSegments()) {
             ServoMotionSegment nextSegment = profile.getSegment(i + 1);
             servo.setPosition(segment.getAngle());
-            Thread.sleep(nextSegment.getDt() - segment.getDt());
+            Thread.sleep((long)nextSegment.getDt() - (long)segment.getDt());
             i++;
         }
-
     }
 
 
