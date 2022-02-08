@@ -47,11 +47,11 @@ public class ServoMotionProfile {
     }
     public double getStartAng()
     {
-        return segments.get(0).getIniAng();
+        return segments.get(0).getAngle();
     }
     public double getEndAng()
     {
-        return segments.get(segments.size()-1).getFiniAng();
+        return segments.get(segments.size()-1).getAngle();
     }
     /**
      * This method creates a ServoMotionProfile according to a given Polynomial

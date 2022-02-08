@@ -3,14 +3,14 @@ package org.sbs.bears.coyote.servopkg;
 public class ServoMotionSegment {
 
     private double angle;
-    private int dt;
+    private double dt;
 
     /**
      * Motion Segment
      * @param angle
      * @param dt
      */
-    public ServoMotionSegment(double angle, int dt){
+    public ServoMotionSegment(double angle, double dt){
         this.angle = angle;
         this.dt = dt;
     }
@@ -19,17 +19,18 @@ public class ServoMotionSegment {
         return angle;
     }
 
-    public int getDt() {
+    public double getDt() {
         return dt;
     }
 
     public double setAngle(double angle) {
         this.angle = angle;
-        return angle;
+        return this.angle;
     }
 
-    public int setDt(int add) {
-        return dt;
+    public double setDt(double dt) {
+        this.dt = dt;
+        return this.dt;
     }
 
 
