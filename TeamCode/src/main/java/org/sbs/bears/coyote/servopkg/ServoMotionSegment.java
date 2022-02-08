@@ -54,10 +54,10 @@ public class ServoMotionSegment {
     }
 
     public ServoMotionSegment add(ServoMotionSegment segment) {
-        double newIniAng = this.iniAng + segment.iniAng;
-        double newFiniAng = this.finiAng + segment.finiAng;
-        int newDt = this.dt + segment.dt;
-        double newV = this.v + segment.v;
-        return new ServoMotionSegment(newIniAng, newFiniAng, newDt, newV);
+        return new ServoMotionSegment(
+                this.iniAng + segment.iniAng,
+                this.finiAng + segment.finiAng,
+                this.dt + segment.dt,
+                this.v + segment.v);
     }
 }
