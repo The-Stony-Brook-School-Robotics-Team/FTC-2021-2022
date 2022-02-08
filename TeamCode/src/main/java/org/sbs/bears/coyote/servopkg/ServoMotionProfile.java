@@ -1,7 +1,7 @@
 package org.sbs.bears.coyote.servopkg;
 
 
-import org.sbs.bears.coyote.servopkg.math.Polynomial;
+import org.sbs.bears.coyote.math.Polynomial;
 
 import java.util.ArrayList;
 import java.util.List;

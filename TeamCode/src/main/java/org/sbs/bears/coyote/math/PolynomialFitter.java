@@ -1,4 +1,4 @@
-package org.sbs.bears.coyote.servopkg.math;
+package org.sbs.bears.coyote.math;
 
 /***************************************************************************
  *   Copyright (C) 2009 by Paul Lutus, Ian Clarke                          *
