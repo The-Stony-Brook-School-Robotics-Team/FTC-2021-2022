@@ -60,4 +60,11 @@ public class ServoMotionSegment {
         double newV = this.v + segment.v;
         return new ServoMotionSegment(newIniAng, newFiniAng, newDt, newV);
     }
+
+    public String toString()
+    {
+        return "ServoMotionSegment with iniAngle " + iniAng + ", finAng " + finiAng + ", vel " + v + ", and ∆t " + dt;
+    }
+
+
 }
