@@ -669,11 +669,11 @@ public class SlideController {
     public static double vertServoPosition_CAP_CAROUSEL = 0.76; // TODO
     double vertServoPosition_FULL_MAX = 1;
 
-    public double incrementDeltaExtend = 0.025;//.2;
-    public double incrementDeltaRetract = 0.02;//0.007;
+    public static double incrementDeltaExtend = 0.025;//.2;
+    public static double incrementDeltaRetract = 0.02;//0.007;
 
-    public double incrementDeltaExtendTeleOp = .025;//.2;
-    public double incrementDeltaRetractTeleop = .02;//0.007;
+    public static double incrementDeltaExtendTeleOp = .025;//.2;
+    public static double incrementDeltaRetractTeleop = .02;//0.007;
 
     public static double incrementDeltaExtendCapstone = .014;
 
@@ -701,11 +701,11 @@ public class SlideController {
     //int slideMotorPosition_START_LOWER = 400;
     public int slideMotorPosition_CAP_ON_GROUND = 473;
 
-    public double slideMotorPowerMoving = .9;
-    public double slideMotorPowerCarousel = .5;
-    public double slideMotorPowerMovingBack = .5;
+    public static double slideMotorPowerMoving = .9;
+    public static double slideMotorPowerCarousel = .5;
+    public static double slideMotorPowerMovingBack = .5;
     public static double slideMotorPowerGrabCap = .6;
-    double slideMotorPowerStill = 0;
+    public static final double slideMotorPowerStill = 0;
 
     /*double deltaZForLevel3 = 12; // in
     double deltaZForLevel2 = 5; // in
