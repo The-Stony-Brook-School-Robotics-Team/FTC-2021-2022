@@ -2,6 +2,22 @@ package org.sbs.bears.coyote.servopkg;
 
 public class ServoMotionSegment {
 
+    public double getIniAng() {
+        return iniAng;
+    }
+
+    public double getFiniAng() {
+        return finiAng;
+    }
+
+    public int getDt() {
+        return dt;
+    }
+
+    public double getV() {
+        return v;
+    }
+
     private double iniAng;
     private double finiAng;
     private int dt;
