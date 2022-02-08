@@ -57,13 +57,27 @@ public class ServoMotionProfile {
      * This method creates a ServoMotionProfile according to a given Polynomial
      *
      */
-    public void generateProfile(Polynomial poly, double dt, double iniX, double deltaX, double iniT, double finT)
+    public ServoMotionProfile generateProfile(Polynomial poly, double dt, double iniT, double finT)
     {
         segments = new ArrayList<>();
         for(double t = iniT; t < finT; t+= dt)
         {
             segments.add(new ServoMotionSegment(poly.getY(t),dt));
         }
+        return this;
+    }
+    public ServoMotionProfile generateProfile(double iniAng, double finAng, double dt, double iniT, double finT)
+    {
+        segments = new ArrayList<>();
+        int numSteps = (int) ((finT-iniT)/dt);
+        double angStep = (finAng-iniAng)/(double) numSteps;
+        int counter = 0;
+        for(double t = iniT; t < finT; t+= dt)
+        {
+            segments.add(new ServoMotionSegment(iniAng,dt));
+            counter++;
+        }
+        return this;
     }
     public String toString()
     {
