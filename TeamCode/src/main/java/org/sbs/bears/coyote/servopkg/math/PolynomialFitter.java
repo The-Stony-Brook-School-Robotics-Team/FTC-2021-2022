@@ -1,4 +1,4 @@
-package org.sbs.bears.coyote.servopkg;
+package org.sbs.bears.coyote.servopkg.math;
 
 /***************************************************************************
  *   Copyright (C) 2009 by Paul Lutus, Ian Clarke                          *
@@ -20,7 +20,6 @@ package org.sbs.bears.coyote.servopkg;
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
