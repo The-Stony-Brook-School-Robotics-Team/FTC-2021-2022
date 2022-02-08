@@ -1,7 +1,7 @@
 package org.sbs.bears.coyote.servopkg;
 
 public class ServoMotionSegment {
-    
+
     private double iniAng;
     private double finiAng;
     private int dt;
