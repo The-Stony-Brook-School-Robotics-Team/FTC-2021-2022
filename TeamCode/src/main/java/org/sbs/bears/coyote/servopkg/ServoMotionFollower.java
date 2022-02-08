@@ -14,9 +14,9 @@ public class ServoMotionFollower {
 
     /**
      * Servo Motion Follower
-     * @param servo
-     * @param profile
-     * @throws InterruptedException
+     * @param servo the servo that you want the follower to follow
+     * @param profile the motion profile to follow
+     * @throws InterruptedException because the thread that this sleeps can be stopped
      */
     public void asyncFollow(@NotNull Servo servo, @NotNull ServoMotionProfile profile) throws InterruptedException {
         double lastAng = servo.getPosition();
