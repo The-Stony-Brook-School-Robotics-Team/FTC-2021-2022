@@ -392,6 +392,9 @@ public class SlideController {
                         targetPosFinal = slideMotorPosition_CAP_FROM_CAROUSEL;
                         verticalServoTargetPos = vertServoPosition_CAP_CAROUSEL_HIGHER;
                         break;
+                    case CUSTOM:
+                        targetPosFinal = slideMotorPosition_CUSTOM;
+                        verticalServoTargetPos = vertServoPosition_CUSTOM;
                     case NA:
                         Log.d("SlideController", "Slide Extension failed: did not specify target. Exiting");
                         flagToLeave = true;
@@ -654,13 +657,14 @@ public class SlideController {
     // TODO MEASURE ALL CONSTANTS
 
 
-    double vertServoPosition_PARKED = 0.1;
-    double vertServoPosition_ONE_CAROUSEL = 0.175;
-    double vertServoPosition_TWO_CAROUSEL = 0.3767; ///measured
-    double vertServoPosition_THREE_CAROUSEL = 0.647;
-    public double vertServoPosition_THREE_DEPOSIT = .89; // 0.85; // TODO //.754; //measured
-    public double vertServoPosition_TWO_DEPOSIT = .552;//.4188;//0.3688;
-    public double vertServoPosition_ONE_DEPOSIT = .28;//11;//0.06;
+    public static double vertServoPosition_PARKED = 0.1;
+    public static double vertServoPosition_ONE_CAROUSEL = 0.175;
+    public static double vertServoPosition_TWO_CAROUSEL = 0.3767; ///measured
+    public static double vertServoPosition_THREE_CAROUSEL = 0.647;
+    public static double vertServoPosition_THREE_DEPOSIT = .89; // 0.85; // TODO //.754; //measured
+    public static double vertServoPosition_TWO_DEPOSIT = .552;//.4188;//0.3688;
+    public static double vertServoPosition_ONE_DEPOSIT = .28;//11;//0.06;
+    public static double vertServoPosition_CUSTOM = .6;//11;//0.06;
 
 
     double vertServoPosition_PARKED_MIN = 0;
@@ -697,6 +701,7 @@ public class SlideController {
     int slideMotorPosition_ONE_CAROUSEL = 1665;
     public int slideMotorPosition_CAP_FROM_CAROUSEL = 1476; // TODO
     public int slideMotorPosition_CAP_FROM_CAROUSEL_RET = 1442; // TODO
+    public int slideMotorPosition_CUSTOM = 600; // TODO
     int slideMotorPosition_FULL = 1980;
     //int slideMotorPosition_START_LOWER = 400;
     public int slideMotorPosition_CAP_ON_GROUND = 473;
