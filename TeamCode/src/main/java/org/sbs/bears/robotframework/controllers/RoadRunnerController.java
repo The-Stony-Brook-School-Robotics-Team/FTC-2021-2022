@@ -454,11 +454,11 @@ public class RoadRunnerController {
         Pose2d current = getPos();
         // Create a spoofed trajectory
         double delta = v0*VEL_ACCOUNT_CT; // to determine
-        Trajectory spoofed = createSpoofedTraj(current,vels,new Vector2d(delta,0),0.5);
+        Trajectory spoofed = createSpoofedTraj(current,vels,new Vector2d(-delta,0),0.5);
         // Follow the trajectory sequence
         TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
         TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
-        TrajectoryBuilder engine = new TrajectoryBuilder(new Pose2d(current.getX()+delta,current.getY(),current.getHeading()),0.0,spoofed,0.0,velocityConstraint,accelerationConstraint,new MotionState(0,v0,0),0.25);
+        TrajectoryBuilder engine = new TrajectoryBuilder(new Pose2d(current.getX()+delta,current.getY(),current.getHeading()),0.0,spoofed,0.0,velocityConstraint,accelerationConstraint,new MotionState(0,0,0),0.25);
 
         drive.followTrajectory(engine
                 .lineToSplineHeading(new Pose2d(14,65.5,0), quickMoveVelocityConstraint, quickMoveAccelerationConstraint)

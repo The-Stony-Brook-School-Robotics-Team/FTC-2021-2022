@@ -1,5 +1,4 @@
 package org.sbs.bears.robotframework.controllers;
-
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -15,19 +14,19 @@ public class IntakeControllerRed {
 
     private Servo scooper;
     private DcMotor compliantWheel;
-    private Rev2mDistanceSensor distanceSensor;
+    public Rev2mDistanceSensor distanceSensor;
     private Servo mini;
 
     /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/
 //    private double[] basePos = {.025, 0.7}; //.141 // COMMENTED OUT BY MARC ON SUN JAN 9 2022 AT 22h12m54s
 
-    private double[] basePos = {.03, 0.7}; //.141 // CHANGED BY MARC ON SUN JAN 9 2022 AT 22h12m54s
+    private double[] basePos = {.03, .7}; //.141 // CHANGED BY MARC ON SUN JAN 9 2022 AT 22h12m54s
 
-    private double[] dumpPos = {.45, 0.4}; //.87
-    private double[] parkPos = {.39, 0.0}; //75
+    private double[] dumpPos = {.45, 0}; //.4
+    private double[] parkPos = {.33, 0.0}; //75
 
     /** Distance needed to switch states (mm) **/
-    private double distThreshold = 50.0;
+    private double distThreshold = 60;
 
     private boolean qIsObjectInPayload = false;
 
@@ -59,11 +58,12 @@ public class IntakeControllerRed {
     public void loadItemIntoSlideForAutonomousOnly() {
         setState(IntakeState.DUMP);
         try {
-            Thread.sleep(1000);
+            Thread.sleep(1500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         setState(IntakeState.PARK);
+
     }
 
     /** Autonomous method-- waits until object is seen, dumps, then sets to park. **/
@@ -123,7 +123,7 @@ public class IntakeControllerRed {
      * @param x The new state positiion, expressed 0-1 as the servo's range.
      * @param intakeState The state that's position is getting altered.
      */
-    public void changeStatePosiiton(IntakeState intakeState, double x){
+    public void changeStatePosition(IntakeState intakeState, double x){
         switch(intakeState){
             case BASE:
                 basePos[0] = x;
@@ -140,6 +140,8 @@ public class IntakeControllerRed {
     /** Accessor for current state **/
     public IntakeState getState(){return state;}
 
+    public double getServoPos(){return scooper.getPosition();}
+
 
 
     /** Assigns position and motor power to their respective states **/
@@ -147,12 +149,17 @@ public class IntakeControllerRed {
         switch(state){
             case BASE:
                 scooper.setPosition(basePos[0]);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 compliantWheel.setPower(basePos[1]);
                 return;
 
             case DUMP:
-                scooper.setPosition(dumpPos[0]);
                 compliantWheel.setPower(dumpPos[1]);
+                scooper.setPosition(dumpPos[0]);
                 return;
 
             case PARK:
