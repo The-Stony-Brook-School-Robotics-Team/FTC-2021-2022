@@ -1,6 +1,8 @@
 package org.sbs.bears.coyote.servopkg;
 
 
+import com.acmerobotics.roadrunner.util.NanoClock;
+
 import org.sbs.bears.coyote.math.Polynomial;
 
 import java.util.ArrayList;
@@ -51,9 +53,17 @@ public class ServoMotionProfile {
     {
         return segments.get(segments.size()-1).getFiniAng();
     }
-    public void generateProfile(Polynomial poly, double dt)
+    /**
+     * This method creates a ServoMotionProfile according to a given Polynomial
+     *
+     */
+    public void generateProfile(Polynomial poly, double dt, double iniX, double deltaX, double iniT, double finT)
     {
-        // TODO
+        segments = new ArrayList<>();
+        for(int t = iniT; t < finT; t+= dt)
+        {
+            segments.add(new ServoMotionSegment());
+        }
     }
     public String toString()
     {
