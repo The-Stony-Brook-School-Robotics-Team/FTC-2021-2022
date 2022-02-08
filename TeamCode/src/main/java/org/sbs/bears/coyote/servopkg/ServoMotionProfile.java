@@ -1,5 +1,6 @@
 package org.sbs.bears.coyote.servopkg;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,11 @@ public class ServoMotionProfile {
         this.segments = segments;
     }
 
+    public ServoMotionProfile()
+    {
+        this.segments = new ArrayList<>();
+
+    }
     public ServoMotionSegment getSegment(int index)
     {
         return segments.get(index);
@@ -23,7 +29,7 @@ public class ServoMotionProfile {
         }
         return t;
     }
-    
+
     public ArrayList<ServoMotionSegment> getSegments()
     {
         return new ArrayList<>(segments);
@@ -34,6 +40,18 @@ public class ServoMotionProfile {
             segments.add(segment);
         }
         return this;
+    }
+    public double getStartAng()
+    {
+        return segments.get(0).getIniAng();
+    }
+    public double getEndAng()
+    {
+        return segments.get(segments.size()-1).getFiniAng();
+    }
+    public void generateProfile(Polynomial poly, double dt)
+    {
+        // TODO
     }
     public String toString()
     {
