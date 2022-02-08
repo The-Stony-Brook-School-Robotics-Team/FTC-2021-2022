@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.sandboxes.Dennis;
+package org.sbs.bears.coyote.servopkg;
 
 public class ServoMotionSegment {
 
