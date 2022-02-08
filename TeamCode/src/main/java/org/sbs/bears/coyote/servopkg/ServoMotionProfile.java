@@ -30,4 +30,8 @@ public class ServoMotionProfile {
         }
         return this;
     }
+    public String toString()
+    {
+        return "ServoMotionProfile with " + segments.size() + " segments; total time is " + totalTime() + " seconds.";
+    }
 }
