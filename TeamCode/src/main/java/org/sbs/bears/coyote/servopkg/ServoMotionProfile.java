@@ -74,7 +74,7 @@ public class ServoMotionProfile {
         int counter = 0;
         for(double t = iniT; t < finT; t+= dt)
         {
-            segments.add(new ServoMotionSegment(iniAng,dt));
+            segments.add(new ServoMotionSegment(iniAng+angStep*counter,dt));
             counter++;
         }
         return this;
