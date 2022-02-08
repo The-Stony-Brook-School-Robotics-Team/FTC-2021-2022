@@ -23,6 +23,11 @@ public class ServoMotionProfile {
         }
         return t;
     }
+    
+    public ArrayList<ServoMotionSegment> getSegments()
+    {
+        return new ArrayList<>(segments);
+    }
     public ServoMotionProfile add(ServoMotionProfile otherProf)
     {
         for (ServoMotionSegment segment : otherProf.segments) {
