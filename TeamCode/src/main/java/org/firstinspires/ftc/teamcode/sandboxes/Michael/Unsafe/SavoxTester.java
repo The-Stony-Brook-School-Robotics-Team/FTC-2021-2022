@@ -4,7 +4,7 @@
     import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
     import com.qualcomm.robotcore.hardware.Servo;
 
-   // @TeleOp(name="Servo lolk", group="Linear Opmode")
+    @TeleOp(name="Servo lolk", group="Linear Opmode")
     public class SavoxTester extends LinearOpMode {
         private Servo slideLifter;
         private boolean qA = false;

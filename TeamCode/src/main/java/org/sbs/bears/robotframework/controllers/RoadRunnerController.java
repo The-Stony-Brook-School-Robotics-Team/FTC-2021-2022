@@ -3,22 +3,14 @@ package org.sbs.bears.robotframework.controllers;
 import android.util.Log;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-
-
-import com.coyote.framework.core.geometry.Pose2d;
-import com.coyote.framework.core.geometry.Vector2d;
-import com.coyote.framework.core.path.LineSegment;
-import com.coyote.framework.core.path.ParametricCurve;
-import com.coyote.framework.core.path.Path;
-import com.coyote.framework.core.path.PathSegment;
-import com.coyote.framework.core.profile.MotionProfile;
-import com.coyote.framework.core.profile.MotionSegment;
-import com.coyote.framework.core.profile.MotionState;
-import com.coyote.framework.core.trajectory.Trajectory;
-import com.coyote.framework.core.trajectory.TrajectoryBuilder;
-import com.coyote.framework.core.trajectory.constraints.TrajectoryAccelerationConstraint;
-import com.coyote.framework.core.trajectory.constraints.TrajectoryVelocityConstraint;
-import com.coyote.framework.core.util.NanoClock;
+import com.acmerobotics.roadrunner.drive.Drive;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
+import com.acmerobotics.roadrunner.util.NanoClock;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -28,8 +20,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Vector;
 
 /**
  * This class is a wrapper controller for the RoadRunner Library.
@@ -62,7 +53,6 @@ public class RoadRunnerController {
      * External synchronizations require an external mutex provided as a parameter, such as in doForwardHaltableTrajectory().
      */
     Object internalMutex = new Object();
-    public static double VEL_ACCOUNT_CT = 8/35.0;
 
     /**
      * This is the constructor for the RR Ctrller.
@@ -76,8 +66,6 @@ public class RoadRunnerController {
         this.dashboard = FtcDashboard.getInstance();
         this.runner = drive.trajectorySequenceRunner;
     }
-
-
 
     public SampleMecanumDrive getDrive()
     {
@@ -277,7 +265,24 @@ public class RoadRunnerController {
                         .build()
         );
     }
-
+    public void doBlueDepositTrajectory()
+    {
+        drive.followTrajectory(
+                drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .lineToSplineHeading(AutonomousBrain.startPositionBlue)
+                        .splineToSplineHeading(AutonomousBrain.depositPositionAllianceBlue2,Math.PI)
+                        .build()
+        );
+    }
+    public void doBlueAutonomousParkingTrajectory()
+    {
+        drive.followTrajectory(
+                drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .splineToSplineHeading(AutonomousBrain.resetPositionB4WarehouseBlue,Math.PI)
+                        .lineToSplineHeading(AutonomousBrain.parkingPositionBlue)
+                        .build()
+        );
+    }
 
 
     public void followLineToSpline(Pose2d finalPos)
@@ -425,100 +430,6 @@ public class RoadRunnerController {
     public static Pose2d convertVector2Pose(Vector2d vec,double heading)
     {
         return new Pose2d(vec.getX(),vec.getY(),heading);
-    }
-
-    public void followLineToSplineWithIniVel(Pose2d target){
-        Pose2d vels = drive.getPoseVelocity();
-        double v0 = Math.sqrt(vels.getX()*vels.getX() + vels.getY()*vels.getY()); // ini vel mag
-        followLineToSplineWithIniVel(target,v0);
-    }
-    public void followLineToSplineWithIniVel(Pose2d target, double iniVel){
-        Pose2d current = getPos();
-        Pose2d vels = drive.getPoseVelocity();
-        // Create a spoofed trajectory
-        double delta = iniVel*VEL_ACCOUNT_CT; // to determine
-        Trajectory spoofed = createSpoofedTraj(current,vels,new Vector2d(delta,0),0.5);
-        // Follow the trajectory sequence
-        TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
-        TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
-        TrajectoryBuilder engine = new TrajectoryBuilder(new Pose2d(current.getX()+delta,current.getY(),current.getHeading()),0.0,spoofed,0.0,velocityConstraint,accelerationConstraint,new MotionState(0,iniVel,0),0.25);
-
-        drive.followTrajectory(engine
-                        .lineToSplineHeading(target) // this should now be smooth!!!)
-                        .build());
-    }
-    public void doOptimizedTeleOpDepositTraj(TrajectoryVelocityConstraint quickMoveVelocityConstraint, TrajectoryAccelerationConstraint quickMoveAccelerationConstraint)
-    {
-        Pose2d vels = drive.getPoseVelocity();
-        double v0 = Math.sqrt(vels.getX()*vels.getX() + vels.getY()*vels.getY()); // ini vel mag
-        Pose2d current = getPos();
-        // Create a spoofed trajectory
-        double delta = v0*VEL_ACCOUNT_CT; // to determine
-        Trajectory spoofed = createSpoofedTraj(current,vels,new Vector2d(-delta,0),0.5);
-        // Follow the trajectory sequence
-        TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
-        TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
-        TrajectoryBuilder engine = new TrajectoryBuilder(new Pose2d(current.getX()+delta,current.getY(),current.getHeading()),0.0,spoofed,0.0,velocityConstraint,accelerationConstraint,new MotionState(0,0,0),0.25);
-
-        drive.followTrajectory(engine
-                .lineToSplineHeading(new Pose2d(14,65.5,0), quickMoveVelocityConstraint, quickMoveAccelerationConstraint)
-                .splineToSplineHeading(new Pose2d(5.58,64.47,-Math.toRadians(55)), Math.PI)
-                .build());
-    }
-
-    /*
-
-
-    */
-    public Trajectory createSpoofedTraj(Pose2d inipos, Pose2d inivel, Vector2d dPos, double dt) {
-        double x = inipos.getX(); // current pos
-        double y = inipos.getY(); // current pos
-        double h = inipos.getHeading(); // current pos
-        double dx = dPos.getX(); // delta
-        double dy = dPos.getY(); // delta
-        double v0 = Math.sqrt(inivel.getX()*inivel.getX() + inivel.getY()*inivel.getY()); // ini vel mag
-
-
-        // Create a motion profile segment "spoofed"
-        MotionState state = new MotionState(x,v0,0,0);
-        MotionSegment motionSegment = new MotionSegment(state,dt);
-        // Make a new segment list and add the spoofed segment
-        List<MotionSegment> motionSegs = new ArrayList<>(1);
-        motionSegs.add(motionSegment);
-        // Create a motion profile based off of the motion segments
-        MotionProfile motionProfile = new MotionProfile(motionSegs);
-
-        // Create the curve to follow
-        ParametricCurve curve = new LineSegment(new Vector2d(x,y),new Vector2d(x+dx,y+dy));
-        // Make a path segment based off of the curve and add it to a path segment list
-        PathSegment pathSegment = new PathSegment(curve);
-        List<PathSegment> pathSegs = new ArrayList<>(1);
-        pathSegs.add(pathSegment);
-
-        // Create a path based off of the path segment list
-        Path path = new Path(pathSegs);
-
-        // Build the spoofed trajectory
-        Trajectory spoofed = new Trajectory(path,motionProfile);
-        return spoofed;
-    }
-    public void doBlueDepositTrajectory()
-    {
-        drive.followTrajectory(
-                drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToSplineHeading(AutonomousBrain.startPositionBlue)
-                        .splineToSplineHeading(AutonomousBrain.depositPositionAllianceBlue2,Math.PI)
-                        .build()
-        );
-    }
-    public void doBlueAutonomousParkingTrajectory()
-    {
-        drive.followTrajectory(
-                drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .splineToSplineHeading(AutonomousBrain.resetPositionB4WarehouseBlue,Math.PI)
-                        .lineToSplineHeading(AutonomousBrain.parkingPositionBlue)
-                        .build()
-        );
     }
 
     public void haltTrajectory()

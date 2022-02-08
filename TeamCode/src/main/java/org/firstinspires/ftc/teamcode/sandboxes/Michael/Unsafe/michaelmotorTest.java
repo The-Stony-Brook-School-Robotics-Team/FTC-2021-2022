@@ -34,7 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-//@TeleOp(name="S - Motor Test", group="Linear Opmode")
+@TeleOp(name="S - Motor Test", group="Linear Opmode")
 @Disabled
 @Deprecated
 public class michaelmotorTest extends LinearOpMode {
