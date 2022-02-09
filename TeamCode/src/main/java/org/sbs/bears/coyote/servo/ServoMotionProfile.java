@@ -1,7 +1,5 @@
-package org.sbs.bears.coyote.servopkg;
+package org.sbs.bears.coyote.servo;
 
-
-import com.acmerobotics.roadrunner.util.NanoClock;
 
 import org.sbs.bears.coyote.math.Polynomial;
 

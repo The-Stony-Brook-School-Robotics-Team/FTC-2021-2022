@@ -1,4 +1,4 @@
-package org.sbs.bears.coyote.servopkg;
+package org.sbs.bears.coyote.servo;
 
 public class ServoMotionSegment {
 

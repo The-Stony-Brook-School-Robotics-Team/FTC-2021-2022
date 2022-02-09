@@ -1,6 +1,5 @@
-package org.sbs.bears.coyote.servopkg;
+package org.sbs.bears.coyote.servo;
 
-import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.jetbrains.annotations.NotNull;
