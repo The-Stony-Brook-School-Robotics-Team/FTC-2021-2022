@@ -17,6 +17,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
  * @author Marc N.
  * @version 2.1.2
  */
+@TeleOp
 public class buttonmotor extends LinearOpMode {
     DcMotor[] motors = new DcMotor[4];
     public static String[] motorNames = new String[]{"rb","lb","rf","lf"}; // rb lb rf lf
@@ -30,14 +31,17 @@ public class buttonmotor extends LinearOpMode {
             motors[i].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
         // STEP 2: Reverse motors as needed. CHANGE THIS IF IT DOES NOT WORK!
-        motors[3].setDirection(DcMotorSimple.Direction.REVERSE);
-        motors[0].setDirection(DcMotorSimple.Direction.REVERSE);
+        motors[2].setDirection(DcMotorSimple.Direction.REVERSE);
+        motors[1].setDirection(DcMotorSimple.Direction.REVERSE);
         // MARK - End of Initialization
         waitForStart();
         // MARK - Start of Run code
         while(opModeIsActive()) {
             // MARK: Start of loop code
             telemetry.addData("RB Enc",motors[0].getCurrentPosition());
+            telemetry.addData("LB Enc",motors[1].getCurrentPosition());
+            telemetry.addData("RF Enc",motors[2].getCurrentPosition());
+            telemetry.addData("LF Enc",motors[3].getCurrentPosition());
             telemetry.update();
             if(gamepad1.a) {
                 // RB
