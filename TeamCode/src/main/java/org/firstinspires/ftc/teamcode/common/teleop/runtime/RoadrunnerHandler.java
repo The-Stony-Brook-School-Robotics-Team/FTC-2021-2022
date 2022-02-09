@@ -159,10 +159,10 @@ public class RoadrunnerHandler {
                 Log.d(interfaceTag, "Im about to go from here to there (ong)");
                 Log.d(interfaceTag, "michael says hi uwu :3");
 
-                drive.followTrajectory(
-                        drive.trajectoryBuilder(drive.getPoseEstimate())
-                                .splineToSplineHeading(new Pose2d())
-                );
+                // drive.followTrajectory(
+                //         drive.trajectoryBuilder(drive.getPoseEstimate())
+                //                 .splineToSplineHeading(new Pose2d())
+                // );
 
                 break;
 
