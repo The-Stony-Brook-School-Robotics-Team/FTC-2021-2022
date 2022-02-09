@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.sandboxes.Marc;
 
+import android.transition.Slide;
+
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
@@ -13,7 +16,7 @@ import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
 import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
 import org.sbs.bears.robotframework.controllers.SlideController;
 import org.sbs.bears.robotframework.enums.SlideTarget;
-
+@Config
 @TeleOp(name = "A - Slide Controller Debugger")
 public class SlideControllerDebugger extends LinearOpMode
 {
@@ -27,6 +30,7 @@ public class SlideControllerDebugger extends LinearOpMode
     private boolean qX;
     private boolean pB;
     private boolean pRB;
+    public static SlideTarget target = SlideTarget.BOTTOM_DEPOSIT;
 
     State state = State.OFF;
     @Override
@@ -41,7 +45,7 @@ public class SlideControllerDebugger extends LinearOpMode
         //bu.setState(IntakeState.PARK);
 //        red.setState(IntakeState.PARK);
 
-        slideController.targetParams = SlideTarget.BOTTOM_DEPOSIT;
+        slideController.targetParams = target;
 
         waitForStart();
 
