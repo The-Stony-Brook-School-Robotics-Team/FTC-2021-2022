@@ -36,29 +36,22 @@ public class ServoMotionFollower {
     /**
      * Simple motion generation for a servo
      * @version 1
+     * @param pos the position you want to reach
+     * @param step the increment value you want
+     * @param time the time you want it to take to reach the position
+     * @example pos: 1 step: 0.01 time: 1 second
      */
     @Beta
     @DoNotUse
-    public ServoMotionProfile genTest(double step, double max) {
+    public ServoMotionProfile genTest(double pos, double step, double time) {
         ArrayList<ServoMotionSegment> segmentList = new ArrayList<>();
-        for(double x = 0; x <= max; x += step) {
-            double base = 1 + Math.pow(Math.E, -10 * (x - 0.6));
+        for(double x = 0; x <= time; x += step) {
+            double base = 1 + Math.pow(Math.E, -7 * (x - (time / 2)));
             double y = 1 / base;
             ServoMotionSegment segment = new ServoMotionSegment(y, x);
             segmentList.add(segment);
         }
         return new ServoMotionProfile(segmentList);
-    }
-
-    /**
-     * Get the y pos based off of time
-     * @param x time
-     * @return position
-     * @version 1
-     */
-    public double returnY(double x) {
-        double base = 1 + Math.pow(Math.E, -10 * (x - 0.6));
-        return 1 / base;
     }
 
 

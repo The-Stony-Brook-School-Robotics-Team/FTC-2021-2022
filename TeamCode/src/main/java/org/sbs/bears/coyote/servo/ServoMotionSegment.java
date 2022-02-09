@@ -7,8 +7,8 @@ public class ServoMotionSegment {
 
     /**
      * Motion Segment
-     * @param angle
-     * @param dt
+     * @param angle angle (clipped range)
+     * @param dt delta time in seconds
      */
     public ServoMotionSegment(double angle, double dt){
         this.angle = angle;
