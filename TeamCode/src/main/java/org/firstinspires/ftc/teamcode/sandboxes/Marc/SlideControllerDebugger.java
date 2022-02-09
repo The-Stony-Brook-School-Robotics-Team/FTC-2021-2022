@@ -41,7 +41,7 @@ public class SlideControllerDebugger extends LinearOpMode
         //bu.setState(IntakeState.PARK);
 //        red.setState(IntakeState.PARK);
 
-        slideController.targetParams = SlideTarget.CUSTOM;
+        slideController.targetParams = SlideTarget.BOTTOM_DEPOSIT;
 
         waitForStart();
 

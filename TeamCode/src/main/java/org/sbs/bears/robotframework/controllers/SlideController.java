@@ -660,8 +660,8 @@ public class SlideController {
     public static double vertServoPosition_TWO_CAROUSEL = 0.3767; ///measured
     public static double vertServoPosition_THREE_CAROUSEL = 0.647;
     public static double vertServoPosition_THREE_DEPOSIT = .89; // 0.85; // TODO //.754; //measured
-    public static double vertServoPosition_TWO_DEPOSIT = .552;//.4188;//0.3688;
-    public static double vertServoPosition_ONE_DEPOSIT = .28;//11;//0.06;
+    public static double vertServoPosition_TWO_DEPOSIT = 0.45;//.4188;//0.3688;
+    public static double vertServoPosition_ONE_DEPOSIT = .12;//11;//0.06;
     public static double vertServoPosition_CUSTOM = .6;//11;//0.06;
 
 
@@ -692,19 +692,19 @@ public class SlideController {
     // slide motor
     int slideMotorPosition_PARKED = 5;
     public static int slideMotorPosition_BUCKET_OUT = 225;//250;//380//150; // minimum position for the bucket to be out, measured
-    public int slideMotorPosition_BUCKET_OUT_RET = 800; // minimum position for the bucket to be out, measured
-    public int slideMotorPosition_THREE_DEPOSIT = 1330; // remeasured // last 1360
-    public int slideMotorPosition_TWO_DEPOSIT = 1156; //measured
-    public int slideMotorPosition_ONE_DEPOSIT = 1170;//1000; //measured
-    int slideMotorPosition_THREE_CAROUSEL = 1713;
-    int slideMotorPosition_TWO_CAROUSEL = 1650;
-    int slideMotorPosition_ONE_CAROUSEL = 1665;
-    public int slideMotorPosition_CAP_FROM_CAROUSEL = 1476; // TODO
-    public int slideMotorPosition_CAP_FROM_CAROUSEL_RET = 1442; // TODO
-    public int slideMotorPosition_CUSTOM = 600; // TODO
-    int slideMotorPosition_FULL = 1980;
+    public static int slideMotorPosition_BUCKET_OUT_RET = 800; // minimum position for the bucket to be out, measured
+    public static int slideMotorPosition_THREE_DEPOSIT = 1310; // remeasured // last 1360
+    public static int slideMotorPosition_TWO_DEPOSIT = 1244; //measured
+    public static int slideMotorPosition_ONE_DEPOSIT = 1300;//1000; //measured
+    public static int slideMotorPosition_THREE_CAROUSEL = 1713;
+    public static int slideMotorPosition_TWO_CAROUSEL = 1650;
+    public static int slideMotorPosition_ONE_CAROUSEL = 1665;
+    public static  int slideMotorPosition_CAP_FROM_CAROUSEL = 1476; // TODO
+    public static int slideMotorPosition_CAP_FROM_CAROUSEL_RET = 1442; // TODO
+    public static int slideMotorPosition_CUSTOM = 600; // TODO
+    public static int slideMotorPosition_FULL = 1980;
     //int slideMotorPosition_START_LOWER = 400;
-    public int slideMotorPosition_CAP_ON_GROUND = 473;
+    public static int slideMotorPosition_CAP_ON_GROUND = 473;
 
     public static double slideMotorPowerMoving = .9;
     public static double slideMotorPowerCarousel = .8;
