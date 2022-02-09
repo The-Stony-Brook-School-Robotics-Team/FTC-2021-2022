@@ -65,7 +65,7 @@ public class SlideControllerDebugger extends LinearOpMode
 
 
             if(gamepad1.right_bumper && !pRB) {
-                slideController.collectCapstone();
+                slideController.extendDropRetract(SlideTarget.MID_DEPOSIT);
                 pRB = true;
             } else if(!gamepad1.right_bumper && pRB) {
                 pRB = false;

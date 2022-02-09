@@ -11,6 +11,8 @@ public class BucketTester extends LinearOpMode {
     private Servo bucket;
     private boolean qA = false;
     private boolean qB = false;
+    private boolean qL = false;
+    private boolean qR = false;
 
     public double dumperPosition_CLOSED = 0.33;  // remeasured on jan 31 at 16h08
     public double dumperPosition_READY = 0.53;
@@ -19,26 +21,27 @@ public class BucketTester extends LinearOpMode {
 
     public void runOpMode() throws InterruptedException {
 
-        bucket = hardwareMap.get(Servo.class, "du");
+        bucket = hardwareMap.get(Servo.class, "vt");
 
         waitForStart();
 
         while (opModeIsActive()) {
 
             if(gamepad1.dpad_up && !qA){
-                bucket.setPosition(bucket.getPosition() + .1);
+                bucket.setPosition(bucket.getPosition() + .01);
                 qA = true;
             }
             if(!gamepad1.dpad_up && qA){
                 qA = false;
             }
             if(gamepad1.dpad_down && !qB){
-                bucket.setPosition(bucket.getPosition() - .1);
+                bucket.setPosition(bucket.getPosition() - .01);
                 qB = true;
             }
             if(!gamepad1.dpad_down && qB){
                 qB = false;
             }
+
             if(gamepad1.x)  bucket.setPosition(dumperPosition_CLOSED);
             if(gamepad1.y)  bucket.setPosition(dumperPosition_READY);
             if(gamepad1.a)  bucket.setPosition(dumperPosition_EJECT);

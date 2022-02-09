@@ -194,7 +194,6 @@ public class AutonomousBrain {
                     boolean isInState = minorState.equals(MinorAutonomousState.ONE_INTAKE);
                     while(isInState)
                     {
-                        slideCtrl.checkForBucketObject();
                         isInState = minorState.equals(MinorAutonomousState.ONE_INTAKE);
                     }
                 }).start();

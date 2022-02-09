@@ -19,15 +19,15 @@
 
         public void runOpMode() throws InterruptedException {
             blueIntake = new IntakeControllerBlue(hardwareMap, telemetry);
-            redIntake = new IntakeControllerRed(hardwareMap, telemetry);
-            blueIntake.setState(IntakeState.BASE);
-            redIntake.setState(IntakeState.PARK);
+            //redIntake = new IntakeControllerRed(hardwareMap, telemetry);
+            blueIntake.setState(IntakeState.DUMP);
+            //redIntake.setState(IntakeState.PARK);
             waitForStart();
 
             while(opModeIsActive()){
                 if(gamepad1.right_bumper){
                     blueIntake.checkIntake();
-                    redIntake.checkIntake();
+              //      redIntake.checkIntake();
 
                 }
 
@@ -38,27 +38,29 @@
                 if(gamepad1.b){
                     //blueIntake.setState(IntakeState.DUMP);
                     blueIntake.setState(IntakeState.DUMP);
-                    redIntake.setState(IntakeState.DUMP);
+                 //   redIntake.setState(IntakeState.DUMP);
                 }
                 else if(gamepad1.a){
                     //blueIntake.setState(IntakeState.BASE);
                     blueIntake.setState(IntakeState.BASE);
-                    redIntake.setState(IntakeState.BASE);
+                  //  redIntake.setState(IntakeState.BASE);
                 }
                 else if(gamepad1.y){
                     //blueIntake.setState(IntakeState.PARK);
                     blueIntake.setState(IntakeState.PARK);
-                    redIntake.setState(IntakeState.PARK);
+                  //  redIntake.setState(IntakeState.PARK);
                 }
                 else if(gamepad1.dpad_up && !qA){
-                    position += .005;
+                    //position += .005;
+                    blueIntake.sleepAmount += 50;
                     qA = true;
                 }
                 else if(!gamepad1.dpad_up && qA){
                     qA = false;
                 }
                 else if(gamepad1.dpad_down && !qB){
-                    position -= .005;
+                    //position -= .005;
+                    blueIntake.sleepAmount -= 50;
                     qB = true;
                 }
                 else if(!gamepad1.dpad_down && qB){
@@ -69,11 +71,11 @@
 
 
                 telemetry.addData("blue State: ", blueIntake.getState());
-                telemetry.addData("red State: ", redIntake.getState());
-                telemetry.addData("Desired Position: ", position);
+               // telemetry.addData("red State: ", redIntake.getState());
+                telemetry.addData("Sleep: ", blueIntake.sleepAmount);
                 telemetry.addData("blue servo ", blueIntake.getServoPos());
-                telemetry.addData("red servo ", redIntake.getServoPos());
-                telemetry.addData("red distance", redIntake.distanceSensor.getDistance(DistanceUnit.MM));
+                //telemetry.addData("red servo ", redIntake.getServoPos());
+               // telemetry.addData("red distance", redIntake.distanceSensor.getDistance(DistanceUnit.MM));
                 telemetry.addData("blue distance", blueIntake.distanceSensor.getDistance(DistanceUnit.MM));
 
                 telemetry.update();

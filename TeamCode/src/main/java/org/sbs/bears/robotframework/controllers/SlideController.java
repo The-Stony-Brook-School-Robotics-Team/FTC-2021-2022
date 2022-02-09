@@ -27,7 +27,6 @@ public class SlideController {
     public Servo verticalServo;
     private Servo horizontalServo;
     public Servo dumperServo;
-    private ColorRangeSensor blueColorRangeSensor;
     public DigitalChannel magswitch;
 
 
@@ -54,7 +53,7 @@ public class SlideController {
         // horizontalServo = hardwareMap.get(Servo.class, "hz");
         dumperServo = hardwareMap.get(Servo.class, "du");
         slideMotor = hardwareMap.get(DcMotorEx.class, "spool");
-        blueColorRangeSensor = hardwareMap.get(ColorRangeSensor.class, "bc");
+
 
 
         slideMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(10, 0, 0, 0));
@@ -249,7 +248,6 @@ public class SlideController {
      */
     public void extendDropRetract(SlideTarget target, Gamepad gamepad) {
         this.targetParams = target;
-        checkForBucketObject();
         extendSlide();
         if (flagToLeave) {
             return;
@@ -628,21 +626,21 @@ public class SlideController {
 
     }
 
-    public void checkForBucketObject() {
+  /**  public void checkForBucketObject() {
         Log.d("SlideController", "Found an object in the bucket");
         if (blueColorRangeSensor.alpha() > 160) {
             Log.d("SlideController", "Closing the dumper servo");
             dumperServo.setPosition(dumperPosition_CLOSED);
         }
-    }
-
+    } **/
+  /**  @Deprecated
     public boolean teleopIsObjectInBucket() {
         if (blueColorRangeSensor.alpha() > 160) {
             return true;
         } else {
             return false;
         }
-    }
+    } **/
 
     public void setHeightWithSlope(int finalEncoderTicks, double finalServoPos) {
         while(slideMotor.getCurrentPosition() > finalEncoderTicks) {
@@ -673,6 +671,7 @@ public class SlideController {
     public static double vertServoPosition_CAP_CAROUSEL = 0.76; // TODO
     double vertServoPosition_FULL_MAX = 1;
 
+
     public static double incrementDeltaExtend = 0.008;//.2;
     public static double incrementDeltaRetract = 0.02;//0.007;
 
@@ -680,6 +679,7 @@ public class SlideController {
     public static double incrementDeltaRetractTeleop = 0.02;//0.007;
 
     public static double incrementDeltaExtendCapstone = 0.005;
+
 
     // dumper servo
 /*    double dumperPosition_DUMP = .91;
