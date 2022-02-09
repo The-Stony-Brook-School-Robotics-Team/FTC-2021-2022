@@ -17,6 +17,7 @@ public class IntakeControllerBlue {
     public Rev2mDistanceSensor distanceSensor;
     private Servo mini;
     private Servo sweeper;
+    private Servo dumperServo;
 
 
     /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/
@@ -38,13 +39,14 @@ public class IntakeControllerBlue {
     Object stateMutex = new Object();
 
     /** Initialization **/
-    public IntakeControllerBlue(HardwareMap hardwareMap, Telemetry telemetry) {
+    public IntakeControllerBlue(HardwareMap hardwareMap, Servo dumperServo, Telemetry telemetry) {
         /** Different hardwareMap depending on the intake side. **/
         scooper = hardwareMap.get(Servo.class, "bi");
         compliantWheel = hardwareMap.get(DcMotor.class, "leftodom");
         distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "bd");
         mini = hardwareMap.get(Servo.class, "vout");
         sweeper = hardwareMap.get(Servo.class, "sweep");
+        this.dumperServo = dumperServo;
         scooper.setDirection(Servo.Direction.FORWARD);
         compliantWheel.setDirection(DcMotorSimple.Direction.FORWARD);
         sweeper.setDirection(Servo.Direction.FORWARD);
@@ -164,6 +166,13 @@ public class IntakeControllerBlue {
                     e.printStackTrace();
                 }
                 sweeper.setPosition(.75);
+                try {
+                    Thread.sleep(750);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                dumperServo.setPosition(SlideController.dumperPosition_CLOSED);
+
                 return;
 
             case PARK:

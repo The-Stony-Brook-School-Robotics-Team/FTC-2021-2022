@@ -626,6 +626,7 @@ public class SlideController {
 
     }
 
+
   /**  public void checkForBucketObject() {
         Log.d("SlideController", "Found an object in the bucket");
         if (blueColorRangeSensor.alpha() > 160) {
@@ -655,7 +656,7 @@ public class SlideController {
     // TODO MEASURE ALL CONSTANTS
 
 
-    public static double vertServoPosition_PARKED = 0.1;
+    public static double vertServoPosition_PARKED = 0;//.1
     public static double vertServoPosition_ONE_CAROUSEL = 0.175;
     public static double vertServoPosition_TWO_CAROUSEL = 0.3767; ///measured
     public static double vertServoPosition_THREE_CAROUSEL = 0.647;

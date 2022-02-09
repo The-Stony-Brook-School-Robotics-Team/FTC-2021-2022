@@ -96,8 +96,9 @@ public class OfficialTeleop extends OpMode {
          * Initialization
          */
         redIntake = new IntakeControllerRed(hardwareMap, telemetry);
-        blueIntake = new IntakeControllerBlue(hardwareMap, telemetry);
+
         slideController = new SlideController(hardwareMap, telemetry);
+        blueIntake = new IntakeControllerBlue(hardwareMap, slideController.dumperServo, telemetry);
         carouselController = new DuckCarouselController(hardwareMap, telemetry);
         normalizedColorSensor = hardwareMap.get(NormalizedColorSensor.class, "color");
         revBlinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "rgb");

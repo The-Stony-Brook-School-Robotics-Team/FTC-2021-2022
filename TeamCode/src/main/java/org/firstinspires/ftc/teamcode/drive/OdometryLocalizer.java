@@ -56,11 +56,12 @@ public class OdometryLocalizer extends com.acmerobotics.roadrunner.localization.
     @Override
     public List<Double> getWheelPositions() {
         RevBulkData bulk = expansionHub.getBulkInputData();
-        /*return Arrays.asList(
+        if (bulk == null) {
+        return Arrays.asList(
                 encoderTicksToInches(leftEncoder.getCurrentPosition()), // L
                 encoderTicksToInches(rightEncoder.getCurrentPosition()), // R
                 encoderTicksToInches(frontEncoder.getCurrentPosition()) // C
-        );*/
+        );}
         return Arrays.asList(
                 encoderTicksToInches(bulk.getMotorCurrentPosition(1)),
                 encoderTicksToInches(-bulk.getMotorCurrentPosition(2)),
@@ -73,11 +74,11 @@ public class OdometryLocalizer extends com.acmerobotics.roadrunner.localization.
     public List<Double> getWheelVelocities() {
         RevBulkData bulk = expansionHub.getBulkInputData();
 
-        /*return Arrays.asList(
+        if (bulk == null) {return Arrays.asList(
                 encoderTicksToInches(leftEncoder.getCorrectedVelocity()),
                 encoderTicksToInches(rightEncoder.getCorrectedVelocity()),
                 encoderTicksToInches(frontEncoder.getCorrectedVelocity())
-        );*/
+        );}
         return Arrays.asList(
                 encoderTicksToInches(bulk.getMotorVelocity(1)),
                 encoderTicksToInches(-bulk.getMotorVelocity(2)),

@@ -18,7 +18,7 @@
         private double position = .03;
 
         public void runOpMode() throws InterruptedException {
-            blueIntake = new IntakeControllerBlue(hardwareMap, telemetry);
+           // blueIntake = new IntakeControllerBlue(hardwareMap, telemetry);
             //redIntake = new IntakeControllerRed(hardwareMap, telemetry);
             blueIntake.setState(IntakeState.DUMP);
             //redIntake.setState(IntakeState.PARK);
