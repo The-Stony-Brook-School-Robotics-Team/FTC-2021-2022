@@ -38,7 +38,8 @@ public class RoadrunnerHandler {
         FORWARD(Configuration.inchesForward),
         BACK(Configuration.inchesBack),
         TURN_ABOUT_WHEEL(0),
-        WAREHOUSE_AUTO_TURN(0);
+        WAREHOUSE_AUTO_TURN(0),
+        CURRENT_POSITION_TO_DEPOSIT(0);
 
         private int inches;
 
@@ -153,6 +154,18 @@ public class RoadrunnerHandler {
 //                        .build());
 
                 break;
+
+            case CURRENT_POSITION_TO_DEPOSIT:
+                Log.d(interfaceTag, "Im about to go from here to there (ong)");
+                Log.d(interfaceTag, "michael says hi uwu :3");
+
+                drive.followTrajectory(
+                        drive.trajectoryBuilder(drive.getPoseEstimate())
+                                .splineToSplineHeading(new Pose2d())
+                );
+
+                break;
+
         }
         scheduledMovement = MovementTypes.EMPTY;
         movementHandler.movementEnabled = true;
