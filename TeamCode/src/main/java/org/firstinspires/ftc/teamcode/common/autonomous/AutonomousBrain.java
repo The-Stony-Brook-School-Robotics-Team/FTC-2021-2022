@@ -217,7 +217,7 @@ public class AutonomousBrain {
                     }
                 }).start();
                 Log.d("AutonBrain","Forward init");
-                RRctrl.forward(40,15);
+                RRctrl.forward(20);
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
                 Log.d("AutonBrain","Forward done");
                 RRctrl.stopRobot();

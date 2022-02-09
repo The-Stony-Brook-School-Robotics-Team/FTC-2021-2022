@@ -304,7 +304,9 @@ public class RoadRunnerController {
     }
     public void stopTrajectory()
     {
+        Log.d("RoadRunnerController","Trajectory Cancel Requested");
         runner.cancelTraj();
+        Log.d("RoadRunnerController","Trajectory Cancel " + (runner.isBusy() ? "suceeded" : "failed"));
     }
     public void followSplineToSpline(Pose2d iniPos, Pose2d finalPos,double finTang)
     {

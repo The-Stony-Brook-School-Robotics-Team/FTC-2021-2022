@@ -673,13 +673,13 @@ public class SlideController {
     public static double vertServoPosition_CAP_CAROUSEL = 0.76; // TODO
     double vertServoPosition_FULL_MAX = 1;
 
-    public static double incrementDeltaExtend = 0.025;//.2;
+    public static double incrementDeltaExtend = 0.008;//.2;
     public static double incrementDeltaRetract = 0.02;//0.007;
 
-    public static double incrementDeltaExtendTeleOp = .025;//.2;
-    public static double incrementDeltaRetractTeleop = .02;//0.007;
+    public static double incrementDeltaExtendTeleOp = 0.008;//.2;
+    public static double incrementDeltaRetractTeleop = 0.02;//0.007;
 
-    public static double incrementDeltaExtendCapstone = .014;
+    public static double incrementDeltaExtendCapstone = 0.005;
 
     // dumper servo
 /*    double dumperPosition_DUMP = .91;
@@ -692,7 +692,7 @@ public class SlideController {
     // slide motor
     int slideMotorPosition_PARKED = 5;
     public static int slideMotorPosition_BUCKET_OUT = 225;//250;//380//150; // minimum position for the bucket to be out, measured
-    public int slideMotorPosition_BUCKET_OUT_RET = 650; // minimum position for the bucket to be out, measured
+    public int slideMotorPosition_BUCKET_OUT_RET = 800; // minimum position for the bucket to be out, measured
     public int slideMotorPosition_THREE_DEPOSIT = 1330; // remeasured // last 1360
     public int slideMotorPosition_TWO_DEPOSIT = 1156; //measured
     public int slideMotorPosition_ONE_DEPOSIT = 1170;//1000; //measured
@@ -707,9 +707,9 @@ public class SlideController {
     public int slideMotorPosition_CAP_ON_GROUND = 473;
 
     public static double slideMotorPowerMoving = .9;
-    public static double slideMotorPowerCarousel = .5;
-    public static double slideMotorPowerMovingBack = .5;
-    public static double slideMotorPowerGrabCap = .6;
+    public static double slideMotorPowerCarousel = .8;
+    public static double slideMotorPowerMovingBack = .9;
+    public static double slideMotorPowerGrabCap = .9;
     public static final double slideMotorPowerStill = 0;
 
     /*double deltaZForLevel3 = 12; // in
