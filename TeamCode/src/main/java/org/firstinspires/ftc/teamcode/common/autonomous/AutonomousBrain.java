@@ -198,10 +198,18 @@ public class AutonomousBrain {
 
                 intakeCtrlBlue.setState(IntakeState.BASE);
                 new Thread(()->{
-                    boolean isInState = minorState.equals(MinorAutonomousState.ONE_INTAKE);
+                    boolean isInState = minorState.equals(AutonomousBrain.MinorAutonomousState.ONE_INTAKE);
                     while(isInState)
                     {
-                        isInState = minorState.equals(MinorAutonomousState.ONE_INTAKE);
+                        isInState = minorState.equals(AutonomousBrain.MinorAutonomousState.ONE_INTAKE);
+                        if(AutonomousBlueFull.gamepad.b) // manual override
+                        {
+                            RRctrl.haltTrajectory();
+                            minorState = AutonomousBrain.MinorAutonomousState.TWO_PREP_DEPOSIT;
+                            qObjectInRobot =true;
+                            intakeCtrlBlue.loadItemIntoSlideForAutonomousOnly();
+                            break;
+                        }
                     }
                 }).start();
                 new Thread(()->{

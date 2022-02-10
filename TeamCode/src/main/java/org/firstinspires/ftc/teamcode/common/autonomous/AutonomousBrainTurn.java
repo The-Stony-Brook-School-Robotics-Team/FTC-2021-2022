@@ -202,6 +202,8 @@ public class AutonomousBrainTurn {
                             RRctrl.haltTrajectory();
                             minorState = MinorAutonomousState.TWO_PREP_DEPOSIT;
                             qObjectInRobot =true;
+                            intakeCtrlBlue.loadItemIntoSlideForAutonomousOnly();
+                            break;
                         }
                     }
                 }).start();
