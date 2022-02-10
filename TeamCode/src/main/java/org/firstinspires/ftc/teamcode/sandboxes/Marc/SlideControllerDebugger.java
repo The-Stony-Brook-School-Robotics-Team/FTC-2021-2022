@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.sandboxes.Marc;
 
-import com.coyote.framework.core.geometry.Pose2d;
-import com.coyote.framework.core.trajectory.constraints.TrajectoryAccelerationConstraint;
-import com.coyote.framework.core.trajectory.constraints.TrajectoryVelocityConstraint;
+import android.transition.Slide;
+
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -13,7 +16,7 @@ import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
 import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
 import org.sbs.bears.robotframework.controllers.SlideController;
 import org.sbs.bears.robotframework.enums.SlideTarget;
-
+@Config
 @TeleOp(name = "A - Slide Controller Debugger")
 public class SlideControllerDebugger extends LinearOpMode
 {
@@ -27,6 +30,7 @@ public class SlideControllerDebugger extends LinearOpMode
     private boolean qX;
     private boolean pB;
     private boolean pRB;
+    public static SlideTarget target = SlideTarget.BOTTOM_DEPOSIT;
 
     State state = State.OFF;
     @Override
@@ -35,13 +39,13 @@ public class SlideControllerDebugger extends LinearOpMode
         drive = new SampleMecanumDrive(hardwareMap);
         TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(30, 2,DriveConstants.TRACK_WIDTH);
         TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
-        bu = new IntakeControllerBlue(hardwareMap,telemetry);
+        bu = new IntakeControllerBlue(hardwareMap, slideController.dumperServo, telemetry);
         red = new IntakeControllerRed(hardwareMap,telemetry);
 
         //bu.setState(IntakeState.PARK);
 //        red.setState(IntakeState.PARK);
 
-        slideController.targetParams = SlideTarget.BOTTOM_DEPOSIT;
+        slideController.targetParams = target;
 
         waitForStart();
 
@@ -65,7 +69,7 @@ public class SlideControllerDebugger extends LinearOpMode
 
 
             if(gamepad1.right_bumper && !pRB) {
-                slideController.collectCapstone();
+                slideController.extendDropRetract(SlideTarget.MID_DEPOSIT);
                 pRB = true;
             } else if(!gamepad1.right_bumper && pRB) {
                 pRB = false;

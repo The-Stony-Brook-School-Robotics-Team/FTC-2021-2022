@@ -27,7 +27,7 @@ public class Robot {
         this.CVctrl = new OpenCVController(hardwareMap,telemetry,mode);
         this.RRctrl = new RoadRunnerController(hardwareMap,telemetry);
         this.slideCtrl = new SlideController(hardwareMap,telemetry);
-        this.IntakeCtrlBlue = new IntakeControllerBlue(hardwareMap,telemetry);
+        this.IntakeCtrlBlue = new IntakeControllerBlue(hardwareMap, slideCtrl.dumperServo, telemetry);
         this.IntakeCtrlRed = new IntakeControllerRed(hardwareMap,telemetry);
         //this.colorCtrl = new ColorStripController(hardwareMap, telemetry);
         this.duckCtrl = new DuckCarouselController(hardwareMap,telemetry);

@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode.common.autonomous;
 
 import android.util.Log;
 
-import com.coyote.framework.core.geometry.Pose2d;
-import com.coyote.framework.core.util.NanoClock;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
@@ -194,7 +194,6 @@ public class AutonomousBrain {
                     boolean isInState = minorState.equals(MinorAutonomousState.ONE_INTAKE);
                     while(isInState)
                     {
-                        slideCtrl.checkForBucketObject();
                         isInState = minorState.equals(MinorAutonomousState.ONE_INTAKE);
                     }
                 }).start();
@@ -217,7 +216,7 @@ public class AutonomousBrain {
                     }
                 }).start();
                 Log.d("AutonBrain","Forward init");
-                RRctrl.forward(40,15);
+                RRctrl.forward(20,15);
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
                 Log.d("AutonBrain","Forward done");
                 RRctrl.stopRobot();
@@ -263,13 +262,13 @@ public class AutonomousBrain {
     }
 
     public static Pose2d startPositionBlue = new Pose2d(14,65.5,0);
-    public static Pose2d warehousePickupPositionBlue = new Pose2d(35,70,0);
+    public static Pose2d warehousePickupPositionBlue = new Pose2d(35,80,0);
     public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(5.58,64.47,-Math.toRadians(55));
     public static Pose2d depositPositionAllianceBlueMID = new Pose2d(5.58,64.47,-Math.toRadians(56));
     public static Pose2d depositPositionAllianceBlueBOT = new Pose2d(5.58,64.47,-Math.toRadians(59));
     public static Pose2d depositPositionAllianceBlue2 = new Pose2d(5.58,64.47,-Math.toRadians(55));
-    public static Pose2d resetPositionB4WarehouseBlue = new Pose2d(14,85,0);
-    public static Pose2d parkingPositionBlue = new Pose2d(60,90,0);
+    public static Pose2d resetPositionB4WarehouseBlue = new Pose2d(14,75,0);
+    public static Pose2d parkingPositionBlue = new Pose2d(60,75,0);
 
 
 }

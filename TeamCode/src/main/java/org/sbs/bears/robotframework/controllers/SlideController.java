@@ -4,7 +4,7 @@ package org.sbs.bears.robotframework.controllers;
 import android.util.Log;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.coyote.framework.core.util.NanoClock;
+import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -27,7 +27,6 @@ public class SlideController {
     public Servo verticalServo;
     private Servo horizontalServo;
     public Servo dumperServo;
-    private ColorRangeSensor blueColorRangeSensor;
     public DigitalChannel magswitch;
 
 
@@ -54,7 +53,7 @@ public class SlideController {
         // horizontalServo = hardwareMap.get(Servo.class, "hz");
         dumperServo = hardwareMap.get(Servo.class, "du");
         slideMotor = hardwareMap.get(DcMotorEx.class, "spool");
-        blueColorRangeSensor = hardwareMap.get(ColorRangeSensor.class, "bc");
+
 
 
         slideMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(10, 0, 0, 0));
@@ -249,7 +248,6 @@ public class SlideController {
      */
     public void extendDropRetract(SlideTarget target, Gamepad gamepad) {
         this.targetParams = target;
-        checkForBucketObject();
         extendSlide();
         if (flagToLeave) {
             return;
@@ -392,6 +390,9 @@ public class SlideController {
                         targetPosFinal = slideMotorPosition_CAP_FROM_CAROUSEL;
                         verticalServoTargetPos = vertServoPosition_CAP_CAROUSEL_HIGHER;
                         break;
+                    case CUSTOM:
+                        targetPosFinal = slideMotorPosition_CUSTOM;
+                        verticalServoTargetPos = vertServoPosition_CUSTOM;
                     case NA:
                         Log.d("SlideController", "Slide Extension failed: did not specify target. Exiting");
                         flagToLeave = true;
@@ -625,21 +626,22 @@ public class SlideController {
 
     }
 
-    public void checkForBucketObject() {
+
+  /**  public void checkForBucketObject() {
         Log.d("SlideController", "Found an object in the bucket");
         if (blueColorRangeSensor.alpha() > 160) {
             Log.d("SlideController", "Closing the dumper servo");
             dumperServo.setPosition(dumperPosition_CLOSED);
         }
-    }
-
+    } **/
+  /**  @Deprecated
     public boolean teleopIsObjectInBucket() {
         if (blueColorRangeSensor.alpha() > 160) {
             return true;
         } else {
             return false;
         }
-    }
+    } **/
 
     public void setHeightWithSlope(int finalEncoderTicks, double finalServoPos) {
         while(slideMotor.getCurrentPosition() > finalEncoderTicks) {
@@ -654,13 +656,14 @@ public class SlideController {
     // TODO MEASURE ALL CONSTANTS
 
 
-    double vertServoPosition_PARKED = 0.1;
-    double vertServoPosition_ONE_CAROUSEL = 0.175;
-    double vertServoPosition_TWO_CAROUSEL = 0.3767; ///measured
-    double vertServoPosition_THREE_CAROUSEL = 0.647;
-    public double vertServoPosition_THREE_DEPOSIT = .89; // 0.85; // TODO //.754; //measured
-    public double vertServoPosition_TWO_DEPOSIT = .552;//.4188;//0.3688;
-    public double vertServoPosition_ONE_DEPOSIT = .28;//11;//0.06;
+    public static double vertServoPosition_PARKED = 0;//.1
+    public static double vertServoPosition_ONE_CAROUSEL = 0.175;
+    public static double vertServoPosition_TWO_CAROUSEL = 0.3767; ///measured
+    public static double vertServoPosition_THREE_CAROUSEL = 0.647;
+    public static double vertServoPosition_THREE_DEPOSIT = .89; // 0.85; // TODO //.754; //measured
+    public static double vertServoPosition_TWO_DEPOSIT = 0.45;//.4188;//0.3688;
+    public static double vertServoPosition_ONE_DEPOSIT = .12;//11;//0.06;
+    public static double vertServoPosition_CUSTOM = .6;//11;//0.06;
 
 
     double vertServoPosition_PARKED_MIN = 0;
@@ -669,13 +672,15 @@ public class SlideController {
     public static double vertServoPosition_CAP_CAROUSEL = 0.76; // TODO
     double vertServoPosition_FULL_MAX = 1;
 
-    public double incrementDeltaExtend = 0.025;//.2;
-    public double incrementDeltaRetract = 0.02;//0.007;
 
-    public double incrementDeltaExtendTeleOp = .025;//.2;
-    public double incrementDeltaRetractTeleop = .02;//0.007;
+    public static double incrementDeltaExtend = 0.008;//.2;
+    public static double incrementDeltaRetract = 0.02;//0.007;
 
-    public static double incrementDeltaExtendCapstone = .014;
+    public static double incrementDeltaExtendTeleOp = 0.008;//.2;
+    public static double incrementDeltaRetractTeleop = 0.02;//0.007;
+
+    public static double incrementDeltaExtendCapstone = 0.005;
+
 
     // dumper servo
 /*    double dumperPosition_DUMP = .91;
@@ -688,24 +693,25 @@ public class SlideController {
     // slide motor
     int slideMotorPosition_PARKED = 5;
     public static int slideMotorPosition_BUCKET_OUT = 225;//250;//380//150; // minimum position for the bucket to be out, measured
-    public int slideMotorPosition_BUCKET_OUT_RET = 650; // minimum position for the bucket to be out, measured
-    public int slideMotorPosition_THREE_DEPOSIT = 1330; // remeasured // last 1360
-    public int slideMotorPosition_TWO_DEPOSIT = 1156; //measured
-    public int slideMotorPosition_ONE_DEPOSIT = 1170;//1000; //measured
-    int slideMotorPosition_THREE_CAROUSEL = 1713;
-    int slideMotorPosition_TWO_CAROUSEL = 1650;
-    int slideMotorPosition_ONE_CAROUSEL = 1665;
-    public int slideMotorPosition_CAP_FROM_CAROUSEL = 1476; // TODO
-    public int slideMotorPosition_CAP_FROM_CAROUSEL_RET = 1442; // TODO
-    int slideMotorPosition_FULL = 1980;
+    public static int slideMotorPosition_BUCKET_OUT_RET = 800; // minimum position for the bucket to be out, measured
+    public static int slideMotorPosition_THREE_DEPOSIT = 1310; // remeasured // last 1360
+    public static int slideMotorPosition_TWO_DEPOSIT = 1244; //measured
+    public static int slideMotorPosition_ONE_DEPOSIT = 1300;//1000; //measured
+    public static int slideMotorPosition_THREE_CAROUSEL = 1713;
+    public static int slideMotorPosition_TWO_CAROUSEL = 1650;
+    public static int slideMotorPosition_ONE_CAROUSEL = 1665;
+    public static  int slideMotorPosition_CAP_FROM_CAROUSEL = 1476; // TODO
+    public static int slideMotorPosition_CAP_FROM_CAROUSEL_RET = 1442; // TODO
+    public static int slideMotorPosition_CUSTOM = 600; // TODO
+    public static int slideMotorPosition_FULL = 1980;
     //int slideMotorPosition_START_LOWER = 400;
-    public int slideMotorPosition_CAP_ON_GROUND = 473;
+    public static int slideMotorPosition_CAP_ON_GROUND = 473;
 
-    public double slideMotorPowerMoving = .9;
-    public double slideMotorPowerCarousel = .5;
-    public double slideMotorPowerMovingBack = .5;
-    public static double slideMotorPowerGrabCap = .6;
-    double slideMotorPowerStill = 0;
+    public static double slideMotorPowerMoving = .9;
+    public static double slideMotorPowerCarousel = .8;
+    public static double slideMotorPowerMovingBack = .9;
+    public static double slideMotorPowerGrabCap = .9;
+    public static final double slideMotorPowerStill = 0;
 
     /*double deltaZForLevel3 = 12; // in
     double deltaZForLevel2 = 5; // in

@@ -21,7 +21,6 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.controllers.DuckCarouselController;
 import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
 import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
-import org.sbs.bears.robotframework.controllers.RoadRunnerController;
 import org.sbs.bears.robotframework.controllers.SlideController;
 import org.sbs.bears.robotframework.enums.IntakeState;
 
@@ -60,7 +59,6 @@ public class OfficialTeleop extends OpMode {
     public static IntakeControllerBlue blueIntake;
     public static SlideController slideController;
     public static DuckCarouselController carouselController;
-    public static RoadRunnerController roadRunnerController;
 
     /** Run Time Applications */
     public static MovementHandler movementHandler = new MovementHandler();
@@ -74,7 +72,7 @@ public class OfficialTeleop extends OpMode {
     public static RevBlinkinLedDriver revBlinkinLedDriver;
 
     /**
-     * Thread Pool
+     * 线程池
      */
     private static HashMap<String, Thread> threadPool = new HashMap<>();
 
@@ -98,9 +96,9 @@ public class OfficialTeleop extends OpMode {
          * Initialization
          */
         redIntake = new IntakeControllerRed(hardwareMap, telemetry);
-        blueIntake = new IntakeControllerBlue(hardwareMap, telemetry);
+
         slideController = new SlideController(hardwareMap, telemetry);
-        roadRunnerController = new RoadRunnerController(hardwareMap,telemetry);
+        blueIntake = new IntakeControllerBlue(hardwareMap, slideController.dumperServo, telemetry);
         carouselController = new DuckCarouselController(hardwareMap, telemetry);
         normalizedColorSensor = hardwareMap.get(NormalizedColorSensor.class, "color");
         revBlinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "rgb");
@@ -142,10 +140,10 @@ public class OfficialTeleop extends OpMode {
                 /**
                  * Bucket Logic
                  */
-                if(slideController.teleopIsObjectInBucket()) {
+              /**  if(slideController.teleopIsObjectInBucket()) {
                     Log.d(interfaceTag, "Set servo to closed");
                     slideController.dumperServo.setPosition(slideController.dumperPosition_CLOSED);
-                }
+                } **/
                telemetry.addData("blue Distance Sensor", blueIntake.distanceSensor.getDistance(DistanceUnit.MM));
                 telemetry.addData("red Distance Sensor", blueIntake.distanceSensor.getDistance(DistanceUnit.MM));
                 telemetry.addData("Red Servo Position", redIntake.getServoPos());

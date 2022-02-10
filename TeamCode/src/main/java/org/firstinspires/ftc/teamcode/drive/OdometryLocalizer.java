@@ -3,11 +3,10 @@ package org.firstinspires.ftc.teamcode.drive;
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.coyote.framework.core.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import com.coyote.framework.core.localization.ThreeTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.RevBulkData;
@@ -16,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Config
-public class OdometryLocalizer extends ThreeTrackingWheelLocalizer {
+public class OdometryLocalizer extends com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer {
     public static double TICKS_PER_REV = 8192;
     public static double WHEEL_RADIUS = .738188976; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
@@ -56,11 +55,17 @@ public class OdometryLocalizer extends ThreeTrackingWheelLocalizer {
     @NonNull
     @Override
     public List<Double> getWheelPositions() {
-        //RevBulkData bulk = expansionHub.getBulkInputData();
+        RevBulkData bulk = expansionHub.getBulkInputData();
+        if (bulk == null) {
         return Arrays.asList(
                 encoderTicksToInches(leftEncoder.getCurrentPosition()), // L
                 encoderTicksToInches(rightEncoder.getCurrentPosition()), // R
                 encoderTicksToInches(frontEncoder.getCurrentPosition()) // C
+        );}
+        return Arrays.asList(
+                encoderTicksToInches(bulk.getMotorCurrentPosition(1)),
+                encoderTicksToInches(-bulk.getMotorCurrentPosition(2)),
+                encoderTicksToInches(bulk.getMotorCurrentPosition(0))
         );
     }
 
@@ -68,10 +73,16 @@ public class OdometryLocalizer extends ThreeTrackingWheelLocalizer {
     @Override
     public List<Double> getWheelVelocities() {
         RevBulkData bulk = expansionHub.getBulkInputData();
-        return Arrays.asList(
+
+        if (bulk == null) {return Arrays.asList(
                 encoderTicksToInches(leftEncoder.getCorrectedVelocity()),
                 encoderTicksToInches(rightEncoder.getCorrectedVelocity()),
                 encoderTicksToInches(frontEncoder.getCorrectedVelocity())
+        );}
+        return Arrays.asList(
+                encoderTicksToInches(bulk.getMotorVelocity(1)),
+                encoderTicksToInches(-bulk.getMotorVelocity(2)),
+                encoderTicksToInches(bulk.getMotorVelocity(0))
         );
     }
 }

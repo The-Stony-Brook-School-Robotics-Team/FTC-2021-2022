@@ -10,4 +10,5 @@ public enum SlideTarget {
     MID_DEPOSIT,
     BOTTOM_DEPOSIT,
     CAP_FROM_CAROUSEL,
+    CUSTOM
 }

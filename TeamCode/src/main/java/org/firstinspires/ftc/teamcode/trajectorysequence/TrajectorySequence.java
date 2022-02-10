@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.trajectorysequence;
 
-import com.coyote.framework.core.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 
 import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.SequenceSegment;
 

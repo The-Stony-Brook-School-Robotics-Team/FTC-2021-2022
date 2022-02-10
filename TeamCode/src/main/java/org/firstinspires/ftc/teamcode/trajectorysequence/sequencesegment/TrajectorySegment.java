@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment;
 
-import com.coyote.framework.core.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 
 import java.util.Collections;
 

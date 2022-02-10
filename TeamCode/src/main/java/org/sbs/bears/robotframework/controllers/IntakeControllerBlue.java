@@ -1,8 +1,6 @@
 package org.sbs.bears.robotframework.controllers;
-import static org.sbs.bears.robotframework.enums.IntakeSide.*;
 
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
-import com.qualcomm.hardware.rev.RevSPARKMini;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -11,7 +9,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.sbs.bears.robotframework.enums.IntakeState;
-import org.sbs.bears.robotframework.enums.IntakeSide;
 
 public class IntakeControllerBlue {
 
@@ -20,17 +17,21 @@ public class IntakeControllerBlue {
     public Rev2mDistanceSensor distanceSensor;
     private Servo mini;
     private Servo sweeper;
+    private Servo dumperServo;
+
 
     /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/
 //    private double[] basePos = {.025, 0.7}; //.141 // COMMENTED OUT BY MARC ON SUN JAN 9 2022 AT 22h12m54s
 
-    private double[] basePos = {.03, .7}; //.141 // CHANGED BY MARC ON SUN JAN 9 2022 AT 22h12m54s
+    private double[] basePos = {.04, .75}; //.03 // CHANGED BY MARC ON SUN JAN 9 2022 AT 22h12m54s
 
-    private double[] dumpPos = {.45, 0}; //.87
+    private double[] dumpPos = {.375, 0}; //.45 //.41
     private double[] parkPos = {.33, 0.0}; //75
 
     /** Distance needed to switch states (mm) **/
     private double distThreshold = 60;
+
+    public long sleepAmount;
 
     private boolean qIsObjectInPayload = false;
 
@@ -38,17 +39,19 @@ public class IntakeControllerBlue {
     Object stateMutex = new Object();
 
     /** Initialization **/
-    public IntakeControllerBlue(HardwareMap hardwareMap, Telemetry telemetry) {
+    public IntakeControllerBlue(HardwareMap hardwareMap, Servo dumperServo, Telemetry telemetry) {
         /** Different hardwareMap depending on the intake side. **/
         scooper = hardwareMap.get(Servo.class, "bi");
         compliantWheel = hardwareMap.get(DcMotor.class, "leftodom");
         distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "bd");
         mini = hardwareMap.get(Servo.class, "vout");
         sweeper = hardwareMap.get(Servo.class, "sweep");
+        this.dumperServo = dumperServo;
         scooper.setDirection(Servo.Direction.FORWARD);
         compliantWheel.setDirection(DcMotorSimple.Direction.FORWARD);
         sweeper.setDirection(Servo.Direction.FORWARD);
         compliantWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        sleepAmount = 800;
     }
 
 
@@ -68,7 +71,7 @@ public class IntakeControllerBlue {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        setState(IntakeState.PARK);
+        //setState(IntakeState.PARK);
 
     }
 
@@ -95,13 +98,13 @@ public class IntakeControllerBlue {
     public void checkIntake(){
         if(state == IntakeState.BASE && isObjectInPayload()){
             setState(IntakeState.DUMP);
-            //mini.setPosition(0);
+           /** //mini.setPosition(0);
             try {
                 Thread.sleep(450);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            setState(IntakeState.PARK);
+            setState(IntakeState.PARK); **/
 
 
         }
@@ -158,11 +161,18 @@ public class IntakeControllerBlue {
                 compliantWheel.setPower(dumpPos[1]);
                 scooper.setPosition(dumpPos[0]);
                 try {
-                    Thread.sleep(800);
+                    Thread.sleep(sleepAmount);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 sweeper.setPosition(.75);
+                try {
+                    Thread.sleep(750);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                dumperServo.setPosition(SlideController.dumperPosition_CLOSED);
+
                 return;
 
             case PARK:
