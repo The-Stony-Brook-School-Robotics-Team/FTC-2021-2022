@@ -5,7 +5,9 @@ import android.util.Log;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.NanoClock;
+import com.qualcomm.hardware.broadcom.BroadcomColorSensor;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 
@@ -39,6 +41,7 @@ public class AutonomousBrain {
 
     RevBlinkinLedDriver leds;
     NormalizedColorSensor normalizedColorSensor;
+    RevColorSensorV3 colorNew;
 
     Telemetry tel;
     HardwareMap hwMap;
@@ -87,6 +90,8 @@ public class AutonomousBrain {
         intakeCtrlBlue.setState(IntakeState.PARK);
         intakeCtrlRed.setState(IntakeState.PARK); // to prevent from moving around
         normalizedColorSensor = hardwareMap.get(NormalizedColorSensor.class, "color");
+        //colorNew = hardwareMap.get(RevColorSensorV3.class, "color");
+        //colorNew.write8(BroadcomColorSensor.Register.MAIN_CTRL,0x00);
         normalizedColorSensor.setGain(Configuration.colorSensorGain);
         slideCtrl.dumperServo.setPosition(slideCtrl.dumperPosition_CLOSED); // init only
     }
