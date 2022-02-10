@@ -477,4 +477,7 @@ public class RoadRunnerController {
     public static double fastSpeed = 100;
     public static double slowSpeed = 30;
 
+    public boolean isInWarehouse() {
+        return getPos().getX() > 32 && getPos().getY() > 28;
+    }
 }

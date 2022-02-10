@@ -167,7 +167,7 @@ public class AutonomousBrain {
                 RRctrl.followLineToSpline(parkingPositionBlue);
                 Log.d("AutonBrain","parking4");
                 */
-                RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
+                if(!RRctrl.isInWarehouse()) {RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);}
                 RRctrl.followLineToSpline(parkingPositionBlue);
                 SharedData.autonomousLastPosition = RRctrl.getPos();
                 majorState = MajorAutonomousState.FINISHED;
@@ -270,6 +270,7 @@ public class AutonomousBrain {
                 return;
             case FOUR_RETURN_TO_INTAKE:
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE_VIOLET);
+
                 RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
                 RRctrl.setPos(new Pose2d(resetPositionB4WarehouseBlue.getX(),65.5,0)); // reset contre mur.
                 Log.d("AutonBrain","intake prepped");
