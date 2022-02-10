@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.sbs.bears.robotframework.enums.IntakeState;
 
+
 public class IntakeControllerBlue {
 
     private Servo scooper;
@@ -21,7 +22,7 @@ public class IntakeControllerBlue {
 
 
     /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/
-//    private double[] basePos = {.025, 0.7}; //.141 
+//    private double[] basePos = {.025, 0.7}; //.141
     private double[] basePos = {.03, 1};
 
     private double[] dumpPos = {.375, 0}; //.45 //.41

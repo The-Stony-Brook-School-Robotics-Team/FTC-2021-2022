@@ -14,7 +14,6 @@ public class IntakeTesting extends LinearOpMode {
     private Servo place;
     private boolean qA = false;
     private boolean qB = false;
-    private Servo
 
     public double dumperPosition_CLOSED = 0.33;  // remeasured on jan 31 at 16h08
     public double dumperPosition_READY = 0.53;
@@ -25,7 +24,6 @@ public class IntakeTesting extends LinearOpMode {
         red = hardwareMap.get(Servo.class, "ri");
         blue = hardwareMap.get(Servo.class, "bi");
         place = red;
-        intake = "red";
 
 
         waitForStart();
