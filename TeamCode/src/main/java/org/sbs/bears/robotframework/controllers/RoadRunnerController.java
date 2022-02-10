@@ -283,6 +283,19 @@ public class RoadRunnerController {
                         .build()
         );
     }
+    public void doBlueDepositTrajectoryNoTurn()
+    {
+        TrajectoryVelocityConstraint velocityConstraintFast = SampleMecanumDrive.getVelocityConstraint(100, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
+        TrajectoryVelocityConstraint velocityConstraintSlow = SampleMecanumDrive.getVelocityConstraint(30, 3,DriveConstants.TRACK_WIDTH);
+        TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
+
+        Pose2d current = drive.getPoseEstimate();
+        drive.followTrajectory(
+                drive.trajectoryBuilder(current)
+                        .lineToSplineHeading(AutonomousBrain.depositPrepPositionBlueNoTurn,velocityConstraintFast,accelerationConstraint)
+                        .build()
+        );
+    }
     public void doBlueAutonomousParkingTrajectory()
     {
         drive.followTrajectory(
@@ -295,9 +308,12 @@ public class RoadRunnerController {
 
     public void autonomousPrepareForPickup()
     {
+        TrajectoryVelocityConstraint velocityConstraintFast = SampleMecanumDrive.getVelocityConstraint(100, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
+        TrajectoryVelocityConstraint velocityConstraintSlow = SampleMecanumDrive.getVelocityConstraint(30, 3,DriveConstants.TRACK_WIDTH);
+        TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
         drive.followTrajectory(
                 drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToSplineHeading(AutonomousBrain.warehousePickupPositionBlue)
+                        .lineToSplineHeading(AutonomousBrain.warehousePickupPositionBlue,velocityConstraintFast,accelerationConstraint)
                         .build()
         );
     }
