@@ -129,7 +129,7 @@ public class AutonomousBrain {
 
                 RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
                 intakeCtrlBlue.setState(IntakeState.BASE);
-                RRctrl.followLineToSpline(warehousePickupPositionBlue);
+                RRctrl.autonomousPrepareForPickup();
                 Log.d("AutonBrain","reset status and init for intake");
 
                 qObjectInRobot = false; // reset
@@ -216,7 +216,7 @@ public class AutonomousBrain {
                     }
                 }).start();
                 Log.d("AutonBrain","Forward init");
-                RRctrl.forward(20,15);
+                RRctrl.forward(20,velocityIntake);
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
                 Log.d("AutonBrain","Forward done");
                 RRctrl.stopRobot();
@@ -230,15 +230,29 @@ public class AutonomousBrain {
                     return;
                 }
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
-                RRctrl.followLineToSpline(warehousePickupPositionBlue);
+                RRctrl.followLineToSpline(depositPrepPositionBlue);
                 Log.d("AutonBrain","Retrying to find a block");
                 return;
             case TWO_PREP_DEPOSIT: // TODO implement go forward and then turn
                 /*RRctrl.followLineToSpline(startPositionBlue);
                 RRctrl.followLineToSpline(depositPositionAllianceBlue);
                 */
-                RRctrl.doBlueDepositTrajectory();
+                new Thread(()->{
+                    // do white line repositioning
+                    boolean isInState = minorState.equals(MinorAutonomousState.TWO_PREP_DEPOSIT);
+                    while(isInState)
+                    {
+                        isInState = minorState.equals(MinorAutonomousState.TWO_PREP_DEPOSIT);
+                        if(normalizedColorSensor.getNormalizedColors().alpha > Configuration.colorSensorWhiteAlpha)
+                        {
+                            RRctrl.setPos(whiteLinePos);
+                            break; // done.
+                        }
+                    }
+                }).start();
                 Log.d("AutonBrain","Prepare for drop off");
+                RRctrl.doBlueDepositTrajectory();
+                Log.d("AutonBrain","Preparation Complete");
                 minorState = MinorAutonomousState.THREE_DEPOSIT;
                 return;
             case THREE_DEPOSIT:
@@ -252,7 +266,7 @@ public class AutonomousBrain {
                 RRctrl.setPos(new Pose2d(resetPositionB4WarehouseBlue.getX(),65.5,0)); // reset contre mur.
                 Log.d("AutonBrain","intake prepped");
                 intakeCtrlBlue.setState(IntakeState.BASE);
-                RRctrl.followLineToSpline(warehousePickupPositionBlue);
+                RRctrl.autonomousPrepareForPickup();
                 Log.d("AutonBrain","reset status and init for intake");
                 qObjectInRobot = false; // reset
                 minorState = MinorAutonomousState.ONE_INTAKE;
@@ -262,13 +276,16 @@ public class AutonomousBrain {
     }
 
     public static Pose2d startPositionBlue = new Pose2d(14,65.5,0);
-    public static Pose2d warehousePickupPositionBlue = new Pose2d(35,80,0);
+    public static Pose2d warehousePickupPositionBlue = new Pose2d(35,70,0);
+    public static Pose2d depositPrepPositionBlue = new Pose2d(35,80,0);
     public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(5.58,64.47,-Math.toRadians(55));
     public static Pose2d depositPositionAllianceBlueMID = new Pose2d(5.58,64.47,-Math.toRadians(56));
     public static Pose2d depositPositionAllianceBlueBOT = new Pose2d(5.58,64.47,-Math.toRadians(59));
     public static Pose2d depositPositionAllianceBlue2 = new Pose2d(5.58,64.47,-Math.toRadians(55));
     public static Pose2d resetPositionB4WarehouseBlue = new Pose2d(14,75,0);
     public static Pose2d parkingPositionBlue = new Pose2d(60,75,0);
+    public static Pose2d whiteLinePos = new Pose2d(28.5,65.5,0);
+    public static double velocityIntake = 15;
 
 
 }

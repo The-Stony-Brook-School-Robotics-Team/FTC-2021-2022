@@ -284,6 +284,14 @@ public class RoadRunnerController {
         );
     }
 
+    public void autonomousPrepareForPickup()
+    {
+        drive.followTrajectory(
+                drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .lineToSplineHeading(AutonomousBrain.warehousePickupPositionBlue)
+                        .build()
+        );
+    }
 
     public void followLineToSpline(Pose2d finalPos)
     {
