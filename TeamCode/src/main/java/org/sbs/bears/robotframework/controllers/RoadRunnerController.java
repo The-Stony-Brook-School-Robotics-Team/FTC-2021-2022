@@ -4,14 +4,12 @@ import android.util.Log;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.drive.Drive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.acmerobotics.roadrunner.util.NanoClock;
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -20,9 +18,6 @@ import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
-import org.tensorflow.lite.task.text.qa.QaAnswer;
-
-import java.util.Vector;
 
 /**
  * This class is a wrapper controller for the RoadRunner Library.
@@ -294,7 +289,7 @@ public class RoadRunnerController {
         Pose2d current = drive.getPoseEstimate();
         drive.followTrajectory(
                 drive.trajectoryBuilder(current)
-                        .lineToSplineHeading(AutonomousBrain.depositPrepPositionBlueNoTurn,velocityConstraintFast,accelerationConstraint)
+                        .lineToSplineHeading(AutonomousBrain.depositPositionBlueNoTurn,velocityConstraintFast,accelerationConstraint)
                         .build()
         );
     }

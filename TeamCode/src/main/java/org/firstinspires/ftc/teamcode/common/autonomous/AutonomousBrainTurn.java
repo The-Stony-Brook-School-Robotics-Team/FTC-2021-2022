@@ -147,7 +147,7 @@ public class AutonomousBrainTurn {
                 }
                 // time check
                double currentTime = NanoClock.system().seconds();
-                if(currentTime- iniTemps > 35) {
+                if(currentTime- iniTemps > 25) {
                     Log.d("AutonBrain","Time Constraint: parking");
                     majorState = MajorAutonomousState.FOUR_PARKING_CLEANUP;
                 }
