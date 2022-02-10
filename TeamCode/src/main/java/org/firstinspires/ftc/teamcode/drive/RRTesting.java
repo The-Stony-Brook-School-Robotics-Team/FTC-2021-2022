@@ -82,7 +82,7 @@ public class RRTesting extends LinearOpMode {
                 // Create a spoofed trajectory
                 Trajectory spoofed = createSpoofedTraj(current,vels,new Vector2d(4,0),0.7);
                 Trajectory tester = RRctrl.getDrive().trajectoryBuilder(new Pose2d(current.getX()+4,current.getY(),current.getHeading()))
-                        .splineToSplineHeading(new Pose2d(current.getX()+20,current.getY(),current.getHeading()),Math.PI/2) // this should now be smooth!!!
+                        .splineToSplineHeading(new Pose2d(current.getX()+20,current.getY(),current.getHeading()),0) // this should now be smooth!!!
                         .build();
                 // Chain the spoofed trajectory and the planned one, together
                 TrajectorySequence trajSeq = RRctrl.getDrive().trajectorySequenceBuilder(current)
