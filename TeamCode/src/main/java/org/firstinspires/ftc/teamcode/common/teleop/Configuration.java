@@ -27,7 +27,7 @@ public class Configuration {
 
     /** Color Sensor Settings */
     public static int colorSensorGain = 10;
-    public static double colorSensorWhiteAlpha = 0.8;
+    public static double colorSensorWhiteAlpha = 0.99985; // was 0.8
 
 
 }

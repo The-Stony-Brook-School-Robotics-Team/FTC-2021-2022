@@ -191,10 +191,10 @@ public class ButtonHandler {
 
                     // Right dpad
                     if(primaryGamepad.dpad_right && !isPressingRightDpad) {
-                        if(redIntake.getState() == IntakeState.PARK && slideController.getSlideMotorPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
+                        if(redIntake.getState() == IntakeState.DUMP && slideController.getSlideMotorPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
                             redIntake.setState(IntakeState.BASE);
                         } else {
-                            redIntake.setState(IntakeState.PARK);
+                            redIntake.setState(IntakeState.DUMP);
                         }
                         isPressingRightDpad = true;
                     } else if(!primaryGamepad.dpad_right && isPressingRightDpad) {
