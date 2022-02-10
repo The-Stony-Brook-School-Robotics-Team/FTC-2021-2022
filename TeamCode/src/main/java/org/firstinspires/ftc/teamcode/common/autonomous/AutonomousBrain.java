@@ -300,7 +300,7 @@ public class AutonomousBrain {
     public static Pose2d startPositionBlue = new Pose2d(14,65.5,0);
     public static Pose2d warehousePickupPositionBlue = new Pose2d(35,70,0);
     public static Pose2d depositPrepPositionBlue = new Pose2d(30,70,0);
-    public static Pose2d depositPrepPositionBlueNoTurn = new Pose2d(-22,70,0);
+    public static Pose2d depositPrepPositionBlueNoTurn = new Pose2d(-19,70,0);
     public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(5.58,64.47,-Math.toRadians(55));
     public static Pose2d depositPositionAllianceBlueMID = new Pose2d(5.58,64.47,-Math.toRadians(56));
     public static Pose2d depositPositionAllianceBlueBOT = new Pose2d(5.58,64.47,-Math.toRadians(59));
