@@ -27,6 +27,8 @@ import org.sbs.bears.robotframework.enums.SlideTarget;
 import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
 import static org.sbs.bears.robotframework.controllers.OpenCVController.doAnalysisMaster;
 
+import java.time.LocalDate;
+
 @Config
 public class AutonomousBrain {
     AutonomousMode mode;
@@ -93,7 +95,6 @@ public class AutonomousBrain {
         colorNew = hardwareMap.get(RevColorSensorV3.class, "color");
         colorNew.write8(BroadcomColorSensor.Register.LS_MEAS_RATE,0x01010000); // see pdf page 20 // increase speed
         colorNew.write8(BroadcomColorSensor.Register.PS_MEAS_RATE,0x00000001); // see pdf page 19 // increase speed
-        colorNew.setGain(Configuration.colorSensorGain);
         slideCtrl.dumperServo.setPosition(slideCtrl.dumperPosition_CLOSED); // init only
     }
     public void start() // call this method before loop, so start method.
@@ -186,6 +187,8 @@ public class AutonomousBrain {
                 // No associated action
                 return;
             case ONE_INTAKE:
+                minorState = MinorAutonomousState.TWO_PREP_DEPOSIT;
+                return;/*
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
                 Log.d("AutonBrain","Current Status: itemBool: " + qObjectInRobot + " intakeStatus " + intakeCtrlBlue.isObjectInPayload());
                 if(qObjectInRobot || intakeCtrlBlue.isObjectInPayload())
@@ -248,6 +251,7 @@ public class AutonomousBrain {
                 RRctrl.followLineToSpline(depositPrepPositionBlue);
                 Log.d("AutonBrain","Retrying to find a block");
                 return;
+                */
             case TWO_PREP_DEPOSIT: // TODO implement go forward and then turn
                 /*RRctrl.followLineToSpline(startPositionBlue);
                 RRctrl.followLineToSpline(depositPositionAllianceBlue);
@@ -260,7 +264,8 @@ public class AutonomousBrain {
                         isInState = minorState.equals(MinorAutonomousState.TWO_PREP_DEPOSIT);
                         if(colorNew.getNormalizedColors().alpha > Configuration.colorSensorWhiteAlpha)
                         {
-                            RRctrl.setPos(whiteLinePos);
+                            Log.d("AutonBrainThread","White tape pos x: " + RRctrl.getPos().getX() + " actual " + whiteLinePos.getX());
+                            //RRctrl.setPos(whiteLinePos);
                             break; // done.
                         }
                     }
@@ -279,8 +284,8 @@ public class AutonomousBrain {
             case FOUR_RETURN_TO_INTAKE:
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE_VIOLET);
 
-                RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
-                RRctrl.setPos(new Pose2d(resetPositionB4WarehouseBlue.getX(),65.5,0)); // reset contre mur.
+                //RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
+                //RRctrl.setPos(new Pose2d(resetPositionB4WarehouseBlue.getX(),65.5,0)); // reset contre mur.
                 Log.d("AutonBrain","intake prepped");
                 intakeCtrlBlue.setState(IntakeState.BASE);
                 RRctrl.autonomousPrepareForPickup();
@@ -301,8 +306,9 @@ public class AutonomousBrain {
     public static Pose2d depositPositionAllianceBlueBOT = new Pose2d(5.58,64.47,-Math.toRadians(59));
     public static Pose2d depositPositionAllianceBlue2 = new Pose2d(5.58,64.47,-Math.toRadians(48));
     public static Pose2d resetPositionB4WarehouseBlue = new Pose2d(14,75,0);
+    public static Pose2d resetPositionB4WarehouseBlue2 = new Pose2d(14,70,0);
     public static Pose2d parkingPositionBlue = new Pose2d(45,75,0);
-    public static Pose2d whiteLinePos = new Pose2d(28.5,65.5,0);
+    public static Pose2d whiteLinePos = new Pose2d(29.5,65.5,0);
     public static double velocityIntake = 15;
 
 

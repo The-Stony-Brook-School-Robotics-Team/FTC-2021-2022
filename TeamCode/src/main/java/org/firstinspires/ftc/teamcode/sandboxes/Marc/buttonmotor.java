@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.sandboxes.Marc;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -17,7 +18,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
  * @author Marc N.
  * @version 2.1.2
  */
-@TeleOp
+//@TeleOp
+@Disabled
 public class buttonmotor extends LinearOpMode {
     DcMotor[] motors = new DcMotor[4];
     public static String[] motorNames = new String[]{"rb","lb","rf","lf"}; // rb lb rf lf

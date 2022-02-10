@@ -315,6 +315,7 @@ public class RoadRunnerController {
         TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
         drive.followTrajectory(
                 drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .splineToSplineHeading(AutonomousBrain.resetPositionB4WarehouseBlue2,0,velocityConstraintFast,accelerationConstraint)
                         .lineToSplineHeading(AutonomousBrain.warehousePickupPositionBlue,velocityConstraintFast,accelerationConstraint)
                         .build()
         );

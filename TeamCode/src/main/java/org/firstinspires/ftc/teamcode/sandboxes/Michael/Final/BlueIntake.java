@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
-@TeleOp(name="B- BUCKET TESTING", group="Linear Opmode")
-public class BucketTester extends LinearOpMode {
+@TeleOp(name="B- BLUE INTAKE TESTING", group="Linear Opmode")
+public class BlueIntake extends LinearOpMode {
     private Servo bucket;
     private boolean qA = false;
     private boolean qB = false;
@@ -21,7 +21,7 @@ public class BucketTester extends LinearOpMode {
 
     public void runOpMode() throws InterruptedException {
 
-        bucket = hardwareMap.get(Servo.class, "du");
+        bucket = hardwareMap.get(Servo.class, "bi");
 
         waitForStart();
 

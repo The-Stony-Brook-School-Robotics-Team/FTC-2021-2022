@@ -1,64 +1,43 @@
 package org.firstinspires.ftc.teamcode.sandboxes.Marc;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.hardware.broadcom.BroadcomColorSensor;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
+import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.sbs.bears.robotframework.Robot;
 import org.sbs.bears.robotframework.controllers.RoadRunnerController;
 import org.sbs.bears.robotframework.controllers.SlideController;
 import org.tensorflow.lite.task.text.qa.QaAnswer;
-
+@TeleOp
 public class WhiteTapeDebugger extends LinearOpMode {
-    RoadRunnerController rrctrl;
-    Robot robot;
-    SlideController slideCtrl;
-    TrajectorySequence seq;
+
     @Override
     public void runOpMode() throws InterruptedException {
-        boolean qA = false;
+        RevColorSensorV3 colorNew;
+        colorNew = hardwareMap.get(RevColorSensorV3.class, "color");
+        colorNew.write8(BroadcomColorSensor.Register.LS_MEAS_RATE,0x01010000); // see pdf page 20 // increase speed
+        colorNew.write8(BroadcomColorSensor.Register.PS_MEAS_RATE,0x00000001); // see pdf page 19 // increase speed
+        //colorNew.setGain(Configuration.colorSensorGain);
 
-        robot = new Robot(hardwareMap,telemetry, AutonomousMode.TELEOP);
-        rrctrl = robot.getRRctrl();
-        slideCtrl = robot.getSlideCtrl();
 
-        rrctrl.setPos(startPos);
-        seq = rrctrl.getDrive().trajectorySequenceBuilder(startPos)
-                .splineToSplineHeading(wallResetPos,-Math.PI)
-                .lineToSplineHeading(whiteLinePos)
-                .lineToSplineHeading(dropOff)
-                .build();
         waitForStart();
 
         while(opModeIsActive() && !isStopRequested())
         {
-            if(gamepad1.a && !qA)
-            {
-                qA = true;
-
-                rrctrl.getDrive().followTrajectorySequence(seq);
-
-            }
-            else if(!gamepad1.a && qA)
-            {
-                qA = false;
-            }
+           telemetry.addData("alpha",colorNew.getNormalizedColors().alpha);
+           telemetry.addData("r",colorNew.getNormalizedColors().red);
+           telemetry.addData("g",colorNew.getNormalizedColors().green);
+           telemetry.addData("b",colorNew.getNormalizedColors().blue);
+           telemetry.addData("isOnWhiteTape",colorNew.getNormalizedColors().alpha > 0.99985);
+           telemetry.update();
         }
     }
-    public void iFoundWhiteLine()
-    {
-       TrajectorySequence current = rrctrl.getDrive().trajectorySequenceRunner.currentTrajectorySequence;
-       if(current.equals(seq))
-       {
-           
-       }
-    }
 
-    Pose2d startPos = new Pose2d(28.5,65.5,0);
-    Pose2d wallResetPos = new Pose2d(40,70,0);
-    Pose2d whiteLinePos = new Pose2d(28.5,65.5,0);
-    Pose2d dropOff = new Pose2d(14,65.5,0);
 }
 
 
