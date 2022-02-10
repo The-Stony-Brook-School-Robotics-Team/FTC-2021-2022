@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
+import org.tensorflow.lite.task.text.qa.QaAnswer;
 
 import java.util.Vector;
 
@@ -267,10 +268,18 @@ public class RoadRunnerController {
     }
     public void doBlueDepositTrajectory()
     {
+        TrajectoryVelocityConstraint velocityConstraintFast = SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
+        TrajectoryVelocityConstraint velocityConstraintSlow = SampleMecanumDrive.getVelocityConstraint(30, 3,DriveConstants.TRACK_WIDTH);
+        TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
+
+        Pose2d current = drive.getPoseEstimate();
         drive.followTrajectory(
-                drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToSplineHeading(AutonomousBrain.startPositionBlue)
-                        .splineToSplineHeading(AutonomousBrain.depositPositionAllianceBlue2,Math.PI)
+                drive.trajectoryBuilder(current)
+                        .lineToSplineHeading(new Pose2d(current.getX()-2,current.getY(),current.getHeading()
+                        ))
+                        .splineToConstantHeading(convertPose2Vector(AutonomousBrain.depositPrepPositionBlue),Math.PI,velocityConstraintFast,accelerationConstraint)
+                       // .splineToSplineHeading(AutonomousBrain.startPositionBlue,Math.PI)
+                        .splineToSplineHeading(AutonomousBrain.depositPositionAllianceBlue2,Math.PI,velocityConstraintSlow,accelerationConstraint)
                         .build()
         );
     }

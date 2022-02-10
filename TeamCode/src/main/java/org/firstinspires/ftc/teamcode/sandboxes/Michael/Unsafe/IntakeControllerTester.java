@@ -7,18 +7,21 @@
     import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
     import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
     import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
+    import org.sbs.bears.robotframework.controllers.SlideController;
     import org.sbs.bears.robotframework.enums.IntakeState;
 
     @TeleOp(name="Intake Controller Tester", group="Linear Opmode")
     public class IntakeControllerTester extends LinearOpMode {
         private IntakeControllerBlue blueIntake;
         private IntakeControllerRed redIntake;
+        private SlideController slideController;
         private boolean qA = false;
         private boolean qB = false;
         private double position = .03;
 
         public void runOpMode() throws InterruptedException {
-           // blueIntake = new IntakeControllerBlue(hardwareMap, telemetry);
+            slideController = new SlideController(hardwareMap, telemetry);
+            blueIntake = new IntakeControllerBlue(hardwareMap, slideController.dumperServo, telemetry);
             //redIntake = new IntakeControllerRed(hardwareMap, telemetry);
             blueIntake.setState(IntakeState.DUMP);
             //redIntake.setState(IntakeState.PARK);

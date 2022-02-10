@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.common.autonomous;
 
 import android.util.Log;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
@@ -24,7 +25,7 @@ import org.sbs.bears.robotframework.enums.SlideTarget;
 import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
 import static org.sbs.bears.robotframework.controllers.OpenCVController.doAnalysisMaster;
 
-
+@Config
 public class AutonomousBrain {
     AutonomousMode mode;
     Robot robot;
@@ -277,13 +278,13 @@ public class AutonomousBrain {
 
     public static Pose2d startPositionBlue = new Pose2d(14,65.5,0);
     public static Pose2d warehousePickupPositionBlue = new Pose2d(35,70,0);
-    public static Pose2d depositPrepPositionBlue = new Pose2d(35,80,0);
+    public static Pose2d depositPrepPositionBlue = new Pose2d(30,70,0);
     public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(5.58,64.47,-Math.toRadians(55));
     public static Pose2d depositPositionAllianceBlueMID = new Pose2d(5.58,64.47,-Math.toRadians(56));
     public static Pose2d depositPositionAllianceBlueBOT = new Pose2d(5.58,64.47,-Math.toRadians(59));
-    public static Pose2d depositPositionAllianceBlue2 = new Pose2d(5.58,64.47,-Math.toRadians(55));
+    public static Pose2d depositPositionAllianceBlue2 = new Pose2d(5.58,64.47,-Math.toRadians(48));
     public static Pose2d resetPositionB4WarehouseBlue = new Pose2d(14,75,0);
-    public static Pose2d parkingPositionBlue = new Pose2d(60,75,0);
+    public static Pose2d parkingPositionBlue = new Pose2d(45,75,0);
     public static Pose2d whiteLinePos = new Pose2d(28.5,65.5,0);
     public static double velocityIntake = 15;
 

@@ -108,8 +108,8 @@ public class OfficialTeleop extends OpMode {
          * Configuration
          */
         slideController.initTeleop();
-        redIntake.setState(IntakeState.PARK);
-        blueIntake.setState(IntakeState.PARK);
+        redIntake.setState(IntakeState.DUMP);
+        blueIntake.setState(IntakeState.DUMP);
         normalizedColorSensor.setGain(Configuration.colorSensorGain);
         telemetry.update();
 

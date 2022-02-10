@@ -23,7 +23,7 @@ public class IntakeControllerBlue {
     /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/
 //    private double[] basePos = {.025, 0.7}; //.141 // COMMENTED OUT BY MARC ON SUN JAN 9 2022 AT 22h12m54s
 
-    private double[] basePos = {.04, .75}; //.03 // CHANGED BY MARC ON SUN JAN 9 2022 AT 22h12m54s
+    private double[] basePos = {.04, 1}; //.03 // CHANGED BY MARC ON SUN JAN 9 2022 AT 22h12m54s
 
     private double[] dumpPos = {.375, 0}; //.45 //.41
     private double[] parkPos = {.33, 0.0}; //75

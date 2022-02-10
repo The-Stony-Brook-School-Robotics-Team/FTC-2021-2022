@@ -179,10 +179,10 @@ public class ButtonHandler {
                     }
                     // Left dpad
                     if(primaryGamepad.dpad_left && !isPressingLeftDpad) {
-                        if(blueIntake.getState() == IntakeState.PARK && slideController.getSlideMotorPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
+                        if(blueIntake.getState() == IntakeState.DUMP && slideController.getSlideMotorPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
                             blueIntake.setState(IntakeState.BASE);
                         } else {
-                            blueIntake.setState(IntakeState.PARK);
+                            blueIntake.setState(IntakeState.DUMP);
                         }
                         isPressingLeftDpad = true;
                     } else if(!primaryGamepad.dpad_left && isPressingLeftDpad) {
