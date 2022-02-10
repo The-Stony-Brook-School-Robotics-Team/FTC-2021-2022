@@ -21,7 +21,7 @@ public class BucketTester extends LinearOpMode {
 
     public void runOpMode() throws InterruptedException {
 
-        bucket = hardwareMap.get(Servo.class, "vt");
+        bucket = hardwareMap.get(Servo.class, "du");
 
         waitForStart();
 

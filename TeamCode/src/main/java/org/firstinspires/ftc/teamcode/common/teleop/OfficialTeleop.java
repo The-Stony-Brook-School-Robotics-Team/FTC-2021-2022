@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.common.teleop;
 import android.util.Log;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -112,6 +113,7 @@ public class OfficialTeleop extends OpMode {
         normalizedColorSensor.setGain(Configuration.colorSensorGain);
         telemetry.update();
 
+        drive.setPoseEstimate(new Pose2d(28.5, 65.5, 0));
         floodRuntimes();
     }
 

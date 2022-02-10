@@ -123,7 +123,7 @@ public class RoadrunnerHandler {
 
             case WAREHOUSE_AUTO_TURN:
                 Log.d(interfaceTag, "Going Forward");
-                drive.setPoseEstimate(new Pose2d(28.5, 65.5, 0));
+
 
                 drive.followTrajectory(
                         drive.trajectoryBuilder(drive.getPoseEstimate())
