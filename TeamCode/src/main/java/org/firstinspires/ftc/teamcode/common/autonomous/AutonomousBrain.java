@@ -89,10 +89,11 @@ public class AutonomousBrain {
         RRctrl.setPos(startPositionBlue);
         intakeCtrlBlue.setState(IntakeState.PARK);
         intakeCtrlRed.setState(IntakeState.PARK); // to prevent from moving around
-        normalizedColorSensor = hardwareMap.get(NormalizedColorSensor.class, "color");
-        //colorNew = hardwareMap.get(RevColorSensorV3.class, "color");
-        //colorNew.write8(BroadcomColorSensor.Register.MAIN_CTRL,0x00);
-        normalizedColorSensor.setGain(Configuration.colorSensorGain);
+        //normalizedColorSensor = hardwareMap.get(NormalizedColorSensor.class, "color");
+        colorNew = hardwareMap.get(RevColorSensorV3.class, "color");
+        colorNew.write8(BroadcomColorSensor.Register.LS_MEAS_RATE,0x01010000); // see pdf page 20 // increase speed
+        colorNew.write8(BroadcomColorSensor.Register.PS_MEAS_RATE,0x00000001); // see pdf page 19 // increase speed
+        colorNew.setGain(Configuration.colorSensorGain);
         slideCtrl.dumperServo.setPosition(slideCtrl.dumperPosition_CLOSED); // init only
     }
     public void start() // call this method before loop, so start method.
@@ -249,7 +250,7 @@ public class AutonomousBrain {
                     while(isInState)
                     {
                         isInState = minorState.equals(MinorAutonomousState.TWO_PREP_DEPOSIT);
-                        if(normalizedColorSensor.getNormalizedColors().alpha > Configuration.colorSensorWhiteAlpha)
+                        if(colorNew.getNormalizedColors().alpha > Configuration.colorSensorWhiteAlpha)
                         {
                             RRctrl.setPos(whiteLinePos);
                             break; // done.
@@ -285,7 +286,7 @@ public class AutonomousBrain {
     public static Pose2d startPositionBlue = new Pose2d(14,65.5,0);
     public static Pose2d warehousePickupPositionBlue = new Pose2d(35,70,0);
     public static Pose2d depositPrepPositionBlue = new Pose2d(30,70,0);
-    public static Pose2d depositPrepPositionBlueNoTurn = new Pose2d(-20,70,0);
+    public static Pose2d depositPrepPositionBlueNoTurn = new Pose2d(-22,70,0);
     public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(5.58,64.47,-Math.toRadians(55));
     public static Pose2d depositPositionAllianceBlueMID = new Pose2d(5.58,64.47,-Math.toRadians(56));
     public static Pose2d depositPositionAllianceBlueBOT = new Pose2d(5.58,64.47,-Math.toRadians(59));

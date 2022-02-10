@@ -3,6 +3,7 @@ package org.sbs.bears.robotframework.controllers;
 import android.util.Log;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.drive.Drive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -29,6 +30,7 @@ import java.util.Vector;
  * @author Marc D Nichitiu
  * @version 1.0
  */
+@Config
 public class RoadRunnerController {
 
     /**
@@ -285,8 +287,8 @@ public class RoadRunnerController {
     }
     public void doBlueDepositTrajectoryNoTurn()
     {
-        TrajectoryVelocityConstraint velocityConstraintFast = SampleMecanumDrive.getVelocityConstraint(100, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
-        TrajectoryVelocityConstraint velocityConstraintSlow = SampleMecanumDrive.getVelocityConstraint(30, 3,DriveConstants.TRACK_WIDTH);
+        TrajectoryVelocityConstraint velocityConstraintFast = SampleMecanumDrive.getVelocityConstraint(fastSpeed, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
+        TrajectoryVelocityConstraint velocityConstraintSlow = SampleMecanumDrive.getVelocityConstraint(slowSpeed, 3,DriveConstants.TRACK_WIDTH);
         TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
 
         Pose2d current = drive.getPoseEstimate();
@@ -471,5 +473,8 @@ public class RoadRunnerController {
     {
         runner.cancelTraj();
     }
+
+    public static double fastSpeed = 100;
+    public static double slowSpeed = 30;
 
 }
