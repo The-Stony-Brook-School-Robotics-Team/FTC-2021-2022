@@ -18,7 +18,6 @@ import org.sbs.bears.robotframework.controllers.DuckCarouselController;
 import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
 import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
-import org.sbs.bears.robotframework.controllers.RoadRunnerController;
 import org.sbs.bears.robotframework.controllers.RoadRunnerControllerTurn;
 import org.sbs.bears.robotframework.controllers.SlideController;
 import org.sbs.bears.robotframework.enums.IntakeState;
@@ -197,7 +196,7 @@ public class AutonomousBrainTurn {
                     while(isInState)
                     {
                         isInState = minorState.equals(MinorAutonomousState.ONE_INTAKE);
-                        if(AutonomousBlueFullTURN.gamepad.b) // manual override
+                        if(AutonomousBlueFullMerged.gamepad.b) // manual override
                         {
                             RRctrl.haltTrajectory();
                             minorState = MinorAutonomousState.TWO_PREP_DEPOSIT;

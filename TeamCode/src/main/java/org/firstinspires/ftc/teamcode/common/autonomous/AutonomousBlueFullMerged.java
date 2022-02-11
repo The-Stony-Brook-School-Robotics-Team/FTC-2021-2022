@@ -8,9 +8,9 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 
-@Autonomous (name = "A - Auton (Blue Full, TURN)")
-public class AutonomousBlueFullTURN extends LinearOpMode {
-    AutonomousBrainTurn brain;
+@Autonomous (name = "A - Auton (Blue Full, Merged)")
+public class AutonomousBlueFullMerged extends LinearOpMode {
+    AutonomousBrainMerged brain;
     boolean qA = false;
     boolean qContinue = false;
     boolean masterQContinue = true;
@@ -20,7 +20,7 @@ public class AutonomousBlueFullTURN extends LinearOpMode {
     public void runOpMode()
     {
         OpenCVController.isDuck = false;
-        brain = new AutonomousBrainTurn(hardwareMap,telemetry,AutonomousMode.BlueFull);
+        brain = new AutonomousBrainMerged(hardwareMap,telemetry,AutonomousMode.BlueFull);
         Log.d("Auton BF","Init Complete");
         msStuckDetectLoop = Integer.MAX_VALUE;
         gamepad = gamepad1;
@@ -46,8 +46,8 @@ public class AutonomousBlueFullTURN extends LinearOpMode {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        brain.majorState = AutonomousBrainTurn.MajorAutonomousState.FINISHED;
-        brain.minorState = AutonomousBrainTurn.MinorAutonomousState.STOPPED;
+        brain.majorState = AutonomousBrainMerged.MajorAutonomousState.FINISHED;
+        brain.minorState = AutonomousBrainMerged.MinorAutonomousState.STOPPED;
         requestOpModeStop();
         stop();
     }
@@ -57,7 +57,7 @@ public class AutonomousBlueFullTURN extends LinearOpMode {
         while(opModeIsActive()&& !isStopRequested()){
             if(!masterQContinue) {break;}
             brain.doStateAction();
-            if(brain.majorState.equals(AutonomousBrain.MajorAutonomousState.FINISHED)) { requestOpModeStop(); }
+            if(brain.majorState.equals(AutonomousBrainMerged.MajorAutonomousState.FINISHED)) { requestOpModeStop(); }
             if(!masterQContinue) { break; }
 
         }
