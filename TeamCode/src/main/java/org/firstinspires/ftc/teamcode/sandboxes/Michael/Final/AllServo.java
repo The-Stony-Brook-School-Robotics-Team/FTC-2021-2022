@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 @Config
 @TeleOp(name="B- ALL SERVOS", group="Linear Opmode")
 public class AllServo extends LinearOpMode {
-    private Servo bucket;
     private Servo redIntake;
     private Servo blueIntake;
     private Servo blueSweeper;
@@ -34,19 +33,18 @@ public class AllServo extends LinearOpMode {
         dumper = hardwareMap.get(Servo.class, "du"); //rb
 
 
-        Servo[] servos = {bucket, redIntake, blueIntake, blueSweeper, verticalServo, dumper};
+        Servo[] servos = {redIntake, blueIntake, blueSweeper, verticalServo, dumper};
+        String[] servoNames = {"red intake :3", "blue intake uwu", "blue sweeper x3", "vertical servo owo", "d-dumper... OwO"};
         place = servos[0];
         waitForStart();
 
         while (opModeIsActive()) {
             if(gamepad1.a && !qA){
                 qA = true;
-                try {
-                    count++;
-                }catch (Exception e){
-                    count = 0;
-                }
-                place = servos[0];
+                count++;
+                if(count > servos.length - 1) count = 0;
+                place = servos[count];
+                place.setPosition(.2);
             }
             if(!gamepad1.a && qA){
                 qA = false;
@@ -65,12 +63,13 @@ public class AllServo extends LinearOpMode {
                 qDown = true;
                 place.setPosition(place.getPosition() - .05);
             }
-            if(!gamepad1.dpad_up && qDown){
+            if(!gamepad1.dpad_down && qDown){
                 qDown = false;
             }
 
 
-            telemetry.addData("Current Servo: ", place);
+            telemetry.addData("Current Servo: ", servoNames[count]);
+            telemetry.addData("Current Position: ", place.getPosition());
             telemetry.update();
 
 
