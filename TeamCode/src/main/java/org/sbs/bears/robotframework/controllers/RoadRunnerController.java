@@ -333,7 +333,7 @@ public class RoadRunnerController {
 
         drive.followTrajectory(
                 drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToSplineHeading(AutonomousBrainMerged.warehousePickupPositionBlue)
+                        .splineToSplineHeading(AutonomousBrainMerged.warehousePickupPositionBlue,0)
                         .forward(AutonomousBrainMerged.distanceIntake,velocityConstraintSlow,accelerationConstraint)
                         .build()
         );

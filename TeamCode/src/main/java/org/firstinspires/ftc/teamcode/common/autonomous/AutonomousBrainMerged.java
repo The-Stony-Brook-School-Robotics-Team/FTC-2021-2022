@@ -155,9 +155,9 @@ public class AutonomousBrainMerged {
                 majorState = MajorAutonomousState.FOUR_BACK_FORTH;
                 return;
             case FOUR_BACK_FORTH:
-                if(minorState == MinorAutonomousState.ONE_INTAKE)
+                if(minorState == MinorAutonomousState.STOPPED)
                 {
-                    minorState = MinorAutonomousState.TWO_PREP_DEPOSIT;
+                    minorState = MinorAutonomousState.ONE_INTAKE;
                     return;
                 }
                 doGoBack();
