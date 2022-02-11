@@ -1,5 +1,7 @@
 package org.sbs.bears.robotframework.controllers;
 
+import android.util.Log;
+
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -18,7 +20,7 @@ public class IntakeControllerBlue {
     public Rev2mDistanceSensor distanceSensor;
     private Servo mini;
     private Servo sweeper;
-    private Servo dumperServo;
+    public Servo dumperServo;
 
 
     /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/
@@ -153,8 +155,9 @@ public class IntakeControllerBlue {
         switch(state){
             case BASE:
                 scooper.setPosition(basePos[0]);
-               sweeper.setPosition(1);
+                sweeper.setPosition(1);
                 compliantWheel.setPower(basePos[1]);
+                dumperServo.setPosition(SlideController.dumperPosition_READY);
                 return;
 
             case DUMP:

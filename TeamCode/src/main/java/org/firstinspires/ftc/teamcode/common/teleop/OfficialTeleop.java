@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.common.teleop;
 
+import android.transition.Slide;
 import android.util.Log;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -113,6 +114,7 @@ public class OfficialTeleop extends OpMode {
         normalizedColorSensor.setGain(Configuration.colorSensorGain);
         telemetry.update();
 
+        blueIntake.dumperServo.setPosition(SlideController.dumperPosition_READY);
         drive.setPoseEstimate(new Pose2d(28.5, 65.5, 0));
         floodRuntimes();
     }

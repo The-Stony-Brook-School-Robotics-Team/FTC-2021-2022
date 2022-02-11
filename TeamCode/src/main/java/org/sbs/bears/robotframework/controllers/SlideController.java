@@ -589,11 +589,13 @@ public class SlideController {
      */
     public void incrementVerticalServo(double servoPosition) {
         servoPosition += verticalServo.getPosition();
+        Log.d("Setting Servo Increment To: ", String.valueOf(servoPosition));
         if (servoPosition > vertServoPosition_FULL_MAX) {
             return;
         }
-        setHeightToParams(servoPosition);
-        Log.d("Servo Increment: ", "servo " + verticalServo.getPosition());
+        //setHeightToParams(servoPosition);
+        verticalServo.setPosition(servoPosition);
+
         return;
 
     }
@@ -686,7 +688,7 @@ public class SlideController {
 /*    double dumperPosition_DUMP = .91;
     double dumperPosition_HOLDBLOCK = 0;
 */    public static double dumperPosition_CLOSED = 0.269;  // remeasured on jan 31 at 16h08
-    public static double dumperPosition_READY = 0.53;
+    public static double dumperPosition_READY = 0.55;
     public static double dumperPosition_EJECT = 0.74;
     public static double dumperPosition_RETRACTING = 0.05;
 

@@ -9,7 +9,7 @@ public class Configuration {
 
     /** Slide Thresholding */
     public static int DefaultSlideTicks = 25;
-    public static double DefaultVerticalSlideIncrement = 0.01;
+    public static double DefaultVerticalSlideIncrement = .003;//0.01;
 
     /** Movement Adjustments */
     public static double SlowMovementMultiplier = 0.2;
