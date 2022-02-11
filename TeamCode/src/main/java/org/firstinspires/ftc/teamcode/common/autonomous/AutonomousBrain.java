@@ -13,7 +13,6 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.common.sharedResources.SharedData;
-import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.sbs.bears.robotframework.Robot;
 import org.sbs.bears.robotframework.Sleep;
 import org.sbs.bears.robotframework.controllers.DuckCarouselController;
@@ -26,8 +25,6 @@ import org.sbs.bears.robotframework.enums.IntakeState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
 import static org.sbs.bears.robotframework.controllers.OpenCVController.doAnalysisMaster;
-
-import java.time.LocalDate;
 
 @Config
 public class AutonomousBrain {
@@ -285,7 +282,7 @@ public class AutonomousBrain {
 
                 Log.d("AutonBrain","intake prepped");
                 intakeCtrlBlue.setState(IntakeState.BASE);
-                RRctrl.autonomousPrepareForPickup();
+                RRctrl.autonomousPrepAndIntakeFromDeposit();
                 Log.d("AutonBrain","reset status and init for intake");
                 qObjectInRobot = false; // reset
                 minorState = MinorAutonomousState.ONE_INTAKE;
