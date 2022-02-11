@@ -145,7 +145,7 @@ public class AutonomousBrainMerged {
                 majorState = MajorAutonomousState.THREE_FIRST_INTAKE;
                 return;
             case THREE_FIRST_INTAKE:
-                
+
                 majorState = MajorAutonomousState.THREE_BACK_FORTH;
                 return;
             case THREE_BACK_FORTH:
