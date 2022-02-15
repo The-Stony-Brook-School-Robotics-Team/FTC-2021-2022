@@ -493,7 +493,7 @@ public class RoadRunnerController {
         runner.cancelTraj();
     }
 
-    public static double fastSpeed = 100;
+    public static double fastSpeed = 40;
     public static double slowSpeed = 30;
 
     public boolean isInWarehouse() {

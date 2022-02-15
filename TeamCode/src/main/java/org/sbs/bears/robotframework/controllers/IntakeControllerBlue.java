@@ -18,8 +18,8 @@ public class IntakeControllerBlue {
     private Servo scooper;
     private DcMotor compliantWheel;
     public Rev2mDistanceSensor distanceSensor;
-    private Servo mini;
     private Servo sweeper;
+    private Servo stopper;
     public Servo dumperServo;
 
 
@@ -33,8 +33,11 @@ public class IntakeControllerBlue {
     /** Distance needed to switch states (mm) **/
     private double distThreshold = 60;
 
-    public long sleepAmount;
-
+    public long sleepAmount = 400;
+    private double sweeperOut = .75;
+    private double sweeperIn = 1;
+    private double stopperClosed = 0.3; //TODO
+    private double stopperOpen = 0.1; //TODO
     private boolean qIsObjectInPayload = false;
 
     volatile IntakeState state = IntakeState.BASE;
@@ -46,14 +49,13 @@ public class IntakeControllerBlue {
         scooper = hardwareMap.get(Servo.class, "bi");
         compliantWheel = hardwareMap.get(DcMotor.class, "leftodom");
         distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "bd");
-        mini = hardwareMap.get(Servo.class, "vout");
         sweeper = hardwareMap.get(Servo.class, "sweep");
+        stopper = hardwareMap.get(Servo.class, "bs");
         this.dumperServo = dumperServo;
         scooper.setDirection(Servo.Direction.FORWARD);
         compliantWheel.setDirection(DcMotorSimple.Direction.FORWARD);
         sweeper.setDirection(Servo.Direction.FORWARD);
         compliantWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        sleepAmount = 800;
     }
 
 
@@ -78,6 +80,7 @@ public class IntakeControllerBlue {
     }
 
     /** Autonomous method-- waits until object is seen, dumps, then sets to park. **/
+    @Deprecated
     public void waitForIntake() {
         if(state != IntakeState.BASE){setState(IntakeState.BASE);}
         while(!isObjectInPayload()){
@@ -100,13 +103,6 @@ public class IntakeControllerBlue {
     public void checkIntake(){
         if(state == IntakeState.BASE && isObjectInPayload()){
             setState(IntakeState.DUMP);
-           /** //mini.setPosition(0);
-            try {
-                Thread.sleep(450);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            setState(IntakeState.PARK); **/
 
 
         }
@@ -150,15 +146,18 @@ public class IntakeControllerBlue {
 
 
 
-    /** Assigns position and motor power to their respective states **/
+    /**
+     * Assigns position and motor power to their respective states \
+     * **/
     private void doStateAction(){
         switch(state){
             case BASE:
                 scooper.setPosition(basePos[0]);
-                sweeper.setPosition(1);
+                sweeper.setPosition(sweeperIn);
+                stopper.setPosition(stopperClosed);
                 compliantWheel.setPower(basePos[1]);
                 dumperServo.setPosition(SlideController.dumperPosition_READY);
-                return;
+                break;
 
             case DUMP:
                 compliantWheel.setPower(dumpPos[1]);
@@ -168,21 +167,28 @@ public class IntakeControllerBlue {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                sweeper.setPosition(.75);
+                stopper.setPosition(stopperOpen);
+                try {
+                    Thread.sleep(400);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                sweeper.setPosition(sweeperOut);
                 try {
                     Thread.sleep(750);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
                 dumperServo.setPosition(SlideController.dumperPosition_CLOSED);
 
-                return;
+                break;
 
             case PARK:
                 scooper.setPosition(parkPos[0]);
                 compliantWheel.setPower(parkPos[1]);
 
-                return;
+                break;
         }
     }
 
