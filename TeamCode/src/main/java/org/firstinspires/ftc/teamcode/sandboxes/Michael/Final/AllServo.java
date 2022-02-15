@@ -27,12 +27,12 @@ public class AllServo extends LinearOpMode {
 
 
     public void runOpMode() throws InterruptedException {
-        redIntake = hardwareMap.get(Servo.class, "ri"); //a
-        blueIntake = hardwareMap.get(Servo.class, "bi"); //b
-        blueSweeper = hardwareMap.get(Servo.class, "sweep"); //x
-        verticalServo = hardwareMap.get(Servo.class, "vt"); //y
-        dumper = hardwareMap.get(Servo.class, "du"); //rb
-        stopper = hardwareMap.get(Servo.class, "bs"); //rb
+        redIntake = hardwareMap.get(Servo.class, "ri");
+        blueIntake = hardwareMap.get(Servo.class, "bi");
+        blueSweeper = hardwareMap.get(Servo.class, "sweep");
+        verticalServo = hardwareMap.get(Servo.class, "vt");
+        dumper = hardwareMap.get(Servo.class, "du");
+        stopper = hardwareMap.get(Servo.class, "bs");
 
 
         Servo[] servos = {redIntake, blueIntake, blueSweeper, verticalServo, dumper, stopper};
@@ -46,7 +46,7 @@ public class AllServo extends LinearOpMode {
                 count++;
                 if(count > servos.length - 1) count = 0;
                 place = servos[count];
-                place.setPosition(.2);
+                place.setPosition(place.getPosition());
             }
             if(!gamepad1.a && qA){
                 qA = false;

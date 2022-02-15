@@ -18,7 +18,6 @@ public class IntakeControllerBlue {
     private Servo scooper;
     private DcMotor compliantWheel;
     public Rev2mDistanceSensor distanceSensor;
-    private Servo mini;
     private Servo sweeper;
     private Servo stopper;
     public Servo dumperServo;
@@ -34,11 +33,11 @@ public class IntakeControllerBlue {
     /** Distance needed to switch states (mm) **/
     private double distThreshold = 60;
 
-    public long sleepAmount = 700;
+    public long sleepAmount = 400;
     private double sweeperOut = .75;
     private double sweeperIn = 1;
-    private double stopperClosed = 0.0; //TODO
-    private double stopperOpen = 0.0; //TODO
+    private double stopperClosed = 0.3; //TODO
+    private double stopperOpen = 0.1; //TODO
     private boolean qIsObjectInPayload = false;
 
     volatile IntakeState state = IntakeState.BASE;
@@ -50,7 +49,6 @@ public class IntakeControllerBlue {
         scooper = hardwareMap.get(Servo.class, "bi");
         compliantWheel = hardwareMap.get(DcMotor.class, "leftodom");
         distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "bd");
-        mini = hardwareMap.get(Servo.class, "vout");
         sweeper = hardwareMap.get(Servo.class, "sweep");
         stopper = hardwareMap.get(Servo.class, "bs");
         this.dumperServo = dumperServo;
@@ -148,7 +146,9 @@ public class IntakeControllerBlue {
 
 
 
-    /** Assigns position and motor power to their respective states **/
+    /**
+     * Assigns position and motor power to their respective states \
+     * **/
     private void doStateAction(){
         switch(state){
             case BASE:
@@ -169,7 +169,7 @@ public class IntakeControllerBlue {
                 }
                 stopper.setPosition(stopperOpen);
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(400);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
