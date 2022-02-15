@@ -86,8 +86,8 @@ public class AutonomousBrain {
         this.leds = hardwareMap.get(RevBlinkinLedDriver.class, "rgb");
 
         RRctrl.setPos(startPositionBlue);
-        intakeCtrlBlue.setState(IntakeState.PARK);
-        intakeCtrlRed.setState(IntakeState.PARK); // to prevent from moving around
+        intakeCtrlBlue.setState(IntakeState.DUMP);
+        intakeCtrlRed.setState(IntakeState.DUMP); // to prevent from moving around
         //normalizedColorSensor = hardwareMap.get(NormalizedColorSensor.class, "color");
         colorNew = hardwareMap.get(RevColorSensorV3.class, "color");
         colorNew.write8(BroadcomColorSensor.Register.LS_MEAS_RATE,0x01010000); // see pdf page 20 // increase speed
@@ -158,7 +158,7 @@ public class AutonomousBrain {
                 return;
             case FOUR_PARKING_CLEANUP:
                 Log.d("AutonBrain","parking1");
-                intakeCtrlBlue.setState(IntakeState.PARK);
+                intakeCtrlBlue.setState(IntakeState.DUMP);
                 /*
                 Log.d("AutonBrain","parking2");
                 RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
