@@ -13,6 +13,7 @@ public class AllServo extends LinearOpMode {
     private Servo blueSweeper;
     private Servo verticalServo;
     private Servo dumper;
+    private Servo stopper;
 
     private boolean qA = false;
     private boolean qUp = false;
@@ -31,10 +32,11 @@ public class AllServo extends LinearOpMode {
         blueSweeper = hardwareMap.get(Servo.class, "sweep"); //x
         verticalServo = hardwareMap.get(Servo.class, "vt"); //y
         dumper = hardwareMap.get(Servo.class, "du"); //rb
+        stopper = hardwareMap.get(Servo.class, "bs"); //rb
 
 
-        Servo[] servos = {redIntake, blueIntake, blueSweeper, verticalServo, dumper};
-        String[] servoNames = {"red intake :3", "blue intake uwu", "blue sweeper x3", "vertical servo owo", "d-dumper... OwO"};
+        Servo[] servos = {redIntake, blueIntake, blueSweeper, verticalServo, dumper, stopper};
+        String[] servoNames = {"red intake :3", "blue intake uwu", "blue sweeper x3", "vertical servo owo", "d-dumper... OwO", "s...stopper? ༼ つ ◕_◕ ༽つ"};
         place = servos[0];
         waitForStart();
 
