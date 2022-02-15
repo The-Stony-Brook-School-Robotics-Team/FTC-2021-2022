@@ -14,6 +14,7 @@ import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousBrain;
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousBrainMerged;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -290,6 +291,19 @@ public class RoadRunnerController {
         Pose2d current = drive.getPoseEstimate();
         drive.followTrajectory(
                 drive.trajectoryBuilder(current)
+                        .lineToSplineHeading(AutonomousBrain.depositPositionBlueNoTurn,velocityConstraintFast,accelerationConstraint)
+                        .build()
+        );
+    }
+    public void doBlueDepositTrajectoryNoTurnNonMerged()
+    {
+        TrajectoryVelocityConstraint velocityConstraintFast = SampleMecanumDrive.getVelocityConstraint(fastSpeed, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
+        TrajectoryVelocityConstraint velocityConstraintSlow = SampleMecanumDrive.getVelocityConstraint(slowSpeed, 3,DriveConstants.TRACK_WIDTH);
+        TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
+
+        Pose2d current = drive.getPoseEstimate();
+        drive.followTrajectory(
+                drive.trajectoryBuilder(current)
                         .lineToSplineHeading(AutonomousBrainMerged.depositPositionBlueNoTurn,velocityConstraintFast,accelerationConstraint)
                         .build()
         );
@@ -493,7 +507,7 @@ public class RoadRunnerController {
         runner.cancelTraj();
     }
 
-    public static double fastSpeed = 40;
+    public static double fastSpeed = 100;
     public static double slowSpeed = 30;
 
     public boolean isInWarehouse() {
