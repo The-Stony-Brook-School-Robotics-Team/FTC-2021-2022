@@ -155,7 +155,8 @@ public class OfficialTeleop extends OpMode {
                 break;
 
             case RUNNING:
-                telemetry.addData("Bottom Color Sensor: ", bottomColorSensor.alpha());
+                telemetry.addData("Bottom Color Sensor Alpha: ", bottomColorSensor.alpha());
+                telemetry.addData("Bottom Color Sensor Light Detected: ", bottomColorSensor.getLightDetected());
                 telemetry.addData("I2C Draw (A): ", expansionHubEx.getI2cBusCurrentDraw(ExpansionHubEx.CurrentDrawUnits.AMPS));
                 telemetry.addData("I2C Draw (mA): ", expansionHubEx.getI2cBusCurrentDraw(ExpansionHubEx.CurrentDrawUnits.MILLIAMPS));
                 telemetry.update();
