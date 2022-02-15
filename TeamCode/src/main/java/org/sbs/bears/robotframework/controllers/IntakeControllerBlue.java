@@ -1,7 +1,5 @@
 package org.sbs.bears.robotframework.controllers;
 
-import android.util.Log;
-
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -28,7 +26,7 @@ public class IntakeControllerBlue {
     private double[] basePos = {.03, 1};
 
     private double[] dumpPos = {.375, 0}; //.45 //.41
-    private double[] parkPos = {.33, 0.0}; //75
+    private double[] reversePos = {.03, -1}; //75
 
     /** Distance needed to switch states (mm) **/
     private double distThreshold = 60;
@@ -96,7 +94,7 @@ public class IntakeControllerBlue {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        setState(IntakeState.PARK);
+
     }
 
     /** TeleOp method-- checks if object is seen. If so, dumps and sets to park. **/
@@ -133,8 +131,8 @@ public class IntakeControllerBlue {
             case DUMP:
                 dumpPos[0] = x;
                 break;
-            case PARK:
-                parkPos[0] = x;
+            case REVERSE:
+                reversePos[0] = x;
                 break;
         }
     }
@@ -184,10 +182,21 @@ public class IntakeControllerBlue {
 
                 break;
 
-            case PARK:
-                scooper.setPosition(parkPos[0]);
-                compliantWheel.setPower(parkPos[1]);
-
+            case REVERSE:
+                scooper.setPosition(reversePos[0]);
+                compliantWheel.setPower(reversePos[1]);
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                sweeper.setPosition(sweeperIn);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                setState(IntakeState.BASE);
                 break;
         }
     }
