@@ -7,6 +7,9 @@ public class Configuration {
     /** Thresholding For Buttons */
     public static double rightStickXLimitTrigger = 0.02;
 
+    public static double leftTriggerTreshold = 0.02;
+    public static double rightTriggerTreshold = 0.02;
+
     /** Slide Thresholding */
     public static int DefaultSlideTicks = 25;
     public static double DefaultVerticalSlideIncrement = .003;//0.01;

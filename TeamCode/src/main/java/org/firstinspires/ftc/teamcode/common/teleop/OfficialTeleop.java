@@ -1,15 +1,14 @@
 package org.firstinspires.ftc.teamcode.common.teleop;
 
-import android.transition.Slide;
 import android.util.Log;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
@@ -70,7 +69,7 @@ public class OfficialTeleop extends OpMode {
     public static RoadrunnerHandler roadrunnerHandler = new RoadrunnerHandler();
 
     /** Extra Components */
-    public static NormalizedColorSensor normalizedColorSensor;
+    public static RevColorSensorV3 bottomColorSensor;
     public static RevBlinkinLedDriver revBlinkinLedDriver;
 
     /**
@@ -102,7 +101,7 @@ public class OfficialTeleop extends OpMode {
         slideController = new SlideController(hardwareMap, telemetry);
         blueIntake = new IntakeControllerBlue(hardwareMap, slideController.dumperServo, telemetry);
         carouselController = new DuckCarouselController(hardwareMap, telemetry);
-        normalizedColorSensor = hardwareMap.get(NormalizedColorSensor.class, "color");
+        bottomColorSensor = hardwareMap.get(RevColorSensorV3.class, "color");
         revBlinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "rgb");
 
         /**
@@ -111,7 +110,7 @@ public class OfficialTeleop extends OpMode {
         slideController.initTeleop();
         redIntake.setState(IntakeState.DUMP);
         blueIntake.setState(IntakeState.DUMP);
-        normalizedColorSensor.setGain(Configuration.colorSensorGain);
+        bottomColorSensor.setGain(Configuration.colorSensorGain);
         telemetry.update();
 
         blueIntake.dumperServo.setPosition(SlideController.dumperPosition_READY);
@@ -141,18 +140,11 @@ public class OfficialTeleop extends OpMode {
                 break;
 
             case RUNNING:
-                /**
-                 * Bucket Logic
-                 */
-              /**  if(slideController.teleopIsObjectInBucket()) {
-                    Log.d(interfaceTag, "Set servo to closed");
-                    slideController.dumperServo.setPosition(slideController.dumperPosition_CLOSED);
-                } **/
-               telemetry.addData("blue Distance Sensor", blueIntake.distanceSensor.getDistance(DistanceUnit.MM));
+                telemetry.addData("blue Distance Sensor", blueIntake.distanceSensor.getDistance(DistanceUnit.MM));
                 telemetry.addData("red Distance Sensor", blueIntake.distanceSensor.getDistance(DistanceUnit.MM));
                 telemetry.addData("Red Servo Position", redIntake.getServoPos());
                 telemetry.addData("Blue Servo Position", blueIntake.getServoPos());
-                telemetry.update();
+                telemetry.addData("Bottom Color Sensor: ", bottomColorSensor.alpha());
 
                 telemetry.update();
                 break;

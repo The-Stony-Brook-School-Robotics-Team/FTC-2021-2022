@@ -172,11 +172,12 @@ public class ButtonHandler {
                     }
 
                     // rb
-                    if(primaryGamepad.right_bumper && OfficialTeleop.normalizedColorSensor.getNormalizedColors().alpha > Configuration.colorSensorWhiteAlpha) {
+                    if(primaryGamepad.right_bumper && OfficialTeleop.bottomColorSensor.getNormalizedColors().alpha > Configuration.colorSensorWhiteAlpha) {
                         if(!roadrunnerHandler.isBusy) {
                             roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.WAREHOUSE_AUTO_TURN);
                         }
                     }
+
                     // Left dpad
                     if(primaryGamepad.dpad_left && !isPressingLeftDpad) {
                         if(blueIntake.getState() == IntakeState.DUMP && slideController.getSlideMotorPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
@@ -210,6 +211,8 @@ public class ButtonHandler {
                     if(primaryGamepad.dpad_down) {
                         slideController.incrementVerticalServo(-Configuration.DefaultVerticalSlideIncrement);
                     }
+
+                    if(primaryGamepad.left_trigger > Configuration.leftTriggerTreshold && blueIntake.isDown())
                     break;
                 case SECONDARY:
 
