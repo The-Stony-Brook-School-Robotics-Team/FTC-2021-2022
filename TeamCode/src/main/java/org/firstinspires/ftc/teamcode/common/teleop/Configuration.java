@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.common.teleop;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 
+@Config
 public class Configuration {
 
     /** Thresholding For Buttons */
@@ -30,7 +32,8 @@ public class Configuration {
 
     /** Color Sensor Settings */
     public static int colorSensorGain = 10;
-    public static double colorSensorWhiteAlpha = 0.99985; // was 0.8
+    public static double colorSensorWhiteAlpha = 60; // was 0.8
+
 
 
 }

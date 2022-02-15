@@ -268,7 +268,7 @@ public class AutonomousBrain {
                     }
                 }).start();
                 */Log.d("AutonBrain","Prepare for drop off");
-                RRctrl.doBlueDepositTrajectoryNoTurn(); // debugging
+                RRctrl.doBlueDepositTrajectoryNoTurnNonMerged(); // debugging
                 Log.d("AutonBrain","Preparation Complete");
                 minorState = MinorAutonomousState.THREE_DEPOSIT;
                 return;
@@ -294,7 +294,7 @@ public class AutonomousBrain {
     public static Pose2d startPositionBlue = new Pose2d(14,65.5,0);
     public static Pose2d warehousePickupPositionBlue = new Pose2d(35,70,0);
     public static Pose2d depositPrepPositionBlue = new Pose2d(30,70,0);
-    public static Pose2d depositPositionBlueNoTurn = new Pose2d(-17,70,0);
+    public static Pose2d depositPositionBlueNoTurn = new Pose2d(-20,70,0);
     public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(5.58,64.47,-Math.toRadians(55));
     public static Pose2d depositPositionAllianceBlueMID = new Pose2d(5.58,64.47,-Math.toRadians(56));
     public static Pose2d depositPositionAllianceBlueBOT = new Pose2d(5.58,64.47,-Math.toRadians(59));
