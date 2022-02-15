@@ -20,6 +20,7 @@ import org.firstinspires.ftc.teamcode.common.teleop.runtime.MovementHandler;
 import org.firstinspires.ftc.teamcode.common.teleop.runtime.RoadrunnerHandler;
 import org.firstinspires.ftc.teamcode.common.teleop.runtime.SlideHandler;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.openftc.revextensions2.ExpansionHubEx;
 import org.sbs.bears.robotframework.controllers.DuckCarouselController;
 import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
 import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
@@ -72,6 +73,7 @@ public class OfficialTeleop extends OpMode {
     /** Extra Components */
     public static RevColorSensorV3 bottomColorSensor;
     public static RevBlinkinLedDriver revBlinkinLedDriver;
+    public static ExpansionHubEx expansionHubEx;
 
     /**
      * 线程池
@@ -104,6 +106,7 @@ public class OfficialTeleop extends OpMode {
         carouselController = new DuckCarouselController(hardwareMap, telemetry);
         revBlinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "rgb");
         bottomColorSensor = hardwareMap.get(RevColorSensorV3.class, "color");
+        expansionHubEx = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 4");
 
         /**
          * Increase Read Speeds
@@ -153,6 +156,8 @@ public class OfficialTeleop extends OpMode {
 
             case RUNNING:
                 telemetry.addData("Bottom Color Sensor: ", bottomColorSensor.alpha());
+                telemetry.addData("I2C Draw (A): ", expansionHubEx.getI2cBusCurrentDraw(ExpansionHubEx.CurrentDrawUnits.AMPS));
+                telemetry.addData("I2C Draw (mA): ", expansionHubEx.getI2cBusCurrentDraw(ExpansionHubEx.CurrentDrawUnits.MILLIAMPS));
                 telemetry.update();
                 break;
 
