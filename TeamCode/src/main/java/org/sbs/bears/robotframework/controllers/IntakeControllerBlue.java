@@ -193,11 +193,7 @@ public class IntakeControllerBlue {
     }
 
     public boolean isDown() {
-        if(this.state == IntakeState.BASE) {
-            return true;
-        } else if(this.state == IntakeState.DUMP) {
-            return false;
-        }
+        return (state == IntakeState.BASE);
     };
 
 }
