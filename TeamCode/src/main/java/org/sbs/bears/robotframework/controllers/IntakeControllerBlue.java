@@ -191,12 +191,6 @@ public class IntakeControllerBlue {
                     e.printStackTrace();
                 }
                 sweeper.setPosition(sweeperIn);
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                setState(IntakeState.BASE);
                 break;
         }
     }
