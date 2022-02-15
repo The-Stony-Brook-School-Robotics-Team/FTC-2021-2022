@@ -24,7 +24,7 @@ public class IntakeControllerBlue {
     /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/
 //    private double[] basePos = {.025, 0.7}; //.141
     private double[] basePos = {.03, 1};
-
+    private double[] parkPos = {.375, 0};
     private double[] dumpPos = {.375, 0}; //.45 //.41
     private double[] reversePos = {.03, -1}; //75
 
@@ -134,6 +134,8 @@ public class IntakeControllerBlue {
             case REVERSE:
                 reversePos[0] = x;
                 break;
+            case PARK:
+                parkPos[0] = x;
         }
     }
 
@@ -192,6 +194,9 @@ public class IntakeControllerBlue {
                 }
                 sweeper.setPosition(sweeperIn);
                 break;
+            case PARK:
+                scooper.setPosition(parkPos[0]);
+                compliantWheel.setPower(parkPos[1]);
         }
     }
 
@@ -199,5 +204,8 @@ public class IntakeControllerBlue {
         return (state == IntakeState.BASE);
     };
 
+    public boolean isReversed() {
+        return (state == IntakeState.REVERSE);
+    };
 }
 

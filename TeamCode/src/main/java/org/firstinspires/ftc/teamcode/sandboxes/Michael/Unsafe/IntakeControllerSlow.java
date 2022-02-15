@@ -72,7 +72,7 @@ public class IntakeControllerSlow {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        setState(IntakeState.PARK);
+        setState(IntakeState.DUMP);
     }
 
     /** Autonomous method-- waits until object is seen, dumps, then sets to park. **/
@@ -91,7 +91,7 @@ public class IntakeControllerSlow {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        setState(IntakeState.PARK);
+        setState(IntakeState.DUMP);
     }
 
     /** TeleOp method-- checks if object is seen. If so, dumps and sets to park. **/
@@ -103,7 +103,7 @@ public class IntakeControllerSlow {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            setState(IntakeState.PARK);
+            setState(IntakeState.DUMP);
 
         }
     }
@@ -142,7 +142,7 @@ public class IntakeControllerSlow {
                 compliantWheel.setPower(dumpPos[1]);
                 return;
 
-            case PARK:
+            case REVERSE:
                 scooper.setPosition(parkPos[0]);
                 compliantWheel.setPower(parkPos[1]);
                 return;

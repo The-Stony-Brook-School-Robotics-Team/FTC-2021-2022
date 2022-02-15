@@ -37,6 +37,7 @@ public class ButtonHandler {
     private static boolean isPressingX = false, isPressingY = false, isPressingB = false, isPressingA = false;
     private static boolean isPressingLeftDpad = false, isPressingRightDpad = false, isPressingUpDpad = false, isPressingDownDpad = false;
     private static boolean isPressingLeftBumper = false, isPressingRightBumper = false;
+    private static boolean isPressingLeftTrigger = false, isPressingRightTrigger = false;
 
     /**
      * Secondary Button Logic
@@ -236,13 +237,19 @@ public class ButtonHandler {
                     }
 
                     /**
-                     * Left Trigger
+                     * LEFT TRIGGER
                      * @usage Right Intake (Red Intake)
                      */
-                    if(primaryGamepad.left_trigger > Configuration.leftTriggerTreshold && blueIntake.isDown()) {
-                        blueIntake.setState(IntakeState.DUMP);
-                    } else if(primaryGamepad.left_trigger > Configuration.leftTriggerTreshold && !blueIntake.isDown()) {
-                        blueIntake.setState(IntakeState.BASE);
+                    if(primaryGamepad.left_trigger > Configuration.leftTriggerTreshold && !isPressingLeftTrigger) {
+
+                        if(blueIntake.isDown()) {
+                            blueIntake.setState(IntakeState.BASE);
+                        } else if(!blueIntake.isDown()) {
+                            blueIntake.setState(IntakeState.DUMP);
+                        }
+                        isPressingLeftTrigger = true;
+                    } else if(primaryGamepad.left_trigger < Configuration.leftTriggerTreshold && isPressingLeftTrigger) {
+                        isPressingLeftTrigger= false;
                     }
 
 //                    /**
@@ -285,7 +292,11 @@ public class ButtonHandler {
                      * @usage FREE BUTTON
                      */
                     if(primaryGamepad.x && !isPressingX) {
-                        slideController.dumperServo.setPosition(slideController.dumperPosition_READY);
+                        if(!blueIntake.isReversed()) {
+                            blueIntake.setState(IntakeState.REVERSE);
+                        } else if(blueIntake.isReversed()) {
+                            blueIntake.setState(IntakeState.BASE);
+                        }
                         isPressingX = true;
                     } else if(!primaryGamepad.x && isPressingX) {
                         isPressingX = false;

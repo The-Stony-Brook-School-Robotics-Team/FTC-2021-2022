@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.curren
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.drive;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.driveSpeed;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.intakeHandler;
+import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.isColorStripBlue;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.primaryGamepad;
 
 import android.util.Log;
@@ -119,6 +120,7 @@ public class MovementHandler {
  */
 class MovementHandlers {
 
+
     public static String interfaceTag = "Movement Handlers";
     public static Thread defaultDriving = new Thread(MovementHandlers::defaultRunner);
 
@@ -129,11 +131,14 @@ class MovementHandlers {
         if (MovementHandler.autonomousRunning) {
             return;
         }
-
         if(driveSpeed < 1) {
             OfficialTeleop.revBlinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
+            isColorStripBlue = false;
         } else if(!intakeHandler.objectInBucket) {
+            if(!isColorStripBlue) {
             OfficialTeleop.resetColor();
+                isColorStripBlue = true;
+            }
         }
         
         drive.setWeightedDrivePower(

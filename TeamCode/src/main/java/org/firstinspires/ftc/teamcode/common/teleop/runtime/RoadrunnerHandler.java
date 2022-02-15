@@ -123,7 +123,7 @@ public class RoadrunnerHandler {
 
             case WAREHOUSE_AUTO_TURN:
                 Log.d(interfaceTag, "Going Forward");
-
+                drive.setPoseEstimate(new Pose2d(28.5, 65.5, 0));
 
                 drive.followTrajectory(
                         drive.trajectoryBuilder(drive.getPoseEstimate())
@@ -156,9 +156,6 @@ public class RoadrunnerHandler {
                 break;
 
             case CURRENT_POSITION_TO_DEPOSIT:
-                Log.d(interfaceTag, "Im about to go from here to there (ong)");
-                Log.d(interfaceTag, "michael says hi uwu :3");
-
                 // drive.followTrajectory(
                 //         drive.trajectoryBuilder(drive.getPoseEstimate())
                 //                 .splineToSplineHeading(new Pose2d())

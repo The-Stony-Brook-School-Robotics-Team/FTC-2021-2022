@@ -30,6 +30,7 @@ public class IntakeHandler {
             if(OfficialTeleop.redIntake.isObjectInPayload() == true || OfficialTeleop.blueIntake.isObjectInPayload() == true) {
                 objectInBucket = true;
                 OfficialTeleop.revBlinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+                OfficialTeleop.isColorStripBlue = false;
             } else {
                 objectInBucket = false;
             }

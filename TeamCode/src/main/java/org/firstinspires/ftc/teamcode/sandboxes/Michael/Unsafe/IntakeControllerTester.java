@@ -50,7 +50,7 @@
                 }
                 else if(gamepad1.y){
                     //blueIntake.setState(IntakeState.PARK);
-                    blueIntake.setState(IntakeState.PARK);
+                    blueIntake.setState(IntakeState.DUMP);
                   //  redIntake.setState(IntakeState.PARK);
                 }
                 else if(gamepad1.dpad_up && !qA){

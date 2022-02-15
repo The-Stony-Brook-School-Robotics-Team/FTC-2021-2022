@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
 import org.firstinspires.ftc.teamcode.common.teleop.runtime.ButtonHandler;
@@ -58,6 +57,7 @@ public class OfficialTeleop extends OpMode {
     public static FtcDashboard dashboard;
 
     /** Stupid Michael MIT License: Open Source For Everyone */
+    public static boolean isColorStripBlue = false;
     public static IntakeControllerRed redIntake;
     public static IntakeControllerBlue blueIntake;
     public static SlideController slideController;
@@ -134,6 +134,7 @@ public class OfficialTeleop extends OpMode {
     public void init_loop() {
         if(initPass == 0) {
             revBlinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+            OfficialTeleop.isColorStripBlue = true;
             initPass = 1;
         }
     }
@@ -156,9 +157,12 @@ public class OfficialTeleop extends OpMode {
 
             case RUNNING:
                 telemetry.addData("Bottom Color Sensor Alpha: ", bottomColorSensor.alpha());
-                telemetry.addData("Bottom Color Sensor Light Detected: ", bottomColorSensor.getLightDetected());
-                telemetry.addData("I2C Draw (A): ", expansionHubEx.getI2cBusCurrentDraw(ExpansionHubEx.CurrentDrawUnits.AMPS));
-                telemetry.addData("I2C Draw (mA): ", expansionHubEx.getI2cBusCurrentDraw(ExpansionHubEx.CurrentDrawUnits.MILLIAMPS));
+                telemetry.addData("Bottom Color Sensor Normalized Alpha: ", bottomColorSensor.getNormalizedColors().alpha);
+           //     telemetry.addData("I2C Draw (A): ", expansionHubEx.getI2cBusCurrentDraw(ExpansionHubEx.CurrentDrawUnits.AMPS));
+             //   telemetry.addData("I2C Draw (mA): ", expansionHubEx.getI2cBusCurrentDraw(ExpansionHubEx.CurrentDrawUnits.MILLIAMPS));
+               // telemetry.addData("distance", bottomColorSensor.getDistance(DistanceUnit.MM));
+            //    telemetry.addData("raw light", bottomColorSensor.getRawLightDetected());
+            //    telemetry.addData("raw light max", bottomColorSensor.getRawLightDetectedMax());
                 telemetry.update();
                 break;
 

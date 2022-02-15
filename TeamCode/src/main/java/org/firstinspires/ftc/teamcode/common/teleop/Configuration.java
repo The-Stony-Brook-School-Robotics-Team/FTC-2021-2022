@@ -16,6 +16,7 @@ public class Configuration {
     public static int DefaultSlideTicks = 25;
     public static double DefaultVerticalSlideIncrement = .003;//0.01;
 
+    
     /** Movement Adjustments */
     public static double SlowMovementMultiplier = 0.2;
 
@@ -32,7 +33,7 @@ public class Configuration {
 
     /** Color Sensor Settings */
     public static int colorSensorGain = 10;
-    public static double colorSensorWhiteAlpha = 60; // was 0.8
+    public static double colorSensorWhiteAlpha = 0.001; // was 0.8
 
 
 

@@ -61,7 +61,7 @@ public class IntakeControllerRed {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        setState(IntakeState.PARK);
+        setState(IntakeState.DUMP);
 
     }
 
@@ -81,7 +81,7 @@ public class IntakeControllerRed {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        setState(IntakeState.PARK);
+        setState(IntakeState.DUMP);
     }
 
     /** TeleOp method-- checks if object is seen. If so, dumps and sets to park. **/
@@ -120,7 +120,7 @@ public class IntakeControllerRed {
             case DUMP:
                 dumpPos[0] = x;
                 break;
-            case PARK:
+            case REVERSE:
                 parkPos[0] = x;
                 break;
         }
@@ -151,7 +151,7 @@ public class IntakeControllerRed {
                 scooper.setPosition(dumpPos[0]);
                 return;
 
-            case PARK:
+            case REVERSE:
                 scooper.setPosition(parkPos[0]);
                 compliantWheel.setPower(parkPos[1]);
                 return;
