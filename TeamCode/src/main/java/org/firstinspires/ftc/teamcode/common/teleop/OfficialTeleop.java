@@ -118,9 +118,13 @@ public class OfficialTeleop extends OpMode {
         floodRuntimes();
     }
 
+    private int initPass = 0;
     @Override
     public void init_loop() {
-        revBlinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+        if(initPass == 0) {
+            revBlinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+            initPass = 1;
+        }
     }
 
     @Override
@@ -128,7 +132,7 @@ public class OfficialTeleop extends OpMode {
         switch(currentState) {
             case STOPPED:
                 telemetry.clearAll();
-                telemetry.addLine("robot stopped");
+                telemetry.addLine("Robot Stopped");
                 telemetry.update();
                 break;
             case INITIALIZING:
@@ -140,10 +144,6 @@ public class OfficialTeleop extends OpMode {
                 break;
 
             case RUNNING:
-                telemetry.addData("blue Distance Sensor", blueIntake.distanceSensor.getDistance(DistanceUnit.MM));
-                telemetry.addData("red Distance Sensor", blueIntake.distanceSensor.getDistance(DistanceUnit.MM));
-                telemetry.addData("Red Servo Position", redIntake.getServoPos());
-                telemetry.addData("Blue Servo Position", blueIntake.getServoPos());
                 telemetry.addData("Bottom Color Sensor: ", bottomColorSensor.alpha());
 
                 telemetry.update();

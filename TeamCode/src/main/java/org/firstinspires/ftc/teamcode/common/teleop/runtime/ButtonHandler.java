@@ -79,9 +79,6 @@ public class ButtonHandler {
         }
     });
 
-    /**
-     * Primary Gamepad
-     */
     public static Thread primaryRuntime = new Thread(() -> {
         while(currentState == TeleOpRobotStates.RUNNING || currentState.equals(TeleOpRobotStates.INITIALIZING)) {
 
@@ -100,7 +97,10 @@ public class ButtonHandler {
             switch(primaryControllerMode) {
                 case PRIMARY:
 
-                    // B
+                    /**
+                     * B BUTTON
+                     * @usage Extend / Retract Slide
+                     */
                     if(primaryGamepad.b && !isPressingB) {
                         if(slideController.slideMotor.getCurrentPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
                             slideController.extendSlide();
@@ -117,7 +117,10 @@ public class ButtonHandler {
                         isPressingB = false;
                     }
 
-                    // A
+                    /**
+                     * A BUTTON
+                     * @usage Deposits Cube and Resets LED Strip To Default Color
+                     */
                     if(primaryGamepad.a && !isPressingA && primaryControllerMode == ControllerModes.PRIMARY) {
                         slideController.dropCube();
                         OfficialTeleop.resetColor();
@@ -126,12 +129,14 @@ public class ButtonHandler {
                         isPressingA = false;
                     }
 
-                    // X
+                    /**
+                     * X BUTTON
+                     * @usage Collect Capstone (4 Stage) (PICKUP, EXTEND, DOWN, RETRACT)
+                     */
                     if(primaryGamepad.x && !isPressingX) {
                         switch (currentSegmentPosition) {
                             case EXTEND:
                                 slideController.collectCapstone();
-                                // slideController.incrementVerticalServo(0.1);
                                 currentSegmentPosition = SegmentPositions.EXTEND_TO_HUB;
                                 break;
 
@@ -157,7 +162,10 @@ public class ButtonHandler {
                         isPressingX = false;
                     }
 
-                    // Y
+                    /**
+                     * Y BUTTON
+                     * @usage Duck Spinner
+                     */
                     if(primaryGamepad.y && !isPressingY) {
                         if(duckspinnerSpinning == false) {
                             new Thread(() -> {
@@ -171,14 +179,20 @@ public class ButtonHandler {
                         isPressingY = false;
                     }
 
-                    // rb
+                    /**
+                     * RIGHT BUMPER
+                     * @usage Detect White Line and deposit
+                     */
                     if(primaryGamepad.right_bumper && OfficialTeleop.bottomColorSensor.getNormalizedColors().alpha > Configuration.colorSensorWhiteAlpha) {
                         if(!roadrunnerHandler.isBusy) {
                             roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.WAREHOUSE_AUTO_TURN);
                         }
                     }
 
-                    // Left dpad
+                    /**
+                     * LEFT DPAD
+                     * @usage Left Intake (Blue Intake)
+                     */
                     if(primaryGamepad.dpad_left && !isPressingLeftDpad) {
                         if(blueIntake.getState() == IntakeState.DUMP && slideController.getSlideMotorPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
                             blueIntake.setState(IntakeState.BASE);
@@ -190,7 +204,10 @@ public class ButtonHandler {
                         isPressingLeftDpad = false;
                     }
 
-                    // Right dpad
+                    /**
+                     * RIGHT DPAD
+                     * @usage Right Intake (Red Intake)
+                     */
                     if(primaryGamepad.dpad_right && !isPressingRightDpad) {
                         if(redIntake.getState() == IntakeState.DUMP && slideController.getSlideMotorPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
                             redIntake.setState(IntakeState.BASE);
@@ -202,26 +219,56 @@ public class ButtonHandler {
                         isPressingRightDpad = false;
                     }
 
-                    // Up dpad
+                    /**
+                     * UP DPAD
+                     * @usage Increments Slide Up
+                     */
                     if(primaryGamepad.dpad_up) {
                         slideController.incrementVerticalServo(Configuration.DefaultVerticalSlideIncrement);
                     }
 
-                    // Down dpad
+                    /**
+                     * DOWN DPAD
+                     * @usage Increments Slide Down
+                     */
                     if(primaryGamepad.dpad_down) {
                         slideController.incrementVerticalServo(-Configuration.DefaultVerticalSlideIncrement);
                     }
 
-                    if(primaryGamepad.left_trigger > Configuration.leftTriggerTreshold && blueIntake.isDown())
+                    /**
+                     * Left Trigger
+                     * @usage Right Intake (Red Intake)
+                     */
+                    if(primaryGamepad.left_trigger > Configuration.leftTriggerTreshold && blueIntake.isDown()) {
+                        blueIntake.setState(IntakeState.DUMP);
+                    } else if(primaryGamepad.left_trigger > Configuration.leftTriggerTreshold && !blueIntake.isDown()) {
+                        blueIntake.setState(IntakeState.BASE);
+                    }
+
+//                    /**
+//                     * Right Trigger
+//                     * @usage Right Intake (Blue Intake)
+//                     */
+//                    if(primaryGamepad.right_trigger > Configuration.rightTriggerTreshold && redIntake.isDown()) {
+//                        redIntake.setState(IntakeState.DUMP);
+//                    } else if(primaryGamepad.right_trigger > Configuration.rightTriggerTreshold && !redIntake.isDown()) {
+//                        redIntake.setState(IntakeState.BASE);
+//                    }
                     break;
                 case SECONDARY:
 
-                    // Manual Extension
+                    /**
+                     * RIGHT STICK (Y VAL)
+                     * @usage Manual Slide Controller
+                     */
                     if(primaryGamepad.right_stick_y > Configuration.rightStickXLimitTrigger || primaryGamepad.right_stick_y < (Configuration.rightStickXLimitTrigger * -1)) {
                         slideHandler.manualSlideController((int) primaryGamepad.right_stick_y);
                     }
 
-                    // A
+                    /**
+                     * A BUTTON
+                     * @usage Slowmode Toggle
+                     */
                     if(primaryGamepad.a && !isPressingA && primaryControllerMode == ControllerModes.SECONDARY) {
                         if(driveSpeed == 0.3) {
                             driveSpeed = 1;
@@ -233,31 +280,21 @@ public class ButtonHandler {
                         isPressingA = false;
                     }
 
-                    // Y
-                    if(primaryGamepad.y && !isPressingY && primaryControllerMode == ControllerModes.SECONDARY) {
-                        OfficialTeleop.driveSpeed += .01;
-                        isPressingY = true;
-                    } else if(!primaryGamepad.y && isPressingY && primaryControllerMode == ControllerModes.SECONDARY) {
-                        isPressingY = false;
-                    }
-
-                    // B
-                    if(primaryGamepad.b && !isPressingB && primaryControllerMode == ControllerModes.SECONDARY) {
-                        OfficialTeleop.driveSpeed -= .01;
-                        isPressingB = true;
-                    } else if(!primaryGamepad.b && isPressingB && primaryControllerMode == ControllerModes.SECONDARY) {
-                        isPressingB = false;
-                    }
-
-                    // X
-                    // TODO: FREE BUTTON
+                    /**
+                     * X BUTTON
+                     * @usage FREE BUTTON
+                     */
                     if(primaryGamepad.x && !isPressingX) {
                         slideController.dumperServo.setPosition(slideController.dumperPosition_READY);
                         isPressingX = true;
                     } else if(!primaryGamepad.x && isPressingX) {
                         isPressingX = false;
                     }
-                    // Left Dpad
+
+                    /**
+                     * LEFT DPAD
+                     * @usage Left Movement
+                     */
                     if(primaryGamepad.dpad_left && !isPressingLeftDpad) {
                         if(!roadrunnerHandler.isBusy) {
                             roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.FORWARD);
@@ -268,7 +305,11 @@ public class ButtonHandler {
                     } else if(!primaryGamepad.dpad_left && isPressingLeftDpad) {
                         isPressingLeftDpad = false;
                     }
-                    // Right Dpad
+
+                    /**
+                     * RIGHT DPAD
+                     * @usage Right Movement
+                     */
                     if(primaryGamepad.dpad_right && !isPressingRightDpad) {
                         if(!roadrunnerHandler.isBusy) {
                             roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.BACK);
@@ -279,7 +320,11 @@ public class ButtonHandler {
                     } else if(!primaryGamepad.dpad_right && isPressingRightDpad) {
                         isPressingRightDpad = false;
                     }
-                    // Up Dpad
+
+                    /**
+                     * UP DPAD
+                     * @usage Forward Movement
+                     */
                     if(primaryGamepad.dpad_up && !isPressingUpDpad) {
                         if(!roadrunnerHandler.isBusy) {
                             roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.RIGHT);
@@ -290,7 +335,11 @@ public class ButtonHandler {
                     } else if(!primaryGamepad.dpad_up && isPressingUpDpad) {
                         isPressingUpDpad = false;
                     }
-                    // Down Dpad
+
+                    /**
+                     * DOWN DPAD
+                     * @usage Backwards Movement
+                     */
                     if(primaryGamepad.dpad_down && !isPressingDownDpad) {
                         if(!roadrunnerHandler.isBusy) {
                             roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.LEFT);
