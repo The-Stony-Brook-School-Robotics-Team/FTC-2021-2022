@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.hardware.broadcom.BroadcomColorSensor;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -101,8 +102,15 @@ public class OfficialTeleop extends OpMode {
         slideController = new SlideController(hardwareMap, telemetry);
         blueIntake = new IntakeControllerBlue(hardwareMap, slideController.dumperServo, telemetry);
         carouselController = new DuckCarouselController(hardwareMap, telemetry);
-        bottomColorSensor = hardwareMap.get(RevColorSensorV3.class, "color");
         revBlinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "rgb");
+        bottomColorSensor = hardwareMap.get(RevColorSensorV3.class, "color");
+
+        /**
+         * Increase Read Speeds
+         */
+        bottomColorSensor.write8(BroadcomColorSensor.Register.LS_MEAS_RATE,0x01010000);
+        bottomColorSensor.write8(BroadcomColorSensor.Register.PS_MEAS_RATE,0x00000001);
+
 
         /**
          * Configuration
@@ -135,17 +143,16 @@ public class OfficialTeleop extends OpMode {
                 telemetry.addLine("Robot Stopped");
                 telemetry.update();
                 break;
+
             case INITIALIZING:
                 movementHandler.movementEnabled = true;
                 slideHandler.slideMovementEnabled = true;
                 startThreadPool();
-
                 synchronized (stateMutex) { currentState = TeleOpRobotStates.RUNNING; }
                 break;
 
             case RUNNING:
                 telemetry.addData("Bottom Color Sensor: ", bottomColorSensor.alpha());
-
                 telemetry.update();
                 break;
 
