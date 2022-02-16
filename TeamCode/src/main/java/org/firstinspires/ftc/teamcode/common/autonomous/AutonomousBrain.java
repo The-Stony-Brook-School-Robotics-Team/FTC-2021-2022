@@ -197,7 +197,7 @@ public class AutonomousBrain {
                 }
 
                 intakeCtrlBlue.setState(IntakeState.BASE);
-                new Thread(()->{
+               /* new Thread(()->{
                     boolean isInState = minorState.equals(AutonomousBrain.MinorAutonomousState.ONE_INTAKE);
                     while(isInState && !qObjectInRobot)
                     {
@@ -215,12 +215,12 @@ public class AutonomousBrain {
                         intakeCtrlBlue.loadItemIntoSlideForAutonomousOnly();
                     }
                 }).start();
+                */
                 new Thread(()->{
                     boolean isInState = minorState.equals(MinorAutonomousState.ONE_INTAKE);
                     Log.d("AutonBrainThread","Status0: scoop: " + qObjectInRobot +" state " + isInState);
                     while(!qObjectInRobot && isInState)
                     {
-                        Sleep.sleep(10);
                         isInState = minorState.equals(MinorAutonomousState.ONE_INTAKE);
                         qObjectInRobot = intakeCtrlBlue.isObjectInPayload();
                         //Log.d("AutonBrainThread","Status: scoop: " + qObjectInRobot +" state " + isInState);
@@ -234,7 +234,7 @@ public class AutonomousBrain {
                     }
                 }).start();
                 Log.d("AutonBrain","Forward init");
-                RRctrl.forward(40,velocityIntake);
+                RRctrl.forward(20,velocityIntake);
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
                 Log.d("AutonBrain","Forward done");
                 RRctrl.stopRobot();
@@ -247,7 +247,9 @@ public class AutonomousBrain {
                     return;
                 }
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+                intakeCtrlBlue.setState(IntakeState.REVERSE);
                 RRctrl.followLineToSpline(warehousePickupPositionBlue);
+                intakeCtrlBlue.setState(IntakeState.BASE);
                 Log.d("AutonBrain","Retrying to find a block");
                 return;
 
@@ -274,17 +276,16 @@ public class AutonomousBrain {
                 return;
             case THREE_DEPOSIT:
                 slideCtrl.extendDropRetract(normalTarget);
+                qObjectInRobot = false; // reset
                 Log.d("AutonBrain","Slide drop complete");
                 minorState = MinorAutonomousState.FOUR_RETURN_TO_INTAKE;
                 return;
             case FOUR_RETURN_TO_INTAKE:
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE_VIOLET);
-
                 Log.d("AutonBrain","intake prepped");
                 intakeCtrlBlue.setState(IntakeState.BASE);
                 RRctrl.autonomousPrepAndIntakeFromDeposit();
                 Log.d("AutonBrain","reset status and init for intake");
-                qObjectInRobot = false; // reset
                 minorState = MinorAutonomousState.ONE_INTAKE;
                 return;
 
@@ -294,7 +295,7 @@ public class AutonomousBrain {
     public static Pose2d startPositionBlue = new Pose2d(14,65.5,0);
     public static Pose2d warehousePickupPositionBlue = new Pose2d(35,70,0);
     public static Pose2d depositPrepPositionBlue = new Pose2d(30,70,0);
-    public static Pose2d depositPositionBlueNoTurn = new Pose2d(-20,70,0);
+    public static Pose2d depositPositionBlueNoTurn = new Pose2d(-25,70,0);
     public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(5.58,64.47,-Math.toRadians(55));
     public static Pose2d depositPositionAllianceBlueMID = new Pose2d(5.58,64.47,-Math.toRadians(56));
     public static Pose2d depositPositionAllianceBlueBOT = new Pose2d(5.58,64.47,-Math.toRadians(59));

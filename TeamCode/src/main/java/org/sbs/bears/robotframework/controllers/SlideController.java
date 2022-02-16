@@ -299,6 +299,7 @@ public class SlideController {
         //Checks to make sure the bucket is outside of the slide before dumping
         if (slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT) {
             if (targetParams == SlideTarget.CAP_FROM_CAROUSEL) {
+              //  incrementDeltaRetract = increme
                 setHeightToParams(vertServoPosition_CAP_CAROUSEL);
                 slideMotor.setTargetPosition(slideMotorPosition_CAP_FROM_CAROUSEL_RET);
                 slideMotor.setPower(slideMotorPowerMovingBack);
@@ -697,6 +698,7 @@ public class SlideController {
     public static int slideMotorPosition_BUCKET_OUT = 225;//250;//380//150; // minimum position for the bucket to be out, measured
     public static int slideMotorPosition_BUCKET_OUT_RET = 800; // minimum position for the bucket to be out, measured
     public static int slideMotorPosition_THREE_DEPOSIT = 1310; // remeasured // last 1360
+    public static int slideMotorPosition_THREE_DEPOSIT_AUTON = 1400; // remeasured // last 1360
     public static int slideMotorPosition_TWO_DEPOSIT = 1244; //measured
     public static int slideMotorPosition_ONE_DEPOSIT = 1300;//1000; //measured
     public static int slideMotorPosition_THREE_CAROUSEL = 1713;

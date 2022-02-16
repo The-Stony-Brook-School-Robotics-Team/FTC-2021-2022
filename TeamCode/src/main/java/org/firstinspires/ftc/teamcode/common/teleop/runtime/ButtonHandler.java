@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.common.teleop.runtime;
 
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.blueIntake;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.carouselController;
+import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.interfaceTag;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.primaryControllerMode;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.currentState;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.driveSpeed;
@@ -48,6 +49,11 @@ public class ButtonHandler {
      * Duck Spinner Logic
      */
     public static boolean duckspinnerSpinning = false;
+
+    /**
+     * Flags
+     */
+    public static boolean LEFT_DPAD_COMPARE_FLAG = false;
 
     /**
      * Segment Enums
@@ -193,12 +199,22 @@ public class ButtonHandler {
                     /**
                      * LEFT DPAD
                      * @usage Left Intake (Blue Intake)
+                     * @info Uses LEFT_DPAD_COMPARE_FLAG to sync the blue intake drop with the program to avoid accidental
+                     * thread creation
                      */
                     if(primaryGamepad.dpad_left && !isPressingLeftDpad) {
-                        if(blueIntake.getState() == IntakeState.DUMP && slideController.getSlideMotorPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
-                            blueIntake.setState(IntakeState.BASE);
+                        if(!LEFT_DPAD_COMPARE_FLAG) {
+                            LEFT_DPAD_COMPARE_FLAG = true;
+                            new Thread(() -> {
+                                if(blueIntake.getState() == IntakeState.DUMP && slideController.getSlideMotorPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
+                                    blueIntake.setState(IntakeState.BASE);
+                                } else {
+                                    blueIntake.setState(IntakeState.DUMP);
+                                }
+                                LEFT_DPAD_COMPARE_FLAG = false;
+                            }).run();
                         } else {
-                            blueIntake.setState(IntakeState.DUMP);
+                            Log.d(interfaceTag, "Tried running a task again");
                         }
                         isPressingLeftDpad = true;
                     } else if(!primaryGamepad.dpad_left && isPressingLeftDpad) {
