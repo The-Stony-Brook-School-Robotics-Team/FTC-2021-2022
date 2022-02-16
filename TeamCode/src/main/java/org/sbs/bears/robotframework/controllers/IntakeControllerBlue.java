@@ -23,7 +23,7 @@ public class IntakeControllerBlue {
 
     /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/
 //    private double[] basePos = {.025, 0.7}; //.141
-    private double[] basePos = {.98, 1};
+    private double[] basePos = {.975, 1};
     private double[] parkPos = {.45, 0}; //.375 for gobilda servo
     private double[] dumpPos = {.385, 0}; //??????? messed up .375 is the same???
     private double[] reversePos = {.03, -1}; //75
