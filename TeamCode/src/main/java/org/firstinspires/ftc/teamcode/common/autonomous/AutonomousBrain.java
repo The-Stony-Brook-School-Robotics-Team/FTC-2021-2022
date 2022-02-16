@@ -26,6 +26,8 @@ import org.sbs.bears.robotframework.enums.SlideTarget;
 import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
 import static org.sbs.bears.robotframework.controllers.OpenCVController.doAnalysisMaster;
 
+import java.time.LocalDate;
+
 @Config
 public class AutonomousBrain {
     AutonomousMode mode;
@@ -219,7 +221,7 @@ public class AutonomousBrain {
                     }
                 }).start();
                 */
-                new Thread(()->{
+                /*new Thread(()->{
                     boolean isInState = minorState.equals(MinorAutonomousState.ONE_INTAKE);
                     Log.d("AutonBrainThread","Status0: scoop: " + qObjectInRobot +" state " + isInState);
                     while(!qObjectInRobot && isInState)
@@ -236,25 +238,38 @@ public class AutonomousBrain {
                         intakeCtrlBlue.loadItemIntoSlideForAutonomousOnly();
                         Log.d("AutonBrainThread","Status: loaded");
                     }
-                }).start();
+                }).start();*/
                 Log.d("AutonBrain","Forward init");
-                RRctrl.forward(20,velocityIntake);
+                RRctrl.forwardAsync(20,velocityIntake);
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+                while(RRctrl.getDrive().isBusy() && !qObjectInRobot)
+                {
+                    qObjectInRobot = intakeCtrlBlue.isObjectInPayload();
+                }
                 Log.d("AutonBrain","Forward done");
                 RRctrl.stopRobot();
                 // stopped
                 if(qObjectInRobot)
                 {
+                    new Thread(()->{
+                        intakeCtrlBlue.loadItemIntoSlideForAutonomousOnly();
+                        Log.d("AutonbrainThread","loaded");
+                    }).start();
                     leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
                     minorState = MinorAutonomousState.TWO_PREP_DEPOSIT;
                     Log.d("AutonBrain","Continuing to deposit");
                     return;
                 }
+                if(!qObjectInRobot) {
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
                 intakeCtrlBlue.setState(IntakeState.REVERSE);
                 RRctrl.followLineToSpline(warehousePickupPositionBlue);
                 intakeCtrlBlue.setState(IntakeState.BASE);
-                Log.d("AutonBrain","Retrying to find a block");
+                Log.d("AutonBrain","Retrying to find a block");}
+                else {
+                    minorState = MinorAutonomousState.TWO_PREP_DEPOSIT;
+                    Log.d("AutonBrain","So apparewntly there are some race conditions....we'll ignore");
+                }
                 return;
 
             case TWO_PREP_DEPOSIT: // TODO implement go forward and then turn
@@ -299,7 +314,7 @@ public class AutonomousBrain {
     public static Pose2d startPositionBlue = new Pose2d(14,65.5,0);
     public static Pose2d warehousePickupPositionBlue = new Pose2d(35,70,0);
     public static Pose2d depositPrepPositionBlue = new Pose2d(30,70,0);
-    public static Pose2d depositPositionBlueNoTurn = new Pose2d(-30,65.5,0);
+    public static Pose2d depositPositionBlueNoTurn = new Pose2d(-20,65.5,0);
     public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(5.58,64.47,-Math.toRadians(55));
     public static Pose2d depositPositionAllianceBlueMID = new Pose2d(5.58,64.47,-Math.toRadians(56));
     public static Pose2d depositPositionAllianceBlueBOT = new Pose2d(5.58,64.47,-Math.toRadians(59));
