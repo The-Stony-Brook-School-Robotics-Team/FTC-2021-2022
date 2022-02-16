@@ -23,6 +23,8 @@ import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
 import org.sbs.bears.robotframework.enums.IntakeState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 
+import java.util.concurrent.ExecutorService;
+
 
 public class ButtonHandler {
 
@@ -66,6 +68,12 @@ public class ButtonHandler {
     }
     public static SegmentPositions currentSegmentPosition = SegmentPositions.EXTEND;
 
+    public static Thread asyncDuck = new Thread(() -> {
+        duckspinnerSpinning = true;
+        carouselController.spinOneDuck();
+        duckspinnerSpinning = false;
+    });
+
     /**
      * Secondary Gamepad
      */
@@ -73,11 +81,7 @@ public class ButtonHandler {
         while(currentState == TeleOpRobotStates.RUNNING || currentState.equals(TeleOpRobotStates.INITIALIZING)) {
             if(secondaryGamepad.y && !isPressingSecondaryY) {
                 if(duckspinnerSpinning == false) {
-                    new Thread(() -> {
-                        duckspinnerSpinning = true;
-                        carouselController.spinOneDuck();
-                        duckspinnerSpinning = false;
-                    }).start();
+                    asyncDuck.start();
                 }
                 isPressingSecondaryY = true;
             } else if(!secondaryGamepad.y && isPressingSecondaryY) {
@@ -168,18 +172,13 @@ public class ButtonHandler {
                     } else if(!primaryGamepad.x && isPressingX) {
                         isPressingX = false;
                     }
-
                     /**
                      * Y BUTTON
                      * @usage Duck Spinner
                      */
                     if(primaryGamepad.y && !isPressingY) {
                         if(duckspinnerSpinning == false) {
-                            new Thread(() -> {
-                                duckspinnerSpinning = true;
-                                carouselController.spinOneDuck();
-                                duckspinnerSpinning = false;
-                            }).start();
+                            asyncDuck.start();
                         }
                         isPressingY = true;
                     } else if(!primaryGamepad.y && isPressingY) {
