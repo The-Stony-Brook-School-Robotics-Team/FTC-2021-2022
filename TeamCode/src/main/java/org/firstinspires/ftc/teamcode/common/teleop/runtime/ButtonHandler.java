@@ -77,7 +77,7 @@ public class ButtonHandler {
                         duckspinnerSpinning = true;
                         carouselController.spinOneDuck();
                         duckspinnerSpinning = false;
-                    }).run();
+                    }).start();
                 }
                 isPressingSecondaryY = true;
             } else if(!secondaryGamepad.y && isPressingSecondaryY) {
@@ -179,7 +179,7 @@ public class ButtonHandler {
                                 duckspinnerSpinning = true;
                                 carouselController.spinOneDuck();
                                 duckspinnerSpinning = false;
-                            }).run();
+                            }).start();
                         }
                         isPressingY = true;
                     } else if(!primaryGamepad.y && isPressingY) {
@@ -212,7 +212,7 @@ public class ButtonHandler {
                                     blueIntake.setState(IntakeState.DUMP);
                                 }
                                 LEFT_DPAD_COMPARE_FLAG = false;
-                            }).run();
+                            }).start();
                         } else {
                             Log.d(interfaceTag, "Tried running a task again");
                         }
