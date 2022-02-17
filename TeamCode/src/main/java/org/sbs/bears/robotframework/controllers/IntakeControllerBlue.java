@@ -26,7 +26,7 @@ public class IntakeControllerBlue {
     private double[] basePos = {.975, 1};
     private double[] parkPos = {.45, 0}; //.375 for gobilda servo
     private double[] dumpPos = {.385, 0}; //??????? messed up .375 is the same???
-    private double[] reversePos = {.03, -1}; //75
+    private double[] reversePos = {.975, -1}; //75
 
     /** Distance needed to switch states (mm) **/
     private double distThreshold = 60;
@@ -35,7 +35,7 @@ public class IntakeControllerBlue {
     public long timeToOpenStopper = 400; //ms
     public long timeToCloseBucket = 650; //ms
     public long timeToPushSweeper = 400; //ms
-0
+
     private double sweeperOut = .75;
     private double sweeperIn = 1;
     private double stopperClosed = 0.275; //TODO //.3
