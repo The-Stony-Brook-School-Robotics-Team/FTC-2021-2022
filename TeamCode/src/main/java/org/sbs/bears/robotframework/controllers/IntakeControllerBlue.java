@@ -32,7 +32,10 @@ public class IntakeControllerBlue {
     private double distThreshold = 60;
     private double distThreshold2 = 80;
 
-    public long sleepAmount = 400;
+    public long timeToOpenStopper = 400; //ms
+    public long timeToCloseBucket = 650; //ms
+    public long timeToPushSweeper = 400; //ms
+0
     private double sweeperOut = .75;
     private double sweeperIn = 1;
     private double stopperClosed = 0.275; //TODO //.3
@@ -171,19 +174,19 @@ public class IntakeControllerBlue {
                    compliantWheel.setPower(dumpPos[1]);
                    scooper.setPosition(dumpPos[0]);
                    try {
-                       Thread.sleep(sleepAmount);
+                       Thread.sleep(timeToOpenStopper);
                    } catch (InterruptedException e) {
                        e.printStackTrace();
                    }
                    stopper.setPosition(stopperOpen);
                    try {
-                       Thread.sleep(400);
+                       Thread.sleep(timeToPushSweeper);
                    } catch (InterruptedException e) {
                        e.printStackTrace();
                    }
                    sweeper.setPosition(sweeperOut);
                    try {
-                       Thread.sleep(750);
+                       Thread.sleep(timeToCloseBucket);
                    } catch (InterruptedException e) {
                        e.printStackTrace();
                    }
