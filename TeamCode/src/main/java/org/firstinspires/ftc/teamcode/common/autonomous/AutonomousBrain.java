@@ -238,7 +238,7 @@ public class AutonomousBrain {
                 }).start();
                 // step 2: forward
                 Log.d("AutonBrain","Forward init x " + RRctrl.getPos().getX());
-                RRctrl.forward(20,velocityIntake);
+                RRctrl.forward(25,velocityIntake);
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
                 Log.d("AutonBrain","Forward done");
                 // step 3: check end conditions.

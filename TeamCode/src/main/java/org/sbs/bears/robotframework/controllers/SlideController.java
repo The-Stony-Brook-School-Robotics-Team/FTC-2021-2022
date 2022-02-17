@@ -382,6 +382,7 @@ public class SlideController {
                     case TOP_DEPOSIT_AUTON:
                         targetPosFinal = slideMotorPosition_THREE_DEPOSIT_AUTON;
                         verticalServoTargetPos = vertServoPosition_THREE_DEPOSIT;
+                        break;
                     case MID_DEPOSIT:
                         targetPosFinal = slideMotorPosition_TWO_DEPOSIT;
                         verticalServoTargetPos = vertServoPosition_TWO_DEPOSIT;
@@ -397,6 +398,7 @@ public class SlideController {
                     case CUSTOM:
                         targetPosFinal = slideMotorPosition_CUSTOM;
                         verticalServoTargetPos = vertServoPosition_CUSTOM;
+                        break;
                     case NA:
                         Log.d("SlideController", "Slide Extension failed: did not specify target. Exiting");
                         flagToLeave = true;
