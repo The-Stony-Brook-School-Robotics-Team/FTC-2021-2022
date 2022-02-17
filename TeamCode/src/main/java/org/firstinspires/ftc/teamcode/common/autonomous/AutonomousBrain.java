@@ -242,10 +242,11 @@ public class AutonomousBrain {
                 Log.d("AutonBrain","Forward init");
                 RRctrl.forwardAsync(20,velocityIntake);
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
-                while(RRctrl.getDrive().isBusy() && !qObjectInRobot)
+                while(RRctrl.getDrive().isBusy() && !(qObjectInRobot || intakeCtrlBlue.isObjectInPayload()))
                 {
                     qObjectInRobot = intakeCtrlBlue.isObjectInPayload();
                 }
+                leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
                 Log.d("AutonBrain","Forward done");
                 RRctrl.stopRobot();
                 // stopped
@@ -255,17 +256,17 @@ public class AutonomousBrain {
                         intakeCtrlBlue.loadItemIntoSlideForAutonomousOnly();
                         Log.d("AutonbrainThread","loaded");
                     }).start();
-                    leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+                    leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.DARK_GREEN);
                     minorState = MinorAutonomousState.TWO_PREP_DEPOSIT;
                     Log.d("AutonBrain","Continuing to deposit");
                     return;
                 }
                 if(!qObjectInRobot) {
-                leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
-                intakeCtrlBlue.setState(IntakeState.REVERSE);
-                RRctrl.followLineToSpline(warehousePickupPositionBlue);
-                intakeCtrlBlue.setState(IntakeState.BASE);
-                Log.d("AutonBrain","Retrying to find a block");}
+                    leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+                    intakeCtrlBlue.setState(IntakeState.REVERSE);
+                    RRctrl.followLineToSpline(warehousePickupPositionBlue);
+                    intakeCtrlBlue.setState(IntakeState.BASE);
+                    Log.d("AutonBrain","Retrying to find a block");}
                 else {
                     minorState = MinorAutonomousState.TWO_PREP_DEPOSIT;
                     Log.d("AutonBrain","So apparewntly there are some race conditions....we'll ignore");

@@ -34,7 +34,7 @@ public class IntakeControllerBlue {
     public long sleepAmount = 400;
     private double sweeperOut = .75;
     private double sweeperIn = 1;
-    private double stopperClosed = 0.3; //TODO
+    private double stopperClosed = 0.275; //TODO //.3
     private double stopperOpen = 0.1; //TODO
     private boolean qIsObjectInPayload = false;
 

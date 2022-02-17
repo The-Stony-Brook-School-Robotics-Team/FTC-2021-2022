@@ -35,6 +35,9 @@ public class Configuration {
     public static int colorSensorGain = 10;
     public static double colorSensorWhiteAlpha = 0.001; // was 0.8
 
+    /**
+     * Movement Control
+     */
 
 
 }
