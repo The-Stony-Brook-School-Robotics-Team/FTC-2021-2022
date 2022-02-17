@@ -38,7 +38,7 @@ public class IntakeControllerBlue {
     private double stopperOpen = 0.1; //TODO
     private boolean qIsObjectInPayload = false;
 
-    volatile IntakeState state = IntakeState.BASE;
+    public volatile IntakeState state = IntakeState.BASE;
     Object stateMutex = new Object();
 
     /** Initialization **/

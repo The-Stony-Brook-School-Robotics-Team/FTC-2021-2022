@@ -4,6 +4,8 @@ import static java.lang.Thread.sleep;
 
 import android.util.Log;
 
+import androidx.interpolator.view.animation.FastOutLinearInInterpolator;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -48,8 +50,8 @@ public class AutonomousBlueFull extends LinearOpMode {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        brain.majorState = AutonomousBrain.MajorAutonomousState.FINISHED;
-        brain.minorState = AutonomousBrain.MinorAutonomousState.STOPPED;
+        brain.majorState.set(AutonomousBrain.MajorAutonomousState.FINISHED);
+        brain.minorState.set(AutonomousBrain.MinorAutonomousState.STOPPED);
         requestOpModeStop();
         stop();
     }
