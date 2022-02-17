@@ -30,6 +30,7 @@ public class IntakeControllerBlue {
 
     /** Distance needed to switch states (mm) **/
     private double distThreshold = 60;
+    private double distThreshold2 = 80;
 
     public long sleepAmount = 400;
     private double sweeperOut = .75;
@@ -62,6 +63,12 @@ public class IntakeControllerBlue {
     public boolean isObjectInPayload() {
 
         qIsObjectInPayload = distanceSensor.getDistance(DistanceUnit.MM) < distThreshold;
+        return qIsObjectInPayload;
+    }
+
+    public boolean isObjectInPayload2() {
+
+        qIsObjectInPayload = distanceSensor.getDistance(DistanceUnit.MM) < distThreshold2;
         return qIsObjectInPayload;
     }
 

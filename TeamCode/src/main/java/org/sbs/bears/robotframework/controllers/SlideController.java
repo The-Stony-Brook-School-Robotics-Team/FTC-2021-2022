@@ -379,6 +379,9 @@ public class SlideController {
                         targetPosFinal = slideMotorPosition_THREE_DEPOSIT;
                         verticalServoTargetPos = vertServoPosition_THREE_DEPOSIT;
                         break;
+                    case TOP_DEPOSIT_AUTON:
+                        targetPosFinal = slideMotorPosition_THREE_DEPOSIT_AUTON;
+                        verticalServoTargetPos = vertServoPosition_THREE_DEPOSIT;
                     case MID_DEPOSIT:
                         targetPosFinal = slideMotorPosition_TWO_DEPOSIT;
                         verticalServoTargetPos = vertServoPosition_TWO_DEPOSIT;
@@ -664,8 +667,8 @@ public class SlideController {
     public static double vertServoPosition_TWO_CAROUSEL = 0.3767; ///measured
     public static double vertServoPosition_THREE_CAROUSEL = 0.647;
     public static double vertServoPosition_THREE_DEPOSIT = .89; // 0.85; // TODO //.754; //measured
-    public static double vertServoPosition_TWO_DEPOSIT = 0.45;//.4188;//0.3688;
-    public static double vertServoPosition_ONE_DEPOSIT = .12;//11;//0.06;
+    public static double vertServoPosition_TWO_DEPOSIT = 0.44;//.4188;//0.3688;
+    public static double vertServoPosition_ONE_DEPOSIT = 0.14;//11;//0.06;
     public static double vertServoPosition_CUSTOM = .6;//11;//0.06;
 
 
@@ -698,9 +701,9 @@ public class SlideController {
     public static int slideMotorPosition_BUCKET_OUT = 225;//250;//380//150; // minimum position for the bucket to be out, measured
     public static int slideMotorPosition_BUCKET_OUT_RET = 800; // minimum position for the bucket to be out, measured
     public static int slideMotorPosition_THREE_DEPOSIT = 1310; // remeasured // last 1360
-    public static int slideMotorPosition_THREE_DEPOSIT_AUTON = 1400; // remeasured // last 1360
-    public static int slideMotorPosition_TWO_DEPOSIT = 1244; //measured
-    public static int slideMotorPosition_ONE_DEPOSIT = 1300;//1000; //measured
+    public static int slideMotorPosition_THREE_DEPOSIT_AUTON = 1481; // remeasured // last 1360
+    public static int slideMotorPosition_TWO_DEPOSIT = 1481; //measured
+    public static int slideMotorPosition_ONE_DEPOSIT = 1190;//1000; //measured
     public static int slideMotorPosition_THREE_CAROUSEL = 1713;
     public static int slideMotorPosition_TWO_CAROUSEL = 1650;
     public static int slideMotorPosition_ONE_CAROUSEL = 1665;

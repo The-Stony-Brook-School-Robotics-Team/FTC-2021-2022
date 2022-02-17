@@ -12,17 +12,20 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 @Autonomous (name = "A - Auton (Blue Full)")
 public class AutonomousBlueFull extends LinearOpMode {
     AutonomousBrain brain;
     boolean qA = false;
     boolean qContinue = false;
-    boolean masterQContinue = true;
+    AtomicReference<Boolean> masterQContinue = new AtomicReference<>();
     public static Gamepad gamepad;
 
     @Override
     public void runOpMode()
     {
+        masterQContinue.set(true);
         OpenCVController.isDuck = false;
         brain = new AutonomousBrain(hardwareMap,telemetry,AutonomousMode.BlueFull);
         Log.d("Auton BF","Init Complete");
@@ -43,7 +46,7 @@ public class AutonomousBlueFull extends LinearOpMode {
             telemetry.update();
         }
         // stop requested
-        masterQContinue = false; // master switch
+        masterQContinue.set(false);
         autonBrainExecutor.interrupt();
         try {
             autonBrainExecutor.join();
@@ -58,11 +61,11 @@ public class AutonomousBlueFull extends LinearOpMode {
 
 
     Thread autonBrainExecutor = new Thread(()->{
-        while(opModeIsActive()&& !isStopRequested()){
-            if(!masterQContinue) {break;}
+        while(opModeIsActive() && !isStopRequested()){
+            if(!masterQContinue.get()) {break;}
             brain.doStateAction();
-            if(brain.majorState.equals(AutonomousBrain.MajorAutonomousState.FINISHED)) { requestOpModeStop(); }
-            if(!masterQContinue) { break; }
+            if(brain.majorState.get().equals(AutonomousBrain.MajorAutonomousState.FINISHED)) { requestOpModeStop(); }
+            if(!masterQContinue.get()) { break; }
 
         }
     });

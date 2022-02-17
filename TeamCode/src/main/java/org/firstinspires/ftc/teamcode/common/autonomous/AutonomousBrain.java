@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 
 import org.checkerframework.checker.units.qual.A;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.common.sharedResources.SharedData;
 import org.sbs.bears.robotframework.Robot;
 import org.sbs.bears.robotframework.Sleep;
@@ -42,6 +43,7 @@ public class AutonomousBrain {
     DuckCarouselController duckCtrl;
     Pose2d iniDropPosition = depositPositionAllianceBlueTOP;
 
+    int numberOfTrials = 1;
     RevBlinkinLedDriver leds;
     NormalizedColorSensor normalizedColorSensor;
     RevColorSensorV3 colorNew;
@@ -56,7 +58,7 @@ public class AutonomousBrain {
     TowerHeightFromDuck heightFromDuck = TowerHeightFromDuck.NOT_YET_SET;
 
     SlideTarget iniTarget; // decides randomized position
-    SlideTarget normalTarget = SlideTarget.TOP_DEPOSIT;
+    SlideTarget normalTarget = SlideTarget.TOP_DEPOSIT_AUTON;
 
     enum MajorAutonomousState {
         STOPPED,
@@ -71,7 +73,8 @@ public class AutonomousBrain {
         ONE_INTAKE,
         TWO_PREP_DEPOSIT,
         THREE_DEPOSIT,
-        FOUR_RETURN_TO_INTAKE
+        FOUR_RETURN_TO_INTAKE,
+        FINISHED
     }
 
     double iniTemps = 0;
@@ -129,7 +132,7 @@ public class AutonomousBrain {
                         iniDropPosition = depositPositionAllianceBlueMID;
                         break;
                     case THREE:
-                        iniTarget = SlideTarget.TOP_DEPOSIT;
+                        iniTarget = SlideTarget.TOP_DEPOSIT_AUTON;
                         iniDropPosition = depositPositionAllianceBlueTOP;
                         break;
                 }
@@ -160,7 +163,7 @@ public class AutonomousBrain {
                 }
                 // time check
                double currentTime = NanoClock.system().seconds();
-                if(currentTime- iniTemps > 25) {
+                if(currentTime- iniTemps > 27) {
                     Log.d("AutonBrain","Time Constraint: parking");
                     majorState.set(MajorAutonomousState.FOUR_PARKING_CLEANUP);
                 }
@@ -179,6 +182,7 @@ public class AutonomousBrain {
                 RRctrl.followLineToSpline(parkingPositionBlue);
                 SharedData.autonomousLastPosition = RRctrl.getPos();
                 majorState.set(MajorAutonomousState.FINISHED);
+                minorState.set(MinorAutonomousState.FINISHED);
                 return;
             case FINISHED:
                 return;
@@ -195,6 +199,7 @@ public class AutonomousBrain {
                 return;
             case ONE_INTAKE:
                 // step 1: prepare threads
+                Log.d("AutonBrain","Starting intake stage for the " + numberOfTrials + "th time");
                 slideCtrl.dumperServo.setPosition(SlideController.dumperPosition_READY);
                 new Thread(() -> {
                     leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
@@ -202,6 +207,7 @@ public class AutonomousBrain {
                     Log.d("AutonBrainThread","status0: qObj " + qObjectInRobot.get() + " qIntake " + intakeCtrlBlue.isObjectInPayload());
                     while(isInState)
                     {
+                        Log.d("AutonBrainThread","Status: intakeVal " + intakeCtrlBlue.distanceSensor.getDistance(DistanceUnit.MM) + " x " + RRctrl.getPos().getX());
                         if(intakeCtrlBlue.isObjectInPayload()){
                             Log.d("AutonBrainThread","Found it at x " + RRctrl.getPos().getX());
                             RRctrl.haltTrajectory();
@@ -210,6 +216,7 @@ public class AutonomousBrain {
                             qObjectIsLoaded.set(true);
                             break;
                         }
+                        isInState = minorState.get().equals(MinorAutonomousState.ONE_INTAKE);
                     }
                     Log.d("AutonBrainThread","status2: qObj " + qObjectInRobot.get() + " qIntake " + intakeCtrlBlue.isObjectInPayload());
                     /*leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
@@ -230,11 +237,12 @@ public class AutonomousBrain {
                     }*/
                 }).start();
                 // step 2: forward
-                Log.d("AutonBrain","Forward init");
+                Log.d("AutonBrain","Forward init x " + RRctrl.getPos().getX());
                 RRctrl.forward(20,velocityIntake);
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
                 Log.d("AutonBrain","Forward done");
                 // step 3: check end conditions.
+                numberOfTrials++;
                 if(qObjectInRobot.get() || intakeCtrlBlue.isObjectInPayload())
                 {
                     if(!qObjectInRobot.get())
@@ -283,6 +291,7 @@ public class AutonomousBrain {
                 if(qObjectIsLoaded.get()) {
                     slideCtrl.extendDropRetract(normalTarget);
                     qObjectInRobot.set(false); // reset
+                    qObjectIsLoaded.set(false); // reset
                     Log.d("AutonBrain","Slide drop complete");
                     minorState.set(MinorAutonomousState.FOUR_RETURN_TO_INTAKE);
                 }
@@ -302,7 +311,7 @@ public class AutonomousBrain {
     public static Pose2d startPositionBlue = new Pose2d(14,65.5,0);
     public static Pose2d warehousePickupPositionBlue = new Pose2d(35,70,0);
     public static Pose2d depositPrepPositionBlue = new Pose2d(30,70,0);
-    public static Pose2d depositPositionBlueNoTurn = new Pose2d(-30,65.5,0);
+    public static Pose2d depositPositionBlueNoTurn = new Pose2d(-20,70,0);
     public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(5.58,64.47,-Math.toRadians(55));
     public static Pose2d depositPositionAllianceBlueMID = new Pose2d(5.58,64.47,-Math.toRadians(56));
     public static Pose2d depositPositionAllianceBlueBOT = new Pose2d(5.58,64.47,-Math.toRadians(59));
@@ -311,7 +320,7 @@ public class AutonomousBrain {
     public static Pose2d resetPositionB4WarehouseBlue2 = new Pose2d(14,70,0);
     public static Pose2d parkingPositionBlue = new Pose2d(50,70,0);
     public static Pose2d whiteLinePos = new Pose2d(29.5,65.5,0);
-    public static double velocityIntake = 15;
+    public static double velocityIntake = 30;
 
 
 }
