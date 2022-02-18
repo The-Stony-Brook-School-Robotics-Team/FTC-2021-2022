@@ -683,10 +683,10 @@ public class SlideController {
     double vertServoPosition_FULL_MAX = 1;
 
 
-    public static double incrementDeltaExtend = 0.015;//.008;
+    public static double incrementDeltaExtend = 0.03;//.008;
     public static double incrementDeltaRetract = 0.02;//0.007;
 
-    public static double incrementDeltaExtendTeleOp = 0.015;//.008;
+    public static double incrementDeltaExtendTeleOp = 0.03;//.008;
     public static double incrementDeltaRetractTeleop = 0.02;//0.007;
 
     public static double incrementDeltaExtendCapstone = 0.005;

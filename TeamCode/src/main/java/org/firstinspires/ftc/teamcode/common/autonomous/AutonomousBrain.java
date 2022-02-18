@@ -248,7 +248,7 @@ public class AutonomousBrain {
                 }).start();
                 // step 2: forward
                 Log.d("AutonBrain","Forward init x " + RRctrl.getPos().getX());
-                RRctrl.forward(25,velocityIntake);
+                RRctrl.forward(25,velocityIntake,accelIntake);
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
                 Log.d("AutonBrain","Forward done");
                 // step 3: check end conditions.
@@ -301,7 +301,8 @@ public class AutonomousBrain {
                 if (RRctrl.isInWarehouse())
                 {
                     Log.d("AutonBrain","Stuck detected on deposit trying, retrying.");
-                    RRctrl.followLineToSpline(new Pose2d(RRctrl.getPos().getX()+5,70,0));
+                    RRctrl.followLineToSpline(new Pose2d(RRctrl.getPos().getX()+15,70,RRctrl.getPos().getHeading()),100);
+                    RRctrl.followLineToSpline(warehousePickupPositionBlue);
                     minorState.set(MinorAutonomousState.TWO_PREP_DEPOSIT);
                     return;
                 }
@@ -337,7 +338,8 @@ public class AutonomousBrain {
     public static Pose2d resetPositionB4WarehouseBlue2 = new Pose2d(14,70,0);
     public static Pose2d parkingPositionBlue = new Pose2d(50,70,0);
     public static Pose2d whiteLinePos = new Pose2d(29.5,65.5,0);
-    public static double velocityIntake = 30;
+    public static double velocityIntake = 20;
+    public static double accelIntake = 20;
 
 
 }
