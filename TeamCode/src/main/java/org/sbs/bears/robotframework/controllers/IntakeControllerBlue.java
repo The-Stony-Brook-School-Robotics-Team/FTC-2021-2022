@@ -36,7 +36,7 @@ public class IntakeControllerBlue {
     public long timeToCloseBucket = 650; //ms
     public long timeToPushSweeper = 400; //ms
 
-    private double sweeperOut = .75;
+    private double sweeperOut = .725;
     private double sweeperIn = 1;
     private double stopperClosed = 0.275; //TODO //.3
     private double stopperOpen = 0.1; //TODO
