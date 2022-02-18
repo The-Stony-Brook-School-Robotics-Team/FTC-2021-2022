@@ -171,6 +171,7 @@ public class IntakeControllerBlue {
                    break;
 
                case DUMP:
+                   // maybe add here a thing to open the bucket
                    compliantWheel.setPower(dumpPos[1]);
                    scooper.setPosition(dumpPos[0]);
                    try {
