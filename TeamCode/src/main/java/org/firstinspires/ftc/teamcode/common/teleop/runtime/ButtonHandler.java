@@ -23,6 +23,8 @@ import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
 import org.sbs.bears.robotframework.enums.IntakeState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 
 public class ButtonHandler {
 
@@ -72,6 +74,24 @@ public class ButtonHandler {
         duckspinnerSpinning = false;
     });
 
+    public static AtomicReference<Boolean> runningAsyncSlideExtend = new AtomicReference<>();
+    public static Thread asyncExtendSlide = new Thread(() -> {
+        // Set the atomic boolean to true (slide function is not finished / in progress)
+        runningAsyncSlideExtend.set(true);
+        if(slideController.slideMotor.getCurrentPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
+            slideController.extendSlide();
+            driveSpeedStrafe = Configuration.SlowMovementStrafeMultiplier;
+        } else if(slideController.slideMotor.getCurrentPosition() > slideController.slideMotorPosition_BUCKET_OUT) {
+            slideController.retractSlide();
+            if(currentSegmentPosition != SegmentPositions.EXTEND) {
+                currentSegmentPosition = SegmentPositions.EXTEND;
+            }
+            driveSpeedStrafe = 1;
+        }
+        // Set the atomic boolean to false (slide function is finished)
+        runningAsyncSlideExtend.set(false);
+    });
+
     /**
      * Secondary Gamepad
      */
@@ -111,16 +131,8 @@ public class ButtonHandler {
                      * @usage Extend / Retract Slide
                      */
                     if(primaryGamepad.b && !isPressingB) {
-                        if(slideController.slideMotor.getCurrentPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
-                            slideController.extendSlide();
-                            driveSpeedStrafe = Configuration.SlowMovementStrafeMultiplier;
-                        } else if(slideController.slideMotor.getCurrentPosition() > slideController.slideMotorPosition_BUCKET_OUT) {
-                            slideController.retractSlide();
-                            if(currentSegmentPosition != SegmentPositions.EXTEND) {
-                                currentSegmentPosition = SegmentPositions.EXTEND;
-                            }
-                            driveSpeedStrafe = 1;
-
+                        if(!runningAsyncSlideExtend.get() && !asyncExtendSlide.isAlive()) {
+                            asyncExtendSlide.start();
                         }
                         isPressingB = true;
                     } else if(!primaryGamepad.b && isPressingB) {
@@ -266,16 +278,6 @@ public class ButtonHandler {
                     } else if(primaryGamepad.left_trigger < Configuration.leftTriggerTreshold && isPressingLeftTrigger) {
                         isPressingLeftTrigger= false;
                     }
-
-//                    /**
-//                     * Right Trigger
-//                     * @usage Right Intake (Blue Intake)
-//                     */
-//                    if(primaryGamepad.right_trigger > Configuration.rightTriggerTreshold && redIntake.isDown()) {
-//                        redIntake.setState(IntakeState.DUMP);
-//                    } else if(primaryGamepad.right_trigger > Configuration.rightTriggerTreshold && !redIntake.isDown()) {
-//                        redIntake.setState(IntakeState.BASE);
-//                    }
                     break;
                 case SECONDARY:
 
@@ -304,7 +306,7 @@ public class ButtonHandler {
 
                     /**
                      * X BUTTON
-                     * @usage FREE BUTTON
+                     * @usage Reverse + Drop Left Intake
                      */
                     if(primaryGamepad.x && !isPressingX) {
                         if(!blueIntake.isReversed()) {
@@ -316,6 +318,19 @@ public class ButtonHandler {
                     } else if(!primaryGamepad.x && isPressingX) {
                         isPressingX = false;
                     }
+
+                    /**
+                     * Y BUTTON
+                     * @usage Slide Extension Interrupt
+                     */
+                    if(primaryGamepad.y && !isPressingY) {
+                        asyncExtendSlide.interrupt();
+                        runningAsyncSlideExtend.set(false);
+                        isPressingY = true;
+                    } else if(!primaryGamepad.y && isPressingY) {
+                        isPressingY = false;
+                    }
+
 
                     /**
                      * LEFT DPAD
