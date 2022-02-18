@@ -5,7 +5,7 @@ import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.carous
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.interfaceTag;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.primaryControllerMode;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.currentState;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.driveSpeed;
+import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.driveSpeedStrafe;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.primaryGamepad;
 
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.secondaryGamepad;
@@ -22,8 +22,6 @@ import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
 import org.sbs.bears.robotframework.enums.IntakeState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
-
-import java.util.concurrent.ExecutorService;
 
 
 public class ButtonHandler {
@@ -115,13 +113,14 @@ public class ButtonHandler {
                     if(primaryGamepad.b && !isPressingB) {
                         if(slideController.slideMotor.getCurrentPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
                             slideController.extendSlide();
-                            driveSpeed = 0.3;
+                            driveSpeedStrafe = Configuration.SlowMovementStrafeMultiplier;
                         } else if(slideController.slideMotor.getCurrentPosition() > slideController.slideMotorPosition_BUCKET_OUT) {
                             slideController.retractSlide();
                             if(currentSegmentPosition != SegmentPositions.EXTEND) {
                                 currentSegmentPosition = SegmentPositions.EXTEND;
                             }
-                            driveSpeed = 1;
+                            driveSpeedStrafe = 1;
+
                         }
                         isPressingB = true;
                     } else if(!primaryGamepad.b && isPressingB) {
@@ -189,7 +188,8 @@ public class ButtonHandler {
                      * RIGHT BUMPER
                      * @usage Detect White Line and deposit
                      */
-                    if(primaryGamepad.right_bumper && OfficialTeleop.bottomColorSensor.getNormalizedColors().alpha > Configuration.colorSensorWhiteAlpha) {
+                    //TODO i changed this sorry
+                    if(primaryGamepad.right_bumper) {
                         if(!roadrunnerHandler.isBusy) {
                             roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.WAREHOUSE_AUTO_TURN);
                         }
@@ -292,10 +292,10 @@ public class ButtonHandler {
                      * @usage Slowmode Toggle
                      */
                     if(primaryGamepad.a && !isPressingA && primaryControllerMode == ControllerModes.SECONDARY) {
-                        if(driveSpeed == 0.3) {
-                            driveSpeed = 1;
-                        } else if(driveSpeed == 1) {
-                            driveSpeed = 0.3;
+                        if(driveSpeedStrafe == Configuration.SlowMovementStrafeMultiplier) {
+                            driveSpeedStrafe = 1;
+                        } else if(driveSpeedStrafe == 1) {
+                            driveSpeedStrafe = Configuration.SlowMovementStrafeMultiplier;
                         }
                         isPressingA = true;
                     } else if(!primaryGamepad.a && isPressingA && primaryControllerMode == ControllerModes.SECONDARY) {

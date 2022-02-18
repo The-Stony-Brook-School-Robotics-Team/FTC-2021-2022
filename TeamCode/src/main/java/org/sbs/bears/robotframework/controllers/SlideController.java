@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.util.NanoClock;
-import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -17,6 +16,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop;
 import org.sbs.bears.robotframework.Beta;
 import org.sbs.bears.robotframework.Sleep;
@@ -73,6 +73,7 @@ public class SlideController {
      * Increments the slide's height to the desired position.
      **/
     private void setHeightToParams(double targetPos) {
+
         //Only alter the slide's height if not parked
         //TODO if(slideState != PARKED)?
         if (slideState == SlideState.OUT_FULLY || slideState == SlideState.RETRACTING || slideState == SlideState.EXTENDING || slideState == SlideState.TELEOP) {
@@ -299,8 +300,9 @@ public class SlideController {
         //Checks to make sure the bucket is outside of the slide before dumping
         if (slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT) {
             if (targetParams == SlideTarget.CAP_FROM_CAROUSEL) {
-              //  incrementDeltaRetract = increme
+                incrementDeltaRetract = incrementDeltaRetractCaptsone;
                 setHeightToParams(vertServoPosition_CAP_CAROUSEL);
+                incrementDeltaRetract = incrementDeltaRetractTeleop;
                 slideMotor.setTargetPosition(slideMotorPosition_CAP_FROM_CAROUSEL_RET);
                 slideMotor.setPower(slideMotorPowerMovingBack);
                 while (slideMotor.getCurrentPosition() < slideMotorPosition_CAP_FROM_CAROUSEL_RET) {
@@ -361,7 +363,7 @@ public class SlideController {
                 return;
             case EXTENDING:
                 //Switch to set the height and distance of extension depending on the target
-                OfficialTeleop.driveSpeed = .3;
+                OfficialTeleop.driveSpeedStrafe = Configuration.SlowMovementStrafeMultiplier;
                 switch (targetParams) {
                     case BOTTOM_CAROUSEL:
                         targetPosFinal = slideMotorPosition_ONE_CAROUSEL;
@@ -456,7 +458,7 @@ public class SlideController {
                 return;
             case RETRACTING:
                 dumperServo.setPosition(dumperPosition_RETRACTING);
-                OfficialTeleop.driveSpeed = 1;
+                OfficialTeleop.driveSpeedStrafe = 1;
                 targetPos = slideMotorPosition_PARKED;
                 slideMotor.setPower(slideMotorPowerMoving);
                 slideMotor.setTargetPosition(targetPos);
@@ -681,13 +683,14 @@ public class SlideController {
     double vertServoPosition_FULL_MAX = 1;
 
 
-    public static double incrementDeltaExtend = 0.008;//.2;
+    public static double incrementDeltaExtend = 0.015;//.008;
     public static double incrementDeltaRetract = 0.02;//0.007;
 
-    public static double incrementDeltaExtendTeleOp = 0.008;//.2;
+    public static double incrementDeltaExtendTeleOp = 0.015;//.008;
     public static double incrementDeltaRetractTeleop = 0.02;//0.007;
 
     public static double incrementDeltaExtendCapstone = 0.005;
+    public static double incrementDeltaRetractCaptsone = 0.002;
 
 
     // dumper servo
@@ -702,9 +705,9 @@ public class SlideController {
     int slideMotorPosition_PARKED = 5;
     public static int slideMotorPosition_BUCKET_OUT = 225;//250;//380//150; // minimum position for the bucket to be out, measured
     public static int slideMotorPosition_BUCKET_OUT_RET = 800; // minimum position for the bucket to be out, measured
-    public static int slideMotorPosition_THREE_DEPOSIT = 1310; // remeasured // last 1360
-    public static int slideMotorPosition_THREE_DEPOSIT_AUTON = 1481; // remeasured // last 1360
-    public static int slideMotorPosition_TWO_DEPOSIT = 1481; //measured
+    public static int slideMotorPosition_THREE_DEPOSIT = 1316; // remeasured // last 1310
+    public static int slideMotorPosition_THREE_DEPOSIT_AUTON = 1400; // remeasured // last 1360
+    public static int slideMotorPosition_TWO_DEPOSIT = 1390; //measured
     public static int slideMotorPosition_ONE_DEPOSIT = 1190;//1000; //measured
     public static int slideMotorPosition_THREE_CAROUSEL = 1713;
     public static int slideMotorPosition_TWO_CAROUSEL = 1650;

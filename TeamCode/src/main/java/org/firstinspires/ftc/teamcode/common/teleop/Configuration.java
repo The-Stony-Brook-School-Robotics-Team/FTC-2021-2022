@@ -18,7 +18,7 @@ public class Configuration {
 
     
     /** Movement Adjustments */
-    public static double SlowMovementMultiplier = 0.2;
+    public static double SlowMovementStrafeMultiplier = 0.3;
 
     /** Roadrunner Movement Config */
     public static int inchesLeft = 12;

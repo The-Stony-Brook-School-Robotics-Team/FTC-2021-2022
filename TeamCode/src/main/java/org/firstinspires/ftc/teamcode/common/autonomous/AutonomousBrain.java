@@ -29,6 +29,7 @@ import org.sbs.bears.robotframework.enums.SlideTarget;
 import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
 import static org.sbs.bears.robotframework.controllers.OpenCVController.doAnalysisMaster;
 
+import java.time.LocalDate;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Config
@@ -192,14 +193,23 @@ public class AutonomousBrain {
 
     public void doGoBack()
     {
-        switch(minorState.get())
-        {
+        switch(minorState.get()) {
             case STOPPED:
                 // No associated action
                 return;
             case ONE_INTAKE:
                 // step 1: prepare threads
-                Log.d("AutonBrain","Starting intake stage for the " + numberOfTrials + "th time");
+                if (!RRctrl.isInWarehouse())
+                {
+                    Log.d("AutonBrain","Stuck detected on intake attempt, retrying.");
+                    intakeCtrlBlue.setState(IntakeState.PARK);
+                    RRctrl.followLineToSpline(new Pose2d(RRctrl.getPos().getX()-5,70,0));
+                    minorState.set(MinorAutonomousState.FOUR_RETURN_TO_INTAKE);
+                    return;
+                }
+                Log.d("AutonBrain", "Starting intake stage for the " + numberOfTrials + "th time");
+
+
                 slideCtrl.dumperServo.setPosition(SlideController.dumperPosition_READY);
                 new Thread(() -> {
                     leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
@@ -288,6 +298,13 @@ public class AutonomousBrain {
                 minorState.set(MinorAutonomousState.THREE_DEPOSIT);
                 return;
             case THREE_DEPOSIT:
+                if (RRctrl.isInWarehouse())
+                {
+                    Log.d("AutonBrain","Stuck detected on deposit trying, retrying.");
+                    RRctrl.followLineToSpline(new Pose2d(RRctrl.getPos().getX()+5,70,0));
+                    minorState.set(MinorAutonomousState.TWO_PREP_DEPOSIT);
+                    return;
+                }
                 if(qObjectIsLoaded.get()) {
                     slideCtrl.extendDropRetract(normalTarget);
                     qObjectInRobot.set(false); // reset

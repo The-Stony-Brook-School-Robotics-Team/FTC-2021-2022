@@ -511,6 +511,9 @@ public class RoadRunnerController {
     public static double slowSpeed = 30;
 
     public boolean isInWarehouse() {
+        return getPos().getX() > 25 && getPos().getY() > 28;
+    }
+    public boolean isStuckByPVCexiting() {
         return getPos().getX() > 32 && getPos().getY() > 28;
     }
 }

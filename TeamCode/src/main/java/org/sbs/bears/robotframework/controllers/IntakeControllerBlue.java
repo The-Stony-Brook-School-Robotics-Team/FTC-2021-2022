@@ -172,13 +172,15 @@ public class IntakeControllerBlue {
 
                case DUMP:
                    // maybe add here a thing to open the bucket
-                   compliantWheel.setPower(dumpPos[1]);
+                   dumperServo.setPosition(SlideController.dumperPosition_READY);
+                   //compliantWheel.setPower(dumpPos[1]);
                    scooper.setPosition(dumpPos[0]);
                    try {
                        Thread.sleep(timeToOpenStopper);
                    } catch (InterruptedException e) {
                        e.printStackTrace();
                    }
+                   compliantWheel.setPower(dumpPos[1]);
                    stopper.setPosition(stopperOpen);
                    try {
                        Thread.sleep(timeToPushSweeper);

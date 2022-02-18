@@ -44,7 +44,8 @@ public class OfficialTeleop extends OpMode {
     public static Gamepad secondaryGamepad;
     public static ControllerModes primaryControllerMode = ControllerModes.PRIMARY;
     public static ControllerModes secondaryControllerMode = ControllerModes.PRIMARY;
-    public static double driveSpeed = 1;
+    public static double driveSpeedStrafe = 1;
+
 
     /**
      * Information Provisioning
