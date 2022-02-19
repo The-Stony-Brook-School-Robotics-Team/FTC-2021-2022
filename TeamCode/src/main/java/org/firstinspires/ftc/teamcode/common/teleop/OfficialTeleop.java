@@ -111,9 +111,12 @@ public class OfficialTeleop extends OpMode {
         /**
          * Increase Read Speeds
          */
+        // LS: Light Sensor
+        // PS: Proximity Sensor
+        // MEAS: Measure Rate
         bottomColorSensor.write8(BroadcomColorSensor.Register.LS_MEAS_RATE,0x01010000);
         bottomColorSensor.write8(BroadcomColorSensor.Register.PS_MEAS_RATE,0x00000001);
-
+        bottomColorSensor.write8(BroadcomColorSensor.Register.LS_GAIN, 0x00000000);
 
         /**
          * Configuration
@@ -158,11 +161,6 @@ public class OfficialTeleop extends OpMode {
             case RUNNING:
                 telemetry.addData("Bottom Color Sensor Alpha: ", bottomColorSensor.alpha());
                 telemetry.addData("Bottom Color Sensor Normalized Alpha: ", bottomColorSensor.getNormalizedColors().alpha);
-           //     telemetry.addData("I2C Draw (A): ", expansionHubEx.getI2cBusCurrentDraw(ExpansionHubEx.CurrentDrawUnits.AMPS));
-             //   telemetry.addData("I2C Draw (mA): ", expansionHubEx.getI2cBusCurrentDraw(ExpansionHubEx.CurrentDrawUnits.MILLIAMPS));
-               // telemetry.addData("distance", bottomColorSensor.getDistance(DistanceUnit.MM));
-            //    telemetry.addData("raw light", bottomColorSensor.getRawLightDetected());
-            //    telemetry.addData("raw light max", bottomColorSensor.getRawLightDetectedMax());
                 telemetry.update();
                 break;
 
