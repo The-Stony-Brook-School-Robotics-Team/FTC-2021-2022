@@ -272,6 +272,8 @@ public class AutonomousBrain {
                     leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
                     intakeCtrlBlue.setState(IntakeState.REVERSE);
                     RRctrl.followLineToSpline(warehousePickupPositionBlue);
+                    // do a turn here
+                    RRctrl.turnR(intakeTurnAmount); // fix this val pls thx
                     intakeCtrlBlue.setState(IntakeState.BASE);
                 }
                 return;
@@ -338,8 +340,9 @@ public class AutonomousBrain {
     public static Pose2d resetPositionB4WarehouseBlue2 = new Pose2d(14,70,0);
     public static Pose2d parkingPositionBlue = new Pose2d(50,70,0);
     public static Pose2d whiteLinePos = new Pose2d(29.5,65.5,0);
-    public static double velocityIntake = 20;
+    public static double velocityIntake = 22;
     public static double accelIntake = 20;
+    public static double intakeTurnAmount = 5; // TODO pls 
 
 
 }

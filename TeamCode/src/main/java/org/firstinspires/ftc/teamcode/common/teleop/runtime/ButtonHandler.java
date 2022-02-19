@@ -74,10 +74,10 @@ public class ButtonHandler {
         duckspinnerSpinning = false;
     });
 
-    public static AtomicReference<Boolean> runningAsyncSlideExtend = new AtomicReference<>();
+    public static Boolean runningAsyncSlideExtend = false;
     public static Thread asyncExtendSlide = new Thread(() -> {
         // Set the atomic boolean to true (slide function is not finished / in progress)
-        runningAsyncSlideExtend.set(true);
+        runningAsyncSlideExtend = true;
         if(slideController.slideMotor.getCurrentPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
             slideController.extendSlide();
             driveSpeedStrafe = Configuration.SlowMovementStrafeMultiplier;
@@ -89,7 +89,7 @@ public class ButtonHandler {
             driveSpeedStrafe = 1;
         }
         // Set the atomic boolean to false (slide function is finished)
-        runningAsyncSlideExtend.set(false);
+        runningAsyncSlideExtend = false;
     });
 
     /**
@@ -131,7 +131,7 @@ public class ButtonHandler {
                      * @usage Extend / Retract Slide
                      */
                     if(primaryGamepad.b && !isPressingB) {
-                        if(!runningAsyncSlideExtend.get() && !asyncExtendSlide.isAlive()) {
+                        if(!runningAsyncSlideExtend && !asyncExtendSlide.isAlive()) {
                             asyncExtendSlide.start();
                         }
                         isPressingB = true;
@@ -320,15 +320,20 @@ public class ButtonHandler {
                     }
 
                     /**
-                     * Y BUTTON
+
                      * @usage Slide Extension Interrupt
+                     * @revision Revision two
                      */
-                    if(primaryGamepad.y && !isPressingY) {
+//                    if(primaryGamepad.y && !isPressingY) {
+//                        asyncExtendSlide.interrupt();
+//                        runningAsyncSlideExtend.set(false);
+//                        isPressingY = true;
+//                    } else if(!primaryGamepad.y && isPressingY) {
+//                        isPressingY = false;
+//                    }
+                    if(primaryGamepad.left_trigger > 0.2) {
                         asyncExtendSlide.interrupt();
-                        runningAsyncSlideExtend.set(false);
-                        isPressingY = true;
-                    } else if(!primaryGamepad.y && isPressingY) {
-                        isPressingY = false;
+                        runningAsyncSlideExtend = false;
                     }
 
 
