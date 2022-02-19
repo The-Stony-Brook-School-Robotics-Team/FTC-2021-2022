@@ -568,13 +568,17 @@ public class SlideController {
      *
      * @param encoderTicks the number of ticks to increase or decrease the slide position.
      */
-    public void incrementEncoderPosition(int encoderTicks) {
+    public void incrementEncoderPosition(int encoderTicks, boolean checkSaftey) {
 
         slideState = SlideState.TELEOP;
 
         encoderTicks += slideMotor.getCurrentPosition();
         //Checks if the position given is a position that would put the box inside of the robot
-        if (encoderTicks > slideMotorPosition_FULL || encoderTicks < slideMotorPosition_PARKED) {
+        if ((encoderTicks > slideMotorPosition_FULL || encoderTicks < slideMotorPosition_PARKED) && checkSaftey) {
+            return;
+        }
+        if(!magswitch.getState() && !checkSaftey) {
+            resetEncoder();
             return;
         }
 
@@ -634,6 +638,11 @@ public class SlideController {
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideMotor.setPower(0);
 
+    }
+    
+    public void resetEncoder(){
+        slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
 

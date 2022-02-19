@@ -42,7 +42,7 @@ public class SlideHandler {
         if(!slideMoving) {
             slideMoving = true;
             stickValue = stickValue * -2;
-            slideController.incrementEncoderPosition(stickValue * Configuration.DefaultSlideTicks);
+            slideController.incrementEncoderPosition(stickValue * Configuration.DefaultSlideTicks, true);
             Log.d(interfaceTag, "Current Slide Motor Ticks: " + slideController.getSlideMotorPosition());
             slideMoving = false;
         }

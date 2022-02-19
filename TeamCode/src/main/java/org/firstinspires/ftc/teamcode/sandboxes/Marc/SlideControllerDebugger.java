@@ -95,7 +95,7 @@ public class SlideControllerDebugger extends LinearOpMode
             if(gamepad1.right_stick_y < -0.02 || gamepad1.right_stick_y > -0.02) {
                 //drive.setWeightedDrivePower(new Pose2d());
                 double stickValue = gamepad1.right_stick_y * -1;
-                slideController.incrementEncoderPosition((int) (stickValue * Configuration.DefaultSlideTicks));
+                slideController.incrementEncoderPosition((int) (stickValue * Configuration.DefaultSlideTicks), true);
                 //Log.d("SLIDE TESTER", "Current Slide Motor Ticks: " + slideController.getSlideMotorPosition());
             }
 
