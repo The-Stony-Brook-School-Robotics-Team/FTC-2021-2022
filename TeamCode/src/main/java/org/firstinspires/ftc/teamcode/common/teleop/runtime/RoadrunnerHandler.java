@@ -123,12 +123,15 @@ public class RoadrunnerHandler {
 
             case WAREHOUSE_AUTO_TURN:
                 Log.d(interfaceTag, "Going Forward");
-                drive.setPoseEstimate(new Pose2d(28.5, 65.5, 0));
+                // drive.setPoseEstimate(new Pose2d(28.5, 65.5, 0));
+                drive.setPoseEstimate(new Pose2d(14, 65.5, 0));
 
                 drive.followTrajectory(
                         drive.trajectoryBuilder(drive.getPoseEstimate())
-                                .lineToSplineHeading(new Pose2d(14,65.5,0), quickMoveVelocityConstraint, quickMoveAccelerationConstraint)
+                                // .lineToSplineHeading(new Pose2d(14,65.5,0), quickMoveVelocityConstraint, quickMoveAccelerationConstraint)
                                 .splineToSplineHeading(new Pose2d(5.58,64.47,-Math.toRadians(55)), Math.PI)
+                          //      .splineToSplineHeading(new Pose2d(drive.getPoseEstimate().getX(),drive.getPoseEstimate().getY(),-Math.toRadians(55)), Math.PI)
+
                                 .build());
 
 

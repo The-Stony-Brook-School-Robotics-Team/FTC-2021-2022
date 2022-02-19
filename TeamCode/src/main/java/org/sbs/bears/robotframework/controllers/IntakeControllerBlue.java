@@ -26,19 +26,23 @@ public class IntakeControllerBlue {
     private double[] basePos = {.975, 1};
     private double[] parkPos = {.45, 0}; //.375 for gobilda servo
     private double[] dumpPos = {.385, 0}; //??????? messed up .375 is the same???
-    private double[] reversePos = {.03, -1}; //75
+    private double[] reversePos = {.975, -1}; //75
 
     /** Distance needed to switch states (mm) **/
     private double distThreshold = 60;
+    private double distThreshold2 = 80;
 
-    public long sleepAmount = 400;
-    private double sweeperOut = .75;
+    public long timeToOpenStopper = 400; //ms
+    public long timeToCloseBucket = 650; //ms
+    public long timeToPushSweeper = 400; //ms
+
+    private double sweeperOut = .725;
     private double sweeperIn = 1;
-    private double stopperClosed = 0.3; //TODO
+    private double stopperClosed = 0.275; //TODO //.3
     private double stopperOpen = 0.1; //TODO
     private boolean qIsObjectInPayload = false;
 
-    volatile IntakeState state = IntakeState.BASE;
+    public volatile IntakeState state = IntakeState.BASE;
     Object stateMutex = new Object();
 
     /** Initialization **/
@@ -62,6 +66,12 @@ public class IntakeControllerBlue {
     public boolean isObjectInPayload() {
 
         qIsObjectInPayload = distanceSensor.getDistance(DistanceUnit.MM) < distThreshold;
+        return qIsObjectInPayload;
+    }
+
+    public boolean isObjectInPayload2() {
+
+        qIsObjectInPayload = distanceSensor.getDistance(DistanceUnit.MM) < distThreshold2;
         return qIsObjectInPayload;
     }
 
@@ -150,54 +160,59 @@ public class IntakeControllerBlue {
      * Assigns position and motor power to their respective states \
      * **/
     private void doStateAction(){
-        switch(state){
-            case BASE:
-                scooper.setPosition(basePos[0]);
-                sweeper.setPosition(sweeperIn);
-                stopper.setPosition(stopperClosed);
-                compliantWheel.setPower(basePos[1]);
-                dumperServo.setPosition(SlideController.dumperPosition_READY);
-                break;
+       new Thread(() -> {
+           switch (state) {
+               case BASE:
+                   scooper.setPosition(basePos[0]);
+                   sweeper.setPosition(sweeperIn);
+                   stopper.setPosition(stopperClosed);
+                   compliantWheel.setPower(basePos[1]);
+                   dumperServo.setPosition(SlideController.dumperPosition_READY);
+                   break;
 
-            case DUMP:
-                compliantWheel.setPower(dumpPos[1]);
-                scooper.setPosition(dumpPos[0]);
-                try {
-                    Thread.sleep(sleepAmount);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                stopper.setPosition(stopperOpen);
-                try {
-                    Thread.sleep(400);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                sweeper.setPosition(sweeperOut);
-                try {
-                    Thread.sleep(750);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+               case DUMP:
+                   // maybe add here a thing to open the bucket
+                   dumperServo.setPosition(SlideController.dumperPosition_READY);
+                   //compliantWheel.setPower(dumpPos[1]);
+                   scooper.setPosition(dumpPos[0]);
+                   try {
+                       Thread.sleep(timeToOpenStopper);
+                   } catch (InterruptedException e) {
+                       e.printStackTrace();
+                   }
+                   compliantWheel.setPower(dumpPos[1]);
+                   stopper.setPosition(stopperOpen);
+                   try {
+                       Thread.sleep(timeToPushSweeper);
+                   } catch (InterruptedException e) {
+                       e.printStackTrace();
+                   }
+                   sweeper.setPosition(sweeperOut);
+                   try {
+                       Thread.sleep(timeToCloseBucket);
+                   } catch (InterruptedException e) {
+                       e.printStackTrace();
+                   }
 
-                dumperServo.setPosition(SlideController.dumperPosition_CLOSED);
+                   dumperServo.setPosition(SlideController.dumperPosition_CLOSED);
 
-                break;
+                   break;
 
-            case REVERSE:
-                scooper.setPosition(reversePos[0]);
-                compliantWheel.setPower(reversePos[1]);
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                sweeper.setPosition(sweeperIn);
-                break;
-            case PARK:
-                scooper.setPosition(parkPos[0]);
-                compliantWheel.setPower(parkPos[1]);
-        }
+               case REVERSE:
+                   scooper.setPosition(reversePos[0]);
+                   compliantWheel.setPower(reversePos[1]);
+                   try {
+                       Thread.sleep(200);
+                   } catch (InterruptedException e) {
+                       e.printStackTrace();
+                   }
+                   sweeper.setPosition(sweeperIn);
+                   break;
+               case PARK:
+                   scooper.setPosition(parkPos[0]);
+                   compliantWheel.setPower(parkPos[1]);
+           }
+       }).start();
     }
 
     public boolean isDown() {

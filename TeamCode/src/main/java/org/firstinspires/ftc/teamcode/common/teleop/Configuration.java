@@ -18,7 +18,7 @@ public class Configuration {
 
     
     /** Movement Adjustments */
-    public static double SlowMovementMultiplier = 0.2;
+    public static double SlowMovementStrafeMultiplier = 0.3;
 
     /** Roadrunner Movement Config */
     public static int inchesLeft = 12;
@@ -35,6 +35,9 @@ public class Configuration {
     public static int colorSensorGain = 10;
     public static double colorSensorWhiteAlpha = 0.001; // was 0.8
 
+    /**
+     * Movement Control
+     */
 
 
 }

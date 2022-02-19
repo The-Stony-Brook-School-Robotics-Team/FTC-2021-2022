@@ -6,9 +6,11 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -30,7 +32,8 @@ public class SlideControllerDebugger extends LinearOpMode
     private boolean qX;
     private boolean pB;
     private boolean pRB;
-    public static SlideTarget target = SlideTarget.BOTTOM_DEPOSIT;
+    public Rev2mDistanceSensor distanceSensor;
+    public static SlideTarget target = SlideTarget.TOP_DEPOSIT;
 
     State state = State.OFF;
     @Override
@@ -41,6 +44,7 @@ public class SlideControllerDebugger extends LinearOpMode
         TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
         bu = new IntakeControllerBlue(hardwareMap, slideController.dumperServo, telemetry);
         red = new IntakeControllerRed(hardwareMap,telemetry);
+        distanceSensor = bu.distanceSensor;
 
         //bu.setState(IntakeState.PARK);
 //        red.setState(IntakeState.PARK);
@@ -90,8 +94,8 @@ public class SlideControllerDebugger extends LinearOpMode
 
             if(gamepad1.right_stick_y < -0.02 || gamepad1.right_stick_y > -0.02) {
                 //drive.setWeightedDrivePower(new Pose2d());
-                double stickValue = gamepad1.right_stick_y * -0.2;
-                slideController.incrementEncoderPosition((int) (stickValue * Configuration.DefaultSlideTicks));
+                double stickValue = gamepad1.right_stick_y * -1;
+                slideController.incrementEncoderPosition((int) (stickValue * Configuration.DefaultSlideTicks), true);
                 //Log.d("SLIDE TESTER", "Current Slide Motor Ticks: " + slideController.getSlideMotorPosition());
             }
 
@@ -143,6 +147,7 @@ public class SlideControllerDebugger extends LinearOpMode
 
             telemetry.addData("Slide Ext",slideController.slideMotor.getCurrentPosition());
             telemetry.addData("Slide Angle",slideController.verticalServo.getPosition());
+            telemetry.addData("Intake Dist",distanceSensor.getDistance(DistanceUnit.MM));
             telemetry.update();
 
 

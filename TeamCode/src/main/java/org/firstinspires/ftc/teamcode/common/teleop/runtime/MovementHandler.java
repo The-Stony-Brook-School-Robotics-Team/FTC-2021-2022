@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.common.teleop.runtime;
 
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.currentState;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.drive;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.driveSpeed;
+import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.driveSpeedStrafe;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.intakeHandler;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.isColorStripBlue;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.primaryGamepad;
@@ -131,7 +131,7 @@ class MovementHandlers {
         if (MovementHandler.autonomousRunning) {
             return;
         }
-        if(driveSpeed < 1) {
+        if(driveSpeedStrafe < 1) {
             OfficialTeleop.revBlinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
             isColorStripBlue = false;
         } else if(!intakeHandler.objectInBucket) {
@@ -143,9 +143,9 @@ class MovementHandlers {
         
         drive.setWeightedDrivePower(
                 new Pose2d(
-                        -primaryGamepad.left_stick_x * driveSpeed,
-                        primaryGamepad.left_stick_y * driveSpeed,
-                        -primaryGamepad.right_stick_x * driveSpeed
+                        -primaryGamepad.left_stick_x * driveSpeedStrafe,
+                        primaryGamepad.left_stick_y * driveSpeedStrafe,
+                        -primaryGamepad.right_stick_x * driveSpeedStrafe
                 )
         );
         drive.update();

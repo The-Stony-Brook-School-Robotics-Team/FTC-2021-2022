@@ -127,6 +127,17 @@ public class RoadRunnerController {
         );
 
     }
+    public void forward(double dist,double vel,double accel) {
+        TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(vel, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
+        TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(accel);
+
+        drive.followTrajectory(
+                drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .forward(dist,velocityConstraint,accelerationConstraint)
+                        .build()
+        );
+
+    }
 
 
 
@@ -327,7 +338,7 @@ public class RoadRunnerController {
                 drive.trajectoryBuilder(drive.getPoseEstimate())
                         .splineToSplineHeading(AutonomousBrainMerged.resetPositionB4WarehouseBlue2,0,velocityConstraintFast,accelerationConstraint)
                         .lineToSplineHeading(AutonomousBrainMerged.warehousePickupPositionBlue,velocityConstraintFast,accelerationConstraint)
-                        .forward(AutonomousBrainMerged.distanceIntake,velocityConstraintSlow,accelerationConstraint)
+                        //.forward(AutonomousBrainMerged.distanceIntake,velocityConstraintSlow,accelerationConstraint)
                         .build()
         );
     }
@@ -511,6 +522,9 @@ public class RoadRunnerController {
     public static double slowSpeed = 30;
 
     public boolean isInWarehouse() {
+        return getPos().getX() > 25 && getPos().getY() > 28;
+    }
+    public boolean isStuckByPVCexiting() {
         return getPos().getX() > 32 && getPos().getY() > 28;
     }
 }
