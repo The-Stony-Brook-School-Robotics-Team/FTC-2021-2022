@@ -52,6 +52,10 @@ public class AutonomousClient {
 
     double startTime_s = 0;
 
+    public static double topDepositX = 7.58;
+    public static double topDepositY = 64.47;
+    public static double topDepositAngle = -Math.toRadians(55);
+
     public AutonomousClient(HardwareMap hardwareMap, Telemetry telemetry, AutonomousMode autonomousMode) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
@@ -211,7 +215,7 @@ public class AutonomousClient {
     public static Pose2d B_PASS_PIPE_POSITION = new Pose2d(20.0, 68.0, 0.0);
     public static Pose2d C_PICK_UP_BLOCK_POSITION = new Pose2d(65.0, 66.5, Math.toRadians(30.0));
 
-    public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(5.58, 64.47, -Math.toRadians(55));
+    public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(topDepositX, topDepositY, topDepositAngle);
     public static Pose2d depositPositionAllianceBlueMID = new Pose2d(5.58, 64.47, -Math.toRadians(56));
     public static Pose2d depositPositionAllianceBlueBOT = new Pose2d(5.58, 64.47, -Math.toRadians(59));
     public static Pose2d parkingPositionBlue = new Pose2d(60, 75, 0);
