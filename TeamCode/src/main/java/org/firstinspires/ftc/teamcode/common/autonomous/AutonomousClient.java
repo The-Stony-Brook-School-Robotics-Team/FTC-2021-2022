@@ -206,8 +206,8 @@ public class AutonomousClient {
     public static Pose2d startPositionBlue = new Pose2d(14, 65.5, 0);
     public static Pose2d resetPositionB4WarehouseBlue = new Pose2d(14, 75, 0);
 
-    public static Pose2d A_PICK_UP_BLOCK_POSITION = new Pose2d(64.0, 66.5, Math.toRadians(0.0));
-    public static Pose2d C_PICK_UP_BLOCK_POSITION = new Pose2d(64.0, 66.5, Math.toRadians(30.0));
+    public static Pose2d A_PICK_UP_BLOCK_POSITION = new Pose2d(56.0, 66.5, Math.toRadians(0.0));
+    public static Pose2d C_PICK_UP_BLOCK_POSITION = new Pose2d(56.0, 66.5, Math.toRadians(30.0));
 
     public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(5.58, 64.47, -Math.toRadians(55));
     public static Pose2d depositPositionAllianceBlueMID = new Pose2d(5.58, 64.47, -Math.toRadians(56));
