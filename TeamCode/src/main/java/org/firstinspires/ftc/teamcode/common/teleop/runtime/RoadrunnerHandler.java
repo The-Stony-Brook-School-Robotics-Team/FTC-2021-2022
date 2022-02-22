@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.common.teleop.runtime;
 
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.blueIntake;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.drive;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.movementHandler;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideController;
@@ -13,13 +12,9 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 
-import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousBrain;
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
-import org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop;
-import org.firstinspires.ftc.teamcode.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.drive.DriveConstantsMain;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.sbs.bears.robotframework.enums.IntakeState;
-import org.sbs.bears.robotframework.enums.SlideTarget;
 
 /**
  * Brings Automatic Movement To TeleOp
@@ -69,11 +64,11 @@ public class RoadrunnerHandler {
     /**
      * Movement Stuff
      */
-    private final TrajectoryVelocityConstraint turnVelocityConstraint = SampleMecanumDrive.getVelocityConstraint(30, 2, DriveConstants.TRACK_WIDTH);
-    private final TrajectoryAccelerationConstraint turnAccelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
+    private final TrajectoryVelocityConstraint turnVelocityConstraint = SampleMecanumDrive.getVelocityConstraint(30, 2, DriveConstantsMain.TRACK_WIDTH);
+    private final TrajectoryAccelerationConstraint turnAccelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstantsMain.MAX_ACCEL);
 
-    private final TrajectoryVelocityConstraint quickMoveVelocityConstraint = SampleMecanumDrive.getVelocityConstraint(80, 3, DriveConstants.TRACK_WIDTH);
-    private final TrajectoryAccelerationConstraint quickMoveAccelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
+    private final TrajectoryVelocityConstraint quickMoveVelocityConstraint = SampleMecanumDrive.getVelocityConstraint(80, 3, DriveConstantsMain.TRACK_WIDTH);
+    private final TrajectoryAccelerationConstraint quickMoveAccelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstantsMain.MAX_ACCEL);
 
     /**
      * Internal executor

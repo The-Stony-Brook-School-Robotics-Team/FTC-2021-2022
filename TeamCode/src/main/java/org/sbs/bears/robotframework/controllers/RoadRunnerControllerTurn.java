@@ -3,25 +3,20 @@ package org.sbs.bears.robotframework.controllers;
 import android.util.Log;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.roadrunner.drive.Drive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.acmerobotics.roadrunner.util.NanoClock;
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousBrain;
-import org.firstinspires.ftc.teamcode.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.drive.DriveConstantsMain;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
-import org.tensorflow.lite.task.text.qa.QaAnswer;
-
-import java.util.Vector;
 
 /**
  * This class is a wrapper controller for the RoadRunner Library.
@@ -107,8 +102,8 @@ public class RoadRunnerControllerTurn {
     }
 
     public void forwardAsync(double dist,double vel) {
-        TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(vel, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
-        TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
+        TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(vel, DriveConstantsMain.MAX_ANG_VEL, DriveConstantsMain.TRACK_WIDTH);
+        TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstantsMain.MAX_ACCEL);
 
         drive.followTrajectoryAsync(
                 drive.trajectoryBuilder(drive.getPoseEstimate())
@@ -118,8 +113,8 @@ public class RoadRunnerControllerTurn {
 
     }
     public void forward(double dist,double vel) {
-        TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(vel, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
-        TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
+        TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(vel, DriveConstantsMain.MAX_ANG_VEL, DriveConstantsMain.TRACK_WIDTH);
+        TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstantsMain.MAX_ACCEL);
 
         drive.followTrajectory(
                 drive.trajectoryBuilder(drive.getPoseEstimate())
@@ -257,8 +252,8 @@ public class RoadRunnerControllerTurn {
     }
     public void followLineToSpline(Pose2d finalPos,double vel)
     {
-        TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(vel, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
-        TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
+        TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(vel, DriveConstantsMain.MAX_ANG_VEL, DriveConstantsMain.TRACK_WIDTH);
+        TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstantsMain.MAX_ACCEL);
 
         drive.followTrajectory(
                 drive.trajectoryBuilder(drive.getPoseEstimate())
@@ -268,9 +263,9 @@ public class RoadRunnerControllerTurn {
     }
     public void doBlueDepositTrajectory()
     {
-        TrajectoryVelocityConstraint velocityConstraintFast = SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
-        TrajectoryVelocityConstraint velocityConstraintSlow = SampleMecanumDrive.getVelocityConstraint(30, 3,DriveConstants.TRACK_WIDTH);
-        TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
+        TrajectoryVelocityConstraint velocityConstraintFast = SampleMecanumDrive.getVelocityConstraint(50, DriveConstantsMain.MAX_ANG_VEL, DriveConstantsMain.TRACK_WIDTH);
+        TrajectoryVelocityConstraint velocityConstraintSlow = SampleMecanumDrive.getVelocityConstraint(30, 3, DriveConstantsMain.TRACK_WIDTH);
+        TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstantsMain.MAX_ACCEL);
 
         Pose2d current = drive.getPoseEstimate();
         drive.followTrajectory(
@@ -372,10 +367,10 @@ public class RoadRunnerControllerTurn {
         startInterruptibleTrajVar();
         boolean isForwarding = false;
         boolean isBraking = false;
-        TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(brakeVel, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
-        TrajectoryVelocityConstraint velocityConstraint2 = SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL,DriveConstants.TRACK_WIDTH);
+        TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(brakeVel, DriveConstantsMain.MAX_ANG_VEL, DriveConstantsMain.TRACK_WIDTH);
+        TrajectoryVelocityConstraint velocityConstraint2 = SampleMecanumDrive.getVelocityConstraint(10, DriveConstantsMain.MAX_ANG_VEL, DriveConstantsMain.TRACK_WIDTH);
         TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(brakeDecel);
-        TrajectoryAccelerationConstraint accelerationConstraint2 = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
+        TrajectoryAccelerationConstraint accelerationConstraint2 = SampleMecanumDrive.getAccelerationConstraint(DriveConstantsMain.MAX_ACCEL);
 
         Log.d("HaltableTrajectoryRunner","start halting thread");
 

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.common.newAutonomous;
 
 import static org.sbs.bears.robotframework.controllers.OpenCVController.doAnalysisMaster;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.util.NanoClock;
@@ -25,7 +26,7 @@ import org.sbs.bears.robotframework.enums.IntakeState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
 
-
+@Config
 public class AutonomousClient {
     final HardwareMap hardwareMap;
     final Telemetry telemetry;
