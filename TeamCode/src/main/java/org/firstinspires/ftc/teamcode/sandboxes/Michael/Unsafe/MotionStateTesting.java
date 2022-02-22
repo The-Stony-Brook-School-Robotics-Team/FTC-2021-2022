@@ -38,7 +38,7 @@ public class MotionStateTesting extends OpMode {
 
     @Override
     public void start(){
-        activeProfile = generateProfile(drive.getPoseEstimate().getX(), drive.getPoseEstimate().getX() + 20, true);
+        activeProfile = generateProfile(drive.getPoseEstimate().getX(), drive.getPoseEstimate().getX() + 5, true);
         profileStart = clock.seconds();
     }
 
@@ -46,10 +46,11 @@ public class MotionStateTesting extends OpMode {
     public void loop() {
         double profileTime = clock.seconds() - profileStart;
 
-        if (profileTime > activeProfile.duration() && gamepad1.a) { //if end of path
+
+        if (profileTime > activeProfile.duration()) { //if end of path
             // generate a new profile
-            movingForwards = !movingForwards;
-            activeProfile = generateProfile(drive.getPoseEstimate().getX(), drive.getPoseEstimate().getX() + 20, true);
+
+            activeProfile = generateProfile(drive.getPoseEstimate().getX(), drive.getPoseEstimate().getX(), true);
             profileStart = clock.seconds();
         }
 
