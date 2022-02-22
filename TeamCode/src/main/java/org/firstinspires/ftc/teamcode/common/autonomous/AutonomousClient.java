@@ -186,8 +186,8 @@ public class AutonomousClient {
         roadRunnerDrive.followTrajectory(
                 roadRunnerDrive.trajectoryBuilder(
                         roadRunnerDrive.getPoseEstimate(), true)
-                        .splineToSplineHeading(new Pose2d(40.0, 65.0, 0.0), Math.toRadians(175.0))
-                        .splineToLinearHeading(new Pose2d(20.0, 67.0, 0.0), -Math.toRadians(170.0))
+                        .splineToSplineHeading(B_FIX_HEADING_POSITION, Math.toRadians(175.0))
+                        .splineToLinearHeading(B_PASS_PIPE_POSITION, -Math.toRadians(170.0))
                         .splineToSplineHeading(AutonomousClient.depositPositionAllianceBlueTOP, Math.toRadians(175.0))
                         .build()
         );
@@ -197,7 +197,7 @@ public class AutonomousClient {
         roadRunnerDrive.followTrajectory(
                 roadRunnerDrive.trajectoryBuilder(
                         roadRunnerDrive.getPoseEstimate(), true)
-                        .splineToLinearHeading(new Pose2d(40.0, 55.0, Math.toRadians(0.0)), -Math.toRadians(45.0))
+                        .splineToConstantHeading(new Vector2d(45.0, 55.0), -Math.toRadians(45.0))
                         .splineToSplineHeading(C_PICK_UP_BLOCK_POSITION, Math.toRadians(45.0))
                         .build()
         );
@@ -207,6 +207,8 @@ public class AutonomousClient {
     public static Pose2d resetPositionB4WarehouseBlue = new Pose2d(14, 75, 0);
 
     public static Pose2d A_PICK_UP_BLOCK_POSITION = new Pose2d(65.0, 66.5, Math.toRadians(0.0));
+    public static Pose2d B_FIX_HEADING_POSITION = new Pose2d(45.0,66.0,0.0);
+    public static Pose2d B_PASS_PIPE_POSITION = new Pose2d(20.0, 68.0, 0.0);
     public static Pose2d C_PICK_UP_BLOCK_POSITION = new Pose2d(65.0, 66.5, Math.toRadians(30.0));
 
     public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(5.58, 64.47, -Math.toRadians(55));
