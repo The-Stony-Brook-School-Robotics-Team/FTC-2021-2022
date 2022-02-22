@@ -61,8 +61,8 @@ public class AutonomousClient {
     public static double topDepositX = 7.58;
     public static double topDepositY = 64.47;
     public static double topDepositAngle = 30;
-    public static int maxPickupVelocity = 30;
-    public static double maxPickupAcceleration = 40;
+    public static int maxPickupVelocity = 20;
+    public static double maxPickupAcceleration = 35;
 
     public AutonomousClient(HardwareMap hardwareMap, Telemetry telemetry, AutonomousMode autonomousMode) {
         this.hardwareMap = hardwareMap;
