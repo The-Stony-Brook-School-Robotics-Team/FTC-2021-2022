@@ -67,9 +67,6 @@ public class RoadrunnerHandler {
     private final TrajectoryVelocityConstraint turnVelocityConstraint = SampleMecanumDrive.getVelocityConstraint(30, 2, DriveConstantsMain.TRACK_WIDTH);
     private final TrajectoryAccelerationConstraint turnAccelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstantsMain.MAX_ACCEL);
 
-    private final TrajectoryVelocityConstraint quickMoveVelocityConstraint = SampleMecanumDrive.getVelocityConstraint(80, 3, DriveConstantsMain.TRACK_WIDTH);
-    private final TrajectoryAccelerationConstraint quickMoveAccelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstantsMain.MAX_ACCEL);
-
     /**
      * Internal executor
      */
@@ -154,10 +151,6 @@ public class RoadrunnerHandler {
                 break;
 
             case CURRENT_POSITION_TO_DEPOSIT:
-                // drive.followTrajectory(
-                //         drive.trajectoryBuilder(drive.getPoseEstimate())
-                //                 .splineToSplineHeading(new Pose2d())
-                // );
 
                 break;
 
