@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.common.autonomous;
+package org.firstinspires.ftc.teamcode.common.newAutonomous;
 
 import static org.sbs.bears.robotframework.controllers.OpenCVController.doAnalysisMaster;
 
@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.Robot;

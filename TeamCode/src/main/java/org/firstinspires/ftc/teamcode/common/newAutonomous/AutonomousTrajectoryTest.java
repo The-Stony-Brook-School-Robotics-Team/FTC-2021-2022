@@ -1,9 +1,10 @@
-package org.firstinspires.ftc.teamcode.common.autonomous;
+package org.firstinspires.ftc.teamcode.common.newAutonomous;
 
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 
 @Autonomous(name = "A - AutonomousTrajectoryTest - William")
