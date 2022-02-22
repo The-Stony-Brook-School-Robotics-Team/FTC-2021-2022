@@ -28,17 +28,24 @@ public class MotionStateTesting extends OpMode {
     private MotionProfile activeProfile;
     private double profileStart;
     private boolean movingForwards = true;
+    private String state;
+    private double endPos;
+    private double startPos;
+    private double endPath = 1;
 
     @Override
     public void init() {
         clock = NanoClock.system();
         drive = new SampleMecanumDrive(hardwareMap);
+        state = "Init";
+        startPos = drive.getPoseEstimate().getX();
+        endPos = drive.getPoseEstimate().getX() + 25;
 
     }
 
     @Override
     public void start(){
-        activeProfile = generateProfile(drive.getPoseEstimate().getX(), drive.getPoseEstimate().getX() + 5, true);
+        activeProfile = generateProfile(startPos, endPos, movingForwards);
         profileStart = clock.seconds();
     }
 
@@ -47,30 +54,36 @@ public class MotionStateTesting extends OpMode {
         double profileTime = clock.seconds() - profileStart;
 
 
-        if (profileTime > activeProfile.duration()) { //if end of path
+        if (profileTime > activeProfile.duration() && gamepad1.a) { //if end of path
+            state = "End of Path";
             // generate a new profile
-
-            activeProfile = generateProfile(drive.getPoseEstimate().getX(), drive.getPoseEstimate().getX(), true);
+           // movingForwards = !movingForwards;
+            activeProfile = generateProfile(startPos, endPos, movingForwards);
             profileStart = clock.seconds();
         }
+        if(profileTime > activeProfile.duration()){
+            endPath = 0;
+        }
+        else{endPath = 1;}
 
         MotionState motionState = activeProfile.get(profileTime); //where should i be at this time
         double targetPower = Kinematics.calculateMotorFeedforward(motionState.getV(), motionState.getA(), kV, kA, kStatic);
 
-        drive.setDrivePower(new Pose2d(targetPower, 0, 0));
+        drive.setDrivePower(new Pose2d(targetPower*endPath, 0, 0));
         drive.updatePoseEstimate();
-
-        Pose2d poseVelo = Objects.requireNonNull(drive.getPoseVelocity(), "poseVelocity() must not be null. Ensure that the getWheelVelocities() method has been overridden in your localizer.");
-        double currentVelo = poseVelo.getX();
-
-        drive.setWeightedDrivePower(
+        
+        drive.setDrivePower(
                 new Pose2d(
                         -gamepad1.left_stick_x ,
                         gamepad1.left_stick_y,
                         -gamepad1.right_stick_x
                 )
         );
+
         drive.update();
+        telemetry.addData("State: ", state);
+        telemetry.addData("Time: ", profileTime);
+        telemetry.update();
     }
 
 
