@@ -12,16 +12,12 @@ import org.sbs.bears.robotframework.controllers.RoadRunnerController;
 @Autonomous(name = "A - AutonomousBlue - William")
 public class AutonomousBlue extends LinearOpMode {
     AutonomousClient autonomousClient;
-    RoadRunnerController roadRunnerController;
-    public static Gamepad gamepad;
 
     @Override
     public void runOpMode() {
         OpenCVController.isDuck = false;
         autonomousClient = new AutonomousClient(hardwareMap, telemetry, AutonomousMode.BlueFull);
-        roadRunnerController = autonomousClient.roadRunnerController;
         msStuckDetectLoop = Integer.MAX_VALUE;  //Turn off infinite loop detection.
-        gamepad = gamepad1;
 
         waitForStart();
 
