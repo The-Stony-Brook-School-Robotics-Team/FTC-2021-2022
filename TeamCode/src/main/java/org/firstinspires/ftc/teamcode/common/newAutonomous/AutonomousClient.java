@@ -3,8 +3,11 @@ package org.firstinspires.ftc.teamcode.common.newAutonomous;
 import static org.sbs.bears.robotframework.controllers.OpenCVController.doAnalysisMaster;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.drive.Drive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -13,6 +16,7 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
+import org.firstinspires.ftc.teamcode.drive.DriveConstantsMain;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.Robot;
 import org.sbs.bears.robotframework.Sleep;
@@ -56,7 +60,9 @@ public class AutonomousClient {
 
     public static double topDepositX = 7.58;
     public static double topDepositY = 64.47;
-    public static double topDepositAngle = -Math.toRadians(55);
+    public static double topDepositAngle = 30;
+    public static int maxPickupVelocity = 30;
+    public static double maxPickupAcceleration = 40;
 
     public AutonomousClient(HardwareMap hardwareMap, Telemetry telemetry, AutonomousMode autonomousMode) {
         this.hardwareMap = hardwareMap;
@@ -116,7 +122,7 @@ public class AutonomousClient {
                         return;
 
                     objectIsInRobot = intakeControllerBlue.isObjectInPayload();
-                    Sleep.sleep(10);
+                    Sleep.sleep(1);
                 }
 
                 roadRunnerController.stopTrajectory();
@@ -161,15 +167,15 @@ public class AutonomousClient {
         switch (firstDeliveryHeight) {
             case ONE:
                 initialSlideTarget = SlideTarget.BOTTOM_DEPOSIT;
-                initialDropPosition = depositPositionAllianceBlueBOT;
+                initialDropPosition = getAllianceBlueTop(); // depositPositionAllianceBlueBOT
                 break;
             case TWO:
                 initialSlideTarget = SlideTarget.MID_DEPOSIT;
-                initialDropPosition = depositPositionAllianceBlueMID;
+                initialDropPosition = getAllianceBlueTop(); // depositPositionAllianceBlueMID
                 break;
             case THREE:
                 initialSlideTarget = SlideTarget.TOP_DEPOSIT;
-                initialDropPosition = depositPositionAllianceBlueTOP;
+                initialDropPosition = getAllianceBlueTop(); // depositPositionAllianceBlueTOP
                 break;
         }
     }
@@ -178,12 +184,12 @@ public class AutonomousClient {
         roadRunnerDrive.followTrajectory(
                 roadRunnerDrive.trajectoryBuilder(
                         roadRunnerDrive.getPoseEstimate())
-                        .lineToSplineHeading(new Pose2d(20.0, 67.0, 0.0))
-                        .addSpatialMarker(new Vector2d(28.5, 65.5), () -> {
+                        .lineToSplineHeading(new Pose2d(20.0, 69.0, 0.0))
+                        .addSpatialMarker(new Vector2d(28.5, 67.5), () -> {
                             // This marker runs at the point that gets closest to the coordinate
                             intakeControllerBlue.setState(IntakeState.BASE);
                         })
-                        .splineToLinearHeading(A_PICK_UP_BLOCK_POSITION, 0.0)
+                        .splineToLinearHeading(A_PICK_UP_BLOCK_POSITION, 0.0, getVelocityConstraint(maxPickupVelocity), getAccelerationConstraint(maxPickupAcceleration))
                         .build()
         );
     }
@@ -192,8 +198,8 @@ public class AutonomousClient {
         roadRunnerDrive.followTrajectory(
                 roadRunnerDrive.trajectoryBuilder(
                         roadRunnerDrive.getPoseEstimate(), true)
-                        .splineToSplineHeading(B_FIX_HEADING_POSITION, Math.toRadians(175.0))
-                        .splineToLinearHeading(B_PASS_PIPE_POSITION, -Math.toRadians(170.0))
+                        .splineToSplineHeading(B_FIX_HEADING_POSITION, Math.toRadians(175.0), getVelocityConstraint(40), getAccelerationConstraint(DriveConstantsMain.MAX_ACCEL))
+                        .splineToLinearHeading(B_PASS_PIPE_POSITION, -Math.toRadians(170.0), getVelocityConstraint(30), getAccelerationConstraint(DriveConstantsMain.MAX_ACCEL))
                         .splineToSplineHeading(AutonomousClient.depositPositionAllianceBlueTOP, Math.toRadians(175.0))
                         .build()
         );
@@ -204,7 +210,7 @@ public class AutonomousClient {
                 roadRunnerDrive.trajectoryBuilder(
                         roadRunnerDrive.getPoseEstimate(), true)
                         .splineToConstantHeading(new Vector2d(45.0, 55.0), -Math.toRadians(45.0))
-                        .splineToSplineHeading(C_PICK_UP_BLOCK_POSITION, Math.toRadians(45.0))
+                        .splineToSplineHeading(C_PICK_UP_BLOCK_POSITION, Math.toRadians(45.0), getVelocityConstraint(maxPickupVelocity), getAccelerationConstraint(maxPickupAcceleration))
                         .build()
         );
     }
@@ -214,11 +220,23 @@ public class AutonomousClient {
 
     public static Pose2d A_PICK_UP_BLOCK_POSITION = new Pose2d(65.0, 66.5, Math.toRadians(0.0));
     public static Pose2d B_FIX_HEADING_POSITION = new Pose2d(45.0,66.0,0.0);
-    public static Pose2d B_PASS_PIPE_POSITION = new Pose2d(20.0, 68.0, 0.0);
+    public static Pose2d B_PASS_PIPE_POSITION = new Pose2d(20.0, 70.0, 0.0);
     public static Pose2d C_PICK_UP_BLOCK_POSITION = new Pose2d(65.0, 66.5, Math.toRadians(30.0));
 
-    public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(topDepositX, topDepositY, topDepositAngle);
+    public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(topDepositX, topDepositY, -Math.toRadians(topDepositAngle));
     public static Pose2d depositPositionAllianceBlueMID = new Pose2d(5.58, 64.47, -Math.toRadians(56));
     public static Pose2d depositPositionAllianceBlueBOT = new Pose2d(5.58, 64.47, -Math.toRadians(59));
     public static Pose2d parkingPositionBlue = new Pose2d(60, 75, 0);
+
+    public static Pose2d getAllianceBlueTop() {
+        return new Pose2d(topDepositX, topDepositY, -Math.toRadians(topDepositAngle));
+    }
+
+    public static TrajectoryVelocityConstraint getVelocityConstraint(int velocity) {
+        return SampleMecanumDrive.getVelocityConstraint(velocity, DriveConstantsMain.MAX_ANG_VEL, DriveConstantsMain.TRACK_WIDTH);
+    }
+
+    public static TrajectoryAccelerationConstraint getAccelerationConstraint(double acceleration) {
+        return SampleMecanumDrive.getAccelerationConstraint(acceleration);
+    }
 }
