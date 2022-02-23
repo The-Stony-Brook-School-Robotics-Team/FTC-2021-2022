@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.common.newAutonomous;
 import android.util.Log;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -594,11 +595,6 @@ public class AutonomousSlideController {
 
     }
 
-    @Beta
-    private double encoderInchesToTicks(double ticks) {
-        return ticks * 145.1 / .785 / 2 / Math.PI;
-    }
-
     /**
      * Stops any attempted PID correcting by setting the motor's desired position to itself, and resetting the runmode.
      **/
@@ -617,33 +613,6 @@ public class AutonomousSlideController {
         slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
-
-
-    /**  public void checkForBucketObject() {
-     Log.d("SlideController", "Found an object in the bucket");
-     if (blueColorRangeSensor.alpha() > 160) {
-     Log.d("SlideController", "Closing the dumper servo");
-     dumperServo.setPosition(dumperPosition_CLOSED);
-     }
-     } **/
-    /**  @Deprecated
-    public boolean teleopIsObjectInBucket() {
-    if (blueColorRangeSensor.alpha() > 160) {
-    return true;
-    } else {
-    return false;
-    }
-    } **/
-
-    public void setHeightWithSlope(int finalEncoderTicks, double finalServoPos) {
-        while(slideMotor.getCurrentPosition() > finalEncoderTicks) {
-            double changePositionSlope = (0.85 / 1050) * (slideMotor.getCurrentPosition() - 150);
-            verticalServo.setPosition(changePositionSlope);
-            Log.d("throw", String.valueOf(changePositionSlope));
-        }
-        verticalServo.setPosition(finalServoPos);
-    }
-
 
     public void extendDropRetract_Autonomous(SlideTarget slideTarget) {
         extendSlide_Autonomous(slideTarget);
@@ -737,7 +706,7 @@ public class AutonomousSlideController {
         }
 
         //Now that the bucket is out, start lifting the slide
-        setHeightTo_Autonomous(verticalServoPosition); //<<<<<<<<<<<<<<<<<
+        setHeightTo_Autonomous(verticalServoPosition);
 
         //Wait until the slide has reached its final position
         while (slideMotor.getCurrentPosition() < slideMotorPosition) {
@@ -746,7 +715,6 @@ public class AutonomousSlideController {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
         }
 
         hardStopReset();    //<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -780,33 +748,6 @@ public class AutonomousSlideController {
         dumperServo.setPosition(dumperPosition_RETRACTING);
     }
 
-    private void setHeightTo_Autonomous(double targetPos) {
-        double deltaTheta = Math.abs(targetPos - verticalServo.getPosition());
-        double runTime = 0.6;
-        double omegaI = 2.0 * deltaTheta / runTime;
-        double initialServoTime = NanoClock.system().seconds();
-        double initialServoPosition = verticalServo.getPosition();
-        double currentServoPosition = initialServoPosition;
-        double deltaTime_s;
-
-        if (slideState != SlideState.PARKED) {
-            if (verticalServo.getPosition() < targetPos) {  //Move the slide up
-                while (currentServoPosition <= targetPos) {
-                    deltaTime_s = NanoClock.system().seconds() - initialServoTime;
-                    verticalServo.setPosition(currentServoPosition);
-                    currentServoPosition = 0.25 * omegaI * omegaI * deltaTheta * deltaTime_s / deltaTheta + omegaI * deltaTime_s + initialServoPosition;
-                }
-            } else {    //Move the slide down
-                while (currentServoPosition >= targetPos) {
-                    deltaTime_s = NanoClock.system().seconds() - initialServoTime;
-                    verticalServo.setPosition(currentServoPosition);
-                    currentServoPosition = -0.25 * omegaI * omegaI * deltaTheta * deltaTime_s / deltaTheta + initialServoPosition;
-                }
-            }
-            verticalServo.setPosition(targetPos);
-        }
-    }
-
     //TODO: ???
     public void retractSlide_Autonomous() {
         dumperServo.setPosition(dumperPosition_RETRACTING);
@@ -817,7 +758,7 @@ public class AutonomousSlideController {
         //Wait until the slide is retracted to right outside the robot
         while (slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT_RET) {
             try {
-                Thread.sleep(30);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -851,6 +792,35 @@ public class AutonomousSlideController {
         dumperServo.setPosition(dumperPosition_READY);
         return;
     }
+
+    private void setHeightTo_Autonomous(double targetPos) {
+        double deltaTheta = Math.abs(targetPos - verticalServo.getPosition());
+        double runTime = 0.55;
+        double omegaI = 2.0 * deltaTheta / runTime;
+        double initialServoTime = NanoClock.system().seconds();
+        double initialServoPosition = verticalServo.getPosition();
+        double currentServoPosition = initialServoPosition;
+        double deltaTime_s;
+
+        if (slideState != SlideState.PARKED) {
+            if (verticalServo.getPosition() < targetPos) {  //Move the slide up
+                while (currentServoPosition <= targetPos) {
+                    deltaTime_s = NanoClock.system().seconds() - initialServoTime;
+                    verticalServo.setPosition(currentServoPosition);
+                    currentServoPosition = 0.25 * omegaI * omegaI * deltaTheta * deltaTime_s / deltaTheta + omegaI * deltaTime_s + initialServoPosition;
+                }
+            } else {    //Move the slide down
+                while (currentServoPosition >= targetPos) {
+                    deltaTime_s = NanoClock.system().seconds() - initialServoTime;
+                    verticalServo.setPosition(currentServoPosition);
+                    currentServoPosition = -0.25 * omegaI * omegaI * deltaTheta * deltaTime_s / deltaTheta + initialServoPosition;
+                }
+            }
+            verticalServo.setPosition(targetPos);
+        }
+    }
+
+
 
     // TODO MEASURE ALL CONSTANTS
 

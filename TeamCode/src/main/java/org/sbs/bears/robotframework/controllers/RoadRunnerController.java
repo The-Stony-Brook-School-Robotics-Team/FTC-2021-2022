@@ -518,6 +518,14 @@ public class RoadRunnerController {
         runner.cancelTraj();
     }
 
+    /**
+     * Built for AutonomousClient
+     */
+    public void endTrajectory(){
+        runner.cancelTraj();
+        drive.setWeightedDrivePower(new Pose2d());
+    }
+
     public static double fastSpeed = 100;
     public static double slowSpeed = 30;
 

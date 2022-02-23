@@ -60,8 +60,6 @@ public class AutonomousClient {
         objectIsInRobot = true;
         firstDeliveryHeight = TowerHeightFromDuck.NOT_YET_SET;
 
-        roadRunnerController.setPos(startPositionBlue);
-
         initServoPositions();
 
         normalizedColorSensor = hardwareMap.get(NormalizedColorSensor.class, "color");
@@ -71,8 +69,8 @@ public class AutonomousClient {
     private void initControllers(HardwareMap hardwareMap, Telemetry telemetry, AutonomousMode mode) {
         this.robot = new Robot(hardwareMap, telemetry, mode);
         this.openCVController = robot.getCVctrl();
-        this.roadRunnerController = robot.getRRctrl();
-        this.roadRunnerDrive = robot.getRRctrl().getDrive();
+        this.roadRunnerController =robot.getRRctrl();
+        this.roadRunnerDrive = roadRunnerController.getDrive();
         this.slideController = new AutonomousSlideController(hardwareMap,telemetry);
         this.intakeControllerBlue = robot.getIntakeCtrlBlue();
         this.intakeControllerRed = robot.getIntakeCtrlRed();

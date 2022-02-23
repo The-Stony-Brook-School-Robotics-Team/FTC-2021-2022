@@ -39,7 +39,9 @@ public class OfficialTeleop extends OpMode {
     public static volatile TeleOpRobotStates currentState = TeleOpRobotStates.STOPPED;
     private static Object stateMutex = new Object();
 
-    /** Controller Modes */
+    /**
+     * Controller Modes
+     */
     public static Gamepad primaryGamepad;
     public static Gamepad secondaryGamepad;
     public static ControllerModes primaryControllerMode = ControllerModes.PRIMARY;
@@ -53,25 +55,33 @@ public class OfficialTeleop extends OpMode {
     public static double systemRuntime = 0;
     public static boolean systemStopRequested = false;
 
-    /** Roadrunner Items */
+    /**
+     * Roadrunner Items
+     */
     public static SampleMecanumDrive drive;
     public static FtcDashboard dashboard;
 
-    /** Stupid Michael MIT License: Open Source For Everyone */
+    /**
+     * Stupid Michael MIT License: Open Source For Everyone
+     */
     public static boolean isColorStripBlue = false;
     public static IntakeControllerRed redIntake;
     public static IntakeControllerBlue blueIntake;
     public static SlideController slideController;
     public static DuckCarouselController carouselController;
 
-    /** Run Time Applications */
+    /**
+     * Run Time Applications
+     */
     public static MovementHandler movementHandler = new MovementHandler();
     public static ButtonHandler buttonHandler = new ButtonHandler();
     public static SlideHandler slideHandler = new SlideHandler();
     public static IntakeHandler intakeHandler = new IntakeHandler();
     public static RoadrunnerHandler roadrunnerHandler = new RoadrunnerHandler();
 
-    /** Extra Components */
+    /**
+     * Extra Components
+     */
     public static RevColorSensorV3 bottomColorSensor;
     public static RevBlinkinLedDriver revBlinkinLedDriver;
     public static ExpansionHubEx expansionHubEx;
@@ -115,8 +125,8 @@ public class OfficialTeleop extends OpMode {
         // LS: Light Sensor
         // PS: Proximity Sensor
         // MEAS: Measure Rate
-        bottomColorSensor.write8(BroadcomColorSensor.Register.LS_MEAS_RATE,0x01010000);
-        bottomColorSensor.write8(BroadcomColorSensor.Register.PS_MEAS_RATE,0x00000001);
+        bottomColorSensor.write8(BroadcomColorSensor.Register.LS_MEAS_RATE, 0x01010000);
+        bottomColorSensor.write8(BroadcomColorSensor.Register.PS_MEAS_RATE, 0x00000001);
         bottomColorSensor.write8(BroadcomColorSensor.Register.LS_GAIN, 0x00000000);
 
         /**
@@ -134,9 +144,10 @@ public class OfficialTeleop extends OpMode {
     }
 
     private int initPass = 0;
+
     @Override
     public void init_loop() {
-        if(initPass == 0) {
+        if (initPass == 0) {
             revBlinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
             OfficialTeleop.isColorStripBlue = true;
             initPass = 1;
@@ -145,26 +156,25 @@ public class OfficialTeleop extends OpMode {
 
     @Override
     public void loop() {
-        switch(currentState) {
+        switch (currentState) {
             case STOPPED:
                 telemetry.clearAll();
                 telemetry.addLine("Robot Stopped");
                 telemetry.update();
                 break;
-
             case INITIALIZING:
                 movementHandler.movementEnabled = true;
                 slideHandler.slideMovementEnabled = true;
                 startThreadPool();
-                synchronized (stateMutex) { currentState = TeleOpRobotStates.RUNNING; }
+                synchronized (stateMutex) {
+                    currentState = TeleOpRobotStates.RUNNING;
+                }
                 break;
-
             case RUNNING:
                 telemetry.addData("Bottom Color Sensor Alpha: ", bottomColorSensor.alpha());
                 telemetry.addData("Bottom Color Sensor Normalized Alpha: ", bottomColorSensor.getNormalizedColors().alpha);
                 telemetry.update();
                 break;
-
             case DEBUG:
                 break;
         }
@@ -175,7 +185,9 @@ public class OfficialTeleop extends OpMode {
      */
     @Override
     public void stop() {
-        synchronized (currentState) { currentState = TeleOpRobotStates.STOPPED; }
+        synchronized (currentState) {
+            currentState = TeleOpRobotStates.STOPPED;
+        }
         movementHandler.sendKillSignal();
         roadrunnerHandler.sendKillSignal();
         killThreadPool();
@@ -196,7 +208,7 @@ public class OfficialTeleop extends OpMode {
      */
     private void killThreadPool() {
         Log.d(interfaceTag, "-------------------------------------------------------------------------------------------------");
-        for(Map.Entry<String, Thread> set : threadPool.entrySet()) {
+        for (Map.Entry<String, Thread> set : threadPool.entrySet()) {
             set.getValue().interrupt();
             Log.i(interfaceTag, "Interrupted: " + set.getKey());
         }
@@ -208,7 +220,7 @@ public class OfficialTeleop extends OpMode {
      */
     public static void listThreadPool() {
         Log.d(interfaceTag, "-------------------------------------------------------------------------------------------------");
-        for(Map.Entry<String, Thread> set : threadPool.entrySet()) {
+        for (Map.Entry<String, Thread> set : threadPool.entrySet()) {
             Log.d(interfaceTag, "Thread Name: " + set.getKey());
         }
         Log.d(interfaceTag, "-------------------------------------------------------------------------------------------------");
@@ -216,11 +228,12 @@ public class OfficialTeleop extends OpMode {
 
     /**
      * Registers a thread to the thread pool
+     *
      * @param interfaceTag the interface tag for the handler
-     * @param thread the runtime thread for the handler
+     * @param thread       the runtime thread for the handler
      */
     public static void registerThread(String interfaceTag, Thread thread) {
-        if(!threadPool.containsKey(interfaceTag)) {
+        if (!threadPool.containsKey(interfaceTag)) {
             threadPool.put(interfaceTag, thread);
             Log.d(OfficialTeleop.interfaceTag, "Thread Registered: " + interfaceTag);
         } else {
@@ -232,8 +245,8 @@ public class OfficialTeleop extends OpMode {
      * Starts The Whole Thread Pool
      */
     public static void startThreadPool() {
-        for(Map.Entry<String, Thread> set : threadPool.entrySet()) {
-            if(set.getValue().isAlive() == false) {
+        for (Map.Entry<String, Thread> set : threadPool.entrySet()) {
+            if (set.getValue().isAlive() == false) {
                 set.getValue().start();
                 Log.d(interfaceTag, "Started Process: " + set.getKey());
             }
@@ -242,11 +255,12 @@ public class OfficialTeleop extends OpMode {
 
     /**
      * Starts a specific interface handler
+     *
      * @param interfaceTag the interface handler tag
      */
     public static void startInterface(String interfaceTag) {
         Thread requestedThread = threadPool.get(interfaceTag);
-        if(requestedThread != null && !requestedThread.isAlive()) {
+        if (requestedThread != null && !requestedThread.isAlive()) {
             requestedThread.start();
             Log.d(interfaceTag, "Started Process: " + interfaceTag);
         }
@@ -254,11 +268,12 @@ public class OfficialTeleop extends OpMode {
 
     /**
      * Stops a specific interface handler
+     *
      * @param interfaceTag the interface handler tag
      */
     public static void stopInterface(String interfaceTag) {
         Thread requestedThread = threadPool.get(interfaceTag);
-        if(requestedThread != null) {
+        if (requestedThread != null) {
             requestedThread.interrupt();
         }
     }
