@@ -65,7 +65,7 @@ public class IntakeControllerBlue {
     /** Returns if the distance sensor reads less than distThreshold **/
     public boolean isObjectInPayload() {
 
-        qIsObjectInPayload = distanceSensor.getDistance(DistanceUnit.MM) < distThreshold;
+        qIsObjectInPayload = (distanceSensor.getDistance(DistanceUnit.MM) < distThreshold && state == IntakeState.BASE);
         return qIsObjectInPayload;
     }
 
@@ -78,11 +78,7 @@ public class IntakeControllerBlue {
     /** Marc's autonomous adjusted method: do not touch or use outside of the auton brain pls.*/
     public void loadItemIntoSlideForAutonomousOnly() {
         setState(IntakeState.DUMP);
-        try {
-            Thread.sleep(1500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         //setState(IntakeState.PARK);
 
     }
@@ -211,6 +207,8 @@ public class IntakeControllerBlue {
                case PARK:
                    scooper.setPosition(parkPos[0]);
                    compliantWheel.setPower(parkPos[1]);
+                   sweeper.setPosition(sweeperIn);
+                   stopper.setPosition(stopperClosed);
            }
        }).start();
     }
