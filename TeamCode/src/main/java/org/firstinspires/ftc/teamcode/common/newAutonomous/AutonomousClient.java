@@ -4,7 +4,6 @@ import static org.sbs.bears.robotframework.controllers.OpenCVController.doAnalys
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
@@ -36,7 +35,7 @@ public class AutonomousClient {
     SampleMecanumDrive roadRunnerDrive;
 
     OpenCVController openCVController;
-    SlideController slideController;
+    AutonomousSlideController slideController;
     IntakeControllerBlue intakeControllerBlue;
     IntakeControllerRed intakeControllerRed;
     DuckCarouselController duckCarouselController;
@@ -51,12 +50,6 @@ public class AutonomousClient {
 
     SlideTarget initialSlideTarget;
 
-    double startTime_s = 0;
-
-    public static double topDepositX = 7.58;
-    public static double topDepositY = 64.47;
-    public static double topDepositAngle = -Math.toRadians(55);
-
     public AutonomousClient(HardwareMap hardwareMap, Telemetry telemetry, AutonomousMode autonomousMode) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
@@ -64,7 +57,7 @@ public class AutonomousClient {
 
         initControllers(hardwareMap, telemetry, autonomousMode);
 
-        objectIsInRobot = false;
+        objectIsInRobot = true;
         firstDeliveryHeight = TowerHeightFromDuck.NOT_YET_SET;
 
         roadRunnerController.setPos(startPositionBlue);
@@ -80,7 +73,7 @@ public class AutonomousClient {
         this.openCVController = robot.getCVctrl();
         this.roadRunnerController = robot.getRRctrl();
         this.roadRunnerDrive = robot.getRRctrl().getDrive();
-        this.slideController = robot.getSlideCtrl();
+        this.slideController = new AutonomousSlideController(hardwareMap,telemetry);
         this.intakeControllerBlue = robot.getIntakeCtrlBlue();
         this.intakeControllerRed = robot.getIntakeCtrlRed();
         this.duckCarouselController = robot.getDuckCtrl();
@@ -93,47 +86,45 @@ public class AutonomousClient {
         slideController.dumperServo.setPosition(SlideController.dumperPosition_CLOSED);
     }
 
-    public void setStartTime_s() // call this method before loop, so start method.
-    {
-        startTime_s = NanoClock.system().seconds();
-    }
-
     public void getInitialBlockDone() {
         readCamera();
         ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_FOREST_PALETTE);
         roadRunnerController.followLineToSpline(initialDropPosition);
         slideController.extendDropRetract(initialSlideTarget);
+        objectIsInRobot = false;
+    }
+
+    public Thread getIntakeChecker() {
+        return new Thread(() -> {  //Stop trajectory and load block into slide if robot has gotten the block.
+            while (!objectIsInRobot) {
+                if (Thread.interrupted())
+                    return;
+
+                objectIsInRobot = intakeControllerBlue.isObjectInPayload();
+                Sleep.sleep(10);
+            }
+            intakeControllerBlue.setState(IntakeState.DUMP);
+            roadRunnerController.endTrajectory();
+        });
     }
 
     public void goPickUpBlock() {
         boolean isInWarehouse = false;
         objectIsInRobot = intakeControllerBlue.isObjectInPayload();
         while (!objectIsInRobot) {
-            Thread intakeChecker = new Thread(() -> {  //Stop trajectory and load block into slide if robot has gotten the block.
-                while (!objectIsInRobot) {
-                    if (Thread.interrupted())
-                        return;
-
-                    objectIsInRobot = intakeControllerBlue.isObjectInPayload();
-                    Sleep.sleep(10);
-                }
-
-                roadRunnerController.stopTrajectory();
-                intakeControllerBlue.loadItemIntoSlideForAutonomousOnly();
-            });
+            Thread intakeChecker = getIntakeChecker();
 
             //TODO:--------------------------------------------------------
             intakeChecker.start();
             ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
 
             if (isInWarehouse) {
-                runTrajectoryC();
+                runTrajectoryGoPickUpBlockSecondary();
             } else {
-                runTrajectoryA();
+                runTrajectoryGoPickUpBlock();
                 isInWarehouse = true;
             }
             //Picking-up is not successful.
-            roadRunnerController.stopRobot();
             intakeChecker.interrupt();
             //TODO:--------------------------------------------------------
         }
@@ -141,8 +132,8 @@ public class AutonomousClient {
     }
 
     public void goDeliverBlock() {
-        runTrajectoryB();
-        slideController.extendDropRetract(SlideTarget.TOP_DEPOSIT);
+        runTrajectoryGoDeliverBlock();
+        slideController.extendDropRetract_Autonomous(SlideTarget.TOP_DEPOSIT);
         objectIsInRobot = false;
     }
 
@@ -173,12 +164,12 @@ public class AutonomousClient {
         }
     }
 
-    public void runTrajectoryA() {
+    public void runTrajectoryGoPickUpBlock() {
         roadRunnerDrive.followTrajectory(
                 roadRunnerDrive.trajectoryBuilder(
                         roadRunnerDrive.getPoseEstimate())
-                        .lineToSplineHeading(new Pose2d(20.0, 67.0, 0.0))
-                        .addSpatialMarker(new Vector2d(28.5, 65.5), () -> {
+                        .lineToSplineHeading(A_FIX_HEADING_POSITION)
+                        .addSpatialMarker(A_OPEN_PICK_UP_POSITION, () -> {
                             // This marker runs at the point that gets closest to the coordinate
                             intakeControllerBlue.setState(IntakeState.BASE);
                         })
@@ -187,7 +178,7 @@ public class AutonomousClient {
         );
     }
 
-    public void runTrajectoryB() {
+    public void runTrajectoryGoDeliverBlock() {
         roadRunnerDrive.followTrajectory(
                 roadRunnerDrive.trajectoryBuilder(
                         roadRunnerDrive.getPoseEstimate(), true)
@@ -198,11 +189,11 @@ public class AutonomousClient {
         );
     }
 
-    public void runTrajectoryC() {
+    public void runTrajectoryGoPickUpBlockSecondary() {
         roadRunnerDrive.followTrajectory(
                 roadRunnerDrive.trajectoryBuilder(
                         roadRunnerDrive.getPoseEstimate(), true)
-                        .splineToConstantHeading(new Vector2d(45.0, 55.0), -Math.toRadians(45.0))
+                        .splineToConstantHeading(C_MOVE_AWAY_POSITION, -Math.toRadians(45.0))
                         .splineToSplineHeading(C_PICK_UP_BLOCK_POSITION, Math.toRadians(45.0))
                         .build()
         );
@@ -211,13 +202,16 @@ public class AutonomousClient {
     public static Pose2d startPositionBlue = new Pose2d(14, 65.5, 0);
     public static Pose2d resetPositionB4WarehouseBlue = new Pose2d(14, 75, 0);
 
-    public static Pose2d A_PICK_UP_BLOCK_POSITION = new Pose2d(65.0, 66.5, Math.toRadians(0.0));
-    public static Pose2d B_FIX_HEADING_POSITION = new Pose2d(45.0,66.0,0.0);
+    public static Pose2d A_PICK_UP_BLOCK_POSITION = new Pose2d(64.0, 66.5, 0.0);
+    public static Pose2d A_FIX_HEADING_POSITION = new Pose2d(20.0, 67.0, 0.0);
+    public static Vector2d A_OPEN_PICK_UP_POSITION = new Vector2d(28.5, 65.5);
+    public static Pose2d B_FIX_HEADING_POSITION = new Pose2d(45.0, 66.0, 0.0);
     public static Pose2d B_PASS_PIPE_POSITION = new Pose2d(20.0, 68.0, 0.0);
-    public static Pose2d C_PICK_UP_BLOCK_POSITION = new Pose2d(65.0, 66.5, Math.toRadians(30.0));
+    public static Vector2d C_MOVE_AWAY_POSITION = new Vector2d(45.0, 55.0);
+    public static Pose2d C_PICK_UP_BLOCK_POSITION = new Pose2d(65.0, 66.5, Math.toRadians(20.0));
 
-    public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(topDepositX, topDepositY, topDepositAngle);
-    public static Pose2d depositPositionAllianceBlueMID = new Pose2d(5.58, 64.47, -Math.toRadians(56));
-    public static Pose2d depositPositionAllianceBlueBOT = new Pose2d(5.58, 64.47, -Math.toRadians(59));
+    public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(7.58, 64.47, -Math.toRadians(55.0));
+    public static Pose2d depositPositionAllianceBlueMID = new Pose2d(5.58, 64.47, -Math.toRadians(56.0));
+    public static Pose2d depositPositionAllianceBlueBOT = new Pose2d(5.58, 64.47, -Math.toRadians(59.0));
     public static Pose2d parkingPositionBlue = new Pose2d(60, 75, 0);
 }

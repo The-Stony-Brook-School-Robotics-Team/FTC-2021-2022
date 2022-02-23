@@ -38,7 +38,7 @@ public class Increment extends LinearOpMode {
             if(gamepad1.dpad_right && !qDR)
             {
                 qDR = true;
-                slideCtrl.slideMotorPowerMoving += 0.1;
+                slideCtrl.SLIDE_MOTOR_POWER_MOVING += 0.1;
                 slideCtrl.slideMotorPowerMovingBack += 0.1;
             }
             if(!gamepad1.dpad_right && qDR)
@@ -48,7 +48,7 @@ public class Increment extends LinearOpMode {
             if(gamepad1.dpad_left && !qDL)
             {
                 qDL = true;
-                slideCtrl.slideMotorPowerMoving -= 0.1;
+                slideCtrl.SLIDE_MOTOR_POWER_MOVING -= 0.1;
                 slideCtrl.slideMotorPowerMovingBack -= 0.1;
             }
             if(!gamepad1.dpad_left && qDL)
@@ -123,7 +123,7 @@ public class Increment extends LinearOpMode {
 //BASE .4 DUMP .87  PARK .787
 
             telemetry.addData("Posiiton: ", slideCtrl.verticalServo.getPosition());
-            telemetry.addData("MotorPow: ", slideCtrl.slideMotorPowerMoving);
+            telemetry.addData("MotorPow: ", slideCtrl.SLIDE_MOTOR_POWER_MOVING);
             telemetry.addData("SlidePos: ", slideCtrl.slideMotor.getCurrentPosition());
 
             telemetry.update();

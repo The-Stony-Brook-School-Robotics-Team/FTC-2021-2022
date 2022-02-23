@@ -11,6 +11,7 @@ import org.sbs.bears.robotframework.controllers.OpenCVController;
 @Autonomous(name = "A - AutonomousBlue - William")
 public class AutonomousBlue extends LinearOpMode {
     AutonomousClient autonomousClient;
+    double startTime_s;
 
     @Override
     public void runOpMode() {
@@ -20,10 +21,10 @@ public class AutonomousBlue extends LinearOpMode {
 
         waitForStart();
 
-        autonomousClient.setStartTime_s();
+        startTime_s = NanoClock.system().seconds();
         autonomousClient.getInitialBlockDone();
 
-        while (opModeIsActive() && NanoClock.system().seconds() - autonomousClient.startTime_s < 25) {
+        while (opModeIsActive() && NanoClock.system().seconds() - startTime_s < 25) {
             autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
             autonomousClient.goPickUpBlock();
             autonomousClient.goDeliverBlock();
@@ -32,5 +33,4 @@ public class AutonomousBlue extends LinearOpMode {
 
         stop();
     }
-
 }
