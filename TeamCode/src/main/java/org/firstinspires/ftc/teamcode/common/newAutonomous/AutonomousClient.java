@@ -24,6 +24,10 @@ import org.sbs.bears.robotframework.enums.IntakeState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
 
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 
 public class AutonomousClient {
     final HardwareMap hardwareMap;
@@ -69,9 +73,9 @@ public class AutonomousClient {
     private void initControllers(HardwareMap hardwareMap, Telemetry telemetry, AutonomousMode mode) {
         this.robot = new Robot(hardwareMap, telemetry, mode);
         this.openCVController = robot.getCVctrl();
-        this.roadRunnerController =robot.getRRctrl();
+        this.roadRunnerController = robot.getRRctrl();
         this.roadRunnerDrive = roadRunnerController.getDrive();
-        this.slideController = new AutonomousSlideController(hardwareMap,telemetry);
+        this.slideController = new AutonomousSlideController(hardwareMap, telemetry);
         this.intakeControllerBlue = robot.getIntakeCtrlBlue();
         this.intakeControllerRed = robot.getIntakeCtrlRed();
         this.duckCarouselController = robot.getDuckCtrl();
@@ -88,7 +92,7 @@ public class AutonomousClient {
         readCamera();
         ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_FOREST_PALETTE);
         roadRunnerController.followLineToSpline(initialDropPosition);
-        slideController.extendDropRetract(initialSlideTarget);
+        slideController.extendDropRetract_Autonomous(initialSlideTarget);
         objectIsInRobot = false;
     }
 
@@ -131,7 +135,9 @@ public class AutonomousClient {
 
     public void goDeliverBlock() {
         runTrajectoryGoDeliverBlock();
+
         slideController.extendDropRetract_Autonomous(SlideTarget.TOP_DEPOSIT);
+
         objectIsInRobot = false;
     }
 

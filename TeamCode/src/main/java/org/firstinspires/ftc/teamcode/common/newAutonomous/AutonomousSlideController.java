@@ -23,6 +23,10 @@ import org.sbs.bears.robotframework.Sleep;
 import org.sbs.bears.robotframework.enums.SlideState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 @Config
 public class AutonomousSlideController {
     public Servo verticalServo;
@@ -33,11 +37,14 @@ public class AutonomousSlideController {
 
     public SlideState slideState = SlideState.PARKED;
     public SlideTarget targetParams = SlideTarget.NA;
-    private boolean flagToLeave = false;
     private boolean isTeleOp;
 
     public static double SERVO_VELOCITY_CONSTANT = 0.8;
     public static boolean SERVO_TEST = false;
+
+    public volatile static boolean next = false;
+
+    public static int finishLiftingSlideEncoderPosition = -1;
 
     //TODO: Put back at the bottom or michael will kill me
     public static double vertServoPosition_GRAB_CAP = 0.09; //.09
@@ -131,371 +138,6 @@ public class AutonomousSlideController {
     }
 
     /**
-     *
-     * @param targetPos
-     * @param servoVelocity 0.8 is one second of lifting. Using a velocity below 0.8 for capping.
-     */
-    private void setHeightToParams(double targetPos, double servoVelocity) {
-        //Only alter the slide's height if not parked
-        //TODO if(slideState != PARKED)?
-        if (slideState == SlideState.OUT_FULLY || slideState == SlideState.RETRACTING || slideState == SlideState.EXTENDING || slideState == SlideState.TELEOP) {
-            double currentPos = verticalServo.getPosition();
-            //If the target position is higher than our current, it means we are going up, and vice versa.
-            boolean qNeedsToGoUp = (currentPos < targetPos);
-
-            if (qNeedsToGoUp) {
-                if (SERVO_TEST) {
-                    double beginningServoTime = NanoClock.system().seconds();
-                    double beginningServoPosition = verticalServo.getPosition();
-                    double currentServoPosition = beginningServoPosition;
-                    while (currentServoPosition <= 0.8) {
-                        verticalServo.setPosition(currentServoPosition);
-                        currentServoPosition = beginningServoPosition + (NanoClock.system().seconds() - beginningServoTime) * servoVelocity;
-                    }
-                    verticalServo.setPosition(0.8);
-                } else {
-                    //TODO: Warning STUPID S STUFFS BELOW
-                    //Set the servo to a slightly higher position until it reaches its target
-                    for (double i = verticalServo.getPosition(); i < targetPos; i += incrementDeltaExtend) {
-                        verticalServo.setPosition(Range.clip(i, 0, targetPos));
-
-                        //    try {
-                        //         Thread.sleep(1);
-                        //     } catch (InterruptedException e) {
-                        //         e.printStackTrace();
-                        //      }
-                        Log.d("SlideController", "Lifted VerticalServo position to " + verticalServo.getPosition());
-                        Log.d("SlideController", "Lifted VerticalServo position to " + Range.clip(i, 0, targetPos));
-
-
-                    }
-                    //double iniTime
-                    verticalServo.setPosition(targetPos); // it works don't ask don't tell
-                }
-            } else { //We are going down
-                if (SERVO_TEST) {
-                    double beginningServoTime = NanoClock.system().seconds();
-                    double beginningServoPosition = verticalServo.getPosition();
-                    double currentServoPosition = beginningServoPosition;
-                    while (currentServoPosition >= 0.1) {
-                        verticalServo.setPosition(currentServoPosition);
-                        currentServoPosition = beginningServoPosition - (NanoClock.system().seconds() - beginningServoTime) * servoVelocity;
-                    }
-                    verticalServo.setPosition(0.8);
-                } else {
-                    for (double i = verticalServo.getPosition(); i > targetPos; i -= incrementDeltaRetract) {
-                        verticalServo.setPosition(Range.clip(i, targetPos, 1));
-                        //Sleep to slow things down a bit
-                        //TODO can be removed with a decrease of incrementDeltaRetract?
-                        //    try {
-                        //        Thread.sleep(1);
-                        //     } catch (InterruptedException e) {
-                        //         e.printStackTrace();
-                        //  }
-                    }
-                }
-            }
-        } else {
-            Log.d("SlideController", "Assert for slide box outside of robot failed; dont lift the slide while the box is inside the robot!");
-        }
-    }
-
-    /**
-     * Extracts the slide, drops, then retracts.
-     *
-     * @param target the target which represents the height and distance the slide should extend to.
-     */
-    public void extendDropRetract(SlideTarget target) {
-        this.targetParams = target;
-        extendSlide();
-        if (flagToLeave) {
-            return;
-        }
-
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        if (flagToLeave) {
-            return;
-        }
-
-        dropCube();
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        retractSlide();
-        this.targetParams = SlideTarget.NA;
-    }
-
-    /**
-     * An overload of extendDropRetract that allows for interruption via the gamepad.
-     *
-     * @param target  the target which represents height and distance the slide should extend to.
-     * @param gamepad the gamepad object needed to handle button presses.
-     */
-    public void extendDropRetract(SlideTarget target, Gamepad gamepad) {
-        this.targetParams = target;
-        extendSlide();
-        if (flagToLeave) {
-            return;
-        }
-        //Sleeps to avoid race conditions. Do not remove, might be possible to lessen
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        if (flagToLeave) {
-            return;
-        }
-
-        //Only proceed to drop and retract if not interrupted by a button
-        //TODO fix
-        if (!gamepad.x) {
-            dropCube();
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            retractSlide();
-        }
-    }
-
-    public void collectCapstone() {
-        // extend a certain amount, then lift, then chill.
-        //setHeightToParams(vertServoPosition_GRAB_CAP);
-        verticalServo.setPosition(vertServoPosition_GRAB_CAP);
-        slideMotor.setTargetPosition(slideMotorPosition_CAP_ON_GROUND);
-        slideMotor.setPower(slideMotorPowerGrabCap);
-        while (slideMotor.getCurrentPosition() < slideMotorPosition_CAP_ON_GROUND) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        slideMotor.setPower(0);
-    }
-
-    /**
-     * Moves the bucket servo to drop the cube, then returns the servo to original position.
-     **/
-    public void dropCube() {
-        //Checks to make sure the bucket is outside of the slide before dumping
-        if (slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT) {
-            if (targetParams == SlideTarget.CAP_FROM_CAROUSEL) {
-                incrementDeltaRetract = incrementDeltaRetractCaptsone;
-                setHeightToParams(vertServoPosition_CAP_CAROUSEL);
-                incrementDeltaRetract = incrementDeltaRetractTeleop;
-                slideMotor.setTargetPosition(slideMotorPosition_CAP_FROM_CAROUSEL_RET);
-                slideMotor.setPower(slideMotorPowerMovingBack);
-                while (slideMotor.getCurrentPosition() < slideMotorPosition_CAP_FROM_CAROUSEL_RET) {
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                slideMotor.setPower(0);
-            } else {
-                Log.d("SlideController", "Bucket Eject");
-                dumperServo.setPosition(dumperPosition_EJECT);
-                try {
-                    Thread.sleep(250);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            Log.d("SlideController", "Bucket in retract position");
-            dumperServo.setPosition(dumperPosition_RETRACTING);
-        }
-    }
-
-    /**
-     * Sets the slide state to retract, does the action for this state (retracts), then sets the state to park.
-     **/
-    public void retractSlide() {
-        slideState = SlideState.RETRACTING;
-        doStateAction();
-        Log.d("SlideController", "Should be inside " + slideMotor.getCurrentPosition() + " " + verticalServo.getPosition());
-        slideState = SlideState.PARKED;
-    }
-
-    /**
-     * Sets the slide state to extend, does the action for this state (extends), then sets the state to out fully.
-     **/
-    public void extendSlide() {
-        Log.d("SlideController", "bucket should be out");
-        slideState = SlideState.EXTENDING;
-        doStateAction();
-        Log.d("SlideController", "slide should be extended");
-        slideState = SlideState.OUT_FULLY;
-    }
-
-    /**
-     * Called after a state change in order to change the robot's physical state.
-     * Resting states such as PARKED and OUT_FULLY have no associated operations.
-     */
-    private void doStateAction() {
-        int targetPos = 0;
-        int targetPosFinal = 0;
-        double verticalServoTargetPos = 0;
-        switch (slideState) {
-            //Resting states, just return.
-            case PARKED:
-            case OUT_FULLY:
-                return;
-            case EXTENDING:
-                //Switch to set the height and distance of extension depending on the target
-                OfficialTeleop.driveSpeedStrafe = Configuration.SlowMovementStrafeMultiplier;
-                switch (targetParams) {
-                    case BOTTOM_CAROUSEL:
-                        targetPosFinal = slideMotorPosition_ONE_CAROUSEL;
-                        verticalServoTargetPos = vertServoPosition_ONE_CAROUSEL;
-                        break;
-                    case MIDDLE_CAROUSEL:
-                        targetPosFinal = slideMotorPosition_TWO_CAROUSEL;
-                        verticalServoTargetPos = vertServoPosition_TWO_CAROUSEL;
-                        break;
-                    case TOP_CAROUSEL:
-                        targetPosFinal = slideMotorPosition_THREE_CAROUSEL;
-                        verticalServoTargetPos = vertServoPosition_THREE_CAROUSEL;
-                        break;
-                    case TOP_DEPOSIT:
-                        targetPosFinal = slideMotorPosition_THREE_DEPOSIT;
-                        verticalServoTargetPos = vertServoPosition_THREE_DEPOSIT;
-                        break;
-                    case TOP_DEPOSIT_AUTON:
-                        targetPosFinal = slideMotorPosition_THREE_DEPOSIT_AUTON;
-                        verticalServoTargetPos = vertServoPosition_THREE_DEPOSIT;
-                        break;
-                    case MID_DEPOSIT:
-                        targetPosFinal = slideMotorPosition_TWO_DEPOSIT;
-                        verticalServoTargetPos = vertServoPosition_TWO_DEPOSIT;
-                        break;
-                    case BOTTOM_DEPOSIT:
-                        targetPosFinal = slideMotorPosition_ONE_DEPOSIT;
-                        verticalServoTargetPos = vertServoPosition_ONE_DEPOSIT;
-                        break;
-                    case CAP_FROM_CAROUSEL:
-                        targetPosFinal = slideMotorPosition_CAP_FROM_CAROUSEL;
-                        verticalServoTargetPos = vertServoPosition_CAP_CAROUSEL_HIGHER;
-                        break;
-                    case CUSTOM:
-                        targetPosFinal = slideMotorPosition_CUSTOM;
-                        verticalServoTargetPos = vertServoPosition_CUSTOM;
-                        break;
-                    case NA:
-                        Log.d("SlideController", "Slide Extension failed: did not specify target. Exiting");
-                        flagToLeave = true;
-                        return;
-                }
-                if (isTeleOp) {
-                    incrementDeltaExtend = incrementDeltaExtendTeleOp;
-                    incrementDeltaRetract = incrementDeltaRetractTeleop;
-                }
-                if(targetParams == SlideTarget.CAP_FROM_CAROUSEL){
-                    incrementDeltaExtend = incrementDeltaExtendCapstone;
-                }
-                else{incrementDeltaExtend = incrementDeltaExtendTeleOp;}
-                dumperServo.setPosition(dumperPosition_CLOSED);
-                slideMotor.setTargetPosition(targetPosFinal);
-                if (targetParams == SlideTarget.CAP_FROM_CAROUSEL) {
-                    slideMotor.setPower(slideMotorPowerCarousel);
-                } else {
-                    slideMotor.setPower(SLIDE_MOTOR_POWER_MOVING);
-                }
-
-                //Wait until the slide bucket is extended outside of the robot
-                while (slideMotor.getCurrentPosition() <= slideMotorPosition_BUCKET_OUT) {
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                //Now that the bucket is out, start lifting the slide
-                //setHeightToParams(verticalServoTargetPos);
-                setHeightToParams(verticalServoTargetPos);
-                //verticalServo.setPosition(verticalServoTargetPos);
-                //setHeightWithSlope(targetPosFinal, verticalServoTargetPos);
-
-                //Wait until the slide has reached its final position
-                while (slideMotor.getCurrentPosition() < targetPosFinal) {
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-                //Kill the motor's PID and stop so it doesn't try to correct and jitter
-                hardStopReset();
-
-                return;
-            case RETRACTING:
-                dumperServo.setPosition(dumperPosition_RETRACTING);
-                OfficialTeleop.driveSpeedStrafe = 1;
-                targetPos = slideMotorPosition_PARKED;
-                slideMotor.setPower(SLIDE_MOTOR_POWER_MOVING);
-                slideMotor.setTargetPosition(targetPos);
-                //Wait until the slide is retracted to right outside the robot
-                //setHeightWithSlope(slideMotorPosition_PARKED, vertServoPosition_PARKED);
-
-                while (slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT_RET) {
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                setHeightToParams(vertServoPosition_PARKED);
-
-
-
-                //Once right outside, slow down the slide and lower it.
-                slideMotor.setPower(slideMotorPowerMovingBack);
-                //setHeightToParams(vertServoPosition_PARKED);
-
-                //verticalServo.setPosition(vertServoPosition_PARKED);
-                //setHeightWithSlope(slideMotorPosition_PARKED, vertServoPosition_PARKED);
-                //Wait until the magnetic switch is triggered.
-                while (slideMotor.isBusy()) {
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    //Once triggered, kill the motor's PID and stop to prevent overshooting and hitting the robot.
-                    if (!magSwitch.getState()) {
-                        hardStopReset();
-                        break;
-                    }
-                }
-
-                slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                slideMotor.setPower(-.3);
-                try {
-                    Thread.sleep(300);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                slideMotor.setPower(0);
-                slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                //slideMotor.setTargetPosition(0);
-                //slideMotor.setPower(.9);
-                Log.d("SlideController", "Set the dumper servo to ready (485)");
-                dumperServo.setPosition(dumperPosition_READY);
-                return;
-        }
-    }
-
-    /**
      * Sets state, position and target relative to teleOp (called in teleOp).
      **/
     public void initTeleOp() {
@@ -560,7 +202,7 @@ public class AutonomousSlideController {
         if ((encoderTicks > slideMotorPosition_FULL || encoderTicks < slideMotorPosition_PARKED) && checkSaftey) {
             return;
         }
-        if(!magSwitch.getState() && !checkSaftey) {
+        if (!magSwitch.getState() && !checkSaftey) {
             resetEncoder();
             return;
         }
@@ -609,67 +251,59 @@ public class AutonomousSlideController {
         slideMotor.setPower(0);
     }
 
-    public void resetEncoder(){
+    public void resetEncoder() {
         slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public void extendDropRetract_Autonomous(SlideTarget slideTarget) {
         extendSlide_Autonomous(slideTarget);
-
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         dropCube_Autonomous();
-
-        retractSlide_Autonomous();
+        retractSlide_Autonomous_ThreadEdition();
         this.targetParams = SlideTarget.NA;
     }
 
     public void extendSlide_Autonomous(SlideTarget slideTarget) {
-        int slideMotorPosition = 0;
-        double verticalServoPosition = 0;
+        int slideMotorTargetPosition = 0;
+        double verticalServoTargetPosition = 0;
         OfficialTeleop.driveSpeedStrafe = Configuration.SlowMovementStrafeMultiplier;
 
         switch (slideTarget) {
             case BOTTOM_CAROUSEL:
-                slideMotorPosition = slideMotorPosition_ONE_CAROUSEL;
-                verticalServoPosition = vertServoPosition_ONE_CAROUSEL;
+                slideMotorTargetPosition = slideMotorPosition_ONE_CAROUSEL;
+                verticalServoTargetPosition = vertServoPosition_ONE_CAROUSEL;
                 break;
             case MIDDLE_CAROUSEL:
-                slideMotorPosition = slideMotorPosition_TWO_CAROUSEL;
-                verticalServoPosition = vertServoPosition_TWO_CAROUSEL;
+                slideMotorTargetPosition = slideMotorPosition_TWO_CAROUSEL;
+                verticalServoTargetPosition = vertServoPosition_TWO_CAROUSEL;
                 break;
             case TOP_CAROUSEL:
-                slideMotorPosition = slideMotorPosition_THREE_CAROUSEL;
-                verticalServoPosition = vertServoPosition_THREE_CAROUSEL;
+                slideMotorTargetPosition = slideMotorPosition_THREE_CAROUSEL;
+                verticalServoTargetPosition = vertServoPosition_THREE_CAROUSEL;
                 break;
             case TOP_DEPOSIT:
-                slideMotorPosition = slideMotorPosition_THREE_DEPOSIT;
-                verticalServoPosition = vertServoPosition_THREE_DEPOSIT;
+                slideMotorTargetPosition = slideMotorPosition_THREE_DEPOSIT;
+                verticalServoTargetPosition = vertServoPosition_THREE_DEPOSIT;
                 break;
             case TOP_DEPOSIT_AUTON:
-                slideMotorPosition = slideMotorPosition_THREE_DEPOSIT_AUTON;
-                verticalServoPosition = vertServoPosition_THREE_DEPOSIT;
+                slideMotorTargetPosition = slideMotorPosition_THREE_DEPOSIT_AUTON;
+                verticalServoTargetPosition = vertServoPosition_THREE_DEPOSIT;
                 break;
             case MID_DEPOSIT:
-                slideMotorPosition = slideMotorPosition_TWO_DEPOSIT;
-                verticalServoPosition = vertServoPosition_TWO_DEPOSIT;
+                slideMotorTargetPosition = slideMotorPosition_TWO_DEPOSIT;
+                verticalServoTargetPosition = vertServoPosition_TWO_DEPOSIT;
                 break;
             case BOTTOM_DEPOSIT:
-                slideMotorPosition = slideMotorPosition_ONE_DEPOSIT;
-                verticalServoPosition = vertServoPosition_ONE_DEPOSIT;
+                slideMotorTargetPosition = slideMotorPosition_ONE_DEPOSIT;
+                verticalServoTargetPosition = vertServoPosition_ONE_DEPOSIT;
                 break;
             case CAP_FROM_CAROUSEL:
-                slideMotorPosition = slideMotorPosition_CAP_FROM_CAROUSEL;
-                verticalServoPosition = vertServoPosition_CAP_CAROUSEL_HIGHER;
+                slideMotorTargetPosition = slideMotorPosition_CAP_FROM_CAROUSEL;
+                verticalServoTargetPosition = vertServoPosition_CAP_CAROUSEL_HIGHER;
                 break;
             case CUSTOM:
-                slideMotorPosition = slideMotorPosition_CUSTOM;
-                verticalServoPosition = vertServoPosition_CUSTOM;
+                slideMotorTargetPosition = slideMotorPosition_CUSTOM;
+                verticalServoTargetPosition = vertServoPosition_CUSTOM;
                 break;
         }
 
@@ -689,7 +323,7 @@ public class AutonomousSlideController {
         dumperServo.setPosition(dumperPosition_CLOSED);
 
         //TODO:-----------------------------------------------
-        slideMotor.setTargetPosition(slideMotorPosition);   //???
+        slideMotor.setTargetPosition(slideMotorTargetPosition);   //???
         if (slideTarget == SlideTarget.CAP_FROM_CAROUSEL) {
             slideMotor.setPower(slideMotorPowerCarousel);
         } else {
@@ -706,10 +340,10 @@ public class AutonomousSlideController {
         }
 
         //Now that the bucket is out, start lifting the slide
-        setHeightTo_Autonomous(verticalServoPosition);
+        setHeightTo_Autonomous(verticalServoTargetPosition);
 
         //Wait until the slide has reached its final position
-        while (slideMotor.getCurrentPosition() < slideMotorPosition) {
+        while (slideMotor.getCurrentPosition() < slideMotorTargetPosition) {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
@@ -748,6 +382,54 @@ public class AutonomousSlideController {
         dumperServo.setPosition(dumperPosition_RETRACTING);
     }
 
+    Thread lowerSlideAndBringItBackThread = new Thread(() -> {
+        //Once right outside, slow down the slide and lower it.
+        setHeightTo_Autonomous(vertServoPosition_PARKED);
+
+        slideMotor.setPower(slideMotorPowerMovingBack);
+        while (slideMotor.isBusy()) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            //Once triggered, kill the motor's PID and stop to prevent overshooting and hitting the robot.
+            if (!magSwitch.getState()) {
+                hardStopReset();
+                break;
+            }
+        }
+
+        slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        slideMotor.setPower(-.3);
+        try {
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        slideMotor.setPower(0);
+        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        dumperServo.setPosition(dumperPosition_READY);
+    });
+
+    public void retractSlide_Autonomous_ThreadEdition() {
+        dumperServo.setPosition(dumperPosition_RETRACTING);
+        OfficialTeleop.driveSpeedStrafe = 1;
+        slideMotor.setTargetPosition(slideMotorPosition_PARKED);
+        slideMotor.setPower(SLIDE_MOTOR_POWER_MOVING);
+
+        //Wait until the slide is retracted to right outside the robot
+        while (slideMotor.getCurrentPosition() > finishLiftingSlideEncoderPosition) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        lowerSlideAndBringItBackThread.start();
+    }
+
     //TODO: ???
     public void retractSlide_Autonomous() {
         dumperServo.setPosition(dumperPosition_RETRACTING);
@@ -763,6 +445,7 @@ public class AutonomousSlideController {
                 e.printStackTrace();
             }
         }
+
         setHeightTo_Autonomous(vertServoPosition_PARKED);
 
         //Once right outside, slow down the slide and lower it.
@@ -793,7 +476,7 @@ public class AutonomousSlideController {
         return;
     }
 
-    private void setHeightTo_Autonomous(double targetPos) {
+    public void setHeightTo_Autonomous(double targetPos) {
         double deltaTheta = Math.abs(targetPos - verticalServo.getPosition());
         double runTime = 0.55;
         double omegaI = 2.0 * deltaTheta / runTime;
@@ -809,6 +492,9 @@ public class AutonomousSlideController {
                     verticalServo.setPosition(currentServoPosition);
                     currentServoPosition = 0.25 * omegaI * omegaI * deltaTheta * deltaTime_s / deltaTheta + omegaI * deltaTime_s + initialServoPosition;
                 }
+                if (finishLiftingSlideEncoderPosition == -1) {
+                    finishLiftingSlideEncoderPosition = slideMotor.getCurrentPosition();
+                }
             } else {    //Move the slide down
                 while (currentServoPosition >= targetPos) {
                     deltaTime_s = NanoClock.system().seconds() - initialServoTime;
@@ -816,10 +502,10 @@ public class AutonomousSlideController {
                     currentServoPosition = -0.25 * omegaI * omegaI * deltaTheta * deltaTime_s / deltaTheta + initialServoPosition;
                 }
             }
+
             verticalServo.setPosition(targetPos);
         }
     }
-
 
 
     // TODO MEASURE ALL CONSTANTS
@@ -870,7 +556,7 @@ public class AutonomousSlideController {
     public static int slideMotorPosition_THREE_CAROUSEL = 1713;
     public static int slideMotorPosition_TWO_CAROUSEL = 1650;
     public static int slideMotorPosition_ONE_CAROUSEL = 1665;
-    public static  int slideMotorPosition_CAP_FROM_CAROUSEL = 1476; // TODO
+    public static int slideMotorPosition_CAP_FROM_CAROUSEL = 1476; // TODO
     public static int slideMotorPosition_CAP_FROM_CAROUSEL_RET = 1442; // TODO
     public static int slideMotorPosition_CUSTOM = 600; // TODO
     public static int slideMotorPosition_FULL = 1980;
