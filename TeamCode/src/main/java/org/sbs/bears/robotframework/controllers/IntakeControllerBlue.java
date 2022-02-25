@@ -32,13 +32,13 @@ public class IntakeControllerBlue {
     private double distThreshold = 60;
     private double distThreshold2 = 80;
 
-    public long timeToOpenStopper = 400; //ms
-    public long timeToCloseBucket = 650; //ms
-    public long timeToPushSweeper = 400; //ms
+    public long timeToOpenStopper = 300; //ms 400
+    public long timeToCloseBucket = 300; //ms 650
+    public long timeToPushSweeper = 230; //ms 400
 
     private double sweeperOut = .725;
     private double sweeperIn = 1;
-    private double stopperClosed = 0.275; //TODO //.3
+    private double stopperClosed = 0.305; //TODO //.3
     private double stopperOpen = 0.1; //TODO
     private boolean qIsObjectInPayload = false;
 
