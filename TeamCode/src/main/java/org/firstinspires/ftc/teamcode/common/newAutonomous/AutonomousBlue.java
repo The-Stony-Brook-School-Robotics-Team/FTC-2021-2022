@@ -27,10 +27,10 @@ public class AutonomousBlue extends LinearOpMode {
         while (opModeIsActive() && NanoClock.system().seconds() - startTime_s < 25) {
             autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
             autonomousClient.goPickUpBlock();
-            autonomousClient.goDeliverBlock();
+            autonomousClient.goDepositBlock();
         }
-        autonomousClient.goParking();
 
+        autonomousClient.goParking();
         stop();
     }
 }
