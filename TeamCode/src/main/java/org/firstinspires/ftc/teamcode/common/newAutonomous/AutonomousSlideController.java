@@ -19,6 +19,8 @@ import org.sbs.bears.robotframework.enums.SlideTarget;
 
 @Config
 public class AutonomousSlideController {
+    final boolean isDebug = true;
+
     public Servo verticalServo;
     public Servo dumperServo;
     public DigitalChannel magSwitch;
@@ -213,13 +215,18 @@ public class AutonomousSlideController {
 
     private Thread getLowerSlideAndBringItBackThread() {
         return new Thread(() -> {
-            while (slideMotor.getCurrentPosition() > finishLiftingSlideEncoderPosition) {
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            if (!isDebug) {
+                while (slideMotor.getCurrentPosition() > finishLiftingSlideEncoderPosition) {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
+            }else{
+                System.out.println(finishLiftingSlideEncoderPosition);
             }
+
             //Once right outside, slow down the slide and lower it.
             setHeightTo_Autonomous(vertServoPosition_PARKED);
 
@@ -252,6 +259,7 @@ public class AutonomousSlideController {
 
     /**
      * Retract slide in a thread.
+     *
      * @return The thread that brings the slide back.
      */
     public Thread retractSlide_Autonomous() {

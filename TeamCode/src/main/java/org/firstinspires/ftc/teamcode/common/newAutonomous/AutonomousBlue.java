@@ -19,6 +19,19 @@ public class AutonomousBlue extends LinearOpMode {
         autonomousClient = new AutonomousClient(hardwareMap, telemetry, AutonomousMode.BlueFull);
         msStuckDetectLoop = Integer.MAX_VALUE;  //Turn off infinite loop detection.
 
+        new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                autonomousClient.roadRunnerDrive.update();
+                try {
+                    Thread.sleep(2);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+        autonomousClient.readCamera();
+
         waitForStart();
 
         startTime_s = NanoClock.system().seconds();
@@ -26,11 +39,12 @@ public class AutonomousBlue extends LinearOpMode {
 
         while (opModeIsActive() && NanoClock.system().seconds() - startTime_s < 25) {
             autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
-            autonomousClient.goPickUpBlock();
-            autonomousClient.goDepositBlock();
+            autonomousClient.pickUp();
+            autonomousClient.deposit();
         }
 
-        autonomousClient.goParking();
+        autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.DARK_RED);
+        autonomousClient.park();
         stop();
     }
 }
