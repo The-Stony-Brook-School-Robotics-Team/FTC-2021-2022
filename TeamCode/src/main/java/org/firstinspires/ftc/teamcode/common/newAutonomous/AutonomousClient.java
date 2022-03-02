@@ -4,6 +4,7 @@ import static org.sbs.bears.robotframework.controllers.OpenCVController.doAnalys
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
@@ -33,6 +34,8 @@ public class AutonomousClient {
 
     RoadRunnerController roadRunnerController;
     SampleMecanumDrive roadRunnerDrive;
+
+    public static double startTime_s;
 
     OpenCVController openCVController;
     private boolean needToReadCamera = true;
@@ -108,7 +111,14 @@ public class AutonomousClient {
         });
     }
 
+    public void startTimer() {
+        startTime_s = NanoClock.system().seconds();
+    }
+
     public void pickUp() {
+        if (!AutonomousTimer.canContinue())
+            return;
+
         boolean isInWarehouse = false;
         objectIsInRobot = intakeControllerBlue.isObjectInPayload();
         ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
@@ -125,11 +135,17 @@ public class AutonomousClient {
             //Picking-up is not successful.
             intakeChecker.interrupt();
             ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+
+            if (!AutonomousTimer.canContinue(AutonomousTimer.CurrentState.PickUpSecondaryToDeposit))
+                return;
         }
         ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
     }
 
     public void deposit() {
+        if (!AutonomousTimer.canContinue())
+            return;
+
         runTrajectory_Deposit();
         objectIsInRobot = false;
     }
@@ -267,7 +283,7 @@ public class AutonomousClient {
     private static final Pose2d DEPOSIT_TRAJECTORY_PASS_PIPE_POSITION = new Pose2d(20.0, 67.0, ZERO);   //Heading is identical to B_FIX_HEADING_POSITION
     private static final Vector2d DEPOSIT_TRAJECTORY_START_EXTEND_SLIDE_POSITION = new Vector2d(20.0, 68.0);
 
-    private static final Pose2d PICK_UP_SECONDARY_TRAJECTORY_MOVE_AWAY_POSITION = new Pose2d(55.0,60.0,Math.toRadians(30.0));
+    private static final Pose2d PICK_UP_SECONDARY_TRAJECTORY_MOVE_AWAY_POSITION = new Pose2d(55.0, 60.0, Math.toRadians(30.0));
     private static final Pose2d PICK_UP_SECONDARY_TRAJECTORY_PICK_UP_BLOCK_POSITION = new Pose2d(64.0, 66.0, Math.toRadians(20.0));
 
     private static final Pose2d PARK_TRAJECTORY_PARK_POSITION = new Pose2d(50.0, 66.0, 0);

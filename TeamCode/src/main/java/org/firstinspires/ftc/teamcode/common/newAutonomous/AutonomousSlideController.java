@@ -97,7 +97,6 @@ public class AutonomousSlideController {
     public void extendSlide_Autonomous(SlideTarget slideTarget) {
         int slideMotorTargetPosition = 0;
         double verticalServoTargetPosition = 0;
-        OfficialTeleop.driveSpeedStrafe = Configuration.SlowMovementStrafeMultiplier;
 
         switch (slideTarget) {
             case BOTTOM_CAROUSEL:
@@ -265,7 +264,6 @@ public class AutonomousSlideController {
     public Thread retractSlide_Autonomous() {
         Thread lowerSlideAndBringItBackThread = getLowerSlideAndBringItBackThread();
         dumperServo.setPosition(dumperPosition_RETRACTING);
-        OfficialTeleop.driveSpeedStrafe = 1;
         slideMotor.setTargetPosition(slideMotorPosition_PARKED);
         slideMotor.setPower(SLIDE_MOTOR_POWER_MOVING);
         lowerSlideAndBringItBackThread.start();

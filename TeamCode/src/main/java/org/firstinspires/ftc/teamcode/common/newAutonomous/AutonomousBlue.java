@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.common.newAutonomous;
 
-import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -34,16 +33,16 @@ public class AutonomousBlue extends LinearOpMode {
 
         waitForStart();
 
-        startTime_s = NanoClock.system().seconds();
+        AutonomousTimer.startTimer();
         autonomousClient.getInitialBlockDone();
 
-        while (opModeIsActive() && NanoClock.system().seconds() - startTime_s < 25) {
+        while (opModeIsActive() && AutonomousTimer.canContinue(AutonomousTimer.CurrentState.DepositToPickUp)) {
             autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
             autonomousClient.pickUp();
             autonomousClient.deposit();
         }
 
-        autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.DARK_RED);
+        autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_RED);
         autonomousClient.park();
         stop();
     }
