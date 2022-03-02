@@ -83,7 +83,7 @@ public class MotionStateTesting extends OpMode {
                     case X:
                         drive.setDrivePower(new Pose2d(targetPower, 0, 0));
                 }
-                
+
                 drive.updatePoseEstimate();
             }
         }

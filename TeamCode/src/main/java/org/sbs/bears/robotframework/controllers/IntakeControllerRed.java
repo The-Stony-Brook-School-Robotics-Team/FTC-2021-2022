@@ -16,13 +16,13 @@ public class IntakeControllerRed {
     private DcMotor compliantWheel;
     public Rev2mDistanceSensor distanceSensor;
 
-    /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/
-//    private double[] basePos = {.025, 0.7}; //.141 // COMMENTED OUT BY MARC ON SUN JAN 9 2022 AT 22h12m54s
+    /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. <------ wRONG**/
+//    private double[] basePos = {.025, 0.7}; //.141 //
 
-    private double[] basePos = {.0144, 1}; //.141 // CHANGED BY MARC ON SUN JAN 9 2022 AT 22h12m54s
+    private double[] basePos = {.945, 1}; //.141 /
 
-    private double[] dumpPos = {.375, 0}; //.4
-    private double[] parkPos = {.33, 0.0}; //75
+    private double[] dumpPos = {.35, 0}; //.4
+    private double[] parkPos = {.4, 0.0}; //75
 
     /** Distance needed to switch states (mm) **/
     private double distThreshold = 60;
