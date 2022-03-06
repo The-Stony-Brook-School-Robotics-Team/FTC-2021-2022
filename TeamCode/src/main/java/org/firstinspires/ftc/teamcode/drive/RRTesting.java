@@ -20,7 +20,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.sbs.bears.robotframework.controllers.RoadRunnerController;
-import org.tensorflow.lite.task.text.qa.QaAnswer;
 
 import java.util.ArrayList;
 import java.util.List;

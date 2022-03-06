@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.common.newAutonomous;
 
-import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -19,18 +18,32 @@ public class AutonomousBlue extends LinearOpMode {
         autonomousClient = new AutonomousClient(hardwareMap, telemetry, AutonomousMode.BlueFull);
         msStuckDetectLoop = Integer.MAX_VALUE;  //Turn off infinite loop detection.
 
+        new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                autonomousClient.roadRunnerDrive.update();
+                try {
+                    Thread.sleep(2);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+        autonomousClient.readCamera();
+
         waitForStart();
 
-        startTime_s = NanoClock.system().seconds();
+        AutonomousTimer.startTimer();
         autonomousClient.getInitialBlockDone();
 
-        while (opModeIsActive() && NanoClock.system().seconds() - startTime_s < 25) {
+        while (opModeIsActive() && AutonomousTimer.canContinue(AutonomousTimer.CurrentState.DepositToPickUp)) {
             autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
-            autonomousClient.goPickUpBlock();
-            autonomousClient.goDeliverBlock();
+            autonomousClient.pickUp();
+            autonomousClient.deposit();
         }
-        autonomousClient.goParking();
 
+        autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_RED);
+        autonomousClient.park();
         stop();
     }
 }
