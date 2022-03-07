@@ -74,6 +74,7 @@ public class AutonomousClient {
         this.robot = new Robot(hardwareMap, telemetry, mode);
         this.openCVController = robot.getCVctrl();
         this.roadRunnerController = robot.getRRctrl();
+        this.roadRunnerController.setPos(startPositionBlue);
         this.roadRunnerDrive = roadRunnerController.getDrive();
         this.slideController = new AutonomousSlideController(hardwareMap, telemetry);
         this.intakeControllerBlue = robot.getIntakeCtrlBlue();

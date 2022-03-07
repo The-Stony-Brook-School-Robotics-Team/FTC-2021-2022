@@ -10,7 +10,6 @@ import org.sbs.bears.robotframework.controllers.OpenCVController;
 @Autonomous(name = "A - AutonomousBlue - William")
 public class AutonomousBlue extends LinearOpMode {
     AutonomousClient autonomousClient;
-    double startTime_s;
 
     @Override
     public void runOpMode() {
