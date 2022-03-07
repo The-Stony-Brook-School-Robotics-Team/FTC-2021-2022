@@ -293,8 +293,8 @@ public class AutonomousClient {
     private static final Pose2d ABC_RESET_POSITION_PICK_UP = new Pose2d(10.0, 64.0, 0);
     private static final Pose2d ABC_RESET_POSITION_DEPOSIT = new Pose2d(55.0, 64.0, 0.0);
     private static final Pose2d ABC_RESET_POSITION_PARK = new Pose2d(10.0, 64.0, 0);
-    private static final Vector2d ABC_CHECK_POSITION_PICK_UP = new Vector2d(35.5, 65.5);
-    private static final Vector2d ABC_CHECK_POSITION_DEPOSIT = new Vector2d(20.0, 65.5);
+    private static final Vector2d ABC_CHECK_POSITION_PICK_UP = new Vector2d(50.5, 65.5);
+    private static final Vector2d ABC_CHECK_POSITION_DEPOSIT = new Vector2d(12.0, 65.5);
     private static final Vector2d ABC_CHECK_POSITION_PARK = ABC_CHECK_POSITION_PICK_UP;
 
 
