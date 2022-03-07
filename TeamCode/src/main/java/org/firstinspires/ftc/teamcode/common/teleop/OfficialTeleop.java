@@ -101,6 +101,10 @@ public class OfficialTeleop extends OpMode {
     public void init() {
         currentState = TeleOpRobotStates.INITIALIZING;
 
+        multipleTelemetry.clearAll();
+        multipleTelemetry.addLine("Initializing...");
+        multipleTelemetry.update();
+
         /**
          * Roadrunner initialization
          * */
@@ -144,7 +148,12 @@ public class OfficialTeleop extends OpMode {
 
         blueIntake.dumperServo.setPosition(SlideController.dumperPosition_READY);
         drive.setPoseEstimate(new Pose2d(28.5, 65.5, 0));
+
+
         floodRuntimes();
+        multipleTelemetry.clearAll();
+        multipleTelemetry.addLine("Finished Init");
+        multipleTelemetry.update();
     }
 
     private int initPass = 0;
@@ -154,7 +163,19 @@ public class OfficialTeleop extends OpMode {
         if (initPass == 0) {
             revBlinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
             OfficialTeleop.isColorStripBlue = true;
+            multipleTelemetry.clearAll();
+            multipleTelemetry.addLine("Pending Start...");
+            multipleTelemetry.update();
             initPass = 1;
+        }
+
+        /**
+         * Pass through the runtimes and make sure that they are running
+         */
+        for(Map.Entry<String, Thread> set : checkRuntimes().entrySet()) {
+            if(set != null && !set.getValue().isAlive()) {
+                startInterface(set.getKey());
+            }
         }
     }
 
@@ -220,6 +241,20 @@ public class OfficialTeleop extends OpMode {
         registerThread(buttonHandler.secondaryInterfaceTag, buttonHandler.secondaryRuntime);
         registerThread(movementHandler.interfaceTag, movementHandler.runtime);
         registerThread(intakeHandler.interfaceTag, intakeHandler.runtime);
+    }
+
+    /**
+     * Check All Running Runtimes
+     * @return a hashmap with the threads that are not running
+     */
+    private static HashMap<String, Thread> checkRuntimes() {
+        HashMap<String, Thread> notRunning = new HashMap<>();
+        for(Map.Entry<String, Thread> set : threadPool.entrySet()) {
+            if(!set.getValue().isAlive()) {
+                notRunning.put(set.getKey(), set.getValue());
+            }
+        }
+        return notRunning;
     }
 
     /**

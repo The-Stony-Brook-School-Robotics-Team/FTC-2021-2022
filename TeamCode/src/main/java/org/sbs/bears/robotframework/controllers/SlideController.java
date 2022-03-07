@@ -66,6 +66,8 @@ public class SlideController {
         slideMotor.setTargetPosition(0); // should be where it reset to
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        verticalServo.setPosition(vertServoPosition_PARKED);
+
 
         blueDumperServo.setPosition(dumperPosition_READY);
         redDumperServo.setPosition(dumperPosition_READY);
@@ -289,7 +291,7 @@ public class SlideController {
                 blueDumperServo.setPosition(dumperPosition_EJECT);
                 redDumperServo.setPosition(dumperPosition_EJECT);
                 try {
-                    Thread.sleep(250);
+                    Thread.sleep(250); // 250
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -687,21 +689,21 @@ public class SlideController {
     // dumper servo
 /*    double dumperPosition_DUMP = .91;
     double dumperPosition_HOLDBLOCK = 0;
-*/    public static double dumperPosition_CLOSED = 0.269;  // remeasured on jan 31 at 16h08
-    public static double dumperPosition_READY = 0.55;
-    public static double dumperPosition_EJECT = 0.74;
-    public static double dumperPosition_RETRACTING = 0.05;
+*/    public static double dumperPosition_CLOSED = .53;//0.269;  // remeasured on jan 31 at 16h08
+    public static double dumperPosition_READY = .69;//0.55;
+    public static double dumperPosition_EJECT = .85;//0.74;
+    public static double dumperPosition_RETRACTING = .29;//0.05;
 
     // slide motor
     int slideMotorPosition_PARKED = 5;
     public static int slideMotorPosition_BUCKET_OUT = 225;//250;//380//150; // minimum position for the bucket to be out, measured
     public static int slideMotorPosition_BUCKET_OUT_RET = 800; // minimum position for the bucket to be out, measured
     public static int slideMotorPosition_THREE_DEPOSIT = 1316; // remeasured // last 1310
-    public static int slideMotorPosition_THREE_DEPOSIT_AUTON = 1400; // remeasured // last 1360
+    public static int slideMotorPosition_THREE_DEPOSIT_AUTON = 1360; // remeasured // last 1360
     public static int slideMotorPosition_TWO_DEPOSIT = 1390; //measured
     public static int slideMotorPosition_ONE_DEPOSIT = 1190;//1000; //measured
     public static int slideMotorPosition_THREE_CAROUSEL = 1713;
-    public static int slideMotorPosition_TWO_CAROUSEL = 1650;
+    public static int slideMotorPosition_TWO_CAROUSEL = 1600;
     public static int slideMotorPosition_ONE_CAROUSEL = 1665;
     public static  int slideMotorPosition_CAP_FROM_CAROUSEL = 1476; // TODO
     public static int slideMotorPosition_CAP_FROM_CAROUSEL_RET = 1442; // TODO
@@ -710,7 +712,7 @@ public class SlideController {
     //int slideMotorPosition_START_LOWER = 400;
     public static int slideMotorPosition_CAP_ON_GROUND = 473;
 
-    public static double slideMotorPowerMoving = .9;
+    public static double slideMotorPowerMoving = .7;
     public static double slideMotorPowerCarousel = .8;
     public static double slideMotorPowerMovingBack = .9;
     public static double slideMotorPowerGrabCap = .9;

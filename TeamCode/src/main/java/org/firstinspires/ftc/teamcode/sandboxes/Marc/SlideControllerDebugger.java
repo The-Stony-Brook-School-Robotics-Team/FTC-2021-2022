@@ -116,7 +116,7 @@ public class SlideControllerDebugger extends LinearOpMode
             }
             if(gamepad1.x && !qX) {
                 qX = true;
-                switch(state) {
+                /*switch(state) {
                     case OFF:
                         slideController.collectCapstone();
                         state = State.LIFT;
@@ -138,7 +138,8 @@ public class SlideControllerDebugger extends LinearOpMode
                     case PULLBACK:
                         state = State.OFF;
                         break;
-                }
+                }*/
+                slideController.blueDumperServo.setPosition(SlideController.dumperPosition_CLOSED);
             } else if(!gamepad1.x && qX) {
                 qX = false;
             }
