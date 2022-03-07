@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.common.teleop;
 import android.util.Log;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.broadcom.BroadcomColorSensor;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
@@ -48,7 +49,6 @@ public class OfficialTeleop extends OpMode {
     public static ControllerModes secondaryControllerMode = ControllerModes.PRIMARY;
     public static double driveSpeedStrafe = 1;
 
-
     /**
      * Information Provisioning
      */
@@ -85,6 +85,7 @@ public class OfficialTeleop extends OpMode {
     public static RevColorSensorV3 bottomColorSensor;
     public static RevBlinkinLedDriver revBlinkinLedDriver;
     public static ExpansionHubEx expansionHubEx;
+    public static MultipleTelemetry multipleTelemetry;
 
     /**
      * 线程池
@@ -99,6 +100,7 @@ public class OfficialTeleop extends OpMode {
     @Override
     public void init() {
         currentState = TeleOpRobotStates.INITIALIZING;
+
         /**
          * Roadrunner initialization
          * */
@@ -110,6 +112,7 @@ public class OfficialTeleop extends OpMode {
         /**
          * Initialization
          */
+
         slideController = new SlideController(hardwareMap, telemetry);
         blueIntake = new IntakeControllerBlue(hardwareMap, slideController.blueDumperServo, telemetry);
         redIntake = new IntakeControllerRed(hardwareMap, slideController.redDumperServo, telemetry);
@@ -117,6 +120,7 @@ public class OfficialTeleop extends OpMode {
         revBlinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "rgb");
         bottomColorSensor = hardwareMap.get(RevColorSensorV3.class, "color");
         expansionHubEx = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 4");
+        multipleTelemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 
         /**
          * Increase Read Speeds
@@ -162,6 +166,7 @@ public class OfficialTeleop extends OpMode {
                 telemetry.addLine("Robot Stopped");
                 telemetry.update();
                 break;
+
             case INITIALIZING:
                 movementHandler.movementEnabled = true;
                 slideHandler.slideMovementEnabled = true;
@@ -170,10 +175,24 @@ public class OfficialTeleop extends OpMode {
                     currentState = TeleOpRobotStates.RUNNING;
                 }
                 break;
-            case RUNNING:
-                telemetry.addData("Bottom Color Sensor Alpha: ", bottomColorSensor.alpha());
-                telemetry.addData("Bottom Color Sensor Normalized Alpha: ", bottomColorSensor.getNormalizedColors().alpha);
-                telemetry.update();
+
+                case RUNNING:
+                int numThreads = threadPool.size();
+                multipleTelemetry.addLine("---------------------------------------------------------");
+                multipleTelemetry.addData("Current # Threads Running: ", numThreads);
+                multipleTelemetry.addLine("---------------------------------------------------------");
+                multipleTelemetry.addData("Drive Handler Thread Status: ", threadPool.get(MovementHandler.interfaceTag).isAlive());
+                multipleTelemetry.addData("Intake Handler Thread Status: ", threadPool.get(IntakeHandler.interfaceTag).isAlive());
+                multipleTelemetry.addData("(Primary) Button Handler Thread Status: ", threadPool.get(ButtonHandler.primaryInterfaceTag).isAlive());
+                multipleTelemetry.addData("(Secondary) Button Handler Thread Status: ", threadPool.get(ButtonHandler.secondaryInterfaceTag).isAlive());
+                multipleTelemetry.addLine("---------------------------------------------------------");
+                multipleTelemetry.addData("Drive Handler Thread State: ", threadPool.get(MovementHandler.interfaceTag).getState());
+                multipleTelemetry.addData("Intake Handler Thread State: ", threadPool.get(IntakeHandler.interfaceTag).getState());
+                multipleTelemetry.addData("(Primary) Button Handler Thread State: ", threadPool.get(ButtonHandler.primaryInterfaceTag).getState());
+                multipleTelemetry.addData("(Secondary) Button Handler Thread State: ", threadPool.get(ButtonHandler.secondaryInterfaceTag).getState());
+                multipleTelemetry.addLine("---------------------------------------------------------");
+
+                multipleTelemetry.update();
                 break;
             case DEBUG:
                 break;
@@ -255,7 +274,6 @@ public class OfficialTeleop extends OpMode {
 
     /**
      * Starts a specific interface handler
-     *
      * @param interfaceTag the interface handler tag
      */
     public static void startInterface(String interfaceTag) {
@@ -268,7 +286,6 @@ public class OfficialTeleop extends OpMode {
 
     /**
      * Stops a specific interface handler
-     *
      * @param interfaceTag the interface handler tag
      */
     public static void stopInterface(String interfaceTag) {
