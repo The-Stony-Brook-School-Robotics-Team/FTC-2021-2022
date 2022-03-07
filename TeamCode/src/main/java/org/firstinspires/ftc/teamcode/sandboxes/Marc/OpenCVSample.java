@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Sandboxes.Marc;
+package org.firstinspires.ftc.teamcode.sandboxes.Marc;
 
 import static java.lang.Thread.sleep;
 
@@ -6,23 +6,28 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.sbs.bears.robotframework.controllers.CapstoneOpenCVEngineBlueFull;
 import org.sbs.bears.robotframework.controllers.DuckOpenCVEngineBlueFull;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.sbs.bears.robotframework.enums.DuckPosition;
+import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
 
 
 /**
- * This OpMode is a sample OpenCV OpMode to analyze the position of the Duck on the Barcode.
+ * This OpMode is a sample OpenCV OpMode to analyze the position of the TSE on the Barcode.
  * @author Marc N.
  * @version 5.1
  */
+@Autonomous(name="OpenCV TSE Recog Test")
 public class OpenCVSample extends OpMode {
 
     // MARK - Class Variables
     static final int STREAM_WIDTH = 1920;
     static final int STREAM_HEIGHT = 1080;
-    DuckOpenCVEngineBlueFull engine;
+    CapstoneOpenCVEngineBlueFull engine;
+
     boolean flag = false; // flags for ensuring the time spent analyzing the frames.
     boolean secondFlag = false;
     OpenCvCamera webcam;
@@ -35,7 +40,7 @@ public class OpenCVSample extends OpMode {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         WebcamName webcamName = hardwareMap.get(WebcamName.class, "WebcamMain");
         webcam = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
-        engine = new DuckOpenCVEngineBlueFull();
+        engine = new CapstoneOpenCVEngineBlueFull();
         webcam.setPipeline(engine);
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
@@ -52,9 +57,22 @@ public class OpenCVSample extends OpMode {
             }
         });
         // Print analysis
-        telemetry.addData("Rect AY: ", engine.getAYanalysis());
-        telemetry.addData("Rect BY: ", engine.getBYanalysis());
-        telemetry.addData("Rect CY: ", engine.getCYanalysis());
+        DuckPosition pos = engine.getPosition();
+        TowerHeightFromDuck height = TowerHeightFromDuck.NA;
+        switch(pos) {
+            case A:
+                height = TowerHeightFromDuck.ONE;
+                break;
+            case B:
+                height =  TowerHeightFromDuck.TWO;
+                break;
+            case C:
+                height =  TowerHeightFromDuck.THREE;
+                break;
+        }
+        telemetry.addData("Position: ",pos);
+        telemetry.addData("Height: ", height);
+
         telemetry.update();
     }
     // MARK - End of Initialization

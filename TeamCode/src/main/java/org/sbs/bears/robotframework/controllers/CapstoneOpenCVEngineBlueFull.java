@@ -27,7 +27,7 @@ public class CapstoneOpenCVEngineBlueFull extends DuckOpenCVEngine {
 
     public CapstoneOpenCVEngineBlueFull() {
         super();
-        Log.d("BlueFullDuckOpenCVController","Init req");
+        Log.d("BlueFullCapstoneOpenCVController","Init req");
     }
 
     /**

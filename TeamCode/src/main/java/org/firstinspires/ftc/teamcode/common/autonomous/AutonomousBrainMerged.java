@@ -27,7 +27,7 @@ import org.sbs.bears.robotframework.enums.IntakeState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
 
-@Config
+@Deprecated
 public class AutonomousBrainMerged {
     AutonomousMode mode;
     Robot robot;

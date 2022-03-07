@@ -79,6 +79,7 @@ public class AutonomousBrain {
     }
 
     double iniTemps = 0;
+    boolean isBlue = true;
 
     public AutonomousBrain(HardwareMap hardwareMap, Telemetry telemetry, AutonomousMode mode) // call in init.
     {
@@ -97,8 +98,13 @@ public class AutonomousBrain {
         this.intakeCtrlRed = robot.getIntakeCtrlRed();
         this.duckCtrl = robot.getDuckCtrl();
         this.leds = hardwareMap.get(RevBlinkinLedDriver.class, "rgb");
+        isBlue = (mode == AutonomousMode.BlueFull);
 
-        RRctrl.setPos(startPositionBlue);
+        if (isBlue) {
+            RRctrl.setPos(startPositionBlue);
+        } else {
+            RRctrl.setPos(startPositionRed);
+        }
         intakeCtrlBlue.setState(IntakeState.DUMP);
         intakeCtrlRed.setState(IntakeState.DUMP); // to prevent from moving around
         //normalizedColorSensor = hardwareMap.get(NormalizedColorSensor.class, "color");
@@ -109,6 +115,7 @@ public class AutonomousBrain {
     }
     public void start() // call this method before loop, so start method.
     {
+
         iniTemps = NanoClock.system().seconds();
     }
     public void doStateAction() // call in loop (once per loop pls)
@@ -126,15 +133,15 @@ public class AutonomousBrain {
                 switch (heightFromDuck) {
                     case ONE:
                         iniTarget = SlideTarget.BOTTOM_DEPOSIT;
-                        iniDropPosition = depositPositionAllianceBlueBOT;
+                        iniDropPosition = isBlue ? depositPositionAllianceBlueBOT : depositPositionAllianceRedBOT;
                         break;
                     case TWO:
                         iniTarget = SlideTarget.MID_DEPOSIT;
-                        iniDropPosition = depositPositionAllianceBlueMID;
+                        iniDropPosition = isBlue ? depositPositionAllianceBlueMID : depositPositionAllianceRedMID;
                         break;
                     case THREE:
                         iniTarget = SlideTarget.TOP_DEPOSIT_AUTON;
-                        iniDropPosition = depositPositionAllianceBlueTOP;
+                        iniDropPosition = isBlue ? depositPositionAllianceBlueTOP : depositPositionAllianceRedTOP;
                         break;
                 }
                 majorState.set(MajorAutonomousState.TWO_DEPOSIT_INI_BLOCK);
@@ -329,16 +336,27 @@ public class AutonomousBrain {
     }
 
     public static Pose2d startPositionBlue = new Pose2d(14,65.5,0);
+    public static Pose2d startPositionRed = new Pose2d(14,65.5,0);
     public static Pose2d warehousePickupPositionBlue = new Pose2d(35,70,0);
+    public static Pose2d warehousePickupPositionRed = new Pose2d(35,70,0);
     public static Pose2d depositPrepPositionBlue = new Pose2d(30,70,0);
+    public static Pose2d depositPrepPositionRed = new Pose2d(30,70,0);
     public static Pose2d depositPositionBlueNoTurn = new Pose2d(-20,70,0);
+    public static Pose2d depositPositionRedNoTurn = new Pose2d(-20,70,0);
     public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(5.58,64.47, -Math.toRadians(30)); //55
+    public static Pose2d depositPositionAllianceRedTOP = new Pose2d(5.58,64.47, -Math.toRadians(30)); //55
     public static Pose2d depositPositionAllianceBlueMID = new Pose2d(5.58,64.47, -Math.toRadians(31)); //56
+    public static Pose2d depositPositionAllianceRedMID = new Pose2d(5.58,64.47, -Math.toRadians(31)); //56
     public static Pose2d depositPositionAllianceBlueBOT = new Pose2d(5.58,64.47, -Math.toRadians(34));//59
+    public static Pose2d depositPositionAllianceRedBOT = new Pose2d(5.58,64.47, -Math.toRadians(34));//59
     public static Pose2d depositPositionAllianceBlue2 = new Pose2d(5.58,64.47, -Math.toRadians(23)); //48
+    public static Pose2d depositPositionAllianceRed2 = new Pose2d(5.58,64.47, -Math.toRadians(23)); //48
     public static Pose2d resetPositionB4WarehouseBlue = new Pose2d(14,75,0);
+    public static Pose2d resetPositionB4WarehouseRed = new Pose2d(14,75,0);
     public static Pose2d resetPositionB4WarehouseBlue2 = new Pose2d(14,70,0);
+    public static Pose2d resetPositionB4WarehouseRed2 = new Pose2d(14,70,0);
     public static Pose2d parkingPositionBlue = new Pose2d(50,70,0);
+    public static Pose2d parkingPositionRed = new Pose2d(50,70,0);
     public static Pose2d whiteLinePos = new Pose2d(29.5,65.5,0);
     public static double velocityIntake = 22;
     public static double accelIntake = 20;

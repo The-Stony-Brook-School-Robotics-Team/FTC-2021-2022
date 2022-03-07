@@ -7,8 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.sbs.bears.robotframework.controllers.OpenCVController;
-
-@Autonomous (name = "A - Auton (Blue Full, Merged)")
+@Deprecated
 public class AutonomousBlueFullMerged extends LinearOpMode {
     AutonomousBrainMerged brain;
     boolean qA = false;

@@ -25,7 +25,7 @@ import org.sbs.bears.robotframework.enums.SlideTarget;
 import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
 import static org.sbs.bears.robotframework.controllers.OpenCVController.doAnalysisMaster;
 
-@Config
+@Deprecated
 public class AutonomousBrainTurn {
     AutonomousMode mode;
     Robot robot;
