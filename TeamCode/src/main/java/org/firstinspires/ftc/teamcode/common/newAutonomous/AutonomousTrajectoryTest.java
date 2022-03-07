@@ -20,7 +20,7 @@ public class AutonomousTrajectoryTest extends LinearOpMode {
 
 //        autonomousClient.getInitialBlockDone();
         autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
-        autonomousClient.goPickUpBlock();
+        autonomousClient.pickUp();
 //        autonomousClient.goDeliverBlock();
 //        autonomousClient.goParking();
 
