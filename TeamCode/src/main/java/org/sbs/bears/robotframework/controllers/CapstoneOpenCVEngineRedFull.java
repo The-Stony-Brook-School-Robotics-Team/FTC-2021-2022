@@ -310,10 +310,9 @@ public class CapstoneOpenCVEngineRedFull extends DuckOpenCVEngine {
 
            if (dAB <= 2) {
                synchronized (semaphore) {
-                   //position = DuckPosition.C;
-                   position = DuckPosition.A; // flip due to red side
+                   position = DuckPosition.C;
                }
-               System.out.println("Found the duck: A");
+               System.out.println("Found the duck: C");
            }
            else {
                if (dAC <= 2) {
@@ -324,10 +323,9 @@ public class CapstoneOpenCVEngineRedFull extends DuckOpenCVEngine {
                }
                else if (dBC <= 2) {
                    synchronized (semaphore) {
-                       //position = DuckPosition.A;
-                       position = DuckPosition.C;
+                       position = DuckPosition.A;
                    }
-                   System.out.println("Found the duck: C"); // flip due to red side
+                   System.out.println("Found the duck: A");
                }
            }
        }
