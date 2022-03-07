@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.common.newAutonomous;
 
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -14,7 +13,7 @@ public class AutonomousSlideControllerTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         OpenCVController.isDuck = false;
-        autonomousClient = new AutonomousClient(hardwareMap, telemetry, AutonomousMode.BlueFull);
+        autonomousClient = new AutonomousClient(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
 
         waitForStart();
 

@@ -25,7 +25,7 @@ public class OpenCVController {
     public static volatile boolean doAnalysisMaster = true;
 
 
-    public static boolean isDuck = true;
+    public static boolean isDuck = false; // false by default: TSE
 
     OpenCvPipeline currentEngine;
     OpenCvCamera webcam;
@@ -38,7 +38,18 @@ public class OpenCVController {
         webcam = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
         Log.d("OpenCVController","Init Engine");
         // TODO switch for all autonomous types only on constructor
-        engine = isDuck ? new DuckOpenCVEngineBlueFull() : new CapstoneOpenCVEngineBlueFull();
+        if(isDuck) {
+            engine = new DuckOpenCVEngineBlueFull();
+        }
+        else {
+            if(mode == AutonomousMode.BlueStatesWarehouse)
+            {
+                engine = new CapstoneOpenCVEngineBlueFull();
+            }
+            else {
+                engine = new CapstoneOpenCVEngineRedFull(); // in case positions need to be shifted.
+            }
+        }
         webcam.setPipeline(engine);
         currentEngine = engine;
         Log.d("OpenCVController","Init Complete");

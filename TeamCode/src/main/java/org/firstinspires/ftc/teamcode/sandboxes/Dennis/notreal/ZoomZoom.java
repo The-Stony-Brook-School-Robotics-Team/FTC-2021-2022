@@ -1,12 +1,9 @@
 package org.firstinspires.ftc.teamcode.sandboxes.Dennis.notreal;
 
-import android.util.Log;
-
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -17,9 +14,6 @@ import org.sbs.bears.robotframework.controllers.OpenCVController;
 import org.sbs.bears.robotframework.controllers.SlideController;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 
 /**
  * This is not real, wake up
@@ -83,7 +77,7 @@ public class ZoomZoom extends LinearOpMode {
         blueIntakeController = new IntakeControllerBlue(hardwareMap, slideController.dumperServo, telemetry);
         redIntakeController = new IntakeControllerRed(hardwareMap, telemetry);
         duckCarouselController = new DuckCarouselController(hardwareMap, telemetry);
-        openCVController = new OpenCVController(hardwareMap, telemetry, AutonomousMode.BlueFull);
+        openCVController = new OpenCVController(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
 
         waitForStart();
 

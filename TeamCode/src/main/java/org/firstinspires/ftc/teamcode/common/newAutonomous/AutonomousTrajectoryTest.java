@@ -14,7 +14,7 @@ public class AutonomousTrajectoryTest extends LinearOpMode {
     @Override
     public void runOpMode() {
         OpenCVController.isDuck = false;
-        autonomousClient = new AutonomousClient(hardwareMap, telemetry, AutonomousMode.BlueFull);
+        autonomousClient = new AutonomousClient(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
 
         waitForStart();
 

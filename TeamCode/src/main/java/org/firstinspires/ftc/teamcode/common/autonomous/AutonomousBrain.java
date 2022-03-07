@@ -94,7 +94,7 @@ public class AutonomousBrain {
         this.intakeCtrlRed = robot.getIntakeCtrlRed();
         this.duckCtrl = robot.getDuckCtrl();
         this.leds = hardwareMap.get(RevBlinkinLedDriver.class, "rgb");
-        isBlue = (mode == AutonomousMode.BlueFull);
+        isBlue = (mode == AutonomousMode.BlueStatesWarehouse);
 
         if (isBlue) {
             RRctrl.setPos(startPositionBlue);
@@ -283,7 +283,12 @@ public class AutonomousBrain {
                     intakeCtrlBlue.setState(IntakeState.REVERSE);
                     RRctrl.followLineToSpline(warehousePickupPositionBlue);
                     // do a turn here
-                    RRctrl.turnR(intakeTurnAmount); // fix this val pls thx
+                    if(isBlue) {
+                        RRctrl.turnR(intakeTurnAmount); // fix this val pls thx
+                    }
+                    else {
+                        RRctrl.turnL(intakeTurnAmount); // fix this val pls thx
+                    }
                     intakeCtrlBlue.setState(IntakeState.BASE);
                 }
                 return;
@@ -362,7 +367,8 @@ public class AutonomousBrain {
     public static Pose2d resetPositionB4WarehouseRed2 = new Pose2d(14,-70,0);
     public static Pose2d parkingPositionBlue = new Pose2d(50,70,0);
     public static Pose2d parkingPositionRed = new Pose2d(50,-70,0);
-    public static Pose2d whiteLinePos = new Pose2d(29.5,65.5,0);
+    public static Pose2d whiteLinePosBlue = new Pose2d(29.5,65.5,0);
+    public static Pose2d whiteLinePosRed = new Pose2d(29.5,-65.5,0);
     public static double velocityIntake = 22;
     public static double accelIntake = 20;
     public static double intakeTurnAmount = 5; // TODO test and adjust as needed

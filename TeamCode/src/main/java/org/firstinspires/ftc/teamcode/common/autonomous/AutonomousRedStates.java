@@ -1,10 +1,6 @@
 package org.firstinspires.ftc.teamcode.common.autonomous;
 
-import static java.lang.Thread.sleep;
-
 import android.util.Log;
-
-import androidx.interpolator.view.animation.FastOutLinearInInterpolator;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -14,8 +10,8 @@ import org.sbs.bears.robotframework.controllers.OpenCVController;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-@Autonomous (name = "A - Auton (Blue Full)")
-public class AutonomousBlueFull extends LinearOpMode {
+@Autonomous (name = "A - Auton (Red States)")
+public class AutonomousRedStates extends LinearOpMode {
     AutonomousBrain brain;
     boolean qA = false;
     boolean qContinue = false;
@@ -26,9 +22,9 @@ public class AutonomousBlueFull extends LinearOpMode {
     public void runOpMode()
     {
         masterQContinue.set(true);
-        OpenCVController.isDuck = false;
-        brain = new AutonomousBrain(hardwareMap,telemetry,AutonomousMode.BlueFull);
-        Log.d("Auton BF","Init Complete");
+        OpenCVController.isDuck = false; // TSE or Duck
+        brain = new AutonomousBrain(hardwareMap,telemetry,AutonomousMode.RedStatesWarehouse);
+        Log.d("Auton RF","Init Complete");
         msStuckDetectLoop = Integer.MAX_VALUE;
         gamepad = gamepad1;
 

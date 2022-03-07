@@ -15,7 +15,7 @@ public class AutonomousBlue extends LinearOpMode {
     @Override
     public void runOpMode() {
         OpenCVController.isDuck = false;
-        autonomousClient = new AutonomousClient(hardwareMap, telemetry, AutonomousMode.BlueFull);
+        autonomousClient = new AutonomousClient(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
         msStuckDetectLoop = Integer.MAX_VALUE;  //Turn off infinite loop detection.
 
         new Thread(() -> {

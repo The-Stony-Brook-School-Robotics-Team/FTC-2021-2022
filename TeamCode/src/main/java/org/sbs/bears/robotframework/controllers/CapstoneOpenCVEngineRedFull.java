@@ -1,5 +1,7 @@
 package org.sbs.bears.robotframework.controllers;
 
+import static org.sbs.bears.robotframework.controllers.OpenCVController.doAnalysisMaster;
+
 import android.util.Log;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -11,23 +13,22 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.sbs.bears.robotframework.enums.DuckPosition;
-import static org.sbs.bears.robotframework.controllers.OpenCVController.doAnalysisMaster;
 
 import java.util.ArrayList;
 
 
 /**
- * This class is the OpenCV Pipeline for Analyzing TSE Position from Blue side.
+ * This class is the OpenCV Pipeline for Analyzing TSE Position from Red side.
  * @author Marc N
  * @version 5.1
  */
 @Config
-public class CapstoneOpenCVEngineBlueFull extends DuckOpenCVEngine {
+public class CapstoneOpenCVEngineRedFull extends DuckOpenCVEngine {
     // MARK - Class Variables
 
-    public CapstoneOpenCVEngineBlueFull() {
+    public CapstoneOpenCVEngineRedFull() {
         super();
-        Log.d("BlueFullCapstoneOpenCVController","Init req");
+        Log.d("RedFullCapstoneOpenCVController","Init req");
     }
 
     /**
@@ -251,7 +252,7 @@ public class CapstoneOpenCVEngineBlueFull extends DuckOpenCVEngine {
     @Override
     public void init(Mat firstFrame) {
        convertY(firstFrame);
-        Log.d("BlueFullDuckOpenCVController","Init complete");
+        Log.d("RedFullDuckOpenCVController","Init complete");
     }
 
     /**
@@ -267,7 +268,7 @@ public class CapstoneOpenCVEngineBlueFull extends DuckOpenCVEngine {
      */
     @Override
     public Mat processFrame(Mat input) {
-        Log.d("BlueFullDuckOpenCVController","Start ProcessFrame");
+        Log.d("RedFullDuckOpenCVController","Start ProcessFrame");
         if(doAnalysisMaster) {
            convertY(input);
            synchronized (semaphore) {
@@ -328,8 +329,8 @@ public class CapstoneOpenCVEngineBlueFull extends DuckOpenCVEngine {
                }
            }
        }
-        Log.d("BlueFullDuckOpenCVController","End ProcessFrame");
-        Log.d("BlueFullDuckOpenCVController","A: " + avgAY + " B: " + avgBY + " C: " +  avgCY);
+        Log.d("RedFullDuckOpenCVController","End ProcessFrame");
+        Log.d("RedFullDuckOpenCVController","A: " + avgAY + " B: " + avgBY + " C: " +  avgCY);
 
         if(avgAY != 0 && avgBY != 0 && avgCY != 0) {
             doAnalysisMaster = false;
