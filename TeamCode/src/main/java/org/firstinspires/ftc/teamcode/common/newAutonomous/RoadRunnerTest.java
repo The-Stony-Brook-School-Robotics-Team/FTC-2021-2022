@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 
 @Autonomous(name = "A - AutonomousBlue - William")
-public class AutonomousBlue extends LinearOpMode {
+public class RoadRunnerTest extends LinearOpMode {
     AutonomousClient autonomousClient;
     double startTime_s;
 
@@ -34,16 +34,7 @@ public class AutonomousBlue extends LinearOpMode {
         waitForStart();
 
         AutonomousTimer.startTimer();
-        autonomousClient.getInitialBlockDone();
-
-        while (opModeIsActive() && AutonomousTimer.canContinue(AutonomousTimer.CurrentState.DepositToPickUp)) {
-            autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
-            autonomousClient.pickUp();
-            autonomousClient.deposit();
-        }
-
-        autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_RED);
-        autonomousClient.park();
+        autonomousClient.roadRunnerController.followLineToSpline(autonomousClient.initialDropPosition);
         stop();
     }
 }

@@ -91,6 +91,7 @@ public class AutonomousClient {
     public void getInitialBlockDone() {
         if (needToReadCamera)
             readCamera();
+
         ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_FOREST_PALETTE);
         roadRunnerController.followLineToSpline(initialDropPosition);
         slideController.extendDropRetract_Autonomous(initialSlideTarget);
@@ -176,6 +177,7 @@ public class AutonomousClient {
                 initialSlideTarget = SlideTarget.TOP_DEPOSIT;
                 initialDropPosition = firstDepositPositionBlueTOP;
         }
+        telemetry.addData("Camera Read: ", initialSlideTarget.toString());
         needToReadCamera = false;
     }
 
