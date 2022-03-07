@@ -172,10 +172,9 @@ public class AutonomousClient {
                 initialSlideTarget = SlideTarget.MID_DEPOSIT;
                 initialDropPosition = firstDepositPositionBlueMID;
                 break;
-            case THREE:
+            default:
                 initialSlideTarget = SlideTarget.TOP_DEPOSIT;
                 initialDropPosition = firstDepositPositionBlueTOP;
-                break;
         }
         needToReadCamera = false;
     }

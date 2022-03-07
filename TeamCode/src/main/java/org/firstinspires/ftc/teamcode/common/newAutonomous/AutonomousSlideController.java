@@ -222,7 +222,7 @@ public class AutonomousSlideController {
                         e.printStackTrace();
                     }
                 }
-            }else{
+            } else {
                 System.out.println(finishLiftingSlideEncoderPosition);
             }
 

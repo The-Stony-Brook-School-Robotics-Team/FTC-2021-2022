@@ -18,10 +18,10 @@ public class ColorSensorTest extends OpMode {
     @Override
     public void loop() {
         NormalizedRGBA color = colorSensorV3.getNormalizedColors();
-        telemetry.addData("Red",color.red);
-        telemetry.addData("Blue",color.blue);
-        telemetry.addData("Green",color.green);
-        telemetry.addData("Alpha",color.alpha);
+        telemetry.addData("Red", color.red);
+        telemetry.addData("Blue", color.blue);
+        telemetry.addData("Green", color.green);
+        telemetry.addData("Alpha", color.alpha);
         telemetry.update();
     }
 }
