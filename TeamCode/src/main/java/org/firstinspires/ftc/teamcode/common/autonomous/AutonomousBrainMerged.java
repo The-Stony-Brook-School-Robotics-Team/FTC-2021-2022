@@ -4,7 +4,6 @@ import static org.sbs.bears.robotframework.controllers.OpenCVController.doAnalys
 
 import android.util.Log;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.hardware.broadcom.BroadcomColorSensor;
@@ -267,7 +266,7 @@ public class AutonomousBrainMerged {
                     qObjectInRobot = false; // reset
                     Log.d("AutonBrain","intake prepped");
                     Log.d("AutonBrain","reset status and init for intake");
-                    RRctrl.autonomousPrepAndIntakeFromDeposit();
+                    RRctrl.autonomousPrepAndIntakeFromDepositBlue();
                 }
                 else {
                     Log.d("AutonBrain", "Forward init");

@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.common.autonomous;
 
-import android.transition.Slide;
 import android.util.Log;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -12,12 +11,10 @@ import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 
-import org.checkerframework.checker.units.qual.A;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.common.sharedResources.SharedData;
 import org.sbs.bears.robotframework.Robot;
-import org.sbs.bears.robotframework.Sleep;
 import org.sbs.bears.robotframework.controllers.DuckCarouselController;
 import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
 import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
@@ -29,7 +26,6 @@ import org.sbs.bears.robotframework.enums.SlideTarget;
 import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
 import static org.sbs.bears.robotframework.controllers.OpenCVController.doAnalysisMaster;
 
-import java.time.LocalDate;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Config
@@ -151,11 +147,18 @@ public class AutonomousBrain {
                 RRctrl.followLineToSpline(iniDropPosition);
                 slideCtrl.extendDropRetract(iniTarget);
                 Log.d("AutonBrain","Slide drop complete");
-
-                RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
-                intakeCtrlBlue.setState(IntakeState.BASE);
-                RRctrl.followLineToSpline(resetPositionB4WarehouseBlue2);
-                RRctrl.followLineToSpline(warehousePickupPositionBlue);
+                if(isBlue) {
+                    RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
+                    intakeCtrlBlue.setState(IntakeState.BASE);
+                    RRctrl.followLineToSpline(resetPositionB4WarehouseBlue2);
+                    RRctrl.followLineToSpline(warehousePickupPositionBlue);
+                }
+                else {
+                    RRctrl.followLineToSpline(resetPositionB4WarehouseRed);
+                    intakeCtrlBlue.setState(IntakeState.BASE);
+                    RRctrl.followLineToSpline(resetPositionB4WarehouseRed2);
+                    RRctrl.followLineToSpline(warehousePickupPositionRed);
+                }
                 Log.d("AutonBrain","reset status and init for intake");
 
                 qObjectInRobot.set(false); // reset
@@ -187,7 +190,7 @@ public class AutonomousBrain {
                 Log.d("AutonBrain","parking4");
                 */
                 //if(!RRctrl.isInWarehouse()) {RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);}
-                RRctrl.followLineToSpline(parkingPositionBlue);
+                RRctrl.followLineToSpline(isBlue ? parkingPositionBlue : parkingPositionRed);
                 SharedData.autonomousLastPosition = RRctrl.getPos();
                 majorState.set(MajorAutonomousState.FINISHED);
                 minorState.set(MinorAutonomousState.FINISHED);
@@ -210,7 +213,7 @@ public class AutonomousBrain {
                 {
                     Log.d("AutonBrain","Stuck detected on intake attempt, retrying.");
                     intakeCtrlBlue.setState(IntakeState.PARK);
-                    RRctrl.followLineToSpline(new Pose2d(RRctrl.getPos().getX()-5,70,0));
+                    RRctrl.followLineToSpline(new Pose2d(RRctrl.getPos().getX()-5, isBlue ? 70 : -70,isBlue ? 0 : -Math.PI));
                     minorState.set(MinorAutonomousState.FOUR_RETURN_TO_INTAKE);
                     return;
                 }
@@ -302,7 +305,10 @@ public class AutonomousBrain {
                     }
                 }).start();
                 */Log.d("AutonBrain","Prepare for drop off");
-                RRctrl.doBlueDepositTrajectoryNoTurnNonMerged(); // debugging
+                if(isBlue) { RRctrl.doBlueDepositTrajectoryNoTurnNonMerged();}
+                else {
+                    RRctrl.doRedDepositTrajectoryNoTurnNonMerged();
+                }// debugging
                 Log.d("AutonBrain","Preparation Complete");
                 minorState.set(MinorAutonomousState.THREE_DEPOSIT);
                 return;
@@ -310,8 +316,8 @@ public class AutonomousBrain {
                 if (RRctrl.isInWarehouse())
                 {
                     Log.d("AutonBrain","Stuck detected on deposit trying, retrying.");
-                    RRctrl.followLineToSpline(new Pose2d(RRctrl.getPos().getX()+15,70,RRctrl.getPos().getHeading()),100);
-                    RRctrl.followLineToSpline(warehousePickupPositionBlue);
+                    RRctrl.followLineToSpline(new Pose2d(RRctrl.getPos().getX()+15,isBlue ? 70 : -70,RRctrl.getPos().getHeading()),100);
+                    RRctrl.followLineToSpline(isBlue ? warehousePickupPositionBlue : warehousePickupPositionRed);
                     minorState.set(MinorAutonomousState.TWO_PREP_DEPOSIT);
                     return;
                 }
@@ -327,7 +333,10 @@ public class AutonomousBrain {
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE_VIOLET);
                 Log.d("AutonBrain","intake prepped");
                 intakeCtrlBlue.setState(IntakeState.BASE);
-                RRctrl.autonomousPrepAndIntakeFromDeposit();
+                if(isBlue) { RRctrl.autonomousPrepAndIntakeFromDepositBlue();}
+                else {
+                    RRctrl.autonomousPrepAndIntakeFromDepositRed();
+                }
                 Log.d("AutonBrain","reset status and init for intake");
                 minorState.set(MinorAutonomousState.ONE_INTAKE);
                 return;
