@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.common.autonomous;
 
 import android.util.Log;
 
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -27,6 +28,7 @@ public class AutonomousRedStates extends LinearOpMode {
         Log.d("Auton RF","Init Complete");
         msStuckDetectLoop = Integer.MAX_VALUE;
         gamepad = gamepad1;
+        telemetry = new MultipleTelemetry(telemetry);
 
         waitForStart();
 
@@ -39,6 +41,7 @@ public class AutonomousRedStates extends LinearOpMode {
             telemetry.addData("minorState", brain.minorState);
             telemetry.addData("CameraReading", brain.heightFromDuck);
             telemetry.addData("DepositHeight", brain.iniTarget);
+            telemetry.addData("Voltage",brain.RRctrl.getDrive().batteryVoltageSensor.getVoltage());
             telemetry.update();
         }
         // stop requested
