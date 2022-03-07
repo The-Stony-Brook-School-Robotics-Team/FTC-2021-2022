@@ -348,8 +348,6 @@ public class AutonomousBrain {
     public static Pose2d startPositionRed = new Pose2d(14,65.5,0);
     public static Pose2d warehousePickupPositionBlue = new Pose2d(35,70,0);
     public static Pose2d warehousePickupPositionRed = new Pose2d(35,70,0);
-    public static Pose2d depositPrepPositionBlue = new Pose2d(30,70,0);
-    public static Pose2d depositPrepPositionRed = new Pose2d(30,70,0);
     public static Pose2d depositPositionBlueNoTurn = new Pose2d(-20,70,0);
     public static Pose2d depositPositionRedNoTurn = new Pose2d(-20,70,0);
     public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(5.58,64.47, -Math.toRadians(30)); //55
@@ -358,8 +356,6 @@ public class AutonomousBrain {
     public static Pose2d depositPositionAllianceRedMID = new Pose2d(5.58,64.47, -Math.toRadians(31)); //56
     public static Pose2d depositPositionAllianceBlueBOT = new Pose2d(5.58,64.47, -Math.toRadians(34));//59
     public static Pose2d depositPositionAllianceRedBOT = new Pose2d(5.58,64.47, -Math.toRadians(34));//59
-    public static Pose2d depositPositionAllianceBlue2 = new Pose2d(5.58,64.47, -Math.toRadians(23)); //48
-    public static Pose2d depositPositionAllianceRed2 = new Pose2d(5.58,64.47, -Math.toRadians(23)); //48
     public static Pose2d resetPositionB4WarehouseBlue = new Pose2d(14,75,0);
     public static Pose2d resetPositionB4WarehouseRed = new Pose2d(14,75,0);
     public static Pose2d resetPositionB4WarehouseBlue2 = new Pose2d(14,70,0);
@@ -369,7 +365,9 @@ public class AutonomousBrain {
     public static Pose2d whiteLinePos = new Pose2d(29.5,65.5,0);
     public static double velocityIntake = 22;
     public static double accelIntake = 20;
-    public static double intakeTurnAmount = 5; // TODO pls 
+    public static double intakeTurnAmount = 5; // TODO pls
+    //public static double distanceIntake = 40;
+
 
 
 }

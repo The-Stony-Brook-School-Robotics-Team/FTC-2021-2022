@@ -261,41 +261,7 @@ public class RoadRunnerControllerTurn {
                         .build()
         );
     }
-    public void doBlueDepositTrajectory()
-    {
-        TrajectoryVelocityConstraint velocityConstraintFast = SampleMecanumDrive.getVelocityConstraint(50, DriveConstantsMain.MAX_ANG_VEL, DriveConstantsMain.TRACK_WIDTH);
-        TrajectoryVelocityConstraint velocityConstraintSlow = SampleMecanumDrive.getVelocityConstraint(30, 3, DriveConstantsMain.TRACK_WIDTH);
-        TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstantsMain.MAX_ACCEL);
 
-        Pose2d current = drive.getPoseEstimate();
-        drive.followTrajectory(
-                drive.trajectoryBuilder(current)
-                        .lineToSplineHeading(new Pose2d(current.getX()-2,current.getY(),current.getHeading()
-                        ))
-                        .splineToConstantHeading(convertPose2Vector(AutonomousBrain.depositPrepPositionBlue),Math.PI,velocityConstraintFast,accelerationConstraint)
-                       // .splineToSplineHeading(AutonomousBrain.startPositionBlue,Math.PI)
-                        .splineToSplineHeading(AutonomousBrain.depositPositionAllianceBlue2,Math.PI,velocityConstraintSlow,accelerationConstraint)
-                        .build()
-        );
-    }
-    public void doBlueAutonomousParkingTrajectory()
-    {
-        drive.followTrajectory(
-                drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .splineToSplineHeading(AutonomousBrain.resetPositionB4WarehouseBlue,Math.PI)
-                        .lineToSplineHeading(AutonomousBrain.parkingPositionBlue)
-                        .build()
-        );
-    }
-
-    public void autonomousPrepareForPickup()
-    {
-        drive.followTrajectory(
-                drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToSplineHeading(AutonomousBrain.warehousePickupPositionBlue)
-                        .build()
-        );
-    }
 
     public void followLineToSpline(Pose2d finalPos)
     {

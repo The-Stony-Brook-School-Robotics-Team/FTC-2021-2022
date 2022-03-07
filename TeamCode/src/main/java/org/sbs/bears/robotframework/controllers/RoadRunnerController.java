@@ -15,7 +15,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousBrain;
-import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousBrainMerged;
 import org.firstinspires.ftc.teamcode.drive.DriveConstantsMain;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
@@ -276,36 +275,7 @@ public class RoadRunnerController {
                         .build()
         );
     }
-    public void doBlueDepositTrajectory()
-    {
-        TrajectoryVelocityConstraint velocityConstraintFast = SampleMecanumDrive.getVelocityConstraint(50, DriveConstantsMain.MAX_ANG_VEL, DriveConstantsMain.TRACK_WIDTH);
-        TrajectoryVelocityConstraint velocityConstraintSlow = SampleMecanumDrive.getVelocityConstraint(30, 3, DriveConstantsMain.TRACK_WIDTH);
-        TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstantsMain.MAX_ACCEL);
 
-        Pose2d current = drive.getPoseEstimate();
-        drive.followTrajectory(
-                drive.trajectoryBuilder(current)
-                        .lineToSplineHeading(new Pose2d(current.getX()-2,current.getY(),current.getHeading()
-                        ))
-                        .splineToConstantHeading(convertPose2Vector(AutonomousBrainMerged.depositPrepPositionBlue),Math.PI,velocityConstraintFast,accelerationConstraint)
-                       // .splineToSplineHeading(AutonomousBrainMerged.startPositionBlue,Math.PI)
-                        .splineToSplineHeading(AutonomousBrainMerged.depositPositionAllianceBlue2,Math.PI,velocityConstraintSlow,accelerationConstraint)
-                        .build()
-        );
-    }
-    public void doBlueDepositTrajectoryNoTurn()
-    {
-        TrajectoryVelocityConstraint velocityConstraintFast = SampleMecanumDrive.getVelocityConstraint(fastSpeed, DriveConstantsMain.MAX_ANG_VEL, DriveConstantsMain.TRACK_WIDTH);
-        TrajectoryVelocityConstraint velocityConstraintSlow = SampleMecanumDrive.getVelocityConstraint(slowSpeed, 3, DriveConstantsMain.TRACK_WIDTH);
-        TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstantsMain.MAX_ACCEL);
-
-        Pose2d current = drive.getPoseEstimate();
-        drive.followTrajectory(
-                drive.trajectoryBuilder(current)
-                        .lineToSplineHeading(AutonomousBrainMerged.depositPositionBlueNoTurn,velocityConstraintFast,accelerationConstraint)
-                        .build()
-        );
-    }
     public void doBlueDepositTrajectoryNoTurnNonMerged()
     {
         TrajectoryVelocityConstraint velocityConstraintFast = SampleMecanumDrive.getVelocityConstraint(fastSpeed, DriveConstantsMain.MAX_ANG_VEL, DriveConstantsMain.TRACK_WIDTH);
@@ -332,16 +302,6 @@ public class RoadRunnerController {
                         .build()
         );
     }
-    public void doBlueAutonomousParkingTrajectory()
-    {
-        drive.followTrajectory(
-                drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .splineToSplineHeading(AutonomousBrainMerged.resetPositionB4WarehouseBlue,Math.PI)
-                        .lineToSplineHeading(AutonomousBrainMerged.parkingPositionBlue)
-                        .build()
-        );
-    }
-
     public void autonomousPrepAndIntakeFromDepositBlue()
     {
         TrajectoryVelocityConstraint velocityConstraintFast = SampleMecanumDrive.getVelocityConstraint(100, DriveConstantsMain.MAX_ANG_VEL, DriveConstantsMain.TRACK_WIDTH);
@@ -377,18 +337,7 @@ public class RoadRunnerController {
                         .build()
         );
     }
-    public void autonomousDoFirstIntakeTraj()
-    {
-        TrajectoryVelocityConstraint velocityConstraintSlow = SampleMecanumDrive.getVelocityConstraint(AutonomousBrainMerged.velocityIntake, 3, DriveConstantsMain.TRACK_WIDTH);
-        TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstantsMain.MAX_ACCEL);
 
-        drive.followTrajectory(
-                drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .splineToSplineHeading(AutonomousBrainMerged.warehousePickupPositionBlue,0)
-                        .forward(AutonomousBrainMerged.distanceIntake,velocityConstraintSlow,accelerationConstraint)
-                        .build()
-        );
-    }
     public void followLineToSpline(Pose2d[] poss)
     {
         TrajectoryBuilder tmp = drive.trajectoryBuilder(drive.getPoseEstimate());
