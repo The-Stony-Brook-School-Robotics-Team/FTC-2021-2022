@@ -298,7 +298,7 @@ public class AutonomousClient {
     private static final Vector2d ABC_CHECK_POSITION_PARK = ABC_CHECK_POSITION_PICK_UP;
 
 
-    public static Pose2d firstDepositPositionBlueTOP = new Pose2d(7.58, 64.47, -Math.toRadians(30.0));
+    public static Pose2d firstDepositPositionBlueTOP = new Pose2d(5.58, 64.47, -Math.toRadians(30.0));
     public static Pose2d firstDepositPositionBlueMID = new Pose2d(5.58, 64.47, -Math.toRadians(31.0));
     public static Pose2d firstDepositPositionBlueBOT = new Pose2d(5.58, 64.47, -Math.toRadians(34.0));
 }
