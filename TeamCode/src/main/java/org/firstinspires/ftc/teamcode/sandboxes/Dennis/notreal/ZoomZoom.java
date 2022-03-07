@@ -74,8 +74,8 @@ public class ZoomZoom extends LinearOpMode {
          * Initialize Controllers
          */
         slideController = new SlideController(hardwareMap,telemetry);
-        blueIntakeController = new IntakeControllerBlue(hardwareMap, slideController.dumperServo, telemetry);
-        redIntakeController = new IntakeControllerRed(hardwareMap, telemetry);
+        blueIntakeController = new IntakeControllerBlue(hardwareMap, slideController.blueDumperServo, telemetry);
+       // redIntakeController = new IntakeControllerRed(hardwareMap, telemetry);
         duckCarouselController = new DuckCarouselController(hardwareMap, telemetry);
         openCVController = new OpenCVController(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
 

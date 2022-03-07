@@ -21,7 +21,7 @@
 
         public void runOpMode() throws InterruptedException {
             slideController = new SlideController(hardwareMap, telemetry);
-            blueIntake = new IntakeControllerBlue(hardwareMap, slideController.dumperServo, telemetry);
+            blueIntake = new IntakeControllerBlue(hardwareMap, slideController.blueDumperServo, telemetry);
             //redIntake = new IntakeControllerRed(hardwareMap, telemetry);
             blueIntake.setState(IntakeState.DUMP);
             //redIntake.setState(IntakeState.PARK);

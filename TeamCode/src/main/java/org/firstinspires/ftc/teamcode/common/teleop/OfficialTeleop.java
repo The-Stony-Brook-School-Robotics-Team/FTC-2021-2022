@@ -110,10 +110,9 @@ public class OfficialTeleop extends OpMode {
         /**
          * Initialization
          */
-        redIntake = new IntakeControllerRed(hardwareMap, telemetry);
-
         slideController = new SlideController(hardwareMap, telemetry);
-        blueIntake = new IntakeControllerBlue(hardwareMap, slideController.dumperServo, telemetry);
+        blueIntake = new IntakeControllerBlue(hardwareMap, slideController.blueDumperServo, telemetry);
+        redIntake = new IntakeControllerRed(hardwareMap, slideController.redDumperServo, telemetry);
         carouselController = new DuckCarouselController(hardwareMap, telemetry);
         revBlinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "rgb");
         bottomColorSensor = hardwareMap.get(RevColorSensorV3.class, "color");
@@ -132,9 +131,10 @@ public class OfficialTeleop extends OpMode {
         /**
          * Configuration
          */
-        slideController.initTeleop();
+
         redIntake.setState(IntakeState.DUMP);
         blueIntake.setState(IntakeState.DUMP);
+        slideController.initTeleop();
         bottomColorSensor.setGain(Configuration.colorSensorGain);
         telemetry.update();
 

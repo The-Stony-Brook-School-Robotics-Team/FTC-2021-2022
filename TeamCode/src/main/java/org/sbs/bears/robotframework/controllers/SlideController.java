@@ -26,7 +26,8 @@ import org.sbs.bears.robotframework.enums.SlideTarget;
 public class SlideController {
     public Servo verticalServo;
     private Servo horizontalServo;
-    public Servo dumperServo;
+    public Servo blueDumperServo;
+    public Servo redDumperServo;
     public DigitalChannel magswitch;
 
 
@@ -51,7 +52,8 @@ public class SlideController {
         magswitch.setMode(DigitalChannel.Mode.INPUT);
         verticalServo = hardwareMap.get(Servo.class, "vt");
         // horizontalServo = hardwareMap.get(Servo.class, "hz");
-        dumperServo = hardwareMap.get(Servo.class, "du");
+        blueDumperServo = hardwareMap.get(Servo.class, "du");
+        redDumperServo = hardwareMap.get(Servo.class, "rdu");
         slideMotor = hardwareMap.get(DcMotorEx.class, "spool");
 
 
@@ -65,7 +67,8 @@ public class SlideController {
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
-        dumperServo.setPosition(dumperPosition_READY);
+        blueDumperServo.setPosition(dumperPosition_READY);
+        redDumperServo.setPosition(dumperPosition_READY);
         Log.d("SlideController", "Set the dumper servo to ready");
     }
 
@@ -241,40 +244,8 @@ public class SlideController {
     }
 
 
-    /**
-     * An overload of extendDropRetract that allows for interruption via the gamepad.
-     *
-     * @param target  the target which represents height and distance the slide should extend to.
-     * @param gamepad the gamepad object needed to handle button presses.
-     */
-    public void extendDropRetract(SlideTarget target, Gamepad gamepad) {
-        this.targetParams = target;
-        extendSlide();
-        if (flagToLeave) {
-            return;
-        }
-        //Sleeps to avoid race conditions. Do not remove, might be possible to lessen
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        if (flagToLeave) {
-            return;
-        }
 
-        //Only proceed to drop and retract if not interrupted by a button
-        //TODO fix
-        if (!gamepad.x) {
-            dropCube();
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            retractSlide();
-        }
-    }
+
 
     public void collectCapstone() {
         // extend a certain amount, then lift, then chill.
@@ -315,7 +286,8 @@ public class SlideController {
                 slideMotor.setPower(0);
             } else {
                 Log.d("SlideController", "Bucket Eject");
-                dumperServo.setPosition(dumperPosition_EJECT);
+                blueDumperServo.setPosition(dumperPosition_EJECT);
+                redDumperServo.setPosition(dumperPosition_EJECT);
                 try {
                     Thread.sleep(250);
                 } catch (InterruptedException e) {
@@ -323,7 +295,8 @@ public class SlideController {
                 }
             }
             Log.d("SlideController", "Bucket in retract position");
-            dumperServo.setPosition(dumperPosition_RETRACTING);
+            blueDumperServo.setPosition(dumperPosition_RETRACTING);
+            redDumperServo.setPosition(dumperPosition_RETRACTING);
         }
     }
 
@@ -414,7 +387,8 @@ public class SlideController {
                     incrementDeltaExtend = incrementDeltaExtendCapstone;
                 }
                 else{incrementDeltaExtend = incrementDeltaExtendTeleOp;}
-                dumperServo.setPosition(dumperPosition_CLOSED);
+                blueDumperServo.setPosition(dumperPosition_CLOSED);
+                redDumperServo.setPosition(dumperPosition_CLOSED);
                 slideMotor.setTargetPosition(targetPosFinal);
                 if (targetParams == SlideTarget.CAP_FROM_CAROUSEL) {
                     slideMotor.setPower(slideMotorPowerCarousel);
@@ -457,7 +431,8 @@ public class SlideController {
                 //}
                 return;
             case RETRACTING:
-                dumperServo.setPosition(dumperPosition_RETRACTING);
+                blueDumperServo.setPosition(dumperPosition_RETRACTING);
+                redDumperServo.setPosition(dumperPosition_RETRACTING);
                 OfficialTeleop.driveSpeedStrafe = 1;
                 targetPos = slideMotorPosition_PARKED;
                 slideMotor.setPower(slideMotorPowerMoving);
@@ -494,19 +469,10 @@ public class SlideController {
                     }
                 }
 
-                slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                slideMotor.setPower(-.3);
-                try {
-                    Thread.sleep(300);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                slideMotor.setPower(0);
-                slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                //slideMotor.setTargetPosition(0);
-                //slideMotor.setPower(.9);
+                creepBack();
                 Log.d("SlideController", "Set the dumper servo to ready (485)");
-                dumperServo.setPosition(dumperPosition_READY);
+                blueDumperServo.setPosition(dumperPosition_READY);
+                redDumperServo.setPosition(dumperPosition_READY);
                 return;
         }
     }
@@ -518,7 +484,11 @@ public class SlideController {
         isTeleop = true;
         slideState = SlideState.TELEOP;
         verticalServo.setPosition(vertServoPosition_PARKED);
-        this.dumperServo.setPosition(dumperPosition_READY);
+        this.blueDumperServo.setPosition(dumperPosition_READY);
+        this.redDumperServo.setPosition(dumperPosition_READY);
+        creepBack();
+        hardStopReset();
+        resetEncoder();
 
 
         this.targetParams = SlideTarget.TOP_DEPOSIT;
@@ -638,6 +608,18 @@ public class SlideController {
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideMotor.setPower(0);
 
+    }
+
+    private void creepBack(){
+        slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        slideMotor.setPower(-.3);
+        try {
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        slideMotor.setPower(0);
+        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
     
     public void resetEncoder(){

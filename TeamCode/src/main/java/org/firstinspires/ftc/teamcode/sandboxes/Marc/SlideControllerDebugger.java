@@ -40,8 +40,8 @@ public class SlideControllerDebugger extends LinearOpMode
         drive = new SampleMecanumDrive(hardwareMap);
         TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(30, 2, DriveConstantsMain.TRACK_WIDTH);
         TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstantsMain.MAX_ACCEL);
-        bu = new IntakeControllerBlue(hardwareMap, slideController.dumperServo, telemetry);
-        red = new IntakeControllerRed(hardwareMap,telemetry);
+        bu = new IntakeControllerBlue(hardwareMap, slideController.blueDumperServo, telemetry);
+        red = new IntakeControllerRed(hardwareMap, slideController.redDumperServo, telemetry);
         distanceSensor = bu.distanceSensor;
 
         //bu.setState(IntakeState.PARK);
