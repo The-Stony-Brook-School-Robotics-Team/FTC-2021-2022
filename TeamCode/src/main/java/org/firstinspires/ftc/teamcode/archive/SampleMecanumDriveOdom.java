@@ -142,7 +142,6 @@ public class SampleMecanumDriveOdom extends MecanumDrive {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
 
-        // TODO: adjust the names of the following hardware devices to match your configuration
         // ^^^^^^^^^^^ DONE
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -152,7 +151,6 @@ public class SampleMecanumDriveOdom extends MecanumDrive {
 
 
 
-        // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
         // upward (normal to the floor) using a command like the following:
         /////BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
 
@@ -173,12 +171,11 @@ public class SampleMecanumDriveOdom extends MecanumDrive {
             motor.setMotorType(motorConfigurationType);
         }
 
-// TODO: reverse any motors using DcMotor.setDirection()  <-- DONE
         //
         //rightFront.setDirection(DcMotor.Direction.REVERSE);
         leftFront.setDirection(DcMotor.Direction.REVERSE);
-        //leftRear.setDirection(DcMotor.Direction.REVERSE); // TODO just changed, need to TEST!!!!
-        rightRear.setDirection(DcMotor.Direction.REVERSE); // TODO just changed, need to TEST!!!!
+        //leftRear.setDirection(DcMotor.Direction.REVERSE);
+        rightRear.setDirection(DcMotor.Direction.REVERSE);
 
         if (RUN_USING_ENCODER) {
             setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -190,10 +187,7 @@ public class SampleMecanumDriveOdom extends MecanumDrive {
             setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
 
-        // TODO: reverse any motors using DcMotor.setDirection()
 
-        // TODO: if desired, use setLocalizer() to change the localization method
-        // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
 
         setLocalizer(new StandardTrackingWheelLocalizer1(hardwareMap));
 
@@ -447,7 +441,6 @@ public class SampleMecanumDriveOdom extends MecanumDrive {
 
     @Override
     public Double getExternalHeadingVelocity() {
-        // TODO: This must be changed to match your configuration
         //                           | Z axis
         //                           |
         //     (Motor Port Side)     |   / X axis
