@@ -16,6 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.common.sharedResources.SharedData;
 import org.sbs.bears.robotframework.Robot;
 import org.sbs.bears.robotframework.controllers.DuckCarouselController;
+import org.sbs.bears.robotframework.controllers.IntakeController;
 import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
 import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
@@ -151,12 +152,14 @@ public class AutonomousBrain {
                 if(isBlue) {
                     RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
                     intakeCtrlBlue.setState(IntakeState.BASE);
+                    intakeCtrlRed.setState(IntakeState.PARK);
                     RRctrl.followLineToSpline(resetPositionB4WarehouseBlue2);
                     RRctrl.followLineToSpline(warehousePickupPositionBlue);
                 }
                 else {
                     RRctrl.followLineToSpline(resetPositionB4WarehouseRed);
-                    intakeCtrlBlue.setState(IntakeState.BASE);
+                    intakeCtrlRed.setState(IntakeState.BASE);
+                    intakeCtrlBlue.setState(IntakeState.PARK);
                     RRctrl.followLineToSpline(resetPositionB4WarehouseRed2);
                     RRctrl.followLineToSpline(warehousePickupPositionRed);
                 }
@@ -183,6 +186,7 @@ public class AutonomousBrain {
             case FOUR_PARKING_CLEANUP:
                 Log.d("AutonBrain","parking1");
                 intakeCtrlBlue.setState(IntakeState.DUMP);
+                intakeCtrlRed.setState(IntakeState.DUMP);
                 /*
                 Log.d("AutonBrain","parking2");
                 RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
@@ -210,10 +214,10 @@ public class AutonomousBrain {
                 return;
             case ONE_INTAKE:
                 // step 1: prepare threads
-                if (!RRctrl.isInWarehouse())
+                if (!RRctrl.isInWarehouse(isBlue))
                 {
                     Log.d("AutonBrain","Stuck detected on intake attempt, retrying.");
-                    intakeCtrlBlue.setState(IntakeState.PARK);
+                    getIntake().setState(IntakeState.PARK);
                     RRctrl.followLineToSpline(new Pose2d(RRctrl.getPos().getX()-5, isBlue ? 70 : -70,isBlue ? 0 : -Math.PI));
                     minorState.set(MinorAutonomousState.FOUR_RETURN_TO_INTAKE);
                     return;
@@ -226,21 +230,23 @@ public class AutonomousBrain {
                 new Thread(() -> {
                     leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
                     boolean isInState = minorState.get().equals(MinorAutonomousState.ONE_INTAKE);
-                    Log.d("AutonBrainThread","status0: qObj " + qObjectInRobot.get() + " qIntake " + intakeCtrlBlue.isObjectInPayload());
+                    Log.d("AutonBrainThread","status0: qObj " + qObjectInRobot.get() + " qIntake " +  getIntake().isObjectInPayload());
                     while(isInState)
                     {
-                        Log.d("AutonBrainThread","Status: intakeVal " + intakeCtrlBlue.distanceSensor.getDistance(DistanceUnit.MM) + " x " + RRctrl.getPos().getX());
-                        if(intakeCtrlBlue.isObjectInPayload()){
+                        if (getIntake().distanceSensor != null) {
+                            Log.d("AutonBrainThread","Status: intakeVal " + getIntake().distanceSensor.getDistance(DistanceUnit.MM) + " x " + RRctrl.getPos().getX());
+                        }
+                        if(getRightIntakeIsObjectInside()){
                             Log.d("AutonBrainThread","Found it at x " + RRctrl.getPos().getX());
                             RRctrl.haltTrajectory();
                             qObjectInRobot.set(true);
-                            intakeCtrlBlue.setState(IntakeState.DUMP);
+                            getIntake().setState(IntakeState.DUMP);
                             qObjectIsLoaded.set(true);
                             break;
                         }
                         isInState = minorState.get().equals(MinorAutonomousState.ONE_INTAKE);
                     }
-                    Log.d("AutonBrainThread","status2: qObj " + qObjectInRobot.get() + " qIntake " + intakeCtrlBlue.isObjectInPayload());
+                    Log.d("AutonBrainThread","status2: qObj " + qObjectInRobot.get() + " qIntake " + getIntake().isObjectInPayload());
                     /*leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
                     if(qObjectInRobot.get()) {
                         leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.LIGHT_CHASE_BLUE);
@@ -260,19 +266,19 @@ public class AutonomousBrain {
                 }).start();
                 // step 2: forward
                 Log.d("AutonBrain","Forward init x " + RRctrl.getPos().getX());
-                RRctrl.forward(25,velocityIntake,accelIntake);
+                RRctrl.forward(isBlue ? 25 : -25,velocityIntake,accelIntake);
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
                 Log.d("AutonBrain","Forward done");
                 // step 3: check end conditions.
                 numberOfTrials++;
-                if(qObjectInRobot.get() || intakeCtrlBlue.isObjectInPayload())
+                if(qObjectInRobot.get() || getIntake().isObjectInPayload())
                 {
                     if(!qObjectInRobot.get())
                     {
                         Log.d("AutonBrain","That was close....");
-                        qObjectInRobot.set(intakeCtrlBlue.isObjectInPayload());
+                        qObjectInRobot.set(getIntake().isObjectInPayload());
                         new Thread(()->{
-                            intakeCtrlBlue.loadItemIntoSlideForAutonomousOnly();
+                            getIntake().loadItemIntoSlideForAutonomousOnly();
                         }).start();
                     }
                     Log.d("AutonBrain","Proceeding to next stage");
@@ -282,8 +288,8 @@ public class AutonomousBrain {
                 else {
                     Log.d("AutonBrain","no block found, try again.");
                     leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
-                    intakeCtrlBlue.setState(IntakeState.REVERSE);
-                    RRctrl.followLineToSpline(warehousePickupPositionBlue);
+                    getIntake().setState(IntakeState.REVERSE);
+                    RRctrl.followLineToSpline(isBlue ? warehousePickupPositionBlue : warehousePickupPositionRed);
                     // do a turn here
                     if(isBlue) {
                         RRctrl.turnR(intakeTurnAmount); // fix this val pls thx
@@ -291,7 +297,7 @@ public class AutonomousBrain {
                     else {
                         RRctrl.turnL(intakeTurnAmount); // fix this val pls thx
                     }
-                    intakeCtrlBlue.setState(IntakeState.BASE);
+                    getIntake().setState(IntakeState.BASE);
                 }
                 return;
 
@@ -312,7 +318,9 @@ public class AutonomousBrain {
                     }
                 }).start();
                 */Log.d("AutonBrain","Prepare for drop off");
-                if(isBlue) { RRctrl.doBlueDepositTrajectoryNoTurnNonMerged();}
+                if(isBlue) {
+                    RRctrl.doBlueDepositTrajectoryNoTurnNonMerged();
+                }
                 else {
                     RRctrl.doRedDepositTrajectoryNoTurnNonMerged();
                 }// debugging
@@ -320,10 +328,10 @@ public class AutonomousBrain {
                 minorState.set(MinorAutonomousState.THREE_DEPOSIT);
                 return;
             case THREE_DEPOSIT:
-                if (RRctrl.isInWarehouse())
+                if (RRctrl.isInWarehouse(isBlue))
                 {
                     Log.d("AutonBrain","Stuck detected on deposit trying, retrying.");
-                    RRctrl.followLineToSpline(new Pose2d(RRctrl.getPos().getX()+15,isBlue ? 70 : -70,RRctrl.getPos().getHeading()),100);
+                    RRctrl.followLineToSpline(new Pose2d(RRctrl.getPos().getX()+ (isBlue ? 15 : -15),isBlue ? 70 : -70,RRctrl.getPos().getHeading()),100);
                     RRctrl.followLineToSpline(isBlue ? warehousePickupPositionBlue : warehousePickupPositionRed);
                     minorState.set(MinorAutonomousState.TWO_PREP_DEPOSIT);
                     return;
@@ -351,26 +359,34 @@ public class AutonomousBrain {
         }
     }
 
+    private boolean getRightIntakeIsObjectInside() {
+        return isBlue ? intakeCtrlBlue.isObjectInPayload() : intakeCtrlRed.isObjectInPayload();
+    }
+    private IntakeController getIntake()
+    {
+        return isBlue ? intakeCtrlBlue : intakeCtrlRed;
+    }
+
     public static Pose2d startPositionBlue = new Pose2d(14,65.5,0);
-    public static Pose2d startPositionRed = new Pose2d(14,-65.5,0); // TODO may need to remeasure
+    public static Pose2d startPositionRed = new Pose2d(14,-65.5,-Math.PI); // TODO may need to remeasure
     public static Pose2d warehousePickupPositionBlue = new Pose2d(35,70,0);
-    public static Pose2d warehousePickupPositionRed = new Pose2d(35,-70,0);
+    public static Pose2d warehousePickupPositionRed = new Pose2d(35,-70,-Math.PI);
     public static Pose2d depositPositionBlueNoTurn = new Pose2d(-20,70,0);
-    public static Pose2d depositPositionRedNoTurn = new Pose2d(-20,-70,0);
+    public static Pose2d depositPositionRedNoTurn = new Pose2d(-20,-70,-Math.PI);
     public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(5.58,64.47, -Math.toRadians(30)); //55
-    public static Pose2d depositPositionAllianceRedTOP = new Pose2d(5.58,-64.47, -Math.toRadians(30)); //55
+    public static Pose2d depositPositionAllianceRedTOP = new Pose2d(5.58,-64.47, -Math.toRadians(150)); //55
     public static Pose2d depositPositionAllianceBlueMID = new Pose2d(5.58,64.47, -Math.toRadians(31)); //56
-    public static Pose2d depositPositionAllianceRedMID = new Pose2d(5.58,-64.47, -Math.toRadians(31)); //56
+    public static Pose2d depositPositionAllianceRedMID = new Pose2d(5.58,-64.47, -Math.toRadians(149)); //56
     public static Pose2d depositPositionAllianceBlueBOT = new Pose2d(5.58,64.47, -Math.toRadians(34));//59
-    public static Pose2d depositPositionAllianceRedBOT = new Pose2d(5.58,-64.47, -Math.toRadians(34));//59
+    public static Pose2d depositPositionAllianceRedBOT = new Pose2d(5.58,-64.47, -Math.toRadians(145));//59
     public static Pose2d resetPositionB4WarehouseBlue = new Pose2d(14,75,0);
-    public static Pose2d resetPositionB4WarehouseRed = new Pose2d(14,-75,0);
+    public static Pose2d resetPositionB4WarehouseRed = new Pose2d(14,-75,-Math.PI);
     public static Pose2d resetPositionB4WarehouseBlue2 = new Pose2d(14,70,0);
-    public static Pose2d resetPositionB4WarehouseRed2 = new Pose2d(14,-70,0);
+    public static Pose2d resetPositionB4WarehouseRed2 = new Pose2d(14,-70,-Math.PI);
     public static Pose2d parkingPositionBlue = new Pose2d(50,70,0);
-    public static Pose2d parkingPositionRed = new Pose2d(50,-70,0);
+    public static Pose2d parkingPositionRed = new Pose2d(50,-70,-Math.PI);
     public static Pose2d whiteLinePosBlue = new Pose2d(29.5,65.5,0);
-    public static Pose2d whiteLinePosRed = new Pose2d(29.5,-65.5,0);
+    public static Pose2d whiteLinePosRed = new Pose2d(29.5,-65.5,-Math.PI);
     public static double velocityIntake = 22;
     public static double accelIntake = 20;
     public static double intakeTurnAmount = 5; // TODO test and adjust as needed

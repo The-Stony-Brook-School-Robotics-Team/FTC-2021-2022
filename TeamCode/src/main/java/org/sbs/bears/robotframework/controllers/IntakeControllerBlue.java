@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.sbs.bears.robotframework.enums.IntakeState;
 
 
-public class IntakeControllerBlue {
+public class IntakeControllerBlue implements IntakeController{
 
     private Servo scooper;
     private DcMotor compliantWheel;

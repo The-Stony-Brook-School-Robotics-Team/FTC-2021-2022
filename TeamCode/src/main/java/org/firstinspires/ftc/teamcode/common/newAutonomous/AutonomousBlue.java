@@ -27,7 +27,7 @@ public class AutonomousBlue extends LinearOpMode {
                     e.printStackTrace();
                 }
             }
-        }).start();
+        });
 
         autonomousClient.readCamera();
 
