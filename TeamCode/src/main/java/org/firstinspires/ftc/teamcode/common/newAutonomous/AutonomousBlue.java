@@ -17,7 +17,7 @@ public class AutonomousBlue extends LinearOpMode {
         autonomousClient = new AutonomousClient(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
         msStuckDetectLoop = Integer.MAX_VALUE;  //Turn off infinite loop detection.
 
-        new Thread(() -> {
+        Thread localizeThread = new Thread(() -> {
             while (!Thread.currentThread().isInterrupted()) {
                 autonomousClient.roadRunnerDrive.update();
                 try {
@@ -26,7 +26,9 @@ public class AutonomousBlue extends LinearOpMode {
                     e.printStackTrace();
                 }
             }
-        }).start();
+        });
+
+        localizeThread.start();
 
         autonomousClient.readCamera();
 
@@ -43,6 +45,8 @@ public class AutonomousBlue extends LinearOpMode {
 
         autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_RED);
         autonomousClient.park();
+
+        localizeThread.interrupt();
         stop();
     }
 }
