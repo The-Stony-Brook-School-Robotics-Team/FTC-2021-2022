@@ -84,6 +84,7 @@ public class SlideControllerDebugger extends LinearOpMode
                 pA = false;
             }
             if(gamepad1.b && !pB) {
+                slideController.targetParams = SlideTarget.TOP_DEPOSIT;
                 slideController.extendSlide();
                 pB = true;
             } else if(!gamepad1.b && pB) {
@@ -139,7 +140,8 @@ public class SlideControllerDebugger extends LinearOpMode
                         state = State.OFF;
                         break;
                 }*/
-                slideController.blueDumperServo.setPosition(SlideController.dumperPosition_CLOSED);
+               // slideController.blueDumperServo.setPosition(SlideController.dumperPosition_CLOSED);
+                slideController.targetParams = SlideTarget.SHARED_TWO;
             } else if(!gamepad1.x && qX) {
                 qX = false;
             }
@@ -147,6 +149,7 @@ public class SlideControllerDebugger extends LinearOpMode
             telemetry.addData("Slide Ext",slideController.slideMotor.getCurrentPosition());
             telemetry.addData("Slide Angle",slideController.verticalServo.getPosition());
             telemetry.addData("Intake Dist",distanceSensor.getDistance(DistanceUnit.MM));
+            telemetry.addData("Slide params",slideController.targetParams);
             telemetry.update();
 
 
