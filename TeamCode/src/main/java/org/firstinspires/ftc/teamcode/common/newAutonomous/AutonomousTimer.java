@@ -13,6 +13,7 @@ public class AutonomousTimer {
     private static boolean canContinue = true;
 
     public static void startTimer() {
+        canContinue = true;
         endTime_s = NanoClock.system().seconds() + 30;
     }
 
