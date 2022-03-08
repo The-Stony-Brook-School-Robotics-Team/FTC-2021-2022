@@ -84,7 +84,7 @@ public class AutonomousBrain {
 
     public AutonomousBrain(HardwareMap hardwareMap, Telemetry telemetry, AutonomousMode mode) // call in init.
     {
-        DriveConstantsMain.MAX_ACCEL = 80;
+        DriveConstantsMain.MAX_ACCEL = 70;
         DriveConstantsMain.MAX_VEL = 150;
         majorState.set(MajorAutonomousState.STOPPED);
         minorState.set(MinorAutonomousState.STOPPED);
@@ -211,7 +211,7 @@ public class AutonomousBrain {
                 SharedData.autonomousLastPosition = RRctrl.getPos();
                 majorState.set(MajorAutonomousState.FINISHED);
                 minorState.set(MinorAutonomousState.FINISHED);
-                DriveConstantsMain.MAX_ACCEL = 40;
+                DriveConstantsMain.MAX_ACCEL = 30;
                 DriveConstantsMain.MAX_VEL = 40;
                 return;
             case FINISHED:
@@ -393,8 +393,8 @@ public class AutonomousBrain {
     public static Pose2d startPositionRed = new Pose2d(startPositionRedX,startPositionRedY,Math.toRadians(startPositionRedH)); // TODO may need to remeasure
     public static Pose2d warehousePickupPositionBlue = new Pose2d(35,70,0);
     public static Pose2d warehousePickupPositionRed = new Pose2d(35,-70,-Math.PI);
-    public static Pose2d depositPositionBlueNoTurn = new Pose2d(-15,75,0);
-    public static Pose2d depositPositionRedNoTurn = new Pose2d(-17,-75,-Math.PI);
+    public static Pose2d depositPositionBlueNoTurn = new Pose2d(-13,75,0);
+    public static Pose2d depositPositionRedNoTurn = new Pose2d(-15,-75,-Math.PI);
     public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(5.58,64.47, -Math.toRadians(30)); //55
     public static Pose2d depositPositionAllianceRedTOP = new Pose2d(5.58,-64.47, -Math.toRadians(150)); //55
     public static Pose2d depositPositionAllianceBlueMID = new Pose2d(5.58,64.47, -Math.toRadians(31)); //56
@@ -409,9 +409,9 @@ public class AutonomousBrain {
     public static Pose2d parkingPositionRed = new Pose2d(50,-70,-Math.PI);
     public static Pose2d whiteLinePosBlue = new Pose2d(29.5,65.5,0);
     public static Pose2d whiteLinePosRed = new Pose2d(29.5,-65.5,-Math.PI);
-    public static double velocityIntake = 30;
-    public static double accelIntake = 20;
-    public static double intakeTurnAmount = 10; // TODO test and adjust as needed
+    public static double velocityIntake = 50;
+    public static double accelIntake = 25;
+    public static double intakeTurnAmount = 5; // TODO test and adjust as needed
     //public static double distanceIntake = 40;
 
 

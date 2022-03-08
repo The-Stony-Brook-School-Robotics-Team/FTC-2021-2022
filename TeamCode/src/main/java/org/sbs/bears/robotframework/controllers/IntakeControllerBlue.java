@@ -64,7 +64,6 @@ public class IntakeControllerBlue implements IntakeController{
 
     /** Returns if the distance sensor reads less than distThreshold **/
     public boolean isObjectInPayload() {
-
         qIsObjectInPayload = (distanceSensor.getDistance(DistanceUnit.MM) < distThreshold && state == IntakeState.BASE);
         return qIsObjectInPayload;
     }
