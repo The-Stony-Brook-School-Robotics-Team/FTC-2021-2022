@@ -136,12 +136,9 @@ public class AutonomousClientD {
         ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
 
         Thread intakeChecker = getIntakeChecker();
-        while (!objectIsInRobot) {
+        intakeChecker.start();
 
-            if (isTest)
-                objectIsInRobot = true;
-            else
-                intakeChecker.start();
+        while (!objectIsInRobot) {
 
             if (isInWarehouse) {
                 runTrajectory_PickUpSecondary();
