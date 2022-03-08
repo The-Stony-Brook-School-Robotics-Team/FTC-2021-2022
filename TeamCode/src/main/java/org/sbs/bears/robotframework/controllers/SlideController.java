@@ -268,6 +268,7 @@ public class SlideController {
             e.printStackTrace();
         }
         new Thread(() -> {retractSlide();}).start();
+        Sleep.sleep(300);
         this.targetParams = SlideTarget.NA;
     }
 
