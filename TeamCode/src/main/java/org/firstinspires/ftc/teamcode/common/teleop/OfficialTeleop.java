@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.common.teleop;
 
+import android.os.Build;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -20,6 +23,7 @@ import org.firstinspires.ftc.teamcode.common.teleop.runtime.MovementHandler;
 import org.firstinspires.ftc.teamcode.common.teleop.runtime.RoadrunnerHandler;
 import org.firstinspires.ftc.teamcode.common.teleop.runtime.SlideHandler;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.jetbrains.annotations.NotNull;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.sbs.bears.robotframework.controllers.DuckCarouselController;
 import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
@@ -27,6 +31,11 @@ import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
 import org.sbs.bears.robotframework.controllers.SlideController;
 import org.sbs.bears.robotframework.enums.IntakeState;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -219,6 +228,44 @@ public class OfficialTeleop extends OpMode {
                 break;
         }
     }
+
+    /**
+     * Create Logging Files
+     */
+    private static File logFile;
+    private static FileWriter fileWriter;
+    private static boolean ableToLog = false;
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void createLogFile() {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        LocalDateTime now = LocalDateTime.now();
+        logFile = new File("Log " + dtf.format(now));
+        try {
+            if(logFile.createNewFile()) {
+                fileWriter = new FileWriter(logFile);
+                ableToLog = true;
+            }
+        } catch(IOException e) {
+            Log.d(interfaceTag, "Could not create log file");
+        }
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void writeInternalLog(@NotNull String interfaceT, @NotNull String msg) {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        String formattedTime = dtf.format(now);
+        if(ableToLog) {
+            try {
+                fileWriter.write(formattedTime + " [" + interfaceT.toUpperCase() + "] " + msg);
+            } catch (IOException ex) {
+                Log.d(interfaceTag, "Could not write to log file");
+            }
+
+        }
+    }
+
 
     /**
      * Stop All Active Handler Threads
