@@ -26,7 +26,9 @@ import org.sbs.bears.robotframework.enums.SlideTarget;
 import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
 
 
-public class AutonomousClient {
+public class AutonomousClientD {
+    final boolean isTest = true;
+
     final HardwareMap hardwareMap;
     final Telemetry telemetry;
     final AutonomousMode autonomousMode;
@@ -39,7 +41,6 @@ public class AutonomousClient {
 
     OpenCVController openCVController;
     private boolean needToReadCamera = true;
-    AutonomousSlideController slideController;
     SlideController originalSlideController;
     IntakeControllerBlue intakeControllerBlue;
     IntakeControllerRed intakeControllerRed;
@@ -55,7 +56,7 @@ public class AutonomousClient {
 
     SlideTarget initialSlideTarget;
 
-    public AutonomousClient(HardwareMap hardwareMap, Telemetry telemetry, AutonomousMode autonomousMode) {
+    public AutonomousClientD(HardwareMap hardwareMap, Telemetry telemetry, AutonomousMode autonomousMode) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
         this.autonomousMode = autonomousMode;
@@ -77,7 +78,6 @@ public class AutonomousClient {
         this.roadRunnerController = robot.getRRctrl();
         this.roadRunnerController.setPos(startPositionBlue);
         this.roadRunnerDrive = roadRunnerController.getDrive();
-        this.slideController = new AutonomousSlideController(hardwareMap, telemetry);
         this.originalSlideController = robot.getSlideCtrl();
         this.intakeControllerBlue = robot.getIntakeCtrlBlue();
         this.intakeControllerRed = robot.getIntakeCtrlRed();
@@ -88,7 +88,7 @@ public class AutonomousClient {
     private void initServoPositions() {
         intakeControllerBlue.setState(IntakeState.PARK);
         intakeControllerRed.setState(IntakeState.PARK);
-        slideController.dumperServo.setPosition(SlideController.dumperPosition_CLOSED);
+        originalSlideController.blueDumperServo.setPosition(SlideController.dumperPosition_CLOSED);
     }
 
     public void getInitialBlockDone() {
@@ -98,7 +98,14 @@ public class AutonomousClient {
         ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_FOREST_PALETTE);
         roadRunnerController.followLineToSpline(initialDropPosition);
 
-        slideController.extendDropRetract_Autonomous(initialSlideTarget);
+        if (isTest) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } else
+            originalSlideController.extendDropRetractAutonNew(initialSlideTarget);
 
         objectIsInRobot = false;
     }
@@ -130,7 +137,11 @@ public class AutonomousClient {
         ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
         while (!objectIsInRobot) {
             Thread intakeChecker = getIntakeChecker();
-            intakeChecker.start();
+
+            if (isTest)
+                objectIsInRobot = true;
+            else
+                intakeChecker.start();
 
             if (isInWarehouse) {
                 runTrajectory_PickUpSecondary();
@@ -154,11 +165,21 @@ public class AutonomousClient {
             return;
 
         runTrajectory_Deposit();
+
+        if (isTest) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } else
+            extendDropRetract_TOP();
+
         objectIsInRobot = false;
     }
 
     private void extendDropRetract_TOP() {
-        slideController.extendDropRetract_Autonomous(SlideTarget.TOP_DEPOSIT);
+        originalSlideController.extendDropRetractAutonNew(SlideTarget.TOP_DEPOSIT);
     }
 
     public void park() {
@@ -209,7 +230,6 @@ public class AutonomousClient {
                         .splineToSplineHeading(DEPOSIT_TRAJECTORY_FIX_HEADING_POSITION, Math.toRadians(170.0))
                         .splineToLinearHeading(DEPOSIT_TRAJECTORY_PASS_PIPE_POSITION, Math.toRadians(-170.0))
                         .splineToSplineHeading(AutonomousClient.firstDepositPositionBlueTOP, Math.toRadians(175.0))
-                        .addSpatialMarker(DEPOSIT_TRAJECTORY_START_EXTEND_SLIDE_POSITION, this::extendDropRetract_TOP)
 //                        .addSpatialMarker(ABC_CHECK_POSITION_DEPOSIT, this::AntiBlockingChecker_Deposit)
                         .build()
         );

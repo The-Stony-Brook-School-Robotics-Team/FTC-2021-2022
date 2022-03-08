@@ -18,18 +18,29 @@ public class PositionMeasurement extends LinearOpMode {
         autonomousClient = new AutonomousClient(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
         msStuckDetectLoop = Integer.MAX_VALUE;  //Turn off infinite loop detection.
 
-        new Thread(() -> {
-            while (!Thread.currentThread().isInterrupted()) {
+        Thread localizeThread = new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted() && opModeIsActive()) {
                 autonomousClient.roadRunnerDrive.update();
+                try {
+                    Thread.sleep(2);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-        }).start();
+        });
+
+        localizeThread.start();
 
         waitForStart();
 
         while (opModeIsActive()) {
             telemetry.addData("X", autonomousClient.roadRunnerController.getPos().getX());
             telemetry.addData("Y", autonomousClient.roadRunnerController.getPos().getY());
+            telemetry.addData("Head",autonomousClient.roadRunnerController.getPos().getHeading());
+            telemetry.update();
         }
+
+        localizeThread.interrupt();
 
         stop();
     }

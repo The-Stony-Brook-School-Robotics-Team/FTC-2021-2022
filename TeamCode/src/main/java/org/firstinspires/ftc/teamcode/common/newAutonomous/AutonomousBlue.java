@@ -9,16 +9,16 @@ import org.sbs.bears.robotframework.controllers.OpenCVController;
 
 @Autonomous(name = "A_William - AutonomousBlue")
 public class AutonomousBlue extends LinearOpMode {
-    AutonomousClient autonomousClient;
+    AutonomousClientD autonomousClient;
 
     @Override
     public void runOpMode() {
         OpenCVController.isDuck = false;
-        autonomousClient = new AutonomousClient(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
+        autonomousClient = new AutonomousClientD(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
         msStuckDetectLoop = Integer.MAX_VALUE;  //Turn off infinite loop detection.
 
-        new Thread(() -> {
-            while (!Thread.currentThread().isInterrupted()) {
+        Thread localizeThread = new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted() && opModeIsActive()) {
                 autonomousClient.roadRunnerDrive.update();
                 try {
                     Thread.sleep(2);
@@ -26,7 +26,9 @@ public class AutonomousBlue extends LinearOpMode {
                     e.printStackTrace();
                 }
             }
-        }).start();
+        });
+
+//        localizeThread.start();
 
         autonomousClient.readCamera();
 
@@ -43,6 +45,8 @@ public class AutonomousBlue extends LinearOpMode {
 
         autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_RED);
         autonomousClient.park();
+
+        localizeThread.interrupt();
         stop();
     }
 }

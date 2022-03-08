@@ -147,7 +147,7 @@ public class AutonomousBrain {
             case TWO_DEPOSIT_INI_BLOCK:
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_FOREST_PALETTE);
                 RRctrl.followLineToSpline(iniDropPosition);
-                slideCtrl.extendDropRetract(iniTarget);
+                slideCtrl.extendDropRetractAuton(iniTarget);
                 Log.d("AutonBrain","Slide drop complete");
                 if(isBlue) {
                     RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
@@ -337,7 +337,7 @@ public class AutonomousBrain {
                     return;
                 }
                 if(qObjectIsLoaded.get()) {
-                    slideCtrl.extendDropRetract(normalTarget);
+                    slideCtrl.extendDropRetractAuton(normalTarget);
                     qObjectInRobot.set(false); // reset
                     qObjectIsLoaded.set(false); // reset
                     Log.d("AutonBrain","Slide drop complete");
@@ -367,8 +367,16 @@ public class AutonomousBrain {
         return isBlue ? intakeCtrlBlue : intakeCtrlRed;
     }
 
-    public static Pose2d startPositionBlue = new Pose2d(14,65.5,0);
-    public static Pose2d startPositionRed = new Pose2d(14,-65.5,-Math.PI); // TODO may need to remeasure
+
+    public static double startPositionBlueX = 14;
+    public static double startPositionBlueY = 65.5;
+    public static double startPositionBlueH = 0;
+    public static double startPositionRedX = 14;
+    public static double startPositionRedY = -65.5;
+    public static double startPositionRedH = 180;
+
+    public static Pose2d startPositionBlue = new Pose2d(startPositionBlueX,startPositionBlueY,startPositionBlueH);
+    public static Pose2d startPositionRed = new Pose2d(startPositionRedX,startPositionRedY,Math.toRadians(startPositionRedH)); // TODO may need to remeasure
     public static Pose2d warehousePickupPositionBlue = new Pose2d(35,70,0);
     public static Pose2d warehousePickupPositionRed = new Pose2d(35,-70,-Math.PI);
     public static Pose2d depositPositionBlueNoTurn = new Pose2d(-15,75,0);

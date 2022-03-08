@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -245,8 +244,59 @@ public class SlideController {
         this.targetParams = SlideTarget.NA;
     }
 
+    public void extendDropRetractAuton(SlideTarget target) {
+        this.targetParams = target;
+        extendSlide();
+        if (flagToLeave) {
+            return;
+        }
 
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (flagToLeave) {
+            return;
+        }
 
+        dropCube();
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        new Thread(() -> {retractSlide();}).start();
+        Sleep.sleep(300);
+        this.targetParams = SlideTarget.NA;
+    }
+
+    public void extendDropRetractAutonNew(SlideTarget target) {
+        this.targetParams = target;
+        extendSlide();
+        if (flagToLeave) {
+            return;
+        }
+
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (flagToLeave) {
+            return;
+        }
+
+        dropCube();
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        new Thread(() -> {retractSlide();}).start();
+        Sleep.sleep(300);
+        this.targetParams = SlideTarget.NA;
+    }
 
 
     public void collectCapstone() {
@@ -371,6 +421,14 @@ public class SlideController {
                     case CAP_FROM_CAROUSEL:
                         targetPosFinal = slideMotorPosition_CAP_FROM_CAROUSEL;
                         verticalServoTargetPos = vertServoPosition_CAP_CAROUSEL_HIGHER;
+                        break;
+                    case SHARED_TWO:
+                        targetPosFinal = slideMotorPosition_SHARED;
+                        verticalServoTargetPos = vertServoPosition_SHARED_TWO;
+                        break;
+                    case SHARED_ONE:
+                        targetPosFinal = slideMotorPosition_SHARED;
+                        verticalServoTargetPos = vertServoPosition_SHARED_ONE;
                         break;
                     case CUSTOM:
                         targetPosFinal = slideMotorPosition_CUSTOM;
@@ -667,6 +725,8 @@ public class SlideController {
     public static double vertServoPosition_TWO_DEPOSIT = 0.44;//.4188;//0.3688;
     public static double vertServoPosition_ONE_DEPOSIT = 0.14;//11;//0.06;
     public static double vertServoPosition_CUSTOM = .6;//11;//0.06;
+    public static double vertServoPosition_SHARED_TWO = .447;//11;//0.06;
+    public static double vertServoPosition_SHARED_ONE = .227;//11;//0.06;
 
 
     double vertServoPosition_PARKED_MIN = 0;
@@ -707,8 +767,9 @@ public class SlideController {
     public static int slideMotorPosition_ONE_CAROUSEL = 1665;
     public static  int slideMotorPosition_CAP_FROM_CAROUSEL = 1476; // TODO
     public static int slideMotorPosition_CAP_FROM_CAROUSEL_RET = 1442; // TODO
+    public static int slideMotorPosition_SHARED = 2030; // TODO
     public static int slideMotorPosition_CUSTOM = 600; // TODO
-    public static int slideMotorPosition_FULL = 1980;
+    public static int slideMotorPosition_FULL = 2050;
     //int slideMotorPosition_START_LOWER = 400;
     public static int slideMotorPosition_CAP_ON_GROUND = 473;
 
