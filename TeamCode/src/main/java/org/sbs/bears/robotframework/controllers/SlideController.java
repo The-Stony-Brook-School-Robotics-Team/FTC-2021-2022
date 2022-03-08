@@ -275,7 +275,6 @@ public class SlideController {
 
 
 
-
     public void collectCapstone() {
         // extend a certain amount, then lift, then chill.
         //setHeightToParams(vertServoPosition_GRAB_CAP);
