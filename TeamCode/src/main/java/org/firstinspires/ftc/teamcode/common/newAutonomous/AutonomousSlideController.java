@@ -267,6 +267,11 @@ public class AutonomousSlideController {
         slideMotor.setTargetPosition(slideMotorPosition_PARKED);
         slideMotor.setPower(SLIDE_MOTOR_POWER_MOVING);
         lowerSlideAndBringItBackThread.start();
+        try {
+            lowerSlideAndBringItBackThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return lowerSlideAndBringItBackThread;
     }
 

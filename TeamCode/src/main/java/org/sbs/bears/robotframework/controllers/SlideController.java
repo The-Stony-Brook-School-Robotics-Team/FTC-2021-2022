@@ -735,7 +735,7 @@ public class SlideController {
     public static  int slideMotorPosition_CAP_FROM_CAROUSEL = 1476; // TODO
     public static int slideMotorPosition_CAP_FROM_CAROUSEL_RET = 1442; // TODO
     public static int slideMotorPosition_CUSTOM = 600; // TODO
-    public static int slideMotorPosition_FULL = 1980;
+    public static int slideMotorPosition_FULL = 4000;
     //int slideMotorPosition_START_LOWER = 400;
     public static int slideMotorPosition_CAP_ON_GROUND = 473;
 
