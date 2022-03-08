@@ -7,9 +7,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 
-@Autonomous(name = "A_William - AutonomousBlue")
-public class AutonomousBlue extends LinearOpMode {
+@Autonomous(name = "A_William - PositionMeasurement")
+public class PositionMeasurement extends LinearOpMode {
     AutonomousClient autonomousClient;
+    double startTime_s;
 
     @Override
     public void runOpMode() {
@@ -20,29 +21,18 @@ public class AutonomousBlue extends LinearOpMode {
         new Thread(() -> {
             while (!Thread.currentThread().isInterrupted()) {
                 autonomousClient.roadRunnerDrive.update();
-                try {
-                    Thread.sleep(2);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             }
         }).start();
 
-        autonomousClient.readCamera();
-
         waitForStart();
 
-        AutonomousTimer.startTimer();
-        autonomousClient.getInitialBlockDone();
-
-        while (opModeIsActive() && AutonomousTimer.canContinue(AutonomousTimer.CurrentState.DepositToPickUp)) {
-            autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
-            autonomousClient.pickUp();
-            autonomousClient.deposit();
+        while (opModeIsActive()) {
+            telemetry.addData("X", autonomousClient.roadRunnerController.getPos().getX());
+            telemetry.addData("Y", autonomousClient.roadRunnerController.getPos().getY());
+            telemetry.addData("Head",autonomousClient.roadRunnerController.getPos().getHeading());
+            telemetry.update();
         }
 
-        autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_RED);
-        autonomousClient.park();
         stop();
     }
 }

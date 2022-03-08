@@ -74,6 +74,7 @@ public class AutonomousClient {
         this.robot = new Robot(hardwareMap, telemetry, mode);
         this.openCVController = robot.getCVctrl();
         this.roadRunnerController = robot.getRRctrl();
+        this.roadRunnerController.setPos(startPositionBlue);
         this.roadRunnerDrive = roadRunnerController.getDrive();
         this.slideController = new AutonomousSlideController(hardwareMap, telemetry);
         this.intakeControllerBlue = robot.getIntakeCtrlBlue();
@@ -91,6 +92,7 @@ public class AutonomousClient {
     public void getInitialBlockDone() {
         if (needToReadCamera)
             readCamera();
+
         ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_FOREST_PALETTE);
         roadRunnerController.followLineToSpline(initialDropPosition);
         slideController.extendDropRetract_Autonomous(initialSlideTarget);
@@ -176,6 +178,7 @@ public class AutonomousClient {
                 initialSlideTarget = SlideTarget.TOP_DEPOSIT;
                 initialDropPosition = firstDepositPositionBlueTOP;
         }
+        telemetry.addData("Camera Read: ", initialSlideTarget.toString());
         needToReadCamera = false;
     }
 
@@ -186,9 +189,9 @@ public class AutonomousClient {
                         .lineToSplineHeading(PICK_UP_TRAJECTORY_FIX_HEADING_POSITION)
                         .splineToConstantHeading(PICK_UP_TRAJECTORY_PASS_PIPE_POSITION, PICK_UP_TRAJECTORY_PASS_PIPE_POSITION_TANGENT)
                         .splineToConstantHeading(PICK_UP_TRAJECTORY_MOVE_OUT_POSITION, PICK_UP_TRAJECTORY_MOVE_OUT_POSITION_TANGENT)
-                        .splineToLinearHeading(PICK_UP_TRAJECTORY_PICK_UP_POSITION, TANGENT)
+                        .splineToSplineHeading(PICK_UP_TRAJECTORY_PICK_UP_POSITION, TANGENT)
                         .addSpatialMarker(PICK_UP_TRAJECTORY_OPEN_PICK_UP_POSITION, () -> intakeControllerBlue.setState(IntakeState.BASE))
-                        .addSpatialMarker(ABC_CHECK_POSITION_PICK_UP, this::AntiBlockingChecker_PickUp)
+//                        .addSpatialMarker(ABC_CHECK_POSITION_PICK_UP, this::AntiBlockingChecker_PickUp)
                         .build()
         );
     }
@@ -197,11 +200,11 @@ public class AutonomousClient {
         roadRunnerDrive.followTrajectory(
                 roadRunnerDrive.trajectoryBuilder(
                         roadRunnerDrive.getPoseEstimate(), true)
-                        .splineToSplineHeading(DEPOSIT_TRAJECTORY_FIX_HEADING_POSITION, Math.toRadians(175.0))
-                        .splineToLinearHeading(DEPOSIT_TRAJECTORY_PASS_PIPE_POSITION, -Math.toRadians(170.0))
+                        .splineToSplineHeading(DEPOSIT_TRAJECTORY_FIX_HEADING_POSITION, Math.toRadians(170.0))
+                        .splineToLinearHeading(DEPOSIT_TRAJECTORY_PASS_PIPE_POSITION, Math.toRadians(-170.0))
                         .splineToSplineHeading(AutonomousClient.firstDepositPositionBlueTOP, Math.toRadians(175.0))
                         .addSpatialMarker(DEPOSIT_TRAJECTORY_START_EXTEND_SLIDE_POSITION, this::extendDropRetract_TOP)
-                        .addSpatialMarker(ABC_CHECK_POSITION_DEPOSIT, this::AntiBlockingChecker_Deposit)
+//                        .addSpatialMarker(ABC_CHECK_POSITION_DEPOSIT, this::AntiBlockingChecker_Deposit)
                         .build()
         );
     }
@@ -209,8 +212,8 @@ public class AutonomousClient {
     public void runTrajectory_PickUpSecondary() {
         roadRunnerDrive.followTrajectorySequence(
                 roadRunnerDrive.trajectorySequenceBuilder(roadRunnerDrive.getPoseEstimate())
-                        .lineToLinearHeading(PICK_UP_SECONDARY_TRAJECTORY_MOVE_AWAY_POSITION)
-                        .forward(12.5)
+                        .back(12.5)
+                        .lineToLinearHeading(PICK_UP_SECONDARY_TRAJECTORY_PICK_UP_BLOCK_POSITION)
                         .build()
         );
     }
@@ -220,7 +223,7 @@ public class AutonomousClient {
                 roadRunnerDrive.trajectoryBuilder(roadRunnerDrive.getPoseEstimate())
                         .lineToSplineHeading(PICK_UP_TRAJECTORY_FIX_HEADING_POSITION)
                         .splineToLinearHeading(PARK_TRAJECTORY_PARK_POSITION, Math.toRadians(-10.0))
-                        .addSpatialMarker(ABC_CHECK_POSITION_PARK, this::AntiBlockingChecker_Park)
+//                        .addSpatialMarker(ABC_CHECK_POSITION_PARK, this::AntiBlockingChecker_Park)
                         .build()
         );
     }
@@ -276,13 +279,12 @@ public class AutonomousClient {
     private static final double PICK_UP_TRAJECTORY_PASS_PIPE_POSITION_TANGENT = Math.toRadians(-20.0);
     private static final Vector2d PICK_UP_TRAJECTORY_MOVE_OUT_POSITION = new Vector2d(45.0, 62.0);
     private static final double PICK_UP_TRAJECTORY_MOVE_OUT_POSITION_TANGENT = Math.toRadians(-20.0);
-    private static final Pose2d PICK_UP_TRAJECTORY_PICK_UP_POSITION = new Pose2d(63.0, 64.5, Math.toRadians(TANGENT));
+    private static final Pose2d PICK_UP_TRAJECTORY_PICK_UP_POSITION = new Pose2d(65.0, 64.5, Math.toRadians(TANGENT));
 
     private static final Pose2d DEPOSIT_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(40.0, 66.0, ZERO);
     private static final Pose2d DEPOSIT_TRAJECTORY_PASS_PIPE_POSITION = new Pose2d(20.0, 67.0, ZERO);   //Heading is identical to B_FIX_HEADING_POSITION
     private static final Vector2d DEPOSIT_TRAJECTORY_START_EXTEND_SLIDE_POSITION = new Vector2d(20.0, 68.0);
 
-    private static final Pose2d PICK_UP_SECONDARY_TRAJECTORY_MOVE_AWAY_POSITION = new Pose2d(55.0, 60.0, Math.toRadians(30.0));
     private static final Pose2d PICK_UP_SECONDARY_TRAJECTORY_PICK_UP_BLOCK_POSITION = new Pose2d(64.0, 66.0, Math.toRadians(20.0));
 
     private static final Pose2d PARK_TRAJECTORY_PARK_POSITION = new Pose2d(50.0, 66.0, 0);
@@ -290,12 +292,12 @@ public class AutonomousClient {
     private static final Pose2d ABC_RESET_POSITION_PICK_UP = new Pose2d(10.0, 64.0, 0);
     private static final Pose2d ABC_RESET_POSITION_DEPOSIT = new Pose2d(55.0, 64.0, 0.0);
     private static final Pose2d ABC_RESET_POSITION_PARK = new Pose2d(10.0, 64.0, 0);
-    private static final Vector2d ABC_CHECK_POSITION_PICK_UP = new Vector2d(35.5, 65.5);
-    private static final Vector2d ABC_CHECK_POSITION_DEPOSIT = new Vector2d(20.0, 65.5);
+    private static final Vector2d ABC_CHECK_POSITION_PICK_UP = new Vector2d(50.5, 65.5);
+    private static final Vector2d ABC_CHECK_POSITION_DEPOSIT = new Vector2d(12.0, 65.5);
     private static final Vector2d ABC_CHECK_POSITION_PARK = ABC_CHECK_POSITION_PICK_UP;
 
 
-    public static Pose2d firstDepositPositionBlueTOP = new Pose2d(7.58, 64.47, -Math.toRadians(30.0));
+    public static Pose2d firstDepositPositionBlueTOP = new Pose2d(5.58, 64.47, -Math.toRadians(30.0));
     public static Pose2d firstDepositPositionBlueMID = new Pose2d(5.58, 64.47, -Math.toRadians(31.0));
     public static Pose2d firstDepositPositionBlueBOT = new Pose2d(5.58, 64.47, -Math.toRadians(34.0));
 }

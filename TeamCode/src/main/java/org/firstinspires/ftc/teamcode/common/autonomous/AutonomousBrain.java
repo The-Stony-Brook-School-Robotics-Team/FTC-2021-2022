@@ -347,7 +347,7 @@ public class AutonomousBrain {
             case FOUR_RETURN_TO_INTAKE:
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE_VIOLET);
                 Log.d("AutonBrain","intake prepped");
-                intakeCtrlBlue.setState(IntakeState.BASE);
+                getIntake().setState(IntakeState.BASE);
                 if(isBlue) { RRctrl.autonomousPrepAndIntakeFromDepositBlue();}
                 else {
                     RRctrl.autonomousPrepAndIntakeFromDepositRed();
@@ -371,8 +371,8 @@ public class AutonomousBrain {
     public static Pose2d startPositionRed = new Pose2d(14,-65.5,-Math.PI); // TODO may need to remeasure
     public static Pose2d warehousePickupPositionBlue = new Pose2d(35,70,0);
     public static Pose2d warehousePickupPositionRed = new Pose2d(35,-70,-Math.PI);
-    public static Pose2d depositPositionBlueNoTurn = new Pose2d(-20,70,0);
-    public static Pose2d depositPositionRedNoTurn = new Pose2d(-20,-70,-Math.PI);
+    public static Pose2d depositPositionBlueNoTurn = new Pose2d(-15,75,0);
+    public static Pose2d depositPositionRedNoTurn = new Pose2d(-17,-75,-Math.PI);
     public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(5.58,64.47, -Math.toRadians(30)); //55
     public static Pose2d depositPositionAllianceRedTOP = new Pose2d(5.58,-64.47, -Math.toRadians(150)); //55
     public static Pose2d depositPositionAllianceBlueMID = new Pose2d(5.58,64.47, -Math.toRadians(31)); //56
@@ -387,9 +387,9 @@ public class AutonomousBrain {
     public static Pose2d parkingPositionRed = new Pose2d(50,-70,-Math.PI);
     public static Pose2d whiteLinePosBlue = new Pose2d(29.5,65.5,0);
     public static Pose2d whiteLinePosRed = new Pose2d(29.5,-65.5,-Math.PI);
-    public static double velocityIntake = 22;
+    public static double velocityIntake = 30;
     public static double accelIntake = 20;
-    public static double intakeTurnAmount = 5; // TODO test and adjust as needed
+    public static double intakeTurnAmount = 10; // TODO test and adjust as needed
     //public static double distanceIntake = 40;
 
 
