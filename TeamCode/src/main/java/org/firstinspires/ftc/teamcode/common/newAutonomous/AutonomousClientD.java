@@ -27,6 +27,8 @@ import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
 
 
 public class AutonomousClientD {
+    final boolean isTest = true;
+
     final HardwareMap hardwareMap;
     final Telemetry telemetry;
     final AutonomousMode autonomousMode;
@@ -96,7 +98,14 @@ public class AutonomousClientD {
         ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_FOREST_PALETTE);
         roadRunnerController.followLineToSpline(initialDropPosition);
 
-        originalSlideController.extendDropRetractAutonNew(initialSlideTarget);
+        if (isTest) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } else
+            originalSlideController.extendDropRetractAutonNew(initialSlideTarget);
 
         objectIsInRobot = false;
     }
@@ -128,7 +137,11 @@ public class AutonomousClientD {
         ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
         while (!objectIsInRobot) {
             Thread intakeChecker = getIntakeChecker();
-            intakeChecker.start();
+
+            if (isTest)
+                objectIsInRobot = true;
+            else
+                intakeChecker.start();
 
             if (isInWarehouse) {
                 runTrajectory_PickUpSecondary();
@@ -152,7 +165,16 @@ public class AutonomousClientD {
             return;
 
         runTrajectory_Deposit();
-        extendDropRetract_TOP();
+
+        if (isTest) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } else
+            extendDropRetract_TOP();
+
         objectIsInRobot = false;
     }
 
