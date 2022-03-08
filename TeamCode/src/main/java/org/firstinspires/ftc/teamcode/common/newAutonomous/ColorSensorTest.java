@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 
-@Autonomous(name = "ColorSensorTest - William")
+@Autonomous(name = "A_William ColorSensorTest")
 public class ColorSensorTest extends OpMode {
     RevColorSensorV3 colorSensorV3;
 

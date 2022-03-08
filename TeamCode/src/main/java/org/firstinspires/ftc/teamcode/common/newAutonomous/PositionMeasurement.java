@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 
-@Autonomous(name = "A - RoadRunnerTest - William")
-public class RoadRunnerTest extends LinearOpMode {
+@Autonomous(name = "A_William - PositionMeasurement")
+public class PositionMeasurement extends LinearOpMode {
     AutonomousClient autonomousClient;
     double startTime_s;
 
@@ -21,20 +21,16 @@ public class RoadRunnerTest extends LinearOpMode {
         new Thread(() -> {
             while (!Thread.currentThread().isInterrupted()) {
                 autonomousClient.roadRunnerDrive.update();
-                try {
-                    Thread.sleep(2);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             }
         }).start();
 
-        autonomousClient.readCamera();
-
         waitForStart();
 
-        AutonomousTimer.startTimer();
-        autonomousClient.roadRunnerController.followLineToSpline(autonomousClient.initialDropPosition);
+        while (opModeIsActive()) {
+            telemetry.addData("X", autonomousClient.roadRunnerController.getPos().getX());
+            telemetry.addData("Y", autonomousClient.roadRunnerController.getPos().getY());
+        }
+
         stop();
     }
 }
