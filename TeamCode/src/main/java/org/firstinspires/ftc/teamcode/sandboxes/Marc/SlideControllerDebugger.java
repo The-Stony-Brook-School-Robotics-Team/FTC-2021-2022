@@ -142,6 +142,8 @@ public class SlideControllerDebugger extends LinearOpMode
                 }*/
                // slideController.blueDumperServo.setPosition(SlideController.dumperPosition_CLOSED);
                 slideController.targetParams = SlideTarget.SHARED_TWO;
+                slideController.extendSlide();
+
             } else if(!gamepad1.x && qX) {
                 qX = false;
             }
