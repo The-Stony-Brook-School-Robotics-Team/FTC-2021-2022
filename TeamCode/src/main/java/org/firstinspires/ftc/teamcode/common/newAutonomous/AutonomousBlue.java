@@ -18,7 +18,7 @@ public class AutonomousBlue extends LinearOpMode {
         msStuckDetectLoop = Integer.MAX_VALUE;  //Turn off infinite loop detection.
 
         Thread localizeThread = new Thread(() -> {
-            while (!Thread.currentThread().isInterrupted()) {
+            while (!Thread.currentThread().isInterrupted() && opModeIsActive()) {
                 autonomousClient.roadRunnerDrive.update();
                 try {
                     Thread.sleep(2);
@@ -27,6 +27,7 @@ public class AutonomousBlue extends LinearOpMode {
                 }
             }
         });
+
 
         localizeThread.start();
 
