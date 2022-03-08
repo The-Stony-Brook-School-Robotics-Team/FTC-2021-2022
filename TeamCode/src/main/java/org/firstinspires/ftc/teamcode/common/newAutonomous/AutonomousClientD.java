@@ -117,7 +117,7 @@ public class AutonomousClientD {
                     return;
 
                 objectIsInRobot = intakeControllerBlue.isObjectInPayload();
-                Sleep.sleep(10);
+//                Sleep.sleep(10);
             }
             roadRunnerController.endTrajectory();
         });
