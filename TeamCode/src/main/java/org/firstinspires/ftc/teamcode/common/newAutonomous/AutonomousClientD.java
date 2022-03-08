@@ -96,7 +96,7 @@ public class AutonomousClientD {
         ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_FOREST_PALETTE);
         roadRunnerController.followLineToSpline(initialDropPosition);
 
-        originalSlideController.extendDropRetractAuton(initialSlideTarget);
+        originalSlideController.extendDropRetractAutonNew(initialSlideTarget);
 
         objectIsInRobot = false;
     }
@@ -157,7 +157,7 @@ public class AutonomousClientD {
     }
 
     private void extendDropRetract_TOP() {
-        originalSlideController.extendDropRetractAuton(SlideTarget.TOP_DEPOSIT);
+        originalSlideController.extendDropRetractAutonNew(SlideTarget.TOP_DEPOSIT);
     }
 
     public void park() {

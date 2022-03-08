@@ -272,7 +272,32 @@ public class SlideController {
         this.targetParams = SlideTarget.NA;
     }
 
+    public void extendDropRetractAutonNew(SlideTarget target) {
+        this.targetParams = target;
+        extendSlide();
+        if (flagToLeave) {
+            return;
+        }
 
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (flagToLeave) {
+            return;
+        }
+
+        dropCube();
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        new Thread(() -> {retractSlide();}).start();
+        Sleep.sleep(300);
+        this.targetParams = SlideTarget.NA;
+    }
 
 
     public void collectCapstone() {

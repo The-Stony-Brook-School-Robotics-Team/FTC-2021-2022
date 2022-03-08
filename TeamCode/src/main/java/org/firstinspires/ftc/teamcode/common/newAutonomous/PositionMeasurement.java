@@ -31,11 +31,7 @@ public class PositionMeasurement extends LinearOpMode {
 
         localizeThread.start();
 
-
         waitForStart();
-
-        autonomousClient.getInitialBlockDone();
-        autonomousClient.runTrajectory_PickUp();
 
         while (opModeIsActive()) {
             telemetry.addData("X", autonomousClient.roadRunnerController.getPos().getX());
