@@ -13,7 +13,9 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.archive.DriveConstants;
 import org.firstinspires.ftc.teamcode.common.sharedResources.SharedData;
+import org.firstinspires.ftc.teamcode.drive.DriveConstantsMain;
 import org.sbs.bears.robotframework.Robot;
 import org.sbs.bears.robotframework.controllers.DuckCarouselController;
 import org.sbs.bears.robotframework.controllers.IntakeController;
@@ -62,6 +64,7 @@ public class AutonomousBrain {
         STOPPED,
         ONE_CAMERA_READ,
         TWO_DEPOSIT_INI_BLOCK,
+        TWO_PLUS_SPLINE_WAREHOUSE,
         THREE_BACK_FORTH,
         FOUR_PARKING_CLEANUP,
         FINISHED
@@ -77,9 +80,12 @@ public class AutonomousBrain {
 
     double iniTemps = 0;
     boolean isBlue = true;
+    boolean isSpline = true;
 
     public AutonomousBrain(HardwareMap hardwareMap, Telemetry telemetry, AutonomousMode mode) // call in init.
     {
+        DriveConstantsMain.MAX_ACCEL = 80;
+        DriveConstantsMain.MAX_VEL = 150;
         majorState.set(MajorAutonomousState.STOPPED);
         minorState.set(MinorAutonomousState.STOPPED);
         qObjectInRobot.set(false);
@@ -96,7 +102,7 @@ public class AutonomousBrain {
         this.duckCtrl = robot.getDuckCtrl();
         this.leds = hardwareMap.get(RevBlinkinLedDriver.class, "rgb");
         isBlue = (mode == AutonomousMode.BlueStatesWarehouse);
-
+        isSpline = (mode == AutonomousMode.BlueStatesSpline || mode == AutonomousMode.RedStatesSpline);
         if (isBlue) {
             RRctrl.setPos(startPositionBlue);
         } else {
@@ -166,8 +172,14 @@ public class AutonomousBrain {
                 Log.d("AutonBrain","reset status and init for intake");
 
                 qObjectInRobot.set(false); // reset
-
+                if(isSpline) {
+                    majorState.set(MajorAutonomousState.TWO_PLUS_SPLINE_WAREHOUSE);
+                    return;
+                }
                 majorState.set(MajorAutonomousState.THREE_BACK_FORTH);
+                return;
+            case TWO_PLUS_SPLINE_WAREHOUSE:
+                RRctrl.followSplineTrajWarehouse(true);
                 return;
             case THREE_BACK_FORTH:
                 doGoBack();
@@ -199,6 +211,8 @@ public class AutonomousBrain {
                 SharedData.autonomousLastPosition = RRctrl.getPos();
                 majorState.set(MajorAutonomousState.FINISHED);
                 minorState.set(MinorAutonomousState.FINISHED);
+                DriveConstantsMain.MAX_ACCEL = 40;
+                DriveConstantsMain.MAX_VEL = 40;
                 return;
             case FINISHED:
                 return;
