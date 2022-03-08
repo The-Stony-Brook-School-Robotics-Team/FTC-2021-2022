@@ -147,7 +147,7 @@ public class AutonomousBrain {
             case TWO_DEPOSIT_INI_BLOCK:
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_FOREST_PALETTE);
                 RRctrl.followLineToSpline(iniDropPosition);
-                slideCtrl.extendDropRetract(iniTarget);
+                slideCtrl.extendDropRetractAuton(iniTarget);
                 Log.d("AutonBrain","Slide drop complete");
                 if(isBlue) {
                     RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
@@ -337,7 +337,7 @@ public class AutonomousBrain {
                     return;
                 }
                 if(qObjectIsLoaded.get()) {
-                    slideCtrl.extendDropRetract(normalTarget);
+                    slideCtrl.extendDropRetractAuton(normalTarget);
                     qObjectInRobot.set(false); // reset
                     qObjectIsLoaded.set(false); // reset
                     Log.d("AutonBrain","Slide drop complete");
