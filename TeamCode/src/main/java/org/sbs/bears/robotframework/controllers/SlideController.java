@@ -700,7 +700,7 @@ public class SlideController {
     public static int slideMotorPosition_BUCKET_OUT_RET = 800; // minimum position for the bucket to be out, measured
     public static int slideMotorPosition_THREE_DEPOSIT = 1316; // remeasured // last 1310
     public static int slideMotorPosition_THREE_DEPOSIT_AUTON = 1360; // remeasured // last 1360
-    public static int slideMotorPosition_TWO_DEPOSIT = 1390; //measured
+    public static int slideMotorPosition_TWO_DEPOSIT = 1320; //measured
     public static int slideMotorPosition_ONE_DEPOSIT = 1190;//1000; //measured
     public static int slideMotorPosition_THREE_CAROUSEL = 1713;
     public static int slideMotorPosition_TWO_CAROUSEL = 1600;
@@ -712,7 +712,7 @@ public class SlideController {
     //int slideMotorPosition_START_LOWER = 400;
     public static int slideMotorPosition_CAP_ON_GROUND = 473;
 
-    public static double slideMotorPowerMoving = .7;
+    public static double slideMotorPowerMoving = 1;
     public static double slideMotorPowerCarousel = .8;
     public static double slideMotorPowerMovingBack = .9;
     public static double slideMotorPowerGrabCap = .9;

@@ -388,7 +388,7 @@ public class AutonomousBrain {
     public static Pose2d whiteLinePosBlue = new Pose2d(29.5,65.5,0);
     public static Pose2d whiteLinePosRed = new Pose2d(29.5,-65.5,-Math.PI);
     public static double velocityIntake = 24;
-    public static double accelIntake = 15;
+    public static double accelIntake = 20;
     public static double intakeTurnAmount = 5; // TODO test and adjust as needed
     //public static double distanceIntake = 40;
 
