@@ -27,7 +27,7 @@ import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
 
 
 public class AutonomousClientD {
-    final boolean isTest = true;
+    final boolean isTest = false;
 
     final HardwareMap hardwareMap;
     final Telemetry telemetry;
@@ -113,13 +113,12 @@ public class AutonomousClientD {
     public Thread getIntakeChecker() {
         return new Thread(() -> {  //Stop trajectory and load block into slide if robot has gotten the block.
             while (!objectIsInRobot) {
-                if (Thread.interrupted())
+                if (Thread.currentThread().isInterrupted())
                     return;
 
                 objectIsInRobot = intakeControllerBlue.isObjectInPayload();
                 Sleep.sleep(10);
             }
-            intakeControllerBlue.setState(IntakeState.DUMP);
             roadRunnerController.endTrajectory();
         });
     }
@@ -135,8 +134,9 @@ public class AutonomousClientD {
         boolean isInWarehouse = false;
         objectIsInRobot = intakeControllerBlue.isObjectInPayload();
         ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+
+        Thread intakeChecker = getIntakeChecker();
         while (!objectIsInRobot) {
-            Thread intakeChecker = getIntakeChecker();
 
             if (isTest)
                 objectIsInRobot = true;
@@ -151,12 +151,14 @@ public class AutonomousClientD {
             }
 
             //Picking-up is not successful.
-            intakeChecker.interrupt();
             ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
 
             if (!AutonomousTimer.canContinue(AutonomousTimer.CurrentState.PickUpSecondaryToDeposit))
                 return;
         }
+
+        intakeControllerBlue.setState(IntakeState.DUMP);
+        intakeChecker.interrupt();
         ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
     }
 
@@ -311,7 +313,7 @@ public class AutonomousClientD {
     private static final Pose2d DEPOSIT_TRAJECTORY_PASS_PIPE_POSITION = new Pose2d(20.0, 67.0, ZERO);   //Heading is identical to B_FIX_HEADING_POSITION
     private static final Vector2d DEPOSIT_TRAJECTORY_START_EXTEND_SLIDE_POSITION = new Vector2d(20.0, 68.0);
 
-    private static final Pose2d PICK_UP_SECONDARY_TRAJECTORY_PICK_UP_BLOCK_POSITION = new Pose2d(64.0, 66.0, Math.toRadians(20.0));
+    private static final Pose2d PICK_UP_SECONDARY_TRAJECTORY_PICK_UP_BLOCK_POSITION = new Pose2d(66.0, 66.0, Math.toRadians(0.0));
 
     private static final Pose2d PARK_TRAJECTORY_PARK_POSITION = new Pose2d(50.0, 66.0, 0);
 
