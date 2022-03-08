@@ -100,6 +100,7 @@ public class OfficialTeleop extends OpMode {
     @Override
     public void init() {
         currentState = TeleOpRobotStates.INITIALIZING;
+        multipleTelemetry = new MultipleTelemetry(telemetry);
 
         multipleTelemetry.clearAll();
         multipleTelemetry.addLine("Initializing...");
@@ -124,7 +125,6 @@ public class OfficialTeleop extends OpMode {
         revBlinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "rgb");
         bottomColorSensor = hardwareMap.get(RevColorSensorV3.class, "color");
         expansionHubEx = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 4");
-        multipleTelemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 
         /**
          * Increase Read Speeds
