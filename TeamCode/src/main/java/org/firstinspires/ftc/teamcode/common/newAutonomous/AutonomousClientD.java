@@ -322,7 +322,7 @@ public class AutonomousClientD {
     private static final double PICK_UP_TRAJECTORY_MOVE_OUT_POSITION_TANGENT = Math.toRadians(-10.0);
     private static final Vector2d PICK_UP_TRAJECTORY_PICK_UP_POSITION = new Vector2d(61.0, 64.5);
 
-    private static final Pose2d DEPOSIT_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(40.0, 66.0, ZERO);
+    private static final Pose2d DEPOSIT_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(40.0, 67.0, ZERO);
     private static final Pose2d DEPOSIT_TRAJECTORY_PASS_PIPE_POSITION = new Pose2d(20.0, 68.0, ZERO);   //Heading is identical to B_FIX_HEADING_POSITION
     private static final Vector2d DEPOSIT_TRAJECTORY_START_EXTEND_SLIDE_POSITION = new Vector2d(20.0, 68.0);
 
