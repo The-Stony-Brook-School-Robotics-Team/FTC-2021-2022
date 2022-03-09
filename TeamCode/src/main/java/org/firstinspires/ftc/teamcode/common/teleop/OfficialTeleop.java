@@ -230,44 +230,6 @@ public class OfficialTeleop extends OpMode {
     }
 
     /**
-     * Create Logging Files
-     */
-    private static File logFile;
-    private static FileWriter fileWriter;
-    private static boolean ableToLog = false;
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void createLogFile() {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-        LocalDateTime now = LocalDateTime.now();
-        logFile = new File("Log " + dtf.format(now));
-        try {
-            if(logFile.createNewFile()) {
-                fileWriter = new FileWriter(logFile);
-                ableToLog = true;
-            }
-        } catch(IOException e) {
-            Log.d(interfaceTag, "Could not create log file");
-        }
-
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void writeInternalLog(@NotNull String interfaceT, @NotNull String msg) {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        LocalDateTime now = LocalDateTime.now();
-        String formattedTime = dtf.format(now);
-        if(ableToLog) {
-            try {
-                fileWriter.write(formattedTime + " [" + interfaceT.toUpperCase() + "] " + msg);
-            } catch (IOException ex) {
-                Log.d(interfaceTag, "Could not write to log file");
-            }
-
-        }
-    }
-
-
-    /**
      * Stop All Active Handler Threads
      */
     @Override
