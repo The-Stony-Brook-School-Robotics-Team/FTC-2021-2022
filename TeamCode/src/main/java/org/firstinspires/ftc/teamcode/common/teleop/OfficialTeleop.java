@@ -16,14 +16,15 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
+import org.firstinspires.ftc.teamcode.common.teleop.misc.
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
 import org.firstinspires.ftc.teamcode.common.teleop.runtime.ButtonHandler;
 import org.firstinspires.ftc.teamcode.common.teleop.runtime.IntakeHandler;
 import org.firstinspires.ftc.teamcode.common.teleop.runtime.MovementHandler;
 import org.firstinspires.ftc.teamcode.common.teleop.runtime.RoadrunnerHandler;
 import org.firstinspires.ftc.teamcode.common.teleop.runtime.SlideHandler;
+
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.jetbrains.annotations.NotNull;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.sbs.bears.robotframework.controllers.DuckCarouselController;
 import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
@@ -31,11 +32,6 @@ import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
 import org.sbs.bears.robotframework.controllers.SlideController;
 import org.sbs.bears.robotframework.enums.IntakeState;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -95,6 +91,7 @@ public class OfficialTeleop extends OpMode {
     public static RevBlinkinLedDriver revBlinkinLedDriver;
     public static ExpansionHubEx expansionHubEx;
     public static MultipleTelemetry multipleTelemetry;
+    public static Logger systemLogger = new Logger();
 
     /**
      * 线程池
@@ -195,6 +192,7 @@ public class OfficialTeleop extends OpMode {
                 telemetry.clearAll();
                 telemetry.addLine("Robot Stopped");
                 telemetry.update();
+                systemLogger.write(Logger.LoggerTags.WARNING, "STOPPED");
                 break;
 
             case INITIALIZING:
@@ -204,6 +202,7 @@ public class OfficialTeleop extends OpMode {
                 synchronized (stateMutex) {
                     currentState = TeleOpRobotStates.RUNNING;
                 }
+                systemLogger.write(Logger.LoggerTags.WARNING, "INITIALIZING");
                 break;
 
                 case RUNNING:
@@ -223,8 +222,6 @@ public class OfficialTeleop extends OpMode {
                 multipleTelemetry.addLine("---------------------------------------------------------");
 
                 multipleTelemetry.update();
-                break;
-            case DEBUG:
                 break;
         }
     }

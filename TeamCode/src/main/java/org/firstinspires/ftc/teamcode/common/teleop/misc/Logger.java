@@ -1,4 +1,8 @@
-package org.firstinspires.ftc.teamcode.common.teleop.runtime;
+package org.firstinspires.ftc.teamcode.common.teleop.misc;
+
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -59,11 +63,15 @@ public class Logger {
     }
 
     private void initialize() {
-        this.root = Paths.get(".").toAbsolutePath().normalize().toString();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            this.root = Paths.get(".").toAbsolutePath().normalize().toString();
+        }
         if(filename != null) {
             this.path = (this.root + "\\" + filename + ".txt");
         } else {
-            this.path = (this.root + "\\Log " + DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDateTime.now()) + ".txt");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                this.path = (this.root + "\\Log " + DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDateTime.now()) + ".txt");
+            }
         }
         this.logFile = new File(this.path);
     }
@@ -81,16 +89,22 @@ public class Logger {
      * @param msg the message you want to print
      */
     public void write(String msg) {
-            LocalDateTime currentTime = LocalDateTime.now();
-            try {
+        LocalDateTime currentTime = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            currentTime = LocalDateTime.now();
+        }
+        try {
                 FileWriter writer = new FileWriter(this.logFile, this.append);
                 try {
                     this.logFile.createNewFile();
-                    String month = getMonth(DateTimeFormatter.ofPattern("MMMM d, yyyyy").format(currentTime));
-                    String day = DateTimeFormatter.ofPattern("d").format(currentTime);
-                    String stamp = DateTimeFormatter.ofPattern("yyyy-MM-dd | hh-mm-ss a").format(currentTime);
-                    writer.write(month + " " + day + " " + stamp + " [" + LoggerTags.DEFAULT + "] " + msg + System.lineSeparator());
-                    writer.close();
+                    String month = null;
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        month = getMonth(DateTimeFormatter.ofPattern("MMMM d, yyyyy").format(currentTime));
+                        String day = DateTimeFormatter.ofPattern("d").format(currentTime);
+                        String stamp = DateTimeFormatter.ofPattern("yyyy-MM-dd | hh-mm-ss a").format(currentTime);
+                        writer.write(month + " " + day + " " + stamp + " [" + LoggerTags.DEFAULT + "] " + msg + System.lineSeparator());
+                        writer.close();
+                    }
                 } catch (IOException e) {
                     System.out.println("Could not write to file");
                     e.printStackTrace();
@@ -109,15 +123,21 @@ public class Logger {
      * @param msg the message that you want to print
      */
     public void write(LoggerTags tag, String msg) {
-            LocalDateTime currentTime = LocalDateTime.now();
-            try {
+        LocalDateTime currentTime = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            currentTime = LocalDateTime.now();
+        }
+        try {
                 FileWriter writer = new FileWriter(this.logFile, this.append);
                 try {
                     this.logFile.createNewFile();
-                    String month = getMonth(DateTimeFormatter.ofPattern("MMMM d, yyyy").format(currentTime));
-                    String day = DateTimeFormatter.ofPattern("d").format(currentTime);
-                    String stamp = DateTimeFormatter.ofPattern("yyyy-MM-dd | HH-mm-ss a").format(currentTime);
-                    writer.write(month + " " + day + " " + stamp + " [" + tag + "] " + msg + System.lineSeparator());
+                    String month = null;
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        month = getMonth(DateTimeFormatter.ofPattern("MMMM d, yyyy").format(currentTime));
+                        String day = DateTimeFormatter.ofPattern("d").format(currentTime);
+                        String stamp = DateTimeFormatter.ofPattern("yyyy-MM-dd | HH-mm-ss a").format(currentTime);
+                        writer.write(month + " " + day + " " + stamp + " [" + tag + "] " + msg + System.lineSeparator());
+                    }
                 } catch (IOException e) {
                     System.out.println("Could not write to file");
                     e.printStackTrace();
