@@ -14,7 +14,10 @@ import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.roadru
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideController;
 import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideHandler;
 
+import android.transition.Slide;
 import android.util.Log;
+
+import com.acmerobotics.roadrunner.util.NanoClock;
 
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop;
@@ -76,7 +79,6 @@ public class ButtonHandler {
 
     public static Boolean runningAsyncSlideExtend = false;
     public static Thread asyncExtendSlide = new Thread(() -> {
-        // Set the atomic boolean to true (slide function is not finished / in progress)
         runningAsyncSlideExtend = true;
         if(slideController.slideMotor.getCurrentPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
             slideController.extendSlide();
@@ -88,7 +90,6 @@ public class ButtonHandler {
             }
             driveSpeedStrafe = 1;
         }
-        // Set the atomic boolean to false (slide function is finished)
         runningAsyncSlideExtend = false;
     });
 
@@ -200,7 +201,6 @@ public class ButtonHandler {
                      * RIGHT BUMPER
                      * @usage Detect White Line and deposit
                      */
-                    //TODO i changed this sorry
                     if(primaryGamepad.right_bumper) {
                         if(!roadrunnerHandler.isBusy) {
                             roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.WAREHOUSE_AUTO_TURN);
@@ -320,17 +320,32 @@ public class ButtonHandler {
                     }
 
                     /**
-
-                     * @usage Slide Extension Interrupt
-                     * @revision Revision two
+                     * Y BUTTON
+                     * @usage Far extend
                      */
-//                    if(primaryGamepad.y && !isPressingY) {
-//                        asyncExtendSlide.interrupt();
-//                        runningAsyncSlideExtend.set(false);
-//                        isPressingY = true;
-//                    } else if(!primaryGamepad.y && isPressingY) {
-//                        isPressingY = false;
-//                    }
+                    if(primaryGamepad.y && !isPressingY) {
+                        switch(slideController.targetParams) {
+                            case TOP_DEPOSIT:
+                                slideController.targetParams = SlideTarget.SHARED_TWO;
+                                break;
+
+                            case SHARED_TWO:
+                                slideController.targetParams = SlideTarget.FLOOR_SHARED_DEPOSIT;
+                                break;
+
+                            case FLOOR_SHARED_DEPOSIT:
+                                slideController.targetParams = SlideTarget.TOP_DEPOSIT;
+                                break;
+                        }
+                        isPressingY = true;
+                    } else if(!primaryGamepad.y && isPressingY) {
+                        isPressingY = false;
+                    }
+
+                    /**
+                     * LEFT TRIGGER
+                     * @usage Interrupt The Slide
+                     */
                     if(primaryGamepad.left_trigger > 0.2) {
                         asyncExtendSlide.interrupt();
                         runningAsyncSlideExtend = false;
