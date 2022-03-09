@@ -15,11 +15,14 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 
 @Config
 public class AutonomousSlideController {
     final boolean isDebug = true;
+
+    public SampleMecanumDrive roadRunnerDrive;
 
     public Servo verticalServo;
     public Servo dumperServo;
@@ -40,12 +43,13 @@ public class AutonomousSlideController {
     //TODO: Put back at the bottom or michael will kill me
     public static double vertServoPosition_GRAB_CAP = 0.09; //.09
 
-    public AutonomousSlideController(HardwareMap hardwareMap, Telemetry telemetry) {
+    public AutonomousSlideController(HardwareMap hardwareMap, SampleMecanumDrive roadRunnerDrive) {
         magSwitch = hardwareMap.get(DigitalChannel.class, "stop");
         magSwitch.setMode(DigitalChannel.Mode.INPUT);
         verticalServo = hardwareMap.get(Servo.class, "vt");
         dumperServo = hardwareMap.get(Servo.class, "du");
         slideMotor = hardwareMap.get(DcMotorEx.class, "spool");
+        this.roadRunnerDrive = roadRunnerDrive;
 
         //TODO:------------------------------------------------------
         slideMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(10, 0, 0, 0));
@@ -59,7 +63,6 @@ public class AutonomousSlideController {
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         dumperServo.setPosition(dumperPosition_READY);
-        Log.d("SlideController", "Set the dumper servo to ready");
     }
 
     /**
@@ -121,7 +124,7 @@ public class AutonomousSlideController {
         needExtendDropRetract = false;
 
         currentExtendDropRetractThread = new Thread(() -> {
-            while (!needExtendDropRetract) {
+            while (!needExtendDropRetract && roadRunnerDrive.getPoseEstimate().getX() < 40) {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {

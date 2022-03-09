@@ -77,7 +77,7 @@ public class AutonomousClient {
         this.roadRunnerController = robot.getRRctrl();
         this.roadRunnerController.setPos(startPositionBlue);
         this.roadRunnerDrive = roadRunnerController.getDrive();
-        this.slideController = new AutonomousSlideController(hardwareMap, telemetry);
+        this.slideController = new AutonomousSlideController(hardwareMap, roadRunnerDrive);
         this.originalSlideController = robot.getSlideCtrl();
         this.intakeControllerBlue = robot.getIntakeCtrlBlue();
         this.intakeControllerRed = robot.getIntakeCtrlRed();
@@ -159,10 +159,6 @@ public class AutonomousClient {
         slideController.extendDropRetract(SlideTarget.TOP_DEPOSIT);
     }
 
-    private void sendExtendDropRetractSignal() {
-
-    }
-
     public void park() {
         runTrajectory_Park();
     }
@@ -197,8 +193,8 @@ public class AutonomousClient {
                         .splineToLinearHeading(PICK_UP_TRAJECTORY_PASS_PIPE_POSITION, PICK_UP_TRAJECTORY_PASS_PIPE_POSITION_TANGENT)
                         .splineToLinearHeading(PICK_UP_TRAJECTORY_MOVE_OUT_POSITION, PICK_UP_TRAJECTORY_MOVE_OUT_POSITION_TANGENT)
                         .splineToSplineHeading(PICK_UP_TRAJECTORY_PICK_UP_POSITION, ZERO)
-                        .addSpatialMarker(PICK_UP_TRAJECTORY_OPEN_PICK_UP_POSITION, () -> intakeControllerBlue.setState(IntakeState.BASE))
                         .addDisplacementMarker(this::AntiBlockingChecker_PickUp)
+                        .addSpatialMarker(PICK_UP_TRAJECTORY_OPEN_PICK_UP_POSITION, () -> intakeControllerBlue.setState(IntakeState.BASE))
                         .build()
         );
         roadRunnerDrive.update();
@@ -289,7 +285,7 @@ public class AutonomousClient {
     private static final Pose2d PICK_UP_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(18.0, 66.0, ZERO);
     private static final Pose2d PICK_UP_TRAJECTORY_PASS_PIPE_POSITION = new Pose2d(35.0, 66.0, ZERO);
     private static final double PICK_UP_TRAJECTORY_PASS_PIPE_POSITION_TANGENT = Math.toRadians(-20.0);
-    private static final Pose2d PICK_UP_TRAJECTORY_MOVE_OUT_POSITION = new Pose2d(45.0, 62.0, ZERO);
+    private static final Pose2d PICK_UP_TRAJECTORY_MOVE_OUT_POSITION = new Pose2d(45.0, 63.0, ZERO);
     private static final double PICK_UP_TRAJECTORY_MOVE_OUT_POSITION_TANGENT = Math.toRadians(-20.0);
     private static final Pose2d PICK_UP_TRAJECTORY_PICK_UP_POSITION = new Pose2d(65.0, 64.5, ZERO);
 
