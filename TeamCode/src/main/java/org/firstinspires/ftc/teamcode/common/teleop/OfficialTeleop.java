@@ -17,7 +17,6 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
-import org.firstinspires.ftc.teamcode.common.teleop.misc.Logger;
 import org.firstinspires.ftc.teamcode.common.teleop.runtime.ButtonHandler;
 import org.firstinspires.ftc.teamcode.common.teleop.runtime.IntakeHandler;
 import org.firstinspires.ftc.teamcode.common.teleop.runtime.MovementHandler;
@@ -91,7 +90,6 @@ public class OfficialTeleop extends OpMode {
     public static RevBlinkinLedDriver revBlinkinLedDriver;
     public static ExpansionHubEx expansionHubEx;
     public static MultipleTelemetry multipleTelemetry;
-    public static Logger systemLogger = new Logger();
 
     /**
      * 线程池
@@ -105,7 +103,6 @@ public class OfficialTeleop extends OpMode {
 
     @Override
     public void init() {
-        systemLogger.write(Logger.LoggerTags.WARNING, "Starting Robot");
         currentState = TeleOpRobotStates.INITIALIZING;
         multipleTelemetry = new MultipleTelemetry(telemetry);
 
@@ -161,7 +158,6 @@ public class OfficialTeleop extends OpMode {
         multipleTelemetry.clearAll();
         multipleTelemetry.addLine("Finished Init");
         multipleTelemetry.update();
-        systemLogger.write(Logger.LoggerTags.WARNING, "Started Robot");
     }
 
     private int initPass = 0;
@@ -194,7 +190,6 @@ public class OfficialTeleop extends OpMode {
                 telemetry.clearAll();
                 telemetry.addLine("Robot Stopped");
                 telemetry.update();
-                systemLogger.write(Logger.LoggerTags.WARNING, "STOPPED");
                 break;
 
             case INITIALIZING:
@@ -204,7 +199,6 @@ public class OfficialTeleop extends OpMode {
                 synchronized (stateMutex) {
                     currentState = TeleOpRobotStates.RUNNING;
                 }
-                systemLogger.write(Logger.LoggerTags.WARNING, "INITIALIZING");
                 break;
 
                 case RUNNING:

@@ -163,16 +163,16 @@ public class AutonomousClientD {
         if (!AutonomousTimer.canContinue())
             return;
 
-        startExtendDropRetractThread();
+        Thread extendRetractThread = startExtendDropRetractThread();
 
         runTrajectory_Deposit();
 
         objectIsInRobot = false;
     }
 
-    private void startExtendDropRetractThread() {
-        new Thread(() -> {
-            while (roadRunnerDrive.getPoseEstimate().getX() > 40) {
+    private Thread startExtendDropRetractThread() {
+        Thread temp = new Thread(() -> {
+            while (roadRunnerDrive.getPoseEstimate().getX() > 20) {
                 try {
                     Thread.sleep(50);
                 } catch (InterruptedException e) {
@@ -182,7 +182,9 @@ public class AutonomousClientD {
 
             originalSlideController.extendDropRetractAutonNew(SlideTarget.TOP_DEPOSIT);
             //TODO start path here
-        }).start();
+        });
+        temp.start();
+        return temp;
     }
 
     public void park() {
