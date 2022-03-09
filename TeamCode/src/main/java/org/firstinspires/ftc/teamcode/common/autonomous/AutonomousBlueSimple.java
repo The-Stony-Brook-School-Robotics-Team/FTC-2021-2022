@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @Autonomous (name = "A - Auton (Blue Simple)")
 public class AutonomousBlueSimple extends LinearOpMode {
-    AutonomousBrain brain;
+    AutonomousBrainSimple brain;
     boolean qA = false;
     boolean qContinue = false;
     AtomicReference<Boolean> masterQContinue = new AtomicReference<>();
@@ -23,7 +23,7 @@ public class AutonomousBlueSimple extends LinearOpMode {
     {
         masterQContinue.set(true);
         OpenCVController.isDuck = false;
-        brain = new AutonomousBrain(hardwareMap,telemetry,AutonomousMode.BlueStatesDuckSimple);
+        brain = new AutonomousBrainSimple(hardwareMap,telemetry,AutonomousMode.BlueStatesDuckSimple);
         Log.d("Auton BS","Init Complete");
         msStuckDetectLoop = Integer.MAX_VALUE;
         gamepad = gamepad1;
@@ -50,8 +50,8 @@ public class AutonomousBlueSimple extends LinearOpMode {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        brain.majorState.set(AutonomousBrain.MajorAutonomousState.FINISHED);
-        brain.minorState.set(AutonomousBrain.MinorAutonomousState.STOPPED);
+        brain.majorState.set(AutonomousBrainSimple.MajorAutonomousState.FINISHED);
+        brain.minorState.set(AutonomousBrainSimple.MinorAutonomousState.STOPPED);
         requestOpModeStop();
         stop();
     }
