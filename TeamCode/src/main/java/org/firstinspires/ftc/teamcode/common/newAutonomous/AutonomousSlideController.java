@@ -88,10 +88,52 @@ public class AutonomousSlideController {
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
-    public Thread extendDropRetract_Autonomous(SlideTarget slideTarget) {
+    public Thread extendDropRetract(SlideTarget slideTarget) {
         extendSlide_Autonomous(slideTarget);
         dropCube_Autonomous();
         return retractSlide_Autonomous();
+    }
+
+    private volatile boolean needExtendDropRetract = false;
+    private Thread currentExtendDropRetractThread;
+
+    public void startExtendDropRetractThread() {
+        needExtendDropRetract = true;
+    }
+
+    /**
+     * You have to send signal to it to start extending.
+     *
+     * @param slideTarget
+     * @return
+     */
+    public Thread initializeExtendDropRetractThread(SlideTarget slideTarget) {
+        if (!needExtendDropRetract) {
+            currentExtendDropRetractThread.interrupt();
+        }
+
+        try {
+            currentExtendDropRetractThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        needExtendDropRetract = false;
+
+        currentExtendDropRetractThread = new Thread(() -> {
+            while (!needExtendDropRetract) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            extendSlide_Autonomous(slideTarget);
+            dropCube_Autonomous();
+            retractSlide_Autonomous();
+        });
+        currentExtendDropRetractThread.start();
+        return currentExtendDropRetractThread;
     }
 
     public void extendSlide_Autonomous(SlideTarget slideTarget) {

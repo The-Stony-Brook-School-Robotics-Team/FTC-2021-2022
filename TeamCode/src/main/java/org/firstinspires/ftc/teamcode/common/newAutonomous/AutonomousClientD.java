@@ -289,6 +289,10 @@ public class AutonomousClientD {
         }
     }
 
+    public void stopRobot() {
+        roadRunnerController.endTrajectory();
+    }
+
     private static final int ZERO = 0;
     private static final double TANGENT = 30.0;
 

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.common.newAutonomous;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -7,8 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 
-@Autonomous(name = "A_William - AutonomousBlue")
-public class AutonomousBlue extends LinearOpMode {
+@Autonomous(name = "A_William - RoadRunnerTest")
+public class RoadRunnerTest extends LinearOpMode {
     AutonomousClientD autonomousClient;
 
     @Override
@@ -34,17 +35,11 @@ public class AutonomousBlue extends LinearOpMode {
 
         waitForStart();
 
-        AutonomousTimer.startTimer();
-        autonomousClient.getInitialBlockDone();
-
-        while (opModeIsActive() && AutonomousTimer.canContinue(AutonomousTimer.CurrentState.DepositToPickUp)) {
-            autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
-            autonomousClient.pickUp();
-            autonomousClient.deposit();
-        }
-
-        autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_RED);
-        autonomousClient.park();
+        autonomousClient.roadRunnerDrive.followTrajectory(
+                autonomousClient.roadRunnerDrive.trajectoryBuilder(autonomousClient.roadRunnerDrive.getPoseEstimate())
+                .splineToSplineHeading(new Pose2d(45.0, 64.5, Math.toRadians(40.0)),Math.toRadians(40.0))
+                .build()
+        );
 
         localizeThread.interrupt();
         autonomousClient.stopRobot();

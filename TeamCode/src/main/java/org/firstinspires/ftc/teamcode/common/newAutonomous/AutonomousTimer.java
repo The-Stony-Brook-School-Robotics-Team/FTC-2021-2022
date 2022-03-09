@@ -8,7 +8,7 @@ public class AutonomousTimer {
     private static final double PICK_UP_SECONDARY_TO_DEPOSIT_CHECK_DURATION = 4.0;
     private static final double DEPOSIT_TO_PICK_UP_TIME_CHECK_DURATION = 8.0;   //Includes time for parking
 
-    public static double endTime_s;
+    private static double endTime_s;
 
     private static boolean canContinue = true;
 
