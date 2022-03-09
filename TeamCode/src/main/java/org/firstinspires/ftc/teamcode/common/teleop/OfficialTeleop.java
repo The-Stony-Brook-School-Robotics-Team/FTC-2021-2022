@@ -105,6 +105,7 @@ public class OfficialTeleop extends OpMode {
 
     @Override
     public void init() {
+        systemLogger.write(Logger.LoggerTags.WARNING, "Starting Robot");
         currentState = TeleOpRobotStates.INITIALIZING;
         multipleTelemetry = new MultipleTelemetry(telemetry);
 
@@ -160,6 +161,7 @@ public class OfficialTeleop extends OpMode {
         multipleTelemetry.clearAll();
         multipleTelemetry.addLine("Finished Init");
         multipleTelemetry.update();
+        systemLogger.write(Logger.LoggerTags.WARNING, "Started Robot");
     }
 
     private int initPass = 0;
