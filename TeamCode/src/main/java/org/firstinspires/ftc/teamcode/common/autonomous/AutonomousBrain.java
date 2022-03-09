@@ -86,8 +86,8 @@ public class AutonomousBrain {
 
     public AutonomousBrain(HardwareMap hardwareMap, Telemetry telemetry, AutonomousMode mode) // call in init.
     {
-        DriveConstantsMain.MAX_ACCEL = 30;
-        DriveConstantsMain.MAX_VEL = 40;
+        /*DriveConstantsMain.MAX_ACCEL = 30;
+        DriveConstantsMain.MAX_VEL = 40;*/
         majorState.set(MajorAutonomousState.STOPPED);
         minorState.set(MinorAutonomousState.STOPPED);
         qObjectInRobot.set(false);
@@ -213,8 +213,6 @@ public class AutonomousBrain {
                 SharedData.autonomousLastPosition = RRctrl.getPos();
                 majorState.set(MajorAutonomousState.FINISHED);
                 minorState.set(MinorAutonomousState.FINISHED);
-                DriveConstantsMain.MAX_ACCEL = 30;
-                DriveConstantsMain.MAX_VEL = 40;
                 return;
             case FINISHED:
                 return;
@@ -448,7 +446,7 @@ public class AutonomousBrain {
     public static double intakeTurnAmount = 5; // TODO test and adjust as needed
     //public static double distanceIntake = 40;
 
-    private static final Pose2d DEPOSIT_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(40.0, 66.0, 0);
+    private static final Pose2d DEPOSIT_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(40.0, 67.0, 0);
     private static final Pose2d DEPOSIT_TRAJECTORY_PASS_PIPE_POSITION = new Pose2d(20.0, 68.0, 0);   //Heading is identical to B_FIX_HEADING_POSITION
     private static final Vector2d PICK_UP_TRAJECTORY_OPEN_PICK_UP_POSITION = new Vector2d(28.5, 65.5);
     private static final Pose2d PICK_UP_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(18.0, 66.0, 0);
