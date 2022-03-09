@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.hardware.broadcom.BroadcomColorSensor;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
@@ -14,6 +15,7 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.archive.DriveConstants;
+import org.firstinspires.ftc.teamcode.common.newAutonomous.AutonomousClient;
 import org.firstinspires.ftc.teamcode.common.sharedResources.SharedData;
 import org.firstinspires.ftc.teamcode.drive.DriveConstantsMain;
 import org.sbs.bears.robotframework.Robot;
@@ -320,7 +322,7 @@ public class AutonomousBrain {
 
             case TWO_PREP_DEPOSIT:
 
-               /* new Thread(()->{
+               /*/* new Thread(()->{
                     // do white line repositioning
                     boolean isInState = minorState.equals(MinorAutonomousState.TWO_PREP_DEPOSIT);
                     while(isInState)
@@ -334,13 +336,28 @@ public class AutonomousBrain {
                         }
                     }
                 }).start();
-                */Log.d("AutonBrain","Prepare for drop off");
+                *//*Log.d("AutonBrain","Prepare for drop off");
                 if(isBlue) {
                     RRctrl.doBlueDepositTrajectoryNoTurnNonMerged();
                 }
                 else {
                     RRctrl.doRedDepositTrajectoryNoTurnNonMerged();
-                }// debugging
+                }// debugging*/
+
+                if(isBlue) {
+                    RRctrl.getDrive().followTrajectory(
+                            RRctrl.getDrive().trajectoryBuilder(
+                                    RRctrl.getDrive().getPoseEstimate(), true)
+                                    .splineToSplineHeading(DEPOSIT_TRAJECTORY_FIX_HEADING_POSITION, Math.toRadians(170.0))
+                                    .splineToLinearHeading(DEPOSIT_TRAJECTORY_PASS_PIPE_POSITION, Math.toRadians(-170.0))
+                                    .splineToSplineHeading(AutonomousClient.firstDepositPositionBlueTOP, Math.toRadians(175.0))
+                                    //                        .addDisplacementMarker(this::AntiBlockingChecker_Deposit)
+                                    .build()
+                    );
+                }
+                else {
+                    RRctrl.doRedDepositTrajectoryNoTurnNonMerged();
+                }
                 Log.d("AutonBrain","Preparation Complete");
                 minorState.set(MinorAutonomousState.THREE_DEPOSIT);
                 return;
@@ -365,7 +382,21 @@ public class AutonomousBrain {
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE_VIOLET);
                 Log.d("AutonBrain","intake prepped");
                 getIntake().setState(IntakeState.BASE);
-                if(isBlue) { RRctrl.autonomousPrepAndIntakeFromDepositBlue();}
+                if(isBlue) {
+
+                    RRctrl.getDrive().followTrajectory(
+                            RRctrl.getDrive().trajectoryBuilder(
+                                    RRctrl.getDrive().getPoseEstimate())
+                                    .lineToSplineHeading(PICK_UP_TRAJECTORY_FIX_HEADING_POSITION)
+                                    .splineToConstantHeading(PICK_UP_TRAJECTORY_PASS_PIPE_POSITION, PICK_UP_TRAJECTORY_PASS_PIPE_POSITION_TANGENT)
+                                    .splineToConstantHeading(PICK_UP_TRAJECTORY_MOVE_OUT_POSITION, PICK_UP_TRAJECTORY_MOVE_OUT_POSITION_TANGENT)
+                                    .splineToConstantHeading(RoadRunnerController.convertPose2Vector(warehousePickupPositionBlue), 0)
+                                    //.addSpatialMarker(PICK_UP_TRAJECTORY_OPEN_PICK_UP_POSITION, () -> intakeCtrlBlue.setState(IntakeState.BASE))
+                                    .build()
+                    );
+                    RRctrl.getDrive().update();
+
+                }
                 else {
                     RRctrl.autonomousPrepAndIntakeFromDepositRed();
                 }
@@ -417,6 +448,15 @@ public class AutonomousBrain {
     public static double intakeTurnAmount = 5; // TODO test and adjust as needed
     //public static double distanceIntake = 40;
 
+    private static final Pose2d DEPOSIT_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(40.0, 66.0, 0);
+    private static final Pose2d DEPOSIT_TRAJECTORY_PASS_PIPE_POSITION = new Pose2d(20.0, 68.0, 0);   //Heading is identical to B_FIX_HEADING_POSITION
+    private static final Vector2d PICK_UP_TRAJECTORY_OPEN_PICK_UP_POSITION = new Vector2d(28.5, 65.5);
+    private static final Pose2d PICK_UP_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(18.0, 66.0, 0);
+    private static final Vector2d PICK_UP_TRAJECTORY_PASS_PIPE_POSITION = new Vector2d(37.0, 66.0);
+    private static final double PICK_UP_TRAJECTORY_PASS_PIPE_POSITION_TANGENT = Math.toRadians(-20.0);
+    private static final Vector2d PICK_UP_TRAJECTORY_MOVE_OUT_POSITION = new Vector2d(45.0, 64.0);
+    private static final double PICK_UP_TRAJECTORY_MOVE_OUT_POSITION_TANGENT = Math.toRadians(-10.0);
+    private static final Vector2d PICK_UP_TRAJECTORY_PICK_UP_POSITION = new Vector2d(61.0, 64.5);
 
 
 }
