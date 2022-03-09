@@ -84,8 +84,8 @@ public class AutonomousBrain {
 
     public AutonomousBrain(HardwareMap hardwareMap, Telemetry telemetry, AutonomousMode mode) // call in init.
     {
-        DriveConstantsMain.MAX_ACCEL = 70;
-        DriveConstantsMain.MAX_VEL = 150;
+        DriveConstantsMain.MAX_ACCEL = 40;
+        DriveConstantsMain.MAX_VEL = 60;
         majorState.set(MajorAutonomousState.STOPPED);
         minorState.set(MinorAutonomousState.STOPPED);
         qObjectInRobot.set(false);
@@ -232,8 +232,11 @@ public class AutonomousBrain {
                 {
                     Log.d("AutonBrain","Stuck detected on intake attempt, retrying.");
                     getIntake().setState(IntakeState.PARK);
-                    RRctrl.followLineToSpline(new Pose2d(RRctrl.getPos().getX()-5, isBlue ? 70 : -70,isBlue ? 0 : -Math.PI));
-                    minorState.set(MinorAutonomousState.FOUR_RETURN_TO_INTAKE);
+                    //RRctrl.backward(5);
+                    RRctrl.followLineToSpline(new Pose2d(RRctrl.getPos().getX()-5,70,0));
+                    RRctrl.followLineToSpline(warehousePickupPositionBlue);
+                    getIntake().setState(IntakeState.BASE);
+                    //minorState.set(MinorAutonomousState.FOUR_RETURN_TO_INTAKE);
                     return;
                 }
                 Log.d("AutonBrain", "Starting intake stage for the " + numberOfTrials + "th time");
@@ -391,10 +394,10 @@ public class AutonomousBrain {
 
     public static Pose2d startPositionBlue = new Pose2d(startPositionBlueX,startPositionBlueY,startPositionBlueH);
     public static Pose2d startPositionRed = new Pose2d(startPositionRedX,startPositionRedY,Math.toRadians(startPositionRedH)); // TODO may need to remeasure
-    public static Pose2d warehousePickupPositionBlue = new Pose2d(35,70,0);
-    public static Pose2d warehousePickupPositionRed = new Pose2d(35,-70,-Math.PI);
-    public static Pose2d depositPositionBlueNoTurn = new Pose2d(-13,75,0);
-    public static Pose2d depositPositionRedNoTurn = new Pose2d(-15,-75,-Math.PI);
+    public static Pose2d warehousePickupPositionBlue = new Pose2d(43,70,0);
+    public static Pose2d warehousePickupPositionRed = new Pose2d(43,-70,-Math.PI);
+    public static Pose2d depositPositionBlueNoTurn = new Pose2d(-11,75,0);
+    public static Pose2d depositPositionRedNoTurn = new Pose2d(-11,-75,-Math.PI);
     public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(5.58,64.47, -Math.toRadians(30)); //55
     public static Pose2d depositPositionAllianceRedTOP = new Pose2d(5.58,-64.47, -Math.toRadians(150)); //55
     public static Pose2d depositPositionAllianceBlueMID = new Pose2d(5.58,64.47, -Math.toRadians(31)); //56
