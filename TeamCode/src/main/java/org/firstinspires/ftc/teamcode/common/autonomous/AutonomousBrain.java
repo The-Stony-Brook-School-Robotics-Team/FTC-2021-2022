@@ -9,14 +9,13 @@ import com.qualcomm.hardware.broadcom.BroadcomColorSensor;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.archive.DriveConstants;
 import org.firstinspires.ftc.teamcode.common.sharedResources.SharedData;
 import org.firstinspires.ftc.teamcode.drive.DriveConstantsMain;
 import org.sbs.bears.robotframework.Robot;
+import org.sbs.bears.robotframework.Sleep;
 import org.sbs.bears.robotframework.controllers.DuckCarouselController;
 import org.sbs.bears.robotframework.controllers.IntakeController;
 import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
@@ -43,9 +42,10 @@ public class AutonomousBrain {
     DuckCarouselController duckCtrl;
     Pose2d iniDropPosition = depositPositionAllianceBlueTOP;
 
+    boolean isParkingAvailable = false;
     int numberOfTrials = 1;
     RevBlinkinLedDriver leds;
-    NormalizedColorSensor normalizedColorSensor;
+    //NormalizedColorSensor normalizedColorSensor;
     RevColorSensorV3 colorNew;
 
     Telemetry tel;
@@ -63,10 +63,15 @@ public class AutonomousBrain {
     enum MajorAutonomousState {
         STOPPED,
         ONE_CAMERA_READ,
+        ONE_CAMERA_READ_CAROUSEL,
         TWO_DEPOSIT_INI_BLOCK,
+        TWO_DEPOSIT_INI_BLOCK_CAROUSEL,
         TWO_PLUS_SPLINE_WAREHOUSE,
         THREE_BACK_FORTH,
+        THREE_WAIT_FOR_TIMER,
         FOUR_PARKING_CLEANUP,
+        FOUR_PARKING_CHECK_AVAIL,
+        FIVE_PARKING_SIMPLE,
         FINISHED
     }
     enum MinorAutonomousState {
@@ -84,8 +89,8 @@ public class AutonomousBrain {
 
     public AutonomousBrain(HardwareMap hardwareMap, Telemetry telemetry, AutonomousMode mode) // call in init.
     {
-        DriveConstantsMain.MAX_ACCEL = 40;
-        DriveConstantsMain.MAX_VEL = 60;
+        DriveConstantsMain.MAX_ACCEL = 20;
+        DriveConstantsMain.MAX_VEL = 100;
         majorState.set(MajorAutonomousState.STOPPED);
         minorState.set(MinorAutonomousState.STOPPED);
         qObjectInRobot.set(false);
@@ -101,12 +106,22 @@ public class AutonomousBrain {
         this.intakeCtrlRed = robot.getIntakeCtrlRed();
         this.duckCtrl = robot.getDuckCtrl();
         this.leds = hardwareMap.get(RevBlinkinLedDriver.class, "rgb");
-        isBlue = (mode == AutonomousMode.BlueStatesWarehouse);
+        isBlue = (mode == AutonomousMode.BlueStatesWarehouse || mode == AutonomousMode.BlueStatesSpline || mode == AutonomousMode.BlueStatesDuckSimple);
         isSpline = (mode == AutonomousMode.BlueStatesSpline || mode == AutonomousMode.RedStatesSpline);
         if (isBlue) {
-            RRctrl.setPos(startPositionBlue);
+            if(!isSpline) {
+                RRctrl.setPos(startPositionBlueCarousel);
+            }
+            else {
+                RRctrl.setPos(startPositionBlue);
+            }
         } else {
-            RRctrl.setPos(startPositionRed);
+            if(!isSpline) {
+                RRctrl.setPos(startPositionRedCarousel);
+            }
+            else {
+                RRctrl.setPos(startPositionRed);
+            }
         }
         intakeCtrlBlue.setState(IntakeState.DUMP);
         intakeCtrlRed.setState(IntakeState.DUMP); // to prevent from moving around
@@ -127,6 +142,10 @@ public class AutonomousBrain {
         switch(majorState.get()) {
             case STOPPED:
                 doAnalysisMaster = true;
+                if(mode == AutonomousMode.BlueStatesDuckSimple) {
+                    majorState.set(MajorAutonomousState.ONE_CAMERA_READ_CAROUSEL);
+                    return;
+                }
                 majorState.set(MajorAutonomousState.ONE_CAMERA_READ);
                 return;
             case ONE_CAMERA_READ:
@@ -149,6 +168,27 @@ public class AutonomousBrain {
                         break;
                 }
                 majorState.set(MajorAutonomousState.TWO_DEPOSIT_INI_BLOCK);
+                return;
+            case ONE_CAMERA_READ_CAROUSEL:
+                leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_OCEAN_PALETTE);
+                heightFromDuck = CVctrl.getWhichTowerHeight();
+                Log.d("height: ", heightFromDuck.toString());
+                CVctrl.shutDown();
+                switch (heightFromDuck) {
+                    case ONE:
+                        iniTarget = SlideTarget.BOTTOM_CAROUSEL;
+                        iniDropPosition = isBlue ? duckSpinningPositionB : duckSpinningPositionR;
+                        break;
+                    case TWO:
+                        iniTarget = SlideTarget.MIDDLE_CAROUSEL;
+                        iniDropPosition = isBlue ? duckSpinningPositionB : duckSpinningPositionR;
+                        break;
+                    case THREE:
+                        iniTarget = SlideTarget.TOP_CAROUSEL;
+                        iniDropPosition = isBlue ? duckSpinningPositionB : duckSpinningPositionR;
+                        break;
+                }
+                majorState.set(MajorAutonomousState.TWO_DEPOSIT_INI_BLOCK_CAROUSEL);
                 return;
             case TWO_DEPOSIT_INI_BLOCK:
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_FOREST_PALETTE);
@@ -181,6 +221,24 @@ public class AutonomousBrain {
             case TWO_PLUS_SPLINE_WAREHOUSE:
                 RRctrl.followSplineTrajWarehouse(true);
                 return;
+            case TWO_DEPOSIT_INI_BLOCK_CAROUSEL:
+                leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_FOREST_PALETTE);
+                RRctrl.followLineToSpline(iniDropPosition);
+                new Thread(()->{
+                    slideCtrl.extendDropRetractAuton(iniTarget);
+                    Log.d("AutonBrain","Slide drop complete");
+                }).start();
+                robot.getDuckCtrl().spinOneDuck();
+                Log.d("AutonBrain","Duck spin complete");
+                majorState.set(MajorAutonomousState.THREE_WAIT_FOR_TIMER);
+                return;
+            case THREE_WAIT_FOR_TIMER:
+                double currentTime2 = NanoClock.system().seconds();
+                if(currentTime2 - iniTemps > 20) { // ten seconds left
+                    Log.d("AutonBrain","Time Constraint: adaptive parking");
+                    majorState.set(MajorAutonomousState.FOUR_PARKING_CHECK_AVAIL);
+                }
+                return;
             case THREE_BACK_FORTH:
                 doGoBack();
                 if(minorState.get().equals(MinorAutonomousState.STOPPED))
@@ -199,20 +257,42 @@ public class AutonomousBrain {
                 Log.d("AutonBrain","parking1");
                 intakeCtrlBlue.setState(IntakeState.DUMP);
                 intakeCtrlRed.setState(IntakeState.DUMP);
-                /*
-                Log.d("AutonBrain","parking2");
-                RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);
-                Log.d("AutonBrain","parking3");
-                RRctrl.followLineToSpline(parkingPositionBlue);
-                Log.d("AutonBrain","parking4");
-                */
-                //if(!RRctrl.isInWarehouse()) {RRctrl.followLineToSpline(resetPositionB4WarehouseBlue);}
                 RRctrl.followLineToSpline(isBlue ? parkingPositionBlue : parkingPositionRed);
                 SharedData.autonomousLastPosition = RRctrl.getPos();
                 majorState.set(MajorAutonomousState.FINISHED);
                 minorState.set(MinorAutonomousState.FINISHED);
-                DriveConstantsMain.MAX_ACCEL = 30;
-                DriveConstantsMain.MAX_VEL = 40;
+                return;
+            case FOUR_PARKING_CHECK_AVAIL:
+                doAnalysisMaster = true;
+                if(CVctrl.prepareWhiteLineEngine()) {
+                    Sleep.sleep(1000);
+                    isParkingAvailable = false; // TODO CVctrl.getWhiteLineAvailable();
+                }
+                doAnalysisMaster = false;
+                CVctrl.shutDown();
+                majorState.set(MajorAutonomousState.FIVE_PARKING_SIMPLE);
+                return;
+            case FIVE_PARKING_SIMPLE:
+                if(isBlue) {
+                    if (isParkingAvailable) {
+                        RRctrl.followLineToSpline(resetPositionB4WarehouseBlue2);
+                        RRctrl.followLineToSpline(parkingPositionBlue);
+                    }
+                    else if (!(isParkingAvailable)) {
+                        RRctrl.followLineToSpline(parkingPositionBlueStorageUnit);
+                    }
+                }
+                else {
+                    if (isParkingAvailable) {
+                        RRctrl.followLineToSpline(resetPositionB4WarehouseRed2);
+                        RRctrl.followLineToSpline(parkingPositionRed);
+                    }
+                    else if (!(isParkingAvailable)) {
+                        RRctrl.followLineToSpline(parkingPositionRedStorageUnit);
+                    }
+                }
+                Log.d("AutonBrain","finished all tasks.");
+                majorState.set(MajorAutonomousState.FINISHED);
                 return;
             case FINISHED:
                 return;
@@ -283,7 +363,7 @@ public class AutonomousBrain {
                 }).start();
                 // step 2: forward
                 Log.d("AutonBrain","Forward init x " + RRctrl.getPos().getX());
-                RRctrl.forward(isBlue ? 25 : -25,velocityIntake,accelIntake);
+                RRctrl.forward(isBlue ? distanceIntake : -1*distanceIntake,velocityIntake,accelIntake);
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
                 Log.d("AutonBrain","Forward done");
                 // step 3: check end conditions.
@@ -385,6 +465,7 @@ public class AutonomousBrain {
     }
 
 
+
     public static double startPositionBlueX = 14;
     public static double startPositionBlueY = 65.5;
     public static double startPositionBlueH = 0;
@@ -394,6 +475,8 @@ public class AutonomousBrain {
 
     public static Pose2d startPositionBlue = new Pose2d(startPositionBlueX,startPositionBlueY,startPositionBlueH);
     public static Pose2d startPositionRed = new Pose2d(startPositionRedX,startPositionRedY,Math.toRadians(startPositionRedH)); // TODO may need to remeasure
+    public static Pose2d startPositionBlueCarousel = new Pose2d(-42,66,0);
+    public static Pose2d startPositionRedCarousel = new Pose2d(-42,66,0);
     public static Pose2d warehousePickupPositionBlue = new Pose2d(43,70,0);
     public static Pose2d warehousePickupPositionRed = new Pose2d(43,-70,-Math.PI);
     public static Pose2d depositPositionBlueNoTurn = new Pose2d(-11,75,0);
@@ -410,13 +493,15 @@ public class AutonomousBrain {
     public static Pose2d resetPositionB4WarehouseRed2 = new Pose2d(14,-70,-Math.PI);
     public static Pose2d parkingPositionBlue = new Pose2d(50,70,0);
     public static Pose2d parkingPositionRed = new Pose2d(50,-70,-Math.PI);
+    public static Pose2d parkingPositionBlueStorageUnit = new Pose2d(-70,36,0);
+    public static Pose2d parkingPositionRedStorageUnit = new Pose2d(-70,36,0);
     public static Pose2d whiteLinePosBlue = new Pose2d(29.5,65.5,0);
     public static Pose2d whiteLinePosRed = new Pose2d(29.5,-65.5,-Math.PI);
-    public static double velocityIntake = 50;
+    public static double velocityIntake = 30;
     public static double accelIntake = 25;
     public static double intakeTurnAmount = 5; // TODO test and adjust as needed
-    //public static double distanceIntake = 40;
-
-
+    public static double distanceIntake = 40;
+    public static Pose2d duckSpinningPositionB = new Pose2d(-60, 63, Math.toRadians(48));
+    public static Pose2d duckSpinningPositionR = new Pose2d(-60, -63, Math.toRadians(-48));
 
 }

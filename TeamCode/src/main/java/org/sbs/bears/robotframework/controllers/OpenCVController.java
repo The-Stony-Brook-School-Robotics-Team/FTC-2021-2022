@@ -5,6 +5,7 @@ import static java.lang.Thread.sleep;
 import android.util.Log;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.sun.tools.doclint.Checker;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -15,6 +16,8 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.sbs.bears.robotframework.enums.DuckPosition;
 import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 public class OpenCVController {
     // MARK - Class Variables
@@ -42,12 +45,15 @@ public class OpenCVController {
             engine = new DuckOpenCVEngineBlueFull();
         }
         else {
-            if(mode == AutonomousMode.BlueStatesWarehouse)
-            {
-                engine = new CapstoneOpenCVEngineBlueFull();
-            }
-            else {
-                engine = new CapstoneOpenCVEngineRedFull(); // in case positions need to be shifted.
+            switch(mode) {
+                case BlueStatesDuckSimple:
+                    engine = new CapstoneOpenCVEngineBlueSimple();
+                    break;
+                case BlueStatesWarehouse:
+                    engine = new CapstoneOpenCVEngineBlueFull();
+                    break;
+                default:
+                    engine = new CapstoneOpenCVEngineRedFull();
             }
         }
         webcam.setPipeline(engine);
@@ -152,6 +158,35 @@ public class OpenCVController {
         webcam.stopStreaming();
         engine = null;
 
+    }
+
+    public boolean prepareWhiteLineEngine() {
+        engine = new WhiteLineAvailOpenCVEngineBlueSimple();
+        webcam.setPipeline(engine);
+        currentEngine = engine;
+        Log.d("OpenCVController","Init Complete");
+        AtomicReference<Boolean> FLAG = new AtomicReference<>();
+        FLAG.set(true);
+        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+            @Override
+            public void onOpened()
+            {
+                webcam.startStreaming(STREAM_WIDTH, STREAM_HEIGHT, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode) {
+                Log.d("OpenCVController","Error preparing white line engine. Aborting...");
+                FLAG.set(false);
+            }
+        });
+        return FLAG.get();
+    }
+
+    public boolean getWhiteLineAvailable() {
+        return engine.getPosition().equals(DuckPosition.A);
+        // TODO finish this
     }
 }
 
