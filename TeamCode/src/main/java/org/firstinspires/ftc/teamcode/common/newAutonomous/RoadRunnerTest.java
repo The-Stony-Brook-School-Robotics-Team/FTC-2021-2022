@@ -10,26 +10,30 @@ import org.sbs.bears.robotframework.controllers.OpenCVController;
 
 @Autonomous(name = "A_William - RoadRunnerTest")
 public class RoadRunnerTest extends LinearOpMode {
-    AutonomousClientD autonomousClient;
+    AutonomousClient autonomousClient;
 
     @Override
     public void runOpMode() {
         OpenCVController.isDuck = false;
-        autonomousClient = new AutonomousClientD(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
+        autonomousClient = new AutonomousClient(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
         msStuckDetectLoop = Integer.MAX_VALUE;  //Turn off infinite loop detection.
 
         Thread localizeThread = new Thread(() -> {
             while (true) {
                 try {
-                    autonomousClient.roadRunnerDrive.update();
-                    Thread.sleep(2);
+                    if (autonomousClient.roadRunnerDrive.isRunningFollowTrajectory)
+                        Thread.sleep(10);
+                    else {
+                        autonomousClient.roadRunnerDrive.update();
+                        Thread.sleep(2);
+                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         });
 
-//        localizeThread.start();
+        localizeThread.start();
 
         autonomousClient.readCamera();
 
@@ -37,8 +41,8 @@ public class RoadRunnerTest extends LinearOpMode {
 
         autonomousClient.roadRunnerDrive.followTrajectory(
                 autonomousClient.roadRunnerDrive.trajectoryBuilder(autonomousClient.roadRunnerDrive.getPoseEstimate())
-                .splineToSplineHeading(new Pose2d(45.0, 64.5, Math.toRadians(40.0)),Math.toRadians(40.0))
-                .build()
+                        .splineToSplineHeading(new Pose2d(45.0, 64.5, Math.toRadians(40.0)), Math.toRadians(40.0))
+                        .build()
         );
 
         localizeThread.interrupt();

@@ -14,7 +14,6 @@ import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.Robot;
-import org.sbs.bears.robotframework.Sleep;
 import org.sbs.bears.robotframework.controllers.DuckCarouselController;
 import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
 import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
@@ -164,32 +163,26 @@ public class AutonomousClientD {
         if (!AutonomousTimer.canContinue())
             return;
 
-        runTrajectory_Deposit();
+        startExtendDropRetractThread();
 
-        if (isTest) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        } else
-            extendDropRetract_TOP();
+        runTrajectory_Deposit();
 
         objectIsInRobot = false;
     }
 
-    private void extendDropRetract_TOP() {
+    private void startExtendDropRetractThread() {
         new Thread(() -> {
-            while(originalSlideController.slideMotor.getCurrentPosition() > SlideController.slideMotorPosition_AUTON_EARLY || originalSlideController.slideState == SlideState.EXTENDING){
+            while (roadRunnerDrive.getPoseEstimate().getX() > 40) {
                 try {
                     Thread.sleep(50);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
+
+            originalSlideController.extendDropRetractAutonNew(SlideTarget.TOP_DEPOSIT);
             //TODO start path here
         }).start();
-        originalSlideController.extendDropRetractAutonNew(SlideTarget.TOP_DEPOSIT);
     }
 
     public void park() {
@@ -240,7 +233,7 @@ public class AutonomousClientD {
                         .splineToSplineHeading(DEPOSIT_TRAJECTORY_FIX_HEADING_POSITION, Math.toRadians(170.0))
                         .splineToLinearHeading(DEPOSIT_TRAJECTORY_PASS_PIPE_POSITION, Math.toRadians(-170.0))
                         .splineToSplineHeading(AutonomousClient.firstDepositPositionBlueTOP, Math.toRadians(175.0))
-//                        .addSpatialMarker(ABC_CHECK_POSITION_DEPOSIT, this::AntiBlockingChecker_Deposit)
+//                        .addDisplacementMarker(this::AntiBlockingChecker_Deposit)
                         .build()
         );
     }
@@ -259,7 +252,7 @@ public class AutonomousClientD {
                 roadRunnerDrive.trajectoryBuilder(roadRunnerDrive.getPoseEstimate())
                         .lineToSplineHeading(PICK_UP_TRAJECTORY_FIX_HEADING_POSITION)
                         .splineToLinearHeading(PARK_TRAJECTORY_PARK_POSITION, Math.toRadians(-10.0))
-//                        .addSpatialMarker(ABC_CHECK_POSITION_PARK, this::AntiBlockingChecker_Park)
+//                        .addDisplacementMarker(this::AntiBlockingChecker_Park)
                         .build()
         );
     }
@@ -317,8 +310,8 @@ public class AutonomousClientD {
     private static final Pose2d PICK_UP_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(18.0, 66.0, ZERO);
     private static final Vector2d PICK_UP_TRAJECTORY_PASS_PIPE_POSITION = new Vector2d(37.0, 66.0);
     private static final double PICK_UP_TRAJECTORY_PASS_PIPE_POSITION_TANGENT = Math.toRadians(-20.0);
-    private static final Vector2d PICK_UP_TRAJECTORY_MOVE_OUT_POSITION = new Vector2d(45.0, 62.0);
-    private static final double PICK_UP_TRAJECTORY_MOVE_OUT_POSITION_TANGENT = Math.toRadians(-20.0);
+    private static final Vector2d PICK_UP_TRAJECTORY_MOVE_OUT_POSITION = new Vector2d(45.0, 64.0);
+    private static final double PICK_UP_TRAJECTORY_MOVE_OUT_POSITION_TANGENT = Math.toRadians(-10.0);
     private static final Vector2d PICK_UP_TRAJECTORY_PICK_UP_POSITION = new Vector2d(63.0, 64.5);
 
     private static final Pose2d DEPOSIT_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(40.0, 66.0, ZERO);
