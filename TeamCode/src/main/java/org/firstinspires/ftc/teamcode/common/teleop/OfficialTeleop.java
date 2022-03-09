@@ -202,6 +202,13 @@ public class OfficialTeleop extends OpMode {
                 break;
 
                 case RUNNING:
+
+                    if(!threadPool.get(MovementHandler.interfaceTag).isAlive()) {
+                        threadPool.get(MovementHandler.interfaceTag).start();
+                    }
+
+
+
                 int numThreads = threadPool.size();
                 multipleTelemetry.addLine("---------------------------------------------------------");
                 multipleTelemetry.addData("Current # Threads Running: ", numThreads);
@@ -216,7 +223,6 @@ public class OfficialTeleop extends OpMode {
                 multipleTelemetry.addData("(Primary) Button Handler Thread State: ", threadPool.get(ButtonHandler.primaryInterfaceTag).getState());
                 multipleTelemetry.addData("(Secondary) Button Handler Thread State: ", threadPool.get(ButtonHandler.secondaryInterfaceTag).getState());
                 multipleTelemetry.addLine("---------------------------------------------------------");
-
                 multipleTelemetry.update();
                 break;
         }

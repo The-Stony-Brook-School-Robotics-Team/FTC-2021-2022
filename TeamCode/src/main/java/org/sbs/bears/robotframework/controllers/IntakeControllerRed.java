@@ -26,7 +26,7 @@ public class IntakeControllerRed implements IntakeController {
 //    private double[] basePos = {.025, 0.7}; //.141
     private double[] basePos = {.975, 1};
     private double[] parkPos = {.45, 0}; //.375 for gobilda servo
-    public static double[] dumpPos = {.4, 0}; //??????? messed up .375 is the same???
+    public static double[] dumpPos = {.4026, 0}; //??????? messed up .375 is the same???
     private double[] reversePos = {.975, -1}; //75
 
     /** Distance needed to switch states (mm) **/
