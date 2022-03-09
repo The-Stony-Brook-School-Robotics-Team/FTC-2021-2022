@@ -1,5 +1,6 @@
 package org.sbs.bears.robotframework.controllers;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -10,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.sbs.bears.robotframework.enums.IntakeState;
 
-
+@Config
 public class IntakeControllerBlue implements IntakeController{
 
     private Servo scooper;
@@ -25,7 +26,7 @@ public class IntakeControllerBlue implements IntakeController{
 //    private double[] basePos = {.025, 0.7}; //.141
     private double[] basePos = {.975, 1};
     private double[] parkPos = {.45, 0}; //.375 for gobilda servo
-    private double[] dumpPos = {.385, 0}; //??????? messed up .375 is the same???
+    public static double[] dumpPos = {.385, 0}; //??????? messed up .375 is the same???
     private double[] reversePos = {.975, -1}; //75
 
     /** Distance needed to switch states (mm) **/
@@ -33,7 +34,7 @@ public class IntakeControllerBlue implements IntakeController{
     private double distThreshold2 = 80;
 
     public long timeToOpenStopper = 300; //ms 400
-    public long timeToCloseBucket = 360; //ms 650
+    public static long timeToCloseBucket = 360; //ms 650
     public long timeToPushSweeper = 230; //ms 400
 
     private double sweeperOut = .725;
