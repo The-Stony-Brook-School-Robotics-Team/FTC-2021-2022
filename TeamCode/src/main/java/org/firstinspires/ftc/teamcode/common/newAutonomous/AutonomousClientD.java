@@ -22,6 +22,7 @@ import org.sbs.bears.robotframework.controllers.OpenCVController;
 import org.sbs.bears.robotframework.controllers.RoadRunnerController;
 import org.sbs.bears.robotframework.controllers.SlideController;
 import org.sbs.bears.robotframework.enums.IntakeState;
+import org.sbs.bears.robotframework.enums.SlideState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
 
@@ -178,6 +179,16 @@ public class AutonomousClientD {
     }
 
     private void extendDropRetract_TOP() {
+        new Thread(() -> {
+            while(originalSlideController.slideMotor.getCurrentPosition() > SlideController.slideMotorPosition_AUTON_EARLY || originalSlideController.slideState == SlideState.EXTENDING){
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            //TODO start path here
+        }).start();
         originalSlideController.extendDropRetractAutonNew(SlideTarget.TOP_DEPOSIT);
     }
 

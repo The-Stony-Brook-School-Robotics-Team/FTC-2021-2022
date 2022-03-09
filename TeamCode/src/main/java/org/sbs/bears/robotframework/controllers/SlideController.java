@@ -38,11 +38,12 @@ public class SlideController {
     private double changePositionSlope;
     private boolean isTeleop;
 
+
     public static double SERVO_VELOCITY_CONSTANT = 0.8;
     public static boolean SERVO_TEST = false;
 
-    //TODO: Put back at the bottom or michael will kill me
-    public static double vertServoPosition_GRAB_CAP = 0.09; //.09
+
+
 
 
     public SlideController(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -511,6 +512,8 @@ public class SlideController {
                 setHeightToParams(vertServoPosition_PARKED);
                 //Once right outside, slow down the slide and lower it.
                 slideMotor.setPower(slideMotorPowerMovingBack);
+
+
                 //setHeightToParams(vertServoPosition_PARKED);
 
                 //verticalServo.setPosition(vertServoPosition_PARKED);
@@ -628,32 +631,19 @@ public class SlideController {
      * Sets the slide to a new height given a fraction of the servo's range to alter it by.
      *
      * @param servoPosition A double that represents the servo's range expressed from 0 to 1.
-     */
+     * */
     public void incrementVerticalServo(double servoPosition) {
         servoPosition += verticalServo.getPosition();
         Log.d("Setting Servo Increment To: ", String.valueOf(servoPosition));
         if (servoPosition > vertServoPosition_FULL_MAX) {
             return;
         }
-        //setHeightToParams(servoPosition);
         verticalServo.setPosition(servoPosition);
 
         return;
 
     }
 
-
-    /*@Beta
-    public void calculateAngleAndExtensionFromPosition(Pose2d currentPos)
-    {
-        double deltaX = currentPos.getX() - positionOfBlueHub.getX();
-        double deltaY = currentPos.getY() - positionOfBlueHub.getY();
-    }*/
-
-    @Beta
-    private double encoderInchesToTicks(double ticks) {
-        return ticks * 145.1 / .785 / 2 / Math.PI;
-    }
 
     /**
      * Stops any attempted PID correcting by setting the motor's desired position to itself, and resetting the runmode.
@@ -713,10 +703,6 @@ public class SlideController {
         verticalServo.setPosition(finalServoPos);
     }
 
-
-    // TODO MEASURE ALL CONSTANTS
-
-
     public static double vertServoPosition_PARKED = 0;//.1
     public static double vertServoPosition_ONE_CAROUSEL = 0.175;
     public static double vertServoPosition_TWO_CAROUSEL = 0.3767; ///measured
@@ -727,6 +713,7 @@ public class SlideController {
     public static double vertServoPosition_CUSTOM = .6;//11;//0.06;
     public static double vertServoPosition_SHARED_TWO = .447;//11;//0.06;
     public static double vertServoPosition_SHARED_ONE = .227;//11;//0.06;
+    public static double vertServoPosition_GRAB_CAP = 0.09; //.09
 
 
     double vertServoPosition_PARKED_MIN = 0;
@@ -746,18 +733,17 @@ public class SlideController {
     public static double incrementDeltaRetractCaptsone = 0.002;
 
 
-    // dumper servo
-/*    double dumperPosition_DUMP = .91;
-    double dumperPosition_HOLDBLOCK = 0;
-*/    public static double dumperPosition_CLOSED = .53;//0.269;  // remeasured on jan 31 at 16h08
+
+    public static double dumperPosition_CLOSED = .53;//0.269;  // remeasured on jan 31 at 16h08
     public static double dumperPosition_READY = .69;//0.55;
     public static double dumperPosition_EJECT = .85;//0.74;
     public static double dumperPosition_RETRACTING = .29;//0.05;
 
-    // slide motor
+
     int slideMotorPosition_PARKED = 5;
     public static int slideMotorPosition_BUCKET_OUT = 225;//250;//380//150; // minimum position for the bucket to be out, measured
     public static int slideMotorPosition_BUCKET_OUT_RET = 800; // minimum position for the bucket to be out, measured
+    public static int slideMotorPosition_AUTON_EARLY = 400; // minimum position for the bucket to be out, measured
     public static int slideMotorPosition_THREE_DEPOSIT = 1316; // remeasured // last 1310
     public static int slideMotorPosition_THREE_DEPOSIT_AUTON = 1360; // remeasured // last 1360
     public static int slideMotorPosition_TWO_DEPOSIT = 1320; //measured
@@ -770,7 +756,6 @@ public class SlideController {
     public static int slideMotorPosition_SHARED = 2030; // TODO
     public static int slideMotorPosition_CUSTOM = 600; // TODO
     public static int slideMotorPosition_FULL = 2050;
-    //int slideMotorPosition_START_LOWER = 400;
     public static int slideMotorPosition_CAP_ON_GROUND = 473;
 
     public static double slideMotorPowerMoving = 1;
@@ -779,12 +764,6 @@ public class SlideController {
     public static double slideMotorPowerGrabCap = .9;
     public static final double slideMotorPowerStill = 0;
 
-    /*double deltaZForLevel3 = 12; // in
-    double deltaZForLevel2 = 5; // in
-    double deltaZForLevel1 = 0; // in
-
-    static final Vector2d positionOfBlueHub = new Vector2d(24,12);
-*/
 
 
 }
