@@ -5,5 +5,7 @@ public enum AutonomousMode {
     BlueStatesSpline,
     RedStatesWarehouse,
     RedStatesSpline,
+    BlueStatesDuckSimple,
+    RedStatesDuckSimple,
     TELEOP
 }
