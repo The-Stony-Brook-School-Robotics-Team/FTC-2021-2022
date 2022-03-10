@@ -507,7 +507,7 @@ public class RoadRunnerController {
 
     public boolean isInWarehouse(boolean isBlue) {
         if(isBlue) {
-        return getPos().getX() > 25 && getPos().getY() > 28;}
+        return getPos().getX() > 22 && getPos().getY() > 28;}
         else {
             return getPos().getX() > 25 && getPos().getY() < -28;
         }

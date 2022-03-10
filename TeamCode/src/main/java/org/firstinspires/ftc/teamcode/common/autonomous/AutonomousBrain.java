@@ -101,10 +101,10 @@ public class AutonomousBrain {
         iniMaxVel = DriveConstantsMain.MAX_VEL;
         iniMaxAngAccel = DriveConstantsMain.MAX_ANG_ACCEL;
         iniMaxAngVel = DriveConstantsMain.MAX_ANG_VEL;
-        DriveConstantsMain.MAX_ACCEL = CustomMaxAccel;
-        DriveConstantsMain.MAX_VEL = CustomMaxVel;
-        DriveConstantsMain.MAX_ANG_ACCEL = CustomMaxAngAccel;
-        DriveConstantsMain.MAX_ANG_VEL = CustomMaxAngVel;
+        //DriveConstantsMain.MAX_ACCEL = CustomMaxAccel;
+        //DriveConstantsMain.MAX_VEL = CustomMaxVel;
+        //DriveConstantsMain.MAX_ANG_ACCEL = CustomMaxAngAccel;
+        //DriveConstantsMain.MAX_ANG_VEL = CustomMaxAngVel;
         majorState.set(MajorAutonomousState.STOPPED);
         minorState.set(MinorAutonomousState.STOPPED);
         qObjectInRobot.set(false);
@@ -371,10 +371,11 @@ public class AutonomousBrain {
                     RRctrl.getDrive().followTrajectory(
                             RRctrl.getDrive().trajectoryBuilder(
                                     RRctrl.getDrive().getPoseEstimate(), true)
-                                    .splineToSplineHeading(DEPOSIT_TRAJECTORY_FIX_HEADING_POSITION, Math.toRadians(170.0))
-                                    .splineToLinearHeading(DEPOSIT_TRAJECTORY_PASS_PIPE_POSITION, Math.toRadians(-170.0))
-                                    .splineToSplineHeading(AutonomousClient.firstDepositPositionBlueTOP, Math.toRadians(175.0))
-                                    //                        .addDisplacementMarker(this::AntiBlockingChecker_Deposit)
+                                    .splineToSplineHeading(DEPOSIT_TRAJECTORY_FIX_HEADING_POSITION, Math.toRadians(10))
+                                    .splineToLinearHeading(DEPOSIT_TRAJECTORY_PASS_PIPE_POSITION, Math.toRadians(-10))
+                                    .splineToSplineHeading(firstDepositPositionBlueTOP, Math.toRadians(175.0))
+                                    //.addSpatialMarker(DEPOSIT_TRAJECTORY_START_EXTEND_SLIDE_POSITION, this::extendDropRetract_TOP)
+                                    //.addDisplacementMarker(this::AntiBlockingChecker_Deposit)
                                     .build()
                     );
                 }
@@ -407,7 +408,7 @@ public class AutonomousBrain {
                 getIntake().setState(IntakeState.BASE);
                 if(isBlue) {
 
-                    RRctrl.getDrive().followTrajectory(
+                   /* RRctrl.getDrive().followTrajectory(
                             RRctrl.getDrive().trajectoryBuilder(
                                     RRctrl.getDrive().getPoseEstimate())
                                     .lineToSplineHeading(PICK_UP_TRAJECTORY_FIX_HEADING_POSITION)
@@ -418,7 +419,8 @@ public class AutonomousBrain {
                                     .build()
                     );
                     RRctrl.getDrive().update();
-
+*/
+                    RRctrl.autonomousPrepAndIntakeFromDepositBlue();
                 }
                 else {
                     RRctrl.autonomousPrepAndIntakeFromDepositRed();
@@ -451,7 +453,7 @@ public class AutonomousBrain {
     public static Pose2d warehousePickupPositionBlue = new Pose2d(43,70,0);
     public static Pose2d warehousePickupPositionRed = new Pose2d(43,-70,-Math.PI);
     public static Pose2d depositPositionBlueNoTurn = new Pose2d(-11,75,0);
-    public static Pose2d depositPositionRedNoTurn = new Pose2d(-17,-75,-Math.PI);
+    public static Pose2d depositPositionRedNoTurn = new Pose2d(-22,-75,-Math.PI);
     public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(5.58,64.47, -Math.toRadians(30)); //55
     public static Pose2d depositPositionAllianceRedTOP = new Pose2d(5.58,-64.47, -Math.toRadians(150)); //55
     public static Pose2d depositPositionAllianceBlueMID = new Pose2d(5.58,64.47, -Math.toRadians(31)); //56
@@ -473,13 +475,14 @@ public class AutonomousBrain {
 
     private static final Pose2d DEPOSIT_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(40.0, 67.0, 0);
     private static final Pose2d DEPOSIT_TRAJECTORY_PASS_PIPE_POSITION = new Pose2d(20.0, 68.0, 0);   //Heading is identical to B_FIX_HEADING_POSITION
-    private static final Vector2d PICK_UP_TRAJECTORY_OPEN_PICK_UP_POSITION = new Vector2d(28.5, 65.5);
     private static final Pose2d PICK_UP_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(18.0, 66.0, 0);
     private static final Vector2d PICK_UP_TRAJECTORY_PASS_PIPE_POSITION = new Vector2d(37.0, 66.0);
-    private static final double PICK_UP_TRAJECTORY_PASS_PIPE_POSITION_TANGENT = Math.toRadians(-20.0);
-    private static final Vector2d PICK_UP_TRAJECTORY_MOVE_OUT_POSITION = new Vector2d(45.0, 64.0);
+    private static final double PICK_UP_TRAJECTORY_PASS_PIPE_POSITION_TANGENT = Math.toRadians(-10.0);
+    private static final Vector2d PICK_UP_TRAJECTORY_MOVE_OUT_POSITION = new Vector2d(43.0, 64.0);
     private static final double PICK_UP_TRAJECTORY_MOVE_OUT_POSITION_TANGENT = Math.toRadians(-10.0);
-    private static final Vector2d PICK_UP_TRAJECTORY_PICK_UP_POSITION = new Vector2d(61.0, 64.5);
 
 
+    public static Pose2d firstDepositPositionBlueTOP = new Pose2d(5.58, 64.47, -Math.toRadians(33.0));
+    public static Pose2d firstDepositPositionBlueMID = new Pose2d(5.58, 64.47, -Math.toRadians(31.0));
+    public static Pose2d firstDepositPositionBlueBOT = new Pose2d(5.58, 64.47, -Math.toRadians(34.0));
 }
