@@ -10,7 +10,7 @@ import org.sbs.bears.robotframework.controllers.OpenCVController;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-@Autonomous (name = "A - Auton (Red Simple)")
+@Autonomous (name = "A - Auton (Red Duck)")
 public class AutonomousRedSimple extends LinearOpMode {
     AutonomousBrainSimple brain;
     boolean qA = false;

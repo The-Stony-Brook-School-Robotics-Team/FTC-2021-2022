@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
+import org.sbs.bears.robotframework.enums.SlideTarget;
 
 @Autonomous(name = "A_William - RoadRunnerTest")
 public class RoadRunnerTest extends LinearOpMode {
@@ -39,13 +40,8 @@ public class RoadRunnerTest extends LinearOpMode {
 
         waitForStart();
 
-        autonomousClient.roadRunnerDrive.followTrajectory(
-                autonomousClient.roadRunnerDrive.trajectoryBuilder(autonomousClient.roadRunnerDrive.getPoseEstimate())
-                        .splineToSplineHeading(new Pose2d(45.0, 64.5, Math.toRadians(40.0)), Math.toRadians(40.0))
-                        .build()
-        );
+        autonomousClient.originalSlideController.extendDropRetract_NewAutonomous(SlideTarget.TOP_DEPOSIT);
 
-        localizeThread.interrupt();
         autonomousClient.stopRobot();
         stop();
     }

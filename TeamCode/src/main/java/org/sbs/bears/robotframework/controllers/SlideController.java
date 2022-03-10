@@ -42,6 +42,8 @@ public class SlideController {
     public static double SERVO_VELOCITY_CONSTANT = 0.8;
     public static boolean SERVO_TEST = false;
 
+    public static int ASlideExtendPositionOffSet = -200;
+    public static int ASlideRetractPositionOffset = 500;
 
     public SlideController(HardwareMap hardwareMap, Telemetry telemetry) {
         /** Initialization **/
@@ -360,7 +362,6 @@ public class SlideController {
         Log.d("SlideController", "bucket should be out");
         slideState = SlideState.EXTENDING;
 
-        int targetPos = 0;
         int targetPosFinal = 0;
         double verticalServoTargetPos = 0;
 
@@ -476,7 +477,7 @@ public class SlideController {
         slideMotor.setTargetPosition(slideMotorPosition_PARKED);
 
         //Wait until the slide is retracted to right outside the robot
-        while (slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT_RET + 100) {
+        while (slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT_RET + ASlideRetractPositionOffset) {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
