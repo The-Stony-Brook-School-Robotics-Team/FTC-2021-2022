@@ -435,7 +435,7 @@ public class SlideController {
         }
 
         //Wait until the slide bucket is extended outside of the robot
-        while (slideMotor.getCurrentPosition() <= slideMotorPosition_BUCKET_OUT) {
+        while (slideMotor.getCurrentPosition() <= slideMotorPosition_BUCKET_OUT + ASlideExtendPositionOffSet) {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
