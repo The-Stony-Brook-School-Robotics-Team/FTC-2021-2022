@@ -12,6 +12,8 @@
             <Servo name="rs" port="3" />
             <Servo name="bs" port="5" />
             <DigitalDevice name="stop" port="7" />
+            <REV_VL53L0X_RANGE_SENSOR name="rdist" port="0" bus="1" />
+            <REV_VL53L0X_RANGE_SENSOR name="bdist" port="1" bus="1" />
         </LynxModule>
         <LynxModule name="Control Hub" port="173">
             <goBILDA5202SeriesMotor name="lf" port="0" />
