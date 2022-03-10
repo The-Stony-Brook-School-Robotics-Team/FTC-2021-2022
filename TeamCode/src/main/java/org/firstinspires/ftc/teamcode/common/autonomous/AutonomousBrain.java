@@ -50,6 +50,12 @@ public class AutonomousBrain {
     NormalizedColorSensor normalizedColorSensor;
     RevColorSensorV3 colorNew;
 
+    double iniMaxAccel;
+    double iniMaxVel;
+    double iniMaxAngVel;
+    double iniMaxAngAccel;
+
+
     Telemetry tel;
     HardwareMap hwMap;
     AtomicReference<Boolean> qObjectInRobot = new AtomicReference<>();
@@ -80,14 +86,25 @@ public class AutonomousBrain {
         FINISHED
     }
 
+    public static double CustomMaxAccel = 40;
+    public static double CustomMaxVel = 110;
+    public static double CustomMaxAngAccel = 3;
+    public static double CustomMaxAngVel = 3;
+
     double iniTemps = 0;
     boolean isBlue = true;
     boolean isSpline = true;
 
     public AutonomousBrain(HardwareMap hardwareMap, Telemetry telemetry, AutonomousMode mode) // call in init.
     {
-        /*DriveConstantsMain.MAX_ACCEL = 30;
-        DriveConstantsMain.MAX_VEL = 40;*/
+        iniMaxAccel = DriveConstantsMain.MAX_ACCEL;
+        iniMaxVel = DriveConstantsMain.MAX_VEL;
+        iniMaxAngAccel = DriveConstantsMain.MAX_ANG_ACCEL;
+        iniMaxAngVel = DriveConstantsMain.MAX_ANG_VEL;
+        DriveConstantsMain.MAX_ACCEL = CustomMaxAccel;
+        DriveConstantsMain.MAX_VEL = CustomMaxVel;
+        DriveConstantsMain.MAX_ANG_ACCEL = CustomMaxAngAccel;
+        DriveConstantsMain.MAX_ANG_VEL = CustomMaxAngVel;
         majorState.set(MajorAutonomousState.STOPPED);
         minorState.set(MinorAutonomousState.STOPPED);
         qObjectInRobot.set(false);
@@ -213,8 +230,16 @@ public class AutonomousBrain {
                 SharedData.autonomousLastPosition = RRctrl.getPos();
                 majorState.set(MajorAutonomousState.FINISHED);
                 minorState.set(MinorAutonomousState.FINISHED);
+                DriveConstantsMain.MAX_ACCEL = iniMaxAccel;
+                DriveConstantsMain.MAX_VEL = iniMaxVel;
+                DriveConstantsMain.MAX_ANG_ACCEL = iniMaxAngAccel;
+                DriveConstantsMain.MAX_ANG_VEL = iniMaxAngVel;
                 return;
             case FINISHED:
+                DriveConstantsMain.MAX_ACCEL = iniMaxAccel;
+                DriveConstantsMain.MAX_VEL = iniMaxVel;
+                DriveConstantsMain.MAX_ANG_ACCEL = iniMaxAngAccel;
+                DriveConstantsMain.MAX_ANG_VEL = iniMaxAngVel;
                 return;
 
         }
