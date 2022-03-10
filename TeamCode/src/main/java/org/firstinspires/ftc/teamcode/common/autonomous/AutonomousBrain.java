@@ -86,10 +86,10 @@ public class AutonomousBrain {
         FINISHED
     }
 
-    public static double CustomMaxAccel = 40;
-    public static double CustomMaxVel = 110;
-    public static double CustomMaxAngAccel = 3;
-    public static double CustomMaxAngVel = 3;
+    public static double CustomMaxAccel = 20;
+    public static double CustomMaxVel = 50;
+    public static double CustomMaxAngAccel = 2;
+    public static double CustomMaxAngVel = 2;
 
     double iniTemps = 0;
     boolean isBlue = true;
@@ -101,10 +101,10 @@ public class AutonomousBrain {
         iniMaxVel = DriveConstantsMain.MAX_VEL;
         iniMaxAngAccel = DriveConstantsMain.MAX_ANG_ACCEL;
         iniMaxAngVel = DriveConstantsMain.MAX_ANG_VEL;
-        //DriveConstantsMain.MAX_ACCEL = CustomMaxAccel;
-        //DriveConstantsMain.MAX_VEL = CustomMaxVel;
-        //DriveConstantsMain.MAX_ANG_ACCEL = CustomMaxAngAccel;
-        //DriveConstantsMain.MAX_ANG_VEL = CustomMaxAngVel;
+        DriveConstantsMain.MAX_ACCEL = CustomMaxAccel;
+        DriveConstantsMain.MAX_VEL = CustomMaxVel;
+        DriveConstantsMain.MAX_ANG_ACCEL = CustomMaxAngAccel;
+        DriveConstantsMain.MAX_ANG_VEL = CustomMaxAngVel;
         majorState.set(MajorAutonomousState.STOPPED);
         minorState.set(MinorAutonomousState.STOPPED);
         qObjectInRobot.set(false);
@@ -368,7 +368,7 @@ public class AutonomousBrain {
                 }// debugging*/
 
                 if(isBlue) {
-                    RRctrl.getDrive().followTrajectory(
+                    /*RRctrl.getDrive().followTrajectory(
                             RRctrl.getDrive().trajectoryBuilder(
                                     RRctrl.getDrive().getPoseEstimate(), true)
                                     .splineToSplineHeading(DEPOSIT_TRAJECTORY_FIX_HEADING_POSITION, Math.toRadians(10))
@@ -377,7 +377,8 @@ public class AutonomousBrain {
                                     //.addSpatialMarker(DEPOSIT_TRAJECTORY_START_EXTEND_SLIDE_POSITION, this::extendDropRetract_TOP)
                                     //.addDisplacementMarker(this::AntiBlockingChecker_Deposit)
                                     .build()
-                    );
+                    );*/
+                    RRctrl.doBlueDepositTrajectoryNoTurnNonMerged();
                 }
                 else {
                     RRctrl.doRedDepositTrajectoryNoTurnNonMerged();
