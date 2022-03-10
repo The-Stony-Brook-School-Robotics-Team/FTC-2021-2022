@@ -23,6 +23,7 @@ public class AutonomousBlue extends LinearOpMode {
                     autonomousClient.roadRunnerDrive.update();
                     Thread.sleep(2);
                 } catch (InterruptedException e) {
+                    autonomousClient.stopRoadRunner();
                     e.printStackTrace();
                 }
             }
@@ -42,12 +43,13 @@ public class AutonomousBlue extends LinearOpMode {
             autonomousClient.pickUp();
             autonomousClient.deposit();
         }
-
-        autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_RED);
-        autonomousClient.park();
+        if (!AutonomousTimer.canContinue()) {
+            autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_RED);
+            autonomousClient.park();
+        }
 
         localizeThread.interrupt();
-        autonomousClient.stopRobot();
+        autonomousClient.stopRoadRunner();
         stop();
     }
 }
