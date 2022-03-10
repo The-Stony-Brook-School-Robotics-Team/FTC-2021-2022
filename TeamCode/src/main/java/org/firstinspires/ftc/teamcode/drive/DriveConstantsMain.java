@@ -21,11 +21,10 @@ public class DriveConstantsMain {
     public static double kA = 0.0064;
     public static double kStatic = 0.03;
 
-    public static double MAX_VEL = 60;      //140
-    public static double MAX_ACCEL = 40;    // 60
+    public static double MAX_VEL = 45;      //140
+    public static double MAX_ACCEL = 35;    // 60
     public static double MAX_ANG_VEL = 3;
     public static double MAX_ANG_ACCEL = 2;
-
 
     public static double encoderTicksToInches(double ticks) {
         return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;

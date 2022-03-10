@@ -44,7 +44,7 @@ public class AutonomousClientSafe {
     IntakeControllerBlue intakeControllerBlue;
     IntakeControllerRed intakeControllerRed;
     DuckCarouselController duckCarouselController;
-    Pose2d initialDropPosition = firstDepositPositionBlueTOP;
+    Pose2d initialDropPosition = depositPositionBlueTOP;
 
     RevBlinkinLedDriver ledDriver;
     NormalizedColorSensor normalizedColorSensor;
@@ -217,15 +217,15 @@ public class AutonomousClientSafe {
         switch (firstDeliveryHeight) {
             case ONE:
                 initialSlideTarget = SlideTarget.BOTTOM_DEPOSIT;
-                initialDropPosition = firstDepositPositionBlueBOT;
+                initialDropPosition = depositPositionBlueBOT;
                 break;
             case TWO:
                 initialSlideTarget = SlideTarget.MID_DEPOSIT;
-                initialDropPosition = firstDepositPositionBlueMID;
+                initialDropPosition = depositPositionBlueMID;
                 break;
             default:
                 initialSlideTarget = SlideTarget.TOP_DEPOSIT;
-                initialDropPosition = firstDepositPositionBlueTOP;
+                initialDropPosition = depositPositionBlueTOP;
         }
         telemetry.addData("Camera Read: ", initialSlideTarget.toString());
         needToReadCamera = false;
@@ -331,7 +331,7 @@ public class AutonomousClientSafe {
     private static final double PICK_UP_TRAJECTORY_PASS_PIPE_POSITION_TANGENT = Math.toRadians(-20.0);
     private static final Vector2d PICK_UP_TRAJECTORY_MOVE_OUT_POSITION = new Vector2d(45.0, 64.0);
     private static final double PICK_UP_TRAJECTORY_MOVE_OUT_POSITION_TANGENT = Math.toRadians(-10.0);
-    private static final Vector2d PICK_UP_TRAJECTORY_PICK_UP_POSITION = new Vector2d(61.0, 64.5);
+    private static final Vector2d PICK_UP_TRAJECTORY_PICK_UP_POSITION = new Vector2d(58.0, 64.5);
 
     private static final Pose2d DEPOSIT_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(40.0, 67.0, ZERO);
     private static final Pose2d DEPOSIT_TRAJECTORY_PASS_PIPE_POSITION = new Pose2d(20.0, 68.0, ZERO);   //Heading is identical to B_FIX_HEADING_POSITION
@@ -349,7 +349,7 @@ public class AutonomousClientSafe {
     private static final Vector2d ABC_CHECK_POSITION_PARK = ABC_CHECK_POSITION_PICK_UP;
 
 
-    public static Pose2d firstDepositPositionBlueTOP = new Pose2d(5.58, 64.47, -Math.toRadians(30.0));
-    public static Pose2d firstDepositPositionBlueMID = new Pose2d(5.58, 64.47, -Math.toRadians(31.0));
-    public static Pose2d firstDepositPositionBlueBOT = new Pose2d(5.58, 64.47, -Math.toRadians(34.0));
+    public static Pose2d depositPositionBlueTOP = new Pose2d(5.58, 64.47, -Math.toRadians(30.0));
+    public static Pose2d depositPositionBlueMID = new Pose2d(5.58, 64.47, -Math.toRadians(31.0));
+    public static Pose2d depositPositionBlueBOT = new Pose2d(5.58, 64.47, -Math.toRadians(34.0));
 }
