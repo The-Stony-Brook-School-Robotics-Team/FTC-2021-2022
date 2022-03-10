@@ -123,9 +123,11 @@ public class AutonomousBrainSimple {
                 RRctrl.setPos(startPositionRed);
             }
         }
-        if(mode== AutonomousMode.RedStatesDuckSimple)
+        if(mode == AutonomousMode.RedStatesDuckSimple)
         {
             RRctrl.setPos(startPositionRedCarousel);
+            isBlue = false;
+            isSpline = false;
         }
         intakeCtrlBlue.setState(IntakeState.DUMP);
         intakeCtrlRed.setState(IntakeState.DUMP); // to prevent from moving around
@@ -146,7 +148,7 @@ public class AutonomousBrainSimple {
         switch(majorState.get()) {
             case STOPPED:
                 doAnalysisMaster = true;
-                if(mode == AutonomousMode.BlueStatesDuckSimple) {
+                if(mode == AutonomousMode.BlueStatesDuckSimple || mode == AutonomousMode.RedStatesDuckSimple) {
                     majorState.set(MajorAutonomousState.ONE_CAMERA_READ_CAROUSEL);
                     return;
                 }
@@ -181,11 +183,11 @@ public class AutonomousBrainSimple {
                 switch (heightFromDuck) {
                     case ONE:
                         iniTarget = SlideTarget.BOTTOM_CAROUSEL;
-                        iniDropPosition = isBlue ? duckSpinningPositionB1 : duckSpinningPositionR;
+                        iniDropPosition = isBlue ? duckSpinningPositionB1 : duckSpinningPositionR1;
                         break;
                     case TWO:
                         iniTarget = SlideTarget.MIDDLE_CAROUSEL;
-                        iniDropPosition = isBlue ? duckSpinningPositionB2 : duckSpinningPositionR;
+                        iniDropPosition = isBlue ? duckSpinningPositionB2 : duckSpinningPositionR2;
                         break;
                     case THREE:
                         iniTarget = SlideTarget.TOP_CAROUSEL;
@@ -232,7 +234,7 @@ public class AutonomousBrainSimple {
                     slideCtrl.extendDropRetractAuton(iniTarget);
                     Log.d("AutonBrain","Slide drop complete");
                 }).start();
-                robot.getDuckCtrl().spinOneDuck();
+                robot.getDuckCtrl().spinOneDuck(isBlue);
                 Log.d("AutonBrain","Duck spin complete");
                 majorState.set(MajorAutonomousState.THREE_WAIT_FOR_TIMER);
                 return;
@@ -480,7 +482,7 @@ public class AutonomousBrainSimple {
     public static Pose2d startPositionBlue = new Pose2d(startPositionBlueX,startPositionBlueY,startPositionBlueH);
     public static Pose2d startPositionRed = new Pose2d(startPositionRedX,startPositionRedY,Math.toRadians(startPositionRedH)); // TODO may need to remeasure
     public static Pose2d startPositionBlueCarousel = new Pose2d(-42,66,0);
-    public static Pose2d startPositionRedCarousel = new Pose2d(-42,66,0);
+    public static Pose2d startPositionRedCarousel = new Pose2d(-42,-66,Math.PI);
     public static Pose2d warehousePickupPositionBlue = new Pose2d(43,70,0);
     public static Pose2d warehousePickupPositionRed = new Pose2d(43,-70,-Math.PI);
     public static Pose2d depositPositionBlueNoTurn = new Pose2d(-11,75,0);
@@ -497,8 +499,8 @@ public class AutonomousBrainSimple {
     public static Pose2d resetPositionB4WarehouseRed2 = new Pose2d(14,-70,-Math.PI);
     public static Pose2d parkingPositionBlue = new Pose2d(50,70,0);
     public static Pose2d parkingPositionRed = new Pose2d(50,-70,-Math.PI);
-    public static Pose2d parkingPositionBlueStorageUnit = new Pose2d(-70,36,0);
-    public static Pose2d parkingPositionRedStorageUnit = new Pose2d(-70,36,0);
+    public static Pose2d parkingPositionBlueStorageUnit = new Pose2d(-70,36,Math.PI/2);
+    public static Pose2d parkingPositionRedStorageUnit = new Pose2d(-70,-36,Math.PI/2);
     public static Pose2d whiteLinePosBlue = new Pose2d(29.5,65.5,0);
     public static Pose2d whiteLinePosRed = new Pose2d(29.5,-65.5,-Math.PI);
     public static double velocityIntake = 30;
@@ -508,7 +510,7 @@ public class AutonomousBrainSimple {
     public static Pose2d duckSpinningPositionB = new Pose2d(-60, 63, Math.toRadians(46));
     public static Pose2d duckSpinningPositionB2 = new Pose2d(-60, 63, Math.toRadians(45));
     public static Pose2d duckSpinningPositionB1 = new Pose2d(-60, 63, Math.toRadians(43));
-    public static Pose2d duckSpinningPositionR = new Pose2d(-60, -63, Math.toRadians(-46));
-    public static Pose2d duckSpinningPositionR2 = new Pose2d(-60, -63, Math.toRadians(-45));
-    public static Pose2d duckSpinningPositionR1 = new Pose2d(-60, -63, Math.toRadians(-43));
+    public static Pose2d duckSpinningPositionR = new Pose2d(-60, -63, Math.toRadians(134));
+    public static Pose2d duckSpinningPositionR2 = new Pose2d(-60, -63, Math.toRadians(135));
+    public static Pose2d duckSpinningPositionR1 = new Pose2d(-60, -63, Math.toRadians(137));
 }

@@ -2,6 +2,7 @@ package org.sbs.bears.robotframework.controllers;
 
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -48,14 +49,18 @@ public class DuckCarouselController {
         wheelMover = hardwareMap.get(DcMotor.class, "duck");
         wheelMover.setPower(0);
     }
-
     public void spinOneDuck() {
-
+        spinOneDuck(true);
+    }
+    public void spinOneDuck(boolean qBlue) {
+        if(!qBlue) {wheelMover.setDirection(DcMotorSimple.Direction.REVERSE);}
+        else {wheelMover.setDirection(DcMotorSimple.Direction.FORWARD);}
         initTime = getCurrentSystemSecond();
         FIRST_STAGE_TIME_FLAG = initTime + FIRST_STAGE_TIME_INTERVAL;
         SECOND_STAGE_TIME_FLAG = FIRST_STAGE_TIME_FLAG + SECOND_STAGE_TIME_INTERVAL;
         while (updateMotorSpeed());
     }
+
 
     private double getCurrentSystemSecond() {
         return NanoClock.system().seconds();
