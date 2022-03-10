@@ -23,12 +23,12 @@ import java.util.ArrayList;
  * @version 5.1
  */
 @Config
-public class CapstoneOpenCVEngineBlueSimple extends DuckOpenCVEngine {
+public class CapstoneOpenCVEngineRedSimple extends DuckOpenCVEngine {
     // MARK - Class Variables
 
-    public CapstoneOpenCVEngineBlueSimple() {
+    public CapstoneOpenCVEngineRedSimple() {
         super();
-        Log.d("BlueSimpleCapstoneOpenCVController","Init req");
+        Log.d("RedSimpleCapstoneOpenCVController","Init req");
     }
 
     /**
@@ -80,7 +80,7 @@ public class CapstoneOpenCVEngineBlueSimple extends DuckOpenCVEngine {
     /**
      * This variable represents the XOffset of the rectangle about barcode A.
      */
-    public static int XOffsetA = -850; // -500
+    public static int XOffsetA = -920; // -500
     /**
      * This variable represents the YOffset of the rectangle about barcode A.
      */
@@ -122,7 +122,7 @@ public class CapstoneOpenCVEngineBlueSimple extends DuckOpenCVEngine {
     /**
      * This variable represents the XOffset of the rectangle about barcode C.
      */
-    public static int XOffsetC = 100;
+    public static int XOffsetC = 400;
     /**
      * This variable represents the YOffset of the rectangle about barcode C.
      */

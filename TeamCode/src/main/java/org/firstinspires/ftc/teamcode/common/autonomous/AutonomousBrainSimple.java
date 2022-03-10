@@ -177,11 +177,11 @@ public class AutonomousBrainSimple {
                 switch (heightFromDuck) {
                     case ONE:
                         iniTarget = SlideTarget.BOTTOM_CAROUSEL;
-                        iniDropPosition = isBlue ? duckSpinningPositionB : duckSpinningPositionR;
+                        iniDropPosition = isBlue ? duckSpinningPositionB1 : duckSpinningPositionR;
                         break;
                     case TWO:
                         iniTarget = SlideTarget.MIDDLE_CAROUSEL;
-                        iniDropPosition = isBlue ? duckSpinningPositionB : duckSpinningPositionR;
+                        iniDropPosition = isBlue ? duckSpinningPositionB2 : duckSpinningPositionR;
                         break;
                     case THREE:
                         iniTarget = SlideTarget.TOP_CAROUSEL;
@@ -501,7 +501,8 @@ public class AutonomousBrainSimple {
     public static double accelIntake = 25;
     public static double intakeTurnAmount = 5; // TODO test and adjust as needed
     public static double distanceIntake = 40;
-    public static Pose2d duckSpinningPositionB = new Pose2d(-60, 63, Math.toRadians(48));
+    public static Pose2d duckSpinningPositionB = new Pose2d(-60, 63, Math.toRadians(46));
+    public static Pose2d duckSpinningPositionB2 = new Pose2d(-60, 63, Math.toRadians(45));
+    public static Pose2d duckSpinningPositionB1 = new Pose2d(-60, 63, Math.toRadians(43));
     public static Pose2d duckSpinningPositionR = new Pose2d(-60, -63, Math.toRadians(-48));
-
 }
