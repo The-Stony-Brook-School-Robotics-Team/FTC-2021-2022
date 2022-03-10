@@ -117,11 +117,15 @@ public class AutonomousBrainSimple {
             }
         } else {
             if(!isSpline) {
-                RRctrl.setPos(startPositionRedCarousel);
+               //
             }
             else {
                 RRctrl.setPos(startPositionRed);
             }
+        }
+        if(mode== AutonomousMode.RedStatesDuckSimple)
+        {
+            RRctrl.setPos(startPositionRedCarousel);
         }
         intakeCtrlBlue.setState(IntakeState.DUMP);
         intakeCtrlRed.setState(IntakeState.DUMP); // to prevent from moving around
@@ -504,5 +508,7 @@ public class AutonomousBrainSimple {
     public static Pose2d duckSpinningPositionB = new Pose2d(-60, 63, Math.toRadians(46));
     public static Pose2d duckSpinningPositionB2 = new Pose2d(-60, 63, Math.toRadians(45));
     public static Pose2d duckSpinningPositionB1 = new Pose2d(-60, 63, Math.toRadians(43));
-    public static Pose2d duckSpinningPositionR = new Pose2d(-60, -63, Math.toRadians(-48));
+    public static Pose2d duckSpinningPositionR = new Pose2d(-60, -63, Math.toRadians(-46));
+    public static Pose2d duckSpinningPositionR2 = new Pose2d(-60, -63, Math.toRadians(-45));
+    public static Pose2d duckSpinningPositionR1 = new Pose2d(-60, -63, Math.toRadians(-43));
 }
