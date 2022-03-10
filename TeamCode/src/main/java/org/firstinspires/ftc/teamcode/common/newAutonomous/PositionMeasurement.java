@@ -36,7 +36,7 @@ public class PositionMeasurement extends LinearOpMode {
         while (opModeIsActive()) {
             telemetry.addData("X", autonomousClient.roadRunnerController.getPos().getX());
             telemetry.addData("Y", autonomousClient.roadRunnerController.getPos().getY());
-            telemetry.addData("Head",autonomousClient.roadRunnerController.getPos().getHeading());
+            telemetry.addData("Head",Math.toDegrees(autonomousClient.roadRunnerController.getPos().getHeading()));
             telemetry.update();
         }
 
