@@ -198,7 +198,7 @@ public class AutonomousSlideController {
         dumperServo.setPosition(dumperPosition_CLOSED);
 
         //TODO:-----------------------------------------------
-        slideMotor.setTargetPosition(slideMotorTargetPosition);   //???
+        slideMotor.setTargetPosition(slideMotorTargetPosition);
         if (slideTarget == SlideTarget.CAP_FROM_CAROUSEL) {
             slideMotor.setPower(slideMotorPowerCarousel);
         } else {

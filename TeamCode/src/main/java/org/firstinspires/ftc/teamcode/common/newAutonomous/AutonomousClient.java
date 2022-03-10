@@ -207,8 +207,8 @@ public class AutonomousClient {
                         .splineToSplineHeading(DEPOSIT_TRAJECTORY_FIX_HEADING_POSITION, Math.toRadians(170.0))
                         .splineToLinearHeading(DEPOSIT_TRAJECTORY_PASS_PIPE_POSITION, Math.toRadians(-170.0))
                         .splineToSplineHeading(AutonomousClient.firstDepositPositionBlueTOP, Math.toRadians(175.0))
-                        .addSpatialMarker(DEPOSIT_TRAJECTORY_START_EXTEND_SLIDE_POSITION, this::extendDropRetract_TOP)
                         .addDisplacementMarker(this::AntiBlockingChecker_Deposit)
+                        .addSpatialMarker(DEPOSIT_TRAJECTORY_START_EXTEND_SLIDE_POSITION, this::extendDropRetract_TOP)
                         .build()
         );
     }

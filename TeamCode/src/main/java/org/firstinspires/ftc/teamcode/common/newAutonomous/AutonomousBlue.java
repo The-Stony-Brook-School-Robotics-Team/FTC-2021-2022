@@ -9,12 +9,12 @@ import org.sbs.bears.robotframework.controllers.OpenCVController;
 
 @Autonomous(name = "A_William - AutonomousBlue")
 public class AutonomousBlue extends LinearOpMode {
-    AutonomousClientD autonomousClient;
+    AutonomousClientSafe autonomousClient;
 
     @Override
     public void runOpMode() {
         OpenCVController.isDuck = false;
-        autonomousClient = new AutonomousClientD(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
+        autonomousClient = new AutonomousClientSafe(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
         msStuckDetectLoop = Integer.MAX_VALUE;  //Turn off infinite loop detection.
 
         Thread localizeThread = new Thread(() -> {

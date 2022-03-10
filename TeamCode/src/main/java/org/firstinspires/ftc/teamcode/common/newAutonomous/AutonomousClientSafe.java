@@ -21,12 +21,11 @@ import org.sbs.bears.robotframework.controllers.OpenCVController;
 import org.sbs.bears.robotframework.controllers.RoadRunnerController;
 import org.sbs.bears.robotframework.controllers.SlideController;
 import org.sbs.bears.robotframework.enums.IntakeState;
-import org.sbs.bears.robotframework.enums.SlideState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
 
 
-public class AutonomousClientD {
+public class AutonomousClientSafe {
     final boolean isTest = false;
 
     final HardwareMap hardwareMap;
@@ -56,7 +55,10 @@ public class AutonomousClientD {
 
     SlideTarget initialSlideTarget;
 
-    public AutonomousClientD(HardwareMap hardwareMap, Telemetry telemetry, AutonomousMode autonomousMode) {
+    Thread intakeChecker = new Thread();
+    Thread extendRetractThread = new Thread();
+
+    public AutonomousClientSafe(HardwareMap hardwareMap, Telemetry telemetry, AutonomousMode autonomousMode) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
         this.autonomousMode = autonomousMode;
@@ -105,13 +107,15 @@ public class AutonomousClientD {
                 e.printStackTrace();
             }
         } else
-            originalSlideController.extendDropRetractAutonNew(initialSlideTarget);
+            originalSlideController.extendDropRetract_NewAutonomous(initialSlideTarget);
 
         objectIsInRobot = false;
     }
 
     public Thread getIntakeChecker() {
         return new Thread(() -> {  //Stop trajectory and load block into slide if robot has gotten the block.
+            objectIsInRobot = false;
+
             while (!objectIsInRobot) {
                 if (Thread.currentThread().isInterrupted())
                     return;
@@ -119,7 +123,10 @@ public class AutonomousClientD {
                 objectIsInRobot = intakeControllerBlue.isObjectInPayload();
 //                Sleep.sleep(10);
             }
+
+            //Block is in.
             roadRunnerController.endTrajectory();
+            intakeControllerBlue.setState(IntakeState.DUMP);
         });
     }
 
@@ -135,11 +142,12 @@ public class AutonomousClientD {
         objectIsInRobot = intakeControllerBlue.isObjectInPayload();
         ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
 
-        Thread intakeChecker = getIntakeChecker();
-        intakeChecker.start();
+        if (!intakeChecker.isAlive()) {
+            intakeChecker = getIntakeChecker();
+            intakeChecker.start();
+        }
 
         while (!objectIsInRobot) {
-
             if (isInWarehouse) {
                 runTrajectory_PickUpSecondary();
             } else {
@@ -147,15 +155,16 @@ public class AutonomousClientD {
                 isInWarehouse = true;
             }
 
-            //Picking-up is not successful.
-            ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+            if (!objectIsInRobot)    //PickUp is not successful.
+                ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
 
             if (!AutonomousTimer.canContinue(AutonomousTimer.CurrentState.PickUpSecondaryToDeposit))
                 return;
         }
 
-        intakeControllerBlue.setState(IntakeState.DUMP);
-        intakeChecker.interrupt();
+        if (intakeChecker.isAlive())
+            intakeChecker.interrupt();
+
         ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
     }
 
@@ -163,14 +172,17 @@ public class AutonomousClientD {
         if (!AutonomousTimer.canContinue())
             return;
 
-        Thread extendRetractThread = startExtendDropRetractThread();
+        if (!extendRetractThread.isAlive())
+            extendRetractThread = startExtendDropRetractThread();
 
         runTrajectory_Deposit();
 
-        try {
-            extendRetractThread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        while (originalSlideController.slideMotor.getCurrentPosition() > 800) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         objectIsInRobot = false;
@@ -186,7 +198,7 @@ public class AutonomousClientD {
                 }
             }
 
-            originalSlideController.extendDropRetractAutonNew(SlideTarget.TOP_DEPOSIT);
+            originalSlideController.extendDropRetract_NewAutonomous(SlideTarget.TOP_DEPOSIT);
             //TODO start path here
         });
         extendDropRetractThread.start();
@@ -228,10 +240,9 @@ public class AutonomousClientD {
                         .splineToConstantHeading(PICK_UP_TRAJECTORY_MOVE_OUT_POSITION, PICK_UP_TRAJECTORY_MOVE_OUT_POSITION_TANGENT)
                         .splineToConstantHeading(PICK_UP_TRAJECTORY_PICK_UP_POSITION, ZERO)
                         .addSpatialMarker(PICK_UP_TRAJECTORY_OPEN_PICK_UP_POSITION, () -> intakeControllerBlue.setState(IntakeState.BASE))
-//                        .addSpatialMarker(ABC_CHECK_POSITION_PICK_UP, this::AntiBlockingChecker_PickUp)
+                        .addDisplacementMarker(this::AntiBlockingChecker_PickUp)
                         .build()
         );
-        roadRunnerDrive.update();
     }
 
     public void runTrajectory_Deposit() {
@@ -241,7 +252,7 @@ public class AutonomousClientD {
                         .splineToSplineHeading(DEPOSIT_TRAJECTORY_FIX_HEADING_POSITION, Math.toRadians(170.0))
                         .splineToLinearHeading(DEPOSIT_TRAJECTORY_PASS_PIPE_POSITION, Math.toRadians(-170.0))
                         .splineToSplineHeading(AutonomousClient.firstDepositPositionBlueTOP, Math.toRadians(175.0))
-//                        .addDisplacementMarker(this::AntiBlockingChecker_Deposit)
+                        .addDisplacementMarker(this::AntiBlockingChecker_Deposit)
                         .build()
         );
     }
@@ -260,7 +271,7 @@ public class AutonomousClientD {
                 roadRunnerDrive.trajectoryBuilder(roadRunnerDrive.getPoseEstimate())
                         .lineToSplineHeading(PICK_UP_TRAJECTORY_FIX_HEADING_POSITION)
                         .splineToLinearHeading(PARK_TRAJECTORY_PARK_POSITION, Math.toRadians(-10.0))
-//                        .addDisplacementMarker(this::AntiBlockingChecker_Park)
+                        .addDisplacementMarker(this::AntiBlockingChecker_Park)
                         .build()
         );
     }
@@ -285,7 +296,7 @@ public class AutonomousClientD {
                             .lineToLinearHeading(ABC_RESET_POSITION_DEPOSIT)
                             .build()
             );
-            runTrajectory_Deposit();
+            deposit();
         }
     }
 
@@ -311,10 +322,10 @@ public class AutonomousClientD {
     public static Pose2d startPositionBlue = new Pose2d(14.0, 65.5, ZERO);
     public static Pose2d WHITE_LINE_POSITION = new Pose2d(29.5, 65.5, ZERO);
     private static final double ANTI_BLOCKING_CHECKER_DEPOSIT_X = 25.0;
-    private static final double ANTI_BLOCKING_CHECKER_PICK_UP_X = 32.0;
+    private static final double ANTI_BLOCKING_CHECKER_PICK_UP_X = 40.0;
     private static final double ANTI_BLOCKING_CHECKER_PARK_X = 32.0;
 
-    private static final Vector2d PICK_UP_TRAJECTORY_OPEN_PICK_UP_POSITION = new Vector2d(28.5, 65.5);
+    private static final Vector2d PICK_UP_TRAJECTORY_OPEN_PICK_UP_POSITION = new Vector2d(25.0, 65.5);
     private static final Pose2d PICK_UP_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(18.0, 66.0, ZERO);
     private static final Vector2d PICK_UP_TRAJECTORY_PASS_PIPE_POSITION = new Vector2d(37.0, 66.0);
     private static final double PICK_UP_TRAJECTORY_PASS_PIPE_POSITION_TANGENT = Math.toRadians(-20.0);
