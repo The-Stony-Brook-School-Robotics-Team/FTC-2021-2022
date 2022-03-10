@@ -4,6 +4,10 @@ import android.util.Log;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.path.EmptyPathSegmentException;
+import com.acmerobotics.roadrunner.path.PathContinuityViolationException;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.hardware.broadcom.BroadcomColorSensor;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
@@ -14,13 +18,14 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.common.sharedResources.SharedData;
 import org.firstinspires.ftc.teamcode.drive.DriveConstantsMain;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.Robot;
-import org.sbs.bears.robotframework.Sleep;
 import org.sbs.bears.robotframework.controllers.DuckCarouselController;
 import org.sbs.bears.robotframework.controllers.IntakeController;
 import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
 import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
+import org.sbs.bears.robotframework.controllers.ParkingProbingSensorController;
 import org.sbs.bears.robotframework.controllers.RoadRunnerController;
 import org.sbs.bears.robotframework.controllers.SlideController;
 import org.sbs.bears.robotframework.enums.IntakeState;
@@ -32,6 +37,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @Config
 public class AutonomousBrainSimple {
+    public static double EPSILON_DIST = 3; // in
     AutonomousMode mode;
     Robot robot;
     OpenCVController CVctrl;
@@ -40,7 +46,10 @@ public class AutonomousBrainSimple {
     IntakeControllerBlue intakeCtrlBlue;
     IntakeControllerRed intakeCtrlRed;
     DuckCarouselController duckCtrl;
+    ParkingProbingSensorController parkingProber;
     Pose2d iniDropPosition = depositPositionAllianceBlueTOP;
+
+
 
     boolean isParkingAvailable = false;
     int numberOfTrials = 1;
@@ -70,8 +79,7 @@ public class AutonomousBrainSimple {
         THREE_BACK_FORTH,
         THREE_WAIT_FOR_TIMER,
         FOUR_PARKING_CLEANUP,
-        FOUR_PARKING_CHECK_AVAIL,
-        FIVE_PARKING_SIMPLE,
+        FOUR_GO_SLOWLY_TO_PARK_WAREHOUSE,
         FINISHED
     }
     enum MinorAutonomousState {
@@ -105,6 +113,7 @@ public class AutonomousBrainSimple {
         this.intakeCtrlBlue = robot.getIntakeCtrlBlue();
         this.intakeCtrlRed = robot.getIntakeCtrlRed();
         this.duckCtrl = robot.getDuckCtrl();
+        this.parkingProber = robot.getParkProber();
         this.leds = hardwareMap.get(RevBlinkinLedDriver.class, "rgb");
         isBlue = (mode == AutonomousMode.BlueStatesWarehouse || mode == AutonomousMode.BlueStatesSpline || mode == AutonomousMode.BlueStatesDuckSimple);
         isSpline = (mode == AutonomousMode.BlueStatesSpline || mode == AutonomousMode.RedStatesSpline);
@@ -242,7 +251,7 @@ public class AutonomousBrainSimple {
                 double currentTime2 = NanoClock.system().seconds();
                 if(currentTime2 - iniTemps > 20) { // ten seconds left
                     Log.d("AutonBrain","Time Constraint: adaptive parking");
-                    majorState.set(MajorAutonomousState.FOUR_PARKING_CHECK_AVAIL);
+                    majorState.set(MajorAutonomousState.FOUR_GO_SLOWLY_TO_PARK_WAREHOUSE);
                 }
                 return;
             case THREE_BACK_FORTH:
@@ -268,37 +277,74 @@ public class AutonomousBrainSimple {
                 majorState.set(MajorAutonomousState.FINISHED);
                 minorState.set(MinorAutonomousState.FINISHED);
                 return;
-            case FOUR_PARKING_CHECK_AVAIL:
-                doAnalysisMaster = true;
+            case FOUR_GO_SLOWLY_TO_PARK_WAREHOUSE:
+                /*doAnalysisMaster = true;
                 if(CVctrl.prepareWhiteLineEngine()) {
                     Sleep.sleep(1000);
                     isParkingAvailable = false; // TODO CVctrl.getWhiteLineAvailable();
                 }
                 doAnalysisMaster = false;
-                CVctrl.shutDown();
-                majorState.set(MajorAutonomousState.FIVE_PARKING_SIMPLE);
-                return;
-            case FIVE_PARKING_SIMPLE:
-                if(isBlue) {
-                    if (isParkingAvailable) {
-                        RRctrl.followLineToSpline(resetPositionB4WarehouseBlue2);
-                        RRctrl.followLineToSpline(parkingPositionBlue);
+                CVctrl.shutDown();*/
+                AtomicReference<Boolean> hasFinishedTraj = new AtomicReference<>();
+                AtomicReference<Boolean> hasHaltedTraj = new AtomicReference<>();
+                hasFinishedTraj.set(false);
+                hasHaltedTraj.set(false);
+                new Thread(()->{
+                    while(!hasFinishedTraj.get())
+                    {
+                        if(!parkingProber.isOpeningAvailableAuton(isBlue,RRctrl.distanceTo(isBlue ? parkingPositionBlue : parkingPositionRed)))
+                        {
+                            hasHaltedTraj.set(true);
+                            Log.d("AutonBrain","[ATTENTION] Halted Parking attempt: robot detected.");
+                            Log.e("AutonBrain","[ATTENTION] Halted Parking attempt: robot detected.");
+                            break; // AAAAAH!! STOP!!
+                        }
                     }
-                    else if (!(isParkingAvailable)) {
-                        RRctrl.followLineToSpline(parkingPositionBlueStorageUnit);
-                    }
+                    RRctrl.endTrajectory(); // KILL!!!
+                    hasFinishedTraj.set(true);
+                }).start();
+                if(!isBlue) {
+                    RRctrl.simpleAutonParkingProbeRed();
                 }
                 else {
-                    if (isParkingAvailable) {
-                        RRctrl.followLineToSpline(resetPositionB4WarehouseRed2);
-                        RRctrl.followLineToSpline(parkingPositionRed);
-                    }
-                    else if (!(isParkingAvailable)) {
-                        RRctrl.followLineToSpline(parkingPositionRedStorageUnit);
-                    }
+                    RRctrl.simpleAutonParkingProbeBlue();
                 }
-                Log.d("AutonBrain","finished all tasks.");
+                hasFinishedTraj.set(true);
+                if(hasHaltedTraj.get())
+                {
+                    // backpedal fast!!!!
+                    TrajectoryVelocityConstraint velocityConstraintFast = SampleMecanumDrive.getVelocityConstraint(100, DriveConstantsMain.MAX_ANG_VEL, DriveConstantsMain.TRACK_WIDTH);
+                    TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(80);
+                    RRctrl.followLineToSpline((isBlue ? parkingPositionBlueStorageUnit : parkingPositionRedStorageUnit), velocityConstraintFast,accelerationConstraint);
+                    try
+                    {
+                        RRctrl.followLineToSpline((isBlue ? parkingPositionBlueStorageUnit : parkingPositionRedStorageUnit));
+                    }
+                    catch (EmptyPathSegmentException e)
+                    {
+                       Log.d("AutonBrain","Looks like we are in place!");
+                    }
+                    catch(Exception e)
+                    {
+                        Log.d("AutonBrain","Funky Excpetion thrown...\n" +e.getMessage());
+                    }
+                    Log.d("AutonBrain","Target to current delta: " + RRctrl.distanceTo(parkingPositionBlueStorageUnit));
+                    majorState.set(MajorAutonomousState.FINISHED);
+                    Log.d("AutonBrain","finished all tasks.");
+                    // done!
+                    return;
+                }
+                double dist = RRctrl.distanceTo(parkingPositionBlue);
+                Log.d("AutonBrain","Target to current delta: " + dist);
+                if(dist > EPSILON_DIST)
+                {
+                    Log.d("AutonBrain","Too far: need to correct");
+                    RRctrl.followLineToSpline(parkingPositionBlue);
+                    Log.d("AutonBrain","Corrected.");
+                    Log.d("AutonBrain","Target to current delta: " + dist);
+                }
                 majorState.set(MajorAutonomousState.FINISHED);
+                Log.d("AutonBrain","finished all tasks.");
                 return;
             case FINISHED:
                 return;
