@@ -68,16 +68,18 @@ public class ButtonHandler {
     }
     public static SegmentPositions currentSegmentPosition = SegmentPositions.EXTEND;
 
+    public static Boolean invertedDuckSpinner = false;
     public static Thread asyncDuck = new Thread(() -> {
-        duckspinnerSpinning = true;
-        carouselController.spinOneDuck();
-        duckspinnerSpinning = false;
-    });
-
-    public static Thread asyncDuckInverted = new Thread(() -> {
-        duckspinnerSpinning = true;
-        carouselController.spinOneDuck(false);
-        duckspinnerSpinning = false;
+        if(invertedDuckSpinner) {
+            duckspinnerSpinning = true;
+            carouselController.spinOneDuck(false);
+            duckspinnerSpinning = false;
+            invertedDuckSpinner = false;
+        } else {
+            duckspinnerSpinning = true;
+            carouselController.spinOneDuck();
+            duckspinnerSpinning = false;
+        }
     });
 
     public static Boolean runningAsyncSlideExtend = false;
@@ -205,9 +207,7 @@ public class ButtonHandler {
                      * @usage Detect White Line and deposit
                      */
                     if(primaryGamepad.right_bumper) {
-                        if(!roadrunnerHandler.isBusy) {
-                            roadrunnerHandler.scheduleMovement(RoadrunnerHandler.MovementTypes.WAREHOUSE_AUTO_TURN);
-                        }
+
                     }
 
                     /**
@@ -281,8 +281,20 @@ public class ButtonHandler {
                         }
                         isPressingLeftTrigger = true;
                     } else if(primaryGamepad.left_trigger < Configuration.leftTriggerTreshold && isPressingLeftTrigger) {
-                        isPressingLeftTrigger= false;
+                        isPressingLeftTrigger = false;
                     }
+
+                    /**
+                     * RIGHT TRIGGER
+                     * @usage Inverted Duck Spinner
+                     */
+                    if(primaryGamepad.right_trigger > 0.2) {
+                        if(duckspinnerSpinning == false) {
+                            invertedDuckSpinner = true;
+                            asyncDuck.start();
+                        }
+                    }
+
                     break;
                 case SECONDARY:
 
@@ -354,14 +366,6 @@ public class ButtonHandler {
                     if(primaryGamepad.left_trigger > 0.2) {
                         asyncExtendSlide.interrupt();
                         runningAsyncSlideExtend = false;
-                    }
-
-                    /**
-                     * RIGHT TRIGGER
-                     * @usage Inverted Duck Spinner
-                     */
-                    if(primaryGamepad.left_trigger > 0.2) {
-                        asyncDuckInverted.start();
                     }
 
 
