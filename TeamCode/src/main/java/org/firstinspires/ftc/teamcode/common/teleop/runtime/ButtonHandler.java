@@ -276,8 +276,10 @@ public class ButtonHandler {
 
                         if(blueIntake.isDown()) {
                             blueIntake.setState(IntakeState.BASE);
+                            redIntake.setState(IntakeState.BASE);
                         } else if(!blueIntake.isDown()) {
                             blueIntake.setState(IntakeState.DUMP);
+                            redIntake.setState(IntakeState.DUMP);
                         }
                         isPressingLeftTrigger = true;
                     } else if(primaryGamepad.left_trigger < Configuration.leftTriggerTreshold && isPressingLeftTrigger) {
