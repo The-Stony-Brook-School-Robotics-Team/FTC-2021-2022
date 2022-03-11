@@ -13,8 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.drive.timeout.CustomTimeoutTuningDrive;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
-@Config
-@Autonomous(group = "drive", name="**INFINITE** PointTest")
+//@Autonomous(group = "drive", name="**INFINITE** PointTest")
 public class PointTest extends LinearOpMode {
 
     // Config

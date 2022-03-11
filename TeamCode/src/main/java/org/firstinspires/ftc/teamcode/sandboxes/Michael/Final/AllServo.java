@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
-@TeleOp(name="B- ALL SERVOS", group="Linear Opmode")
+@TeleOp(name="B - ALL SERVOS", group="Linear Opmode")
 public class AllServo extends LinearOpMode {
     private Servo redIntake;
     private Servo blueIntake;

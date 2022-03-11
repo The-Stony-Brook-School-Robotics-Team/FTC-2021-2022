@@ -51,7 +51,6 @@ import java.util.List;
 /*
  * Simple mecanum drive hardware implementation for REV hardware.
  */
-@Config
 public class MecanumDriveTesting extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);

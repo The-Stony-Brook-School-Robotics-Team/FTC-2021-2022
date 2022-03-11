@@ -8,8 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.drive.timeout.CustomTimeoutTuningDrive;
 
-@Config
-@Autonomous(group="drive", name="T - Timeout Back And Fourth")
+//@Autonomous(group="drive", name="T - Timeout Back And Fourth")
 public class TimeoutBackAndFourth extends LinearOpMode {
 
     public static double DISTANCE = 48;

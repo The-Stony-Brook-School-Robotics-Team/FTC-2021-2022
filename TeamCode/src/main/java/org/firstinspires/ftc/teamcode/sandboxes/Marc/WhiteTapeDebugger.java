@@ -13,7 +13,7 @@ import org.sbs.bears.robotframework.Robot;
 import org.sbs.bears.robotframework.controllers.RoadRunnerController;
 import org.sbs.bears.robotframework.controllers.SlideController;
 import org.tensorflow.lite.task.text.qa.QaAnswer;
-@TeleOp
+
 public class WhiteTapeDebugger extends LinearOpMode {
 
     @Override

@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 import java.util.function.DoubleSupplier;
 
-@TeleOp
+//@TeleOp
 @Disabled
 public class KEHANPurePursuitTest extends LinearOpMode {
 

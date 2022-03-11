@@ -20,7 +20,7 @@ import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
  * @author Marc N.
  * @version 5.1
  */
-@Autonomous(name="OpenCV TSE Recog Test")
+//@Autonomous(name="OpenCV TSE Recog Test")
 public class OpenCVSample extends OpMode {
 
     // MARK - Class Variables

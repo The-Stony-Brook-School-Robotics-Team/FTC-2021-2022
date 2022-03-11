@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
  * These coefficients can be tuned live in dashboard.
  */
 
-@Config
+
 @Disabled
 @TeleOp(name = "T - Follower PID Tuner")
 public class FollowerPIDTuner extends LinearOpMode {

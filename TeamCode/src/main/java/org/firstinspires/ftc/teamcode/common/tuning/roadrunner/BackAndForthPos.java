@@ -25,8 +25,8 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  * This opmode is designed as a convenient, coarse tuning for the follower PID coefficients. It
  * is recommended that you use the FollowerPIDTuner opmode for further fine tuning.
  */
-@Config
-@Autonomous(name = "T - BackAndForthPos", group = "drive")
+
+//@Autonomous(name = "T - BackAndForthPos", group = "drive")
 public class BackAndForthPos extends LinearOpMode {
 
     public static double DISTANCE = 48;

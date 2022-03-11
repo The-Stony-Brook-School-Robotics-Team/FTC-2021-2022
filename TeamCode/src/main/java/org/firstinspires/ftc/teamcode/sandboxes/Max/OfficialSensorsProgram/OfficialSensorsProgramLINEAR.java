@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name = "Range Linear", group = "MRI")
+//@TeleOp(name = "Range Linear", group = "MRI")
 public class OfficialSensorsProgramLINEAR extends LinearOpMode{
     private ElapsedTime runtime = new ElapsedTime();
 

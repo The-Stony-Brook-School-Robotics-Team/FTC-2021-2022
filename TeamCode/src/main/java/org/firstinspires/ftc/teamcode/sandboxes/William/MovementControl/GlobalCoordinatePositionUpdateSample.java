@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.sandboxes.William.Util.ControllerHelper;
  * Updated by William Tao on 11/4/2021.
  * Example OpMode that runs the GlobalCoordinatePosition thread and accesses the (x, y, theta) coordinate values
  */
-@TeleOp(name = "Global Coordinate Position Test", group = "Calibration")
+//@TeleOp(name = "Global Coordinate Position Test", group = "Calibration")
 public class GlobalCoordinatePositionUpdateSample extends LinearOpMode {
 
     //Odometry encoder wheels

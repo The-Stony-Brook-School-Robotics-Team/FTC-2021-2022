@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.controllers.SlideController;
 
-@TeleOp(name="increment", group="Linear Opmode")
+//@TeleOp(name="increment", group="Linear Opmode")
 public class Increment extends LinearOpMode {
     private boolean qDR, qDL,qX,qY;
     private SampleMecanumDrive drive;

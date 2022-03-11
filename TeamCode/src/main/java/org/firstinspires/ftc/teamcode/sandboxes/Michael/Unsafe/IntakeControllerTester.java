@@ -10,7 +10,7 @@
     import org.sbs.bears.robotframework.controllers.SlideController;
     import org.sbs.bears.robotframework.enums.IntakeState;
 
-    @TeleOp(name="Intake Controller Tester", group="Linear Opmode")
+   // @TeleOp(name="Intake Controller Tester", group="Linear Opmode")
     public class IntakeControllerTester extends LinearOpMode {
         private IntakeControllerBlue blueIntake;
         private IntakeControllerRed redIntake;

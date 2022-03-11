@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 import java.util.Objects;
 
-@TeleOp
+//@TeleOp
 public class MotionStateTesting extends OpMode {
 
     private SampleMecanumDrive drive;

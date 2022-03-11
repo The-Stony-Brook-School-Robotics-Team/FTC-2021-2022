@@ -47,7 +47,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Config
+// @Config
 public class CustomizedMecanumDrive extends MecanumDrive {
 //    private static boolean needEmergencyStop = false;
 

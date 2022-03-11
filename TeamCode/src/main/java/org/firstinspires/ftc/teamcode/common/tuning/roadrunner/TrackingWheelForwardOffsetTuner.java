@@ -34,7 +34,6 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  * for the forward offset. You can run this procedure as many times as necessary until a
  * satisfactory result is produced.
  */
-@Config
 @Disabled
 @Autonomous(group="drive", name="T - TrackingWheelForwardOffsetTuner")
 public class TrackingWheelForwardOffsetTuner extends LinearOpMode {

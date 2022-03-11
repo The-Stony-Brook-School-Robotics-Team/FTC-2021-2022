@@ -24,7 +24,7 @@ import org.sbs.bears.robotframework.controllers.RoadRunnerController;
 import java.util.ArrayList;
 import java.util.List;
 
-@TeleOp
+
 public class RRTesting extends LinearOpMode {
     private boolean qA;
 

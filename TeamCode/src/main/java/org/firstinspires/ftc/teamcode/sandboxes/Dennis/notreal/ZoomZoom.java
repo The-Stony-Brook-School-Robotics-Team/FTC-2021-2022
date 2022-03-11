@@ -18,7 +18,7 @@ import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
 /**
  * This is not real, wake up
  */
-@Autonomous(name = "Z - Zoom Zoom Mover (ONG!)")
+//@Autonomous(name = "Z - Zoom Zoom Mover (ONG!)")
 public class ZoomZoom extends LinearOpMode {
 
     /**

@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@TeleOp(name = "Range Sensors", group = "MRI")
+//@TeleOp(name = "Range Sensors", group = "MRI")
 public class OfficialSensorsProgramSENSORS extends OpMode{
     private ElapsedTime runtime = new ElapsedTime();
 
