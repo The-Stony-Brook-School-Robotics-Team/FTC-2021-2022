@@ -42,7 +42,7 @@ public class SlideController {
     public static double SERVO_VELOCITY_CONSTANT = 0.8;
     public static boolean SERVO_TEST = false;
 
-    public static int ASlideExtendPositionOffSet = -200;
+    public static int ASlideExtendPositionOffSet = -100;
     public static int ASlideRetractPositionOffset = 500;
 
     public SlideController(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -323,7 +323,7 @@ public class SlideController {
                 blueDumperServo.setPosition(dumperPosition_EJECT);
                 redDumperServo.setPosition(dumperPosition_EJECT);
                 try {
-                    Thread.sleep(250); // 250
+                    Thread.sleep(400); // 250
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -513,7 +513,7 @@ public class SlideController {
 
     public void setHeightTo_NewAutonomous(double targetPos) {
         double deltaTheta = Math.abs(targetPos - verticalServo.getPosition());
-        double runTime = 0.55;
+        double runTime = 0.45;
         double initialServoTime = NanoClock.system().seconds();
         double initialServoPosition = verticalServo.getPosition();
         double currentServoPosition = initialServoPosition;
@@ -534,6 +534,7 @@ public class SlideController {
                 currentServoPosition = -0.25 * omegaI * omegaI * deltaTime_s * deltaTime_s / deltaTheta + initialServoPosition;
             }
         }
+
         verticalServo.setPosition(targetPos);
     }
 

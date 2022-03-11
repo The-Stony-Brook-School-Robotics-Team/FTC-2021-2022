@@ -24,22 +24,23 @@ public class IntakeControllerRed implements IntakeController {
 
     /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/
 //    private double[] basePos = {.025, 0.7}; //.141
+    private static double dumpPosdouble = .417;
     private double[] basePos = {.975, 1};
     private double[] parkPos = {.45, 0}; //.375 for gobilda servo
-    public static double[] dumpPos = {.417, 0}; //??????? messed up .375 is the same???
+    public static double[] dumpPos = {dumpPosdouble, 0}; //??????? messed up .375 is the same???
     private double[] reversePos = {.975, -1}; //75
 
     /** Distance needed to switch states (mm) **/
     private double distThreshold = 60;
     private double distThreshold2 = 80;
 
-    public long timeToOpenStopper = 300; //ms 400
-    public static long timeToCloseBucket = 360; //ms 650
-    public long timeToPushSweeper = 230; //ms 400
+    public double timeToOpenStopper = 300; //ms 400
+    public static double timeToCloseBucket = 360; //ms 650
+    public double timeToPushSweeper = 230; //ms 400
 
     private double sweeperOut = .725;
-    private double sweeperIn = 1;
-    private double stopperClosed = 0.305; //TODO //.3
+    private static double sweeperIn = 1;
+    public static double stopperClosed = 0.305; //TODO //.3
     private double stopperOpen = 0.1; //TODO
     private boolean qIsObjectInPayload = false;
 
@@ -173,20 +174,20 @@ public class IntakeControllerRed implements IntakeController {
                     //compliantWheel.setPower(dumpPos[1]);
                     scooper.setPosition(dumpPos[0]);
                     try {
-                        Thread.sleep(timeToOpenStopper);
+                        Thread.sleep((long)timeToOpenStopper);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     compliantWheel.setPower(dumpPos[1]);
                     stopper.setPosition(stopperOpen);
                     try {
-                        Thread.sleep(timeToPushSweeper);
+                        Thread.sleep((long)timeToPushSweeper);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     sweeper.setPosition(sweeperOut);
                     try {
-                        Thread.sleep(timeToCloseBucket);
+                        Thread.sleep((long)timeToCloseBucket);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

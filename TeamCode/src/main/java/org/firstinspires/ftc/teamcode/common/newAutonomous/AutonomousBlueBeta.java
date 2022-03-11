@@ -9,18 +9,18 @@ import org.sbs.bears.robotframework.controllers.OpenCVController;
 
 @Autonomous(name = "A_William - AutonomousBlue - BETA")
 public class AutonomousBlueBeta extends LinearOpMode {
-    AutonomousClient autonomousClient;
+    AutonomousClientBeta autonomousClientBeta;
 
     @Override
     public void runOpMode() {
         OpenCVController.isDuck = false;
-        autonomousClient = new AutonomousClient(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
+        autonomousClientBeta = new AutonomousClientBeta(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
         msStuckDetectLoop = Integer.MAX_VALUE;  //Turn off infinite loop detection.
 
         Thread localizeThread = new Thread(() -> {
             while (true) {
                 try {
-                    autonomousClient.roadRunnerDrive.update();
+                    autonomousClientBeta.roadRunnerDrive.update();
                     Thread.sleep(2);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -30,24 +30,24 @@ public class AutonomousBlueBeta extends LinearOpMode {
 
 //        localizeThread.start();
 
-        autonomousClient.readCamera();
+        autonomousClientBeta.readCamera();
 
         waitForStart();
 
         AutonomousTimer.startTimer();
-        autonomousClient.getInitialBlockDone();
+        autonomousClientBeta.getInitialBlockDone();
 
         while (opModeIsActive() && AutonomousTimer.canContinue(AutonomousTimer.CurrentState.DepositToPickUp)) {
-            autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
-            autonomousClient.pickUp();
-            autonomousClient.deposit();
+            autonomousClientBeta.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
+            autonomousClientBeta.pickUp();
+            autonomousClientBeta.deposit();
         }
 
-        autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_RED);
-        autonomousClient.park();
+        autonomousClientBeta.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_RED);
+        autonomousClientBeta.park();
 
         localizeThread.interrupt();
-        autonomousClient.stopRobot();
+        autonomousClientBeta.stopRobot();
         stop();
     }
 }

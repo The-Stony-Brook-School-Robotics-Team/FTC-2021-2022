@@ -9,18 +9,18 @@ import org.sbs.bears.robotframework.controllers.OpenCVController;
 
 @Autonomous(name = "A_William - AutonomousTrajectoryTest")
 public class AutonomousTrajectoryTest extends LinearOpMode {
-    AutonomousClient autonomousClient;
+    AutonomousClientBeta autonomousClientBeta;
 
     @Override
     public void runOpMode() {
         OpenCVController.isDuck = false;
-        autonomousClient = new AutonomousClient(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
+        autonomousClientBeta = new AutonomousClientBeta(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
 
         waitForStart();
 
 //        autonomousClient.getInitialBlockDone();
-        autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
-        autonomousClient.pickUp();
+        autonomousClientBeta.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
+        autonomousClientBeta.pickUp();
 //        autonomousClient.goDeliverBlock();
 //        autonomousClient.goParking();
 

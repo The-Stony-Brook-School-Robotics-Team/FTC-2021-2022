@@ -14,8 +14,6 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.archive.DriveConstants;
-import org.firstinspires.ftc.teamcode.common.newAutonomous.AutonomousClient;
 import org.firstinspires.ftc.teamcode.common.sharedResources.SharedData;
 import org.firstinspires.ftc.teamcode.drive.DriveConstantsMain;
 import org.sbs.bears.robotframework.Robot;
@@ -87,7 +85,7 @@ public class AutonomousBrain {
     }
 
     public static double CustomMaxAccel = 20;
-    public static double CustomMaxVel = 50;
+    public static double CustomMaxVel = 70;
     public static double CustomMaxAngAccel = 2;
     public static double CustomMaxAngVel = 2;
 
@@ -446,7 +444,7 @@ public class AutonomousBrain {
     public static double startPositionBlueY = 65.5;
     public static double startPositionBlueH = 0;
     public static double startPositionRedX = 14;
-    public static double startPositionRedY = -65.5;
+    public static double startPositionRedY = -67;
     public static double startPositionRedH = 180;
 
     public static Pose2d startPositionBlue = new Pose2d(startPositionBlueX,startPositionBlueY,startPositionBlueH);
@@ -454,7 +452,7 @@ public class AutonomousBrain {
     public static Pose2d warehousePickupPositionBlue = new Pose2d(43,70,0);
     public static Pose2d warehousePickupPositionRed = new Pose2d(43,-70,-Math.PI);
     public static Pose2d depositPositionBlueNoTurn = new Pose2d(-18,75,0);
-    public static Pose2d depositPositionRedNoTurn = new Pose2d(-22,-75,-Math.PI);
+    public static Pose2d depositPositionRedNoTurn = new Pose2d(-24,-75,-Math.PI);
     public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(5.58,64.47, -Math.toRadians(30)); //55
     public static Pose2d depositPositionAllianceRedTOP = new Pose2d(5.58,-64.47, -Math.toRadians(150)); //55
     public static Pose2d depositPositionAllianceBlueMID = new Pose2d(5.58,64.47, -Math.toRadians(31)); //56
@@ -465,8 +463,8 @@ public class AutonomousBrain {
     public static Pose2d resetPositionB4WarehouseRed = new Pose2d(14,-75,-Math.PI);
     public static Pose2d resetPositionB4WarehouseBlue2 = new Pose2d(14,70,0);
     public static Pose2d resetPositionB4WarehouseRed2 = new Pose2d(14,-70,-Math.PI);
-    public static Pose2d parkingPositionBlue = new Pose2d(50,70,0);
-    public static Pose2d parkingPositionRed = new Pose2d(50,-70,-Math.PI);
+    public static Pose2d parkingPositionBlue = new Pose2d(65,70,0);
+    public static Pose2d parkingPositionRed = new Pose2d(65,-70,-Math.PI);
     public static Pose2d whiteLinePosBlue = new Pose2d(29.5,65.5,0);
     public static Pose2d whiteLinePosRed = new Pose2d(29.5,-65.5,-Math.PI);
     public static double velocityIntake = 50;

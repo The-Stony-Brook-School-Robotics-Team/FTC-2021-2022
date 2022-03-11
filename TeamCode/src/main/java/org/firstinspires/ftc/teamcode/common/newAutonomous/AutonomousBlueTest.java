@@ -7,25 +7,21 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 
-@Autonomous(name = "A_William - AutonomousBlue")
-public class AutonomousBlue extends LinearOpMode {
-    AutonomousClientSafe autonomousClient;
+@Autonomous(name = "A_William - AutonomousBlueTest")
+public class AutonomousBlueTest extends LinearOpMode {
+    AutonomousClientTest autonomousClient;
 
     @Override
     public void runOpMode() {
         OpenCVController.isDuck = false;
-        autonomousClient = new AutonomousClientSafe(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
+        autonomousClient = new AutonomousClientTest(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
         msStuckDetectLoop = Integer.MAX_VALUE;  //Turn off infinite loop detection.
 
         Thread localizeThread = new Thread(() -> {
             while (true) {
                 try {
-                    if (autonomousClient.roadRunnerDrive.isRunningFollowTrajectory)
-                        Thread.sleep(100);
-                    else {
-                        autonomousClient.roadRunnerDrive.update();
-                        Thread.sleep(10);
-                    }
+                    autonomousClient.roadRunnerDrive.update();
+                    Thread.sleep(2);
                 } catch (InterruptedException e) {
                     autonomousClient.stopRoadRunner();
                     e.printStackTrace();
@@ -33,7 +29,7 @@ public class AutonomousBlue extends LinearOpMode {
             }
         });
 
-        localizeThread.start();
+//        localizeThread.start();
 
         autonomousClient.readCamera();
 

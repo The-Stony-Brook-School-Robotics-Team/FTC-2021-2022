@@ -6,7 +6,7 @@ import com.acmerobotics.roadrunner.util.NanoClock;
 public class AutonomousTimer {
     private static final double PICK_UP_TO_DEPOSIT_TIME_CHECK_DURATION = 4.0;
     private static final double PICK_UP_SECONDARY_TO_DEPOSIT_CHECK_DURATION = 4.0;
-    private static final double DEPOSIT_TO_PICK_UP_TIME_CHECK_DURATION = 8.0;   //Includes time for parking
+    private static final double DEPOSIT_TO_PICK_UP_TIME_CHECK_DURATION = 5.0;   //Includes time for parking
 
     private static double endTime_s;
 

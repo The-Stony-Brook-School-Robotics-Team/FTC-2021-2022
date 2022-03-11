@@ -8,18 +8,18 @@ import org.sbs.bears.robotframework.controllers.OpenCVController;
 
 @Autonomous(name = "A_William - AutonomousSlideControllerTest")
 public class AutonomousSlideControllerTest extends LinearOpMode {
-    AutonomousClient autonomousClient;
+    AutonomousClientBeta autonomousClientBeta;
 
     @Override
     public void runOpMode() throws InterruptedException {
         OpenCVController.isDuck = false;
-        autonomousClient = new AutonomousClient(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
+        autonomousClientBeta = new AutonomousClientBeta(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
 
         waitForStart();
 
-        autonomousClient.slideController.setHeightTo_Autonomous(AutonomousSlideController.vertServoPosition_THREE_DEPOSIT);
+        autonomousClientBeta.slideController.setHeightTo_Autonomous(AutonomousSlideController.vertServoPosition_THREE_DEPOSIT);
         Thread.sleep(1000);
-        autonomousClient.slideController.setHeightTo_Autonomous(AutonomousSlideController.vertServoPosition_PARKED);
+        autonomousClientBeta.slideController.setHeightTo_Autonomous(AutonomousSlideController.vertServoPosition_PARKED);
 
         stop();
     }

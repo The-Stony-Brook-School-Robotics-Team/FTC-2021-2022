@@ -40,6 +40,7 @@ public class OpenCVController {
         WebcamName webcamName = hardwareMap.get(WebcamName.class, "WebcamMain");
         webcam = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
         Log.d("OpenCVController","Init Engine");
+        Log.d("OpenCVController","mode: " + mode);
         // TODO switch for all autonomous types only on constructor
         if(isDuck) {
             engine = new DuckOpenCVEngineBlueFull();
@@ -54,6 +55,7 @@ public class OpenCVController {
                     break;
                 case RedStatesDuckSimple:
                     engine = new CapstoneOpenCVEngineRedSimple();
+                    break;
                 default:
                     engine = new CapstoneOpenCVEngineRedFull();
             }

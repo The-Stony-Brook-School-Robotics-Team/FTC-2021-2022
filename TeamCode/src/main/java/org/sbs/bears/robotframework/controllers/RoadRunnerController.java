@@ -291,7 +291,7 @@ public class RoadRunnerController {
         Pose2d current = drive.getPoseEstimate();
         drive.followTrajectory(
                 drive.trajectoryBuilder(new Pose2d(current.getX(), current.getY() + 10, 0))
-                        .splineToSplineHeading(AutonomousBrain.depositPositionBlueNoTurn, Math.toRadians(-40), velocityConstraintFast, accelerationConstraint)
+                        .splineToSplineHeading(AutonomousBrain.depositPositionBlueNoTurn, Math.toRadians(-20), velocityConstraintFast, accelerationConstraint)
                         .build()
         );
     }
