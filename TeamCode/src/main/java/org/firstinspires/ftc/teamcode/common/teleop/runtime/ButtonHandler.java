@@ -206,8 +206,15 @@ public class ButtonHandler {
                      * RIGHT BUMPER
                      * @usage Detect White Line and deposit
                      */
-                    if(primaryGamepad.right_bumper) {
-
+                    if(primaryGamepad.right_bumper && !isPressingRightBumper) {
+                        if(duckspinnerSpinning == false) {
+                            Log.d(interfaceTag, "Running duck red");
+                            invertedDuckSpinner = true;
+                            asyncDuck.start();
+                        }
+                        isPressingRightBumper = true;
+                    } else if(!primaryGamepad.right_bumper && isPressingRightBumper) {
+                        isPressingRightBumper = false;
                     }
 
                     /**
@@ -271,7 +278,6 @@ public class ButtonHandler {
                      * @usage Right Intake (Red Intake)
                      */
                     if(primaryGamepad.left_trigger > Configuration.leftTriggerTreshold && !isPressingLeftTrigger) {
-
                         if(blueIntake.isDown()) {
                             blueIntake.setState(IntakeState.BASE);
                             redIntake.setState(IntakeState.BASE);
@@ -283,18 +289,6 @@ public class ButtonHandler {
                     } else if(primaryGamepad.left_trigger < Configuration.leftTriggerTreshold && isPressingLeftTrigger) {
                         isPressingLeftTrigger = false;
                     }
-
-                    /**
-                     * RIGHT TRIGGER
-                     * @usage Inverted Duck Spinner
-                     */
-                    if(primaryGamepad.right_trigger > 0.2) {
-                        if(duckspinnerSpinning == false) {
-                            invertedDuckSpinner = true;
-                            asyncDuck.start();
-                        }
-                    }
-
                     break;
                 case SECONDARY:
 
