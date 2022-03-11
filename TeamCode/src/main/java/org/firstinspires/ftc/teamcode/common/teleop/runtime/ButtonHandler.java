@@ -68,18 +68,18 @@ public class ButtonHandler {
     }
     public static SegmentPositions currentSegmentPosition = SegmentPositions.EXTEND;
 
+    // TODO: CHECK IF DUCK SPINNER IS SPINNING THE WRONG WAY
     public static Boolean invertedDucKSpinner = false;
     public static Thread asyncDuck = new Thread(() -> {
         if(invertedDucKSpinner) {
             duckspinnerSpinning = true;
-            carouselController.spinOneDuck();
+            carouselController.spinOneDuck(false);
             duckspinnerSpinning = false;
         } else {
             duckspinnerSpinning = true;
-            carouselController.spinOneDuck(false);
+            carouselController.spinOneDuck();
             duckspinnerSpinning = false;
         }
-
     });
 
     public static Boolean runningAsyncSlideExtend = false;

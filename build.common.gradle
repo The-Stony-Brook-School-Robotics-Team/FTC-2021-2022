@@ -19,8 +19,6 @@ import java.util.regex.Pattern
 
 apply plugin: 'com.android.application'
 
-def useProguard = false
-
 android {
 
     compileSdkVersion 29
@@ -59,7 +57,7 @@ android {
         minSdkVersion 24
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 28
-        multiDexEnabled !useProguard
+
 
         def manifestFile = project(':FtcRobotController').file('src/main/AndroidManifest.xml');
         def manifestText = manifestFile.getText()
@@ -87,13 +85,6 @@ android {
             ndk {
                 abiFilters "armeabi-v7a"
             }
-
-            if (useProguard) {
-                minifyEnabled true
-                proguardFiles getDefaultProguardFile('proguard-android.txt'),
-                        'proguard-rules.pro'
-                println(getProguardFiles())
-            }
         }
         debug {
             debuggable true
@@ -101,13 +92,6 @@ android {
             renderscriptDebuggable true
             ndk {
                 abiFilters "armeabi-v7a"
-            }
-
-            if (useProguard) {
-                minifyEnabled true
-                proguardFiles getDefaultProguardFile('proguard-android.txt'),
-                        'proguard-rules.pro'
-                println(getProguardFiles())
             }
         }
     }

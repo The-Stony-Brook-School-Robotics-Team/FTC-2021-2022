@@ -17,7 +17,7 @@ apply from: '../build.dependencies.gradle'
 
 android {
     buildFeatures {
-        mlModelBinding true
+        //mlModelBinding true
     }
 }
 repositories {
