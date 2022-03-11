@@ -10,8 +10,8 @@ import org.sbs.bears.robotframework.controllers.OpenCVController;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-@Autonomous (name = "A - Auton (Blue Duck Storage)")
-public class AutonomousBlueSimple extends LinearOpMode {
+@Autonomous (name = "A - Auton (Blue Duck Warehouse)")
+public class AutonomousBlueSimpleWarehouse extends LinearOpMode {
     AutonomousBrainSimple brain;
     boolean qA = false;
     boolean qContinue = false;
@@ -23,7 +23,7 @@ public class AutonomousBlueSimple extends LinearOpMode {
     {
         masterQContinue.set(true);
         OpenCVController.isDuck = false;
-        brain = new AutonomousBrainSimple(hardwareMap,telemetry,AutonomousMode.BlueStatesDuckSimple);
+        brain = new AutonomousBrainSimple(hardwareMap,telemetry,AutonomousMode.BlueStatesDuckSimpleWarehouse);
         Log.d("Auton BS","Init Complete");
         msStuckDetectLoop = Integer.MAX_VALUE;
         gamepad = gamepad1;

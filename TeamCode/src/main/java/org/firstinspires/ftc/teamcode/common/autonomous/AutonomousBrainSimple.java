@@ -5,7 +5,6 @@ import android.util.Log;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.path.EmptyPathSegmentException;
-import com.acmerobotics.roadrunner.path.PathContinuityViolationException;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.acmerobotics.roadrunner.util.NanoClock;
@@ -115,28 +114,33 @@ public class AutonomousBrainSimple {
         this.duckCtrl = robot.getDuckCtrl();
         this.parkingProber = robot.getParkProber();
         this.leds = hardwareMap.get(RevBlinkinLedDriver.class, "rgb");
-        isBlue = (mode == AutonomousMode.BlueStatesWarehouse || mode == AutonomousMode.BlueStatesSpline || mode == AutonomousMode.BlueStatesDuckSimple);
-        isSpline = (mode == AutonomousMode.BlueStatesSpline || mode == AutonomousMode.RedStatesSpline);
-        if (isBlue) {
-            if(!isSpline) {
-                RRctrl.setPos(startPositionBlueCarousel);
-            }
-            else {
-                RRctrl.setPos(startPositionBlue);
-            }
-        } else {
-            if(!isSpline) {
-               //
-            }
-            else {
-                RRctrl.setPos(startPositionRed);
-            }
-        }
-        if(mode == AutonomousMode.RedStatesDuckSimple)
+        switch(mode)
         {
-            RRctrl.setPos(startPositionRedCarousel);
-            isBlue = false;
-            isSpline = false;
+            case BlueStatesDuckSimple:
+            case BlueStatesDuckSimpleWarehouse:
+                isBlue = true;
+                isSpline = false;
+                RRctrl.setPos(startPositionBlueCarousel);
+                break;
+            case RedStatesDuckSimpleWarehouse:
+            case RedStatesDuckSimple:
+                isBlue = false;
+                isSpline = false;
+                RRctrl.setPos(startPositionRedCarousel);
+                break;
+            case BlueStatesWarehouse:
+                isBlue = true;
+                isSpline = false;
+                RRctrl.setPos(startPositionBlue);
+                break;
+            case RedStatesWarehouse:
+                isBlue = false;
+                isSpline = false;
+                RRctrl.setPos(startPositionRed);
+                break;
+            default:
+                Log.d("AutonBrain","Unknown mode " + mode);
+                break;
         }
         intakeCtrlBlue.setState(IntakeState.DUMP);
         intakeCtrlRed.setState(IntakeState.DUMP); // to prevent from moving around
@@ -273,7 +277,7 @@ public class AutonomousBrainSimple {
                 Log.d("AutonBrain","parking1");
                 intakeCtrlBlue.setState(IntakeState.DUMP);
                 intakeCtrlRed.setState(IntakeState.DUMP);
-                RRctrl.followLineToSpline(isBlue ? parkingPositionBlue : parkingPositionRed);
+                RRctrl.followLineToSpline(isBlue ? parkingPositionBlueWarehouse : parkingPositionRedWarehouse);
                 SharedData.autonomousLastPosition = RRctrl.getPos();
                 majorState.set(MajorAutonomousState.FINISHED);
                 minorState.set(MinorAutonomousState.FINISHED);
@@ -316,20 +320,41 @@ public class AutonomousBrainSimple {
                     // backpedal fast!!!!
                     TrajectoryVelocityConstraint velocityConstraintFast = SampleMecanumDrive.getVelocityConstraint(100, DriveConstantsMain.MAX_ANG_VEL, DriveConstantsMain.TRACK_WIDTH);
                     TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(80);
-                    RRctrl.followLineToSpline((isBlue ? parkingPositionBlueStorageUnit : parkingPositionRedStorageUnit), velocityConstraintFast,accelerationConstraint);
-                    try
-                    {
-                        RRctrl.followLineToSpline((isBlue ? parkingPositionBlueStorageUnit : parkingPositionRedStorageUnit));
+                    if(mode == AutonomousMode.RedStatesDuckSimple || mode == AutonomousMode.BlueStatesDuckSimple) {
+                        RRctrl.followLineToSpline((isBlue ? parkingPositionBlueStorageUnit : parkingPositionRedStorageUnit), velocityConstraintFast,accelerationConstraint);
+                        Log.d("AutonBrain","Ini Target to current delta: " + RRctrl.distanceTo(isBlue ? parkingPositionBlueStorageUnit : parkingPositionRedStorageUnit));
+                        try
+                        {
+                            RRctrl.followLineToSpline((isBlue ? parkingPositionBlueStorageUnit : parkingPositionRedStorageUnit));
+                        }
+                        catch (EmptyPathSegmentException e)
+                        {
+                           Log.d("AutonBrain","Looks like we are in place!");
+                        }
+                        catch(Exception e)
+                        {
+                            Log.d("AutonBrain","Funky Excpetion thrown...\n" +e.getMessage());
+                        }
+                        Log.d("AutonBrain","Ini2 Target to current delta: " + RRctrl.distanceTo(isBlue ? parkingPositionBlueStorageUnit : parkingPositionRedStorageUnit));
                     }
-                    catch (EmptyPathSegmentException e)
-                    {
-                       Log.d("AutonBrain","Looks like we are in place!");
+                    else if(mode == AutonomousMode.RedStatesDuckSimpleWarehouse || mode == AutonomousMode.BlueStatesDuckSimpleWarehouse){
+                        if(isBlue) {RRctrl.autonomousPrepAndIntakeFromDepositBlue();}
+                        else {RRctrl.autonomousPrepAndIntakeFromDepositRed();}
+                        Log.d("AutonBrain","Ini Target to current delta: " + RRctrl.distanceTo(isBlue ? parkingPositionBlueWarehouse : parkingPositionRedWarehouse));
+                        try
+                        {
+                            RRctrl.followLineToSpline((isBlue ? parkingPositionBlueStorageUnit : parkingPositionRedStorageUnit));
+                        }
+                        catch (EmptyPathSegmentException e)
+                        {
+                            Log.d("AutonBrain","Looks like we are in place!");
+                        }
+                        catch(Exception e)
+                        {
+                            Log.d("AutonBrain","Funky Excpetion thrown...\n" +e.getMessage());
+                        }
+                        Log.d("AutonBrain","Ini2 Target to current delta: " + RRctrl.distanceTo(isBlue ? parkingPositionBlueWarehouse : parkingPositionRedWarehouse));
                     }
-                    catch(Exception e)
-                    {
-                        Log.d("AutonBrain","Funky Excpetion thrown...\n" +e.getMessage());
-                    }
-                    Log.d("AutonBrain","Target to current delta: " + RRctrl.distanceTo(parkingPositionBlueStorageUnit));
                     majorState.set(MajorAutonomousState.FINISHED);
                     Log.d("AutonBrain","finished all tasks.");
                     // done!
@@ -544,8 +569,8 @@ public class AutonomousBrainSimple {
     public static Pose2d resetPositionB4WarehouseRed = new Pose2d(14,-75,-Math.PI);
     public static Pose2d resetPositionB4WarehouseBlue2 = new Pose2d(14,70,0);
     public static Pose2d resetPositionB4WarehouseRed2 = new Pose2d(14,-70,-Math.PI);
-    public static Pose2d parkingPositionBlue = new Pose2d(50,70,0);
-    public static Pose2d parkingPositionRed = new Pose2d(50,-70,-Math.PI);
+    public static Pose2d parkingPositionBlueWarehouse = new Pose2d(50,70,0);
+    public static Pose2d parkingPositionRedWarehouse = new Pose2d(50,-70,-Math.PI);
     public static Pose2d parkingPositionBlueStorageUnit = new Pose2d(-70,36,Math.PI/2);
     public static Pose2d parkingPositionRedStorageUnit = new Pose2d(-70,-36,Math.PI/2);
     public static Pose2d whiteLinePosBlue = new Pose2d(29.5,65.5,0);
