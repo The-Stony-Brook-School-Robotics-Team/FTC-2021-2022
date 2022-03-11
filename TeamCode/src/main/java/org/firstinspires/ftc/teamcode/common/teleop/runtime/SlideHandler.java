@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.common.teleop.runtime;
 
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.buttonHandler;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideController;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.buttonHandler;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.slideController;
 //import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideHandler;
 
 import android.util.Log;

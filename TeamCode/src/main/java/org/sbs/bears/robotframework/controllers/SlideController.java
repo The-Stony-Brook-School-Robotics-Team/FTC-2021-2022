@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
-import org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop;
+import org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp;
 import org.sbs.bears.robotframework.Sleep;
 import org.sbs.bears.robotframework.enums.SlideState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
@@ -364,7 +364,7 @@ public class SlideController {
         int targetPosFinal = 0;
         double verticalServoTargetPos = 0;
 
-        OfficialTeleop.driveSpeedStrafe = Configuration.SlowMovementStrafeMultiplier;
+        BlueTeleOp.driveSpeedStrafe = Configuration.SlowMovementStrafeMultiplier;
         switch (targetParams) {
             case BOTTOM_CAROUSEL:
                 targetPosFinal = slideMotorPosition_ONE_CAROUSEL;
@@ -472,7 +472,7 @@ public class SlideController {
 
         blueDumperServo.setPosition(dumperPosition_RETRACTING);
         redDumperServo.setPosition(dumperPosition_RETRACTING);
-        OfficialTeleop.driveSpeedStrafe = 1;
+        BlueTeleOp.driveSpeedStrafe = 1;
         slideMotor.setPower(slideMotorPowerMoving);
         slideMotor.setTargetPosition(slideMotorPosition_PARKED);
 
@@ -553,7 +553,7 @@ public class SlideController {
                 return;
             case EXTENDING:
                 //Switch to set the height and distance of extension depending on the target
-                OfficialTeleop.driveSpeedStrafe = Configuration.SlowMovementStrafeMultiplier;
+                BlueTeleOp.driveSpeedStrafe = Configuration.SlowMovementStrafeMultiplier;
                 switch (targetParams) {
                     case BOTTOM_CAROUSEL:
                         targetPosFinal = slideMotorPosition_ONE_CAROUSEL;
@@ -659,7 +659,7 @@ public class SlideController {
             case RETRACTING:
                 blueDumperServo.setPosition(dumperPosition_RETRACTING);
                 redDumperServo.setPosition(dumperPosition_RETRACTING);
-                OfficialTeleop.driveSpeedStrafe = 1;
+                BlueTeleOp.driveSpeedStrafe = 1;
                 targetPos = slideMotorPosition_PARKED;
                 slideMotor.setPower(slideMotorPowerMoving);
                 slideMotor.setTargetPosition(targetPos);

@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode.common.teleop;
 
-import android.os.Build;
 import android.util.Log;
-
-import androidx.annotation.RequiresApi;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -34,8 +31,8 @@ import org.sbs.bears.robotframework.enums.IntakeState;
 import java.util.HashMap;
 import java.util.Map;
 
-@TeleOp(name = "A - Qualifier One TeleOp")
-public class OfficialTeleop extends OpMode {
+@TeleOp(name = "A - Blue TeleOp")
+public class BlueTeleOp extends OpMode {
 
 
     /**
@@ -166,7 +163,7 @@ public class OfficialTeleop extends OpMode {
     public void init_loop() {
         if (initPass == 0) {
             revBlinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
-            OfficialTeleop.isColorStripBlue = true;
+            BlueTeleOp.isColorStripBlue = true;
             multipleTelemetry.clearAll();
             multipleTelemetry.addLine("Pending Start...");
             multipleTelemetry.update();
@@ -297,9 +294,9 @@ public class OfficialTeleop extends OpMode {
     public static void registerThread(String interfaceTag, Thread thread) {
         if (!threadPool.containsKey(interfaceTag)) {
             threadPool.put(interfaceTag, thread);
-            Log.d(OfficialTeleop.interfaceTag, "Thread Registered: " + interfaceTag);
+            Log.d(BlueTeleOp.interfaceTag, "Thread Registered: " + interfaceTag);
         } else {
-            Log.d(OfficialTeleop.interfaceTag, "Thread Already Registered: " + interfaceTag);
+            Log.d(BlueTeleOp.interfaceTag, "Thread Already Registered: " + interfaceTag);
         }
     }
 

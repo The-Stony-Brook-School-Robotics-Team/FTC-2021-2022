@@ -1,18 +1,18 @@
 package org.firstinspires.ftc.teamcode.common.teleop.runtime;
 
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.currentState;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.drive;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.driveSpeedStrafe;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.intakeHandler;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.isColorStripBlue;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.primaryGamepad;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.currentState;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.drive;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.driveSpeedStrafe;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.intakeHandler;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.isColorStripBlue;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.primaryGamepad;
 
 import android.util.Log;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 
-import org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop;
+import org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
 import org.firstinspires.ftc.teamcode.common.teleop.misc.Beta;
 
@@ -132,11 +132,11 @@ class MovementHandlers {
             return;
         }
         if(driveSpeedStrafe < 1) {
-            OfficialTeleop.revBlinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
+            BlueTeleOp.revBlinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
             isColorStripBlue = false;
         } else if(!intakeHandler.objectInBucket) {
             if(!isColorStripBlue) {
-            OfficialTeleop.resetColor();
+            BlueTeleOp.resetColor();
                 isColorStripBlue = true;
             }
         }

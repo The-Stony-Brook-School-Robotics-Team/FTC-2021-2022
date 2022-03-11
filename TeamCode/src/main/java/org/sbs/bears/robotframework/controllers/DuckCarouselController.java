@@ -42,7 +42,7 @@ public class DuckCarouselController {
     public double initTime;
     public double runTime;
 
-    public DcMotor wheelMover;
+    public static DcMotor wheelMover;
 
 
     public DuckCarouselController(HardwareMap hardwareMap, Telemetry telemetry) {

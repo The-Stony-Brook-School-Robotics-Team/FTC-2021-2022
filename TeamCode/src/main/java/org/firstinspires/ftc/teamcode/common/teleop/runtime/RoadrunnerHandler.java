@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.common.teleop.runtime;
 
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.drive;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.movementHandler;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideController;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideHandler;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.drive;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.movementHandler;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.slideController;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.slideHandler;
 
 import android.util.Log;
 

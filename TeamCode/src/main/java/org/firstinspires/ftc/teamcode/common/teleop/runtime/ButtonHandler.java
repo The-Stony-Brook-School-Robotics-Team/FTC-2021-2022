@@ -1,32 +1,29 @@
 package org.firstinspires.ftc.teamcode.common.teleop.runtime;
 
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.blueIntake;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.carouselController;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.interfaceTag;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.primaryControllerMode;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.currentState;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.driveSpeedStrafe;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.primaryGamepad;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.blueIntake;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.carouselController;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.interfaceTag;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.primaryControllerMode;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.currentState;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.driveSpeedStrafe;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.primaryGamepad;
 
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.secondaryGamepad;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.redIntake;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.roadrunnerHandler;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideController;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideHandler;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.secondaryGamepad;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.redIntake;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.roadrunnerHandler;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.slideController;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.slideHandler;
 
-import android.transition.Slide;
 import android.util.Log;
 
-import com.acmerobotics.roadrunner.util.NanoClock;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
-import org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop;
+import org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
 import org.sbs.bears.robotframework.enums.IntakeState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
-
-import java.util.concurrent.atomic.AtomicReference;
 
 
 public class ButtonHandler {
@@ -71,10 +68,18 @@ public class ButtonHandler {
     }
     public static SegmentPositions currentSegmentPosition = SegmentPositions.EXTEND;
 
+    public static Boolean invertedDucKSpinner = false;
     public static Thread asyncDuck = new Thread(() -> {
-        duckspinnerSpinning = true;
-        carouselController.spinOneDuck();
-        duckspinnerSpinning = false;
+        if(invertedDucKSpinner) {
+            duckspinnerSpinning = true;
+            carouselController.spinOneDuck();
+            duckspinnerSpinning = false;
+        } else {
+            duckspinnerSpinning = true;
+            carouselController.spinOneDuck(false);
+            duckspinnerSpinning = false;
+        }
+
     });
 
     public static Boolean runningAsyncSlideExtend = false;
@@ -146,7 +151,7 @@ public class ButtonHandler {
                      */
                     if(primaryGamepad.a && !isPressingA && primaryControllerMode == ControllerModes.PRIMARY) {
                         slideController.dropCube();
-                        OfficialTeleop.resetColor();
+                        BlueTeleOp.resetColor();
                         isPressingA = true;
                     } else if(!primaryGamepad.a && isPressingA && primaryControllerMode == ControllerModes.PRIMARY) {
                         isPressingA = false;
