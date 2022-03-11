@@ -338,12 +338,16 @@ public class AutonomousBrainSimple {
                         Log.d("AutonBrain","Ini2 Target to current delta: " + RRctrl.distanceTo(isBlue ? parkingPositionBlueStorageUnit : parkingPositionRedStorageUnit));
                     }
                     else if(mode == AutonomousMode.RedStatesDuckSimpleWarehouse || mode == AutonomousMode.BlueStatesDuckSimpleWarehouse){
-                        if(isBlue) {RRctrl.autonomousPrepAndIntakeFromDepositBlue();}
-                        else {RRctrl.autonomousPrepAndIntakeFromDepositRed();}
-                        Log.d("AutonBrain","Ini Target to current delta: " + RRctrl.distanceTo(isBlue ? parkingPositionBlueWarehouse : parkingPositionRedWarehouse));
+                        if(isBlue) {
+                            RRctrl.followLineToSpline(warehousePrepPositionBlue);
+                            RRctrl.autonomousPrepAndIntakeFromDepositBlue();}
+                        else {
+                            RRctrl.followLineToSpline(warehousePrepPositionRed);
+                            RRctrl.autonomousPrepAndIntakeFromDepositRed();}
+                        Log.d("AutonBrain","Ini Target to current delta: " + RRctrl.distanceTo(isBlue ? parkingPositionBlueWarehouse2 : parkingPositionRedWarehouse2));
                         try
                         {
-                            RRctrl.followLineToSpline((isBlue ? parkingPositionBlueStorageUnit : parkingPositionRedStorageUnit));
+                            RRctrl.followLineToSpline((isBlue ? parkingPositionBlueWarehouse2 : parkingPositionRedWarehouse2));
                         }
                         catch (EmptyPathSegmentException e)
                         {
@@ -353,7 +357,7 @@ public class AutonomousBrainSimple {
                         {
                             Log.d("AutonBrain","Funky Excpetion thrown...\n" +e.getMessage());
                         }
-                        Log.d("AutonBrain","Ini2 Target to current delta: " + RRctrl.distanceTo(isBlue ? parkingPositionBlueWarehouse : parkingPositionRedWarehouse));
+                        Log.d("AutonBrain","Ini2 Target to current delta: " + RRctrl.distanceTo(isBlue ? parkingPositionBlueWarehouse2 : parkingPositionRedWarehouse2));
                     }
                     majorState.set(MajorAutonomousState.FINISHED);
                     Log.d("AutonBrain","finished all tasks.");
@@ -556,6 +560,8 @@ public class AutonomousBrainSimple {
     public static Pose2d startPositionBlueCarousel = new Pose2d(-42,66,0);
     public static Pose2d startPositionRedCarousel = new Pose2d(-42,-66,Math.PI);
     public static Pose2d warehousePickupPositionBlue = new Pose2d(43,70,0);
+    public static Pose2d warehousePrepPositionBlue = new Pose2d(-30,70,0);
+    public static Pose2d warehousePrepPositionRed = new Pose2d(-30,-70,-Math.PI);
     public static Pose2d warehousePickupPositionRed = new Pose2d(43,-70,-Math.PI);
     public static Pose2d depositPositionBlueNoTurn = new Pose2d(-11,75,0);
     public static Pose2d depositPositionRedNoTurn = new Pose2d(-11,-75,-Math.PI);
@@ -570,7 +576,9 @@ public class AutonomousBrainSimple {
     public static Pose2d resetPositionB4WarehouseBlue2 = new Pose2d(14,70,0);
     public static Pose2d resetPositionB4WarehouseRed2 = new Pose2d(14,-70,-Math.PI);
     public static Pose2d parkingPositionBlueWarehouse = new Pose2d(50,70,0);
+    public static Pose2d parkingPositionBlueWarehouse2 = new Pose2d(45,70,0);
     public static Pose2d parkingPositionRedWarehouse = new Pose2d(50,-70,-Math.PI);
+    public static Pose2d parkingPositionRedWarehouse2 = new Pose2d(45,-70,-Math.PI);
     public static Pose2d parkingPositionBlueStorageUnit = new Pose2d(-70,36,Math.PI/2);
     public static Pose2d parkingPositionRedStorageUnit = new Pose2d(-70,-36,Math.PI/2);
     public static Pose2d whiteLinePosBlue = new Pose2d(29.5,65.5,0);

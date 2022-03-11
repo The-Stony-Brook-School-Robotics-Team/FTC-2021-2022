@@ -48,12 +48,14 @@ public class OpenCVController {
         else {
             switch(mode) {
                 case BlueStatesDuckSimple:
+                case BlueStatesDuckSimpleWarehouse:
                     engine = new CapstoneOpenCVEngineBlueSimple();
                     break;
                 case BlueStatesWarehouse:
                     engine = new CapstoneOpenCVEngineBlueFull();
                     break;
                 case RedStatesDuckSimple:
+                case RedStatesDuckSimpleWarehouse:
                     engine = new CapstoneOpenCVEngineRedSimple();
                     break;
                 default:
