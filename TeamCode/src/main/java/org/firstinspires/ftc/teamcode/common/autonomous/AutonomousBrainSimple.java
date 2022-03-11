@@ -240,7 +240,8 @@ public class AutonomousBrainSimple {
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_FOREST_PALETTE);
                 RRctrl.followLineToSpline(iniDropPosition);
                 new Thread(()->{
-                    slideCtrl.extendDropRetractAuton(iniTarget);
+                    Log.d("AutonBrain","Skipping slide drop");
+                    //TODO remove after slide fixed slideCtrl.extendDropRetractAuton(iniTarget);
                     Log.d("AutonBrain","Slide drop complete");
                 }).start();
                 robot.getDuckCtrl().spinOneDuck(isBlue);
@@ -285,7 +286,7 @@ public class AutonomousBrainSimple {
                 }
                 doAnalysisMaster = false;
                 CVctrl.shutDown();*/
-                AtomicReference<Boolean> hasFinishedTraj = new AtomicReference<>();
+                /*AtomicReference<Boolean> hasFinishedTraj = new AtomicReference<>();
                 AtomicReference<Boolean> hasHaltedTraj = new AtomicReference<>();
                 hasFinishedTraj.set(false);
                 hasHaltedTraj.set(false);
@@ -311,7 +312,7 @@ public class AutonomousBrainSimple {
                 }
                 hasFinishedTraj.set(true);
                 if(hasHaltedTraj.get())
-                {
+                {*/
                     // backpedal fast!!!!
                     TrajectoryVelocityConstraint velocityConstraintFast = SampleMecanumDrive.getVelocityConstraint(100, DriveConstantsMain.MAX_ANG_VEL, DriveConstantsMain.TRACK_WIDTH);
                     TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(80);
@@ -333,7 +334,7 @@ public class AutonomousBrainSimple {
                     Log.d("AutonBrain","finished all tasks.");
                     // done!
                     return;
-                }
+                /*}
                 double dist = RRctrl.distanceTo(parkingPositionBlue);
                 Log.d("AutonBrain","Target to current delta: " + dist);
                 if(dist > EPSILON_DIST)
@@ -345,7 +346,7 @@ public class AutonomousBrainSimple {
                 }
                 majorState.set(MajorAutonomousState.FINISHED);
                 Log.d("AutonBrain","finished all tasks.");
-                return;
+                return;*/
             case FINISHED:
                 return;
 
