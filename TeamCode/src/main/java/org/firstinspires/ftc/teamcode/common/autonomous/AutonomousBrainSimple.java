@@ -161,7 +161,7 @@ public class AutonomousBrainSimple {
         switch(majorState.get()) {
             case STOPPED:
                 doAnalysisMaster = true;
-                if(mode == AutonomousMode.BlueStatesDuckSimple || mode == AutonomousMode.RedStatesDuckSimple) {
+                if(mode == AutonomousMode.BlueStatesDuckSimple || mode == AutonomousMode.RedStatesDuckSimple || mode == AutonomousMode.BlueStatesDuckSimpleWarehouse || mode == AutonomousMode.RedStatesDuckSimpleWarehouse) {
                     majorState.set(MajorAutonomousState.ONE_CAMERA_READ_CAROUSEL);
                     return;
                 }
