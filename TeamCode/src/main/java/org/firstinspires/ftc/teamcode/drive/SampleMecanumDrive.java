@@ -53,7 +53,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     /* public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(45, 5, 2);
      public static PIDCoefficients HEADING_PID = new PIDCoefficients(65, 6, 5);
-     */public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(70, 0, 1);
+     */public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(40, 0, 1);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(30, 0, 1); // tasty
 
     public volatile boolean isRunningFollowTrajectory = false;
@@ -129,6 +129,59 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         setLocalizer(new OdometryLocalizer(hardwareMap));
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
+    }
+
+    public SampleMecanumDrive(HardwareMap hardwareMap, PIDCoefficients translationalPid, PIDCoefficients headingPid) {
+        super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
+
+        follower = new HolonomicPIDVAFollower(translationalPid, translationalPid, headingPid,
+                new Pose2d(0, 0, Math.toRadians(0.0)), 0);
+
+        LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
+
+        batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
+
+        for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
+            module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+        }
+
+        // TODO: adjust the names of the following hardware devices to match your configuration
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        imu.initialize(parameters);
+
+        // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
+        // upward (normal to the floor) using a command like the following:
+        // BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
+
+        leftFront = hardwareMap.get(DcMotorEx.class, "lf");
+        leftRear = hardwareMap.get(DcMotorEx.class, "lb");
+        rightRear = hardwareMap.get(DcMotorEx.class, "rb");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rf");
+
+        motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
+
+        for (DcMotorEx motor : motors) {
+            MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
+            motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+            motor.setMotorType(motorConfigurationType);
+        }
+
+        if (RUN_USING_ENCODER) {
+            setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+
+        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
+            setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
+        }
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        setLocalizer(new OdometryLocalizer(hardwareMap));
+        trajectorySequenceRunner = new TrajectorySequenceRunner(follower, headingPid);
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {

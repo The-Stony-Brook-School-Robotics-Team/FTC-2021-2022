@@ -14,7 +14,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.sbs.bears.robotframework.Robot;
 import org.sbs.bears.robotframework.controllers.DuckCarouselController;
 import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
 import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
@@ -32,7 +31,6 @@ public class AutonomousClientSafe {
     final HardwareMap hardwareMap;
     final Telemetry telemetry;
     final AutonomousMode autonomousMode;
-    Robot robot;
 
     RoadRunnerController roadRunnerController;
     SampleMecanumDrive roadRunnerDrive;
@@ -41,7 +39,7 @@ public class AutonomousClientSafe {
 
     OpenCVController openCVController;
     private boolean needToReadCamera = true;
-    SlideController originalSlideController;
+    SlideController slideController;
     IntakeControllerBlue intakeControllerBlue;
     IntakeControllerRed intakeControllerRed;
     DuckCarouselController duckCarouselController;
@@ -50,7 +48,7 @@ public class AutonomousClientSafe {
     RevBlinkinLedDriver ledDriver;
     NormalizedColorSensor normalizedColorSensor;
 
-    boolean objectIsInRobot;
+    boolean objectIsInRobot = true;
 
     TowerHeightFromDuck firstDeliveryHeight;
 
@@ -58,9 +56,10 @@ public class AutonomousClientSafe {
 
     Thread intakeChecker = new Thread();
     Thread extendRetractThread = new Thread();
-    public static int AEarlyExtendSlideOffset = 17;
-    public static int AEarlyRetractToTrajectoryOffset = 600;
-    public static int AInitExtendMilliTimeOffset = 700;
+    public volatile boolean needToStopAllThreads = false;
+    public static int AEarlyExtendSlideOffset_xValue = 17;
+    public static int AEarlyRetractToTrajectoryOffset_SlidePosition = 800;
+    public static int AInitExtendTimeOffset_waitTime = 700;
 
     public AutonomousClientSafe(HardwareMap hardwareMap, Telemetry telemetry, AutonomousMode autonomousMode) {
         this.hardwareMap = hardwareMap;
@@ -69,9 +68,6 @@ public class AutonomousClientSafe {
 
         initControllers(hardwareMap, telemetry, autonomousMode);
 
-        objectIsInRobot = true;
-        firstDeliveryHeight = TowerHeightFromDuck.NOT_YET_SET;
-
         initServoPositions();
 
         normalizedColorSensor = hardwareMap.get(NormalizedColorSensor.class, "color");
@@ -79,22 +75,23 @@ public class AutonomousClientSafe {
     }
 
     private void initControllers(HardwareMap hardwareMap, Telemetry telemetry, AutonomousMode mode) {
-        this.robot = new Robot(hardwareMap, telemetry, mode);
-        this.openCVController = robot.getCVctrl();
-        this.roadRunnerController = robot.getRRctrl();
+        this.openCVController = new OpenCVController(hardwareMap, telemetry, mode);
+
+        this.roadRunnerController = new RoadRunnerController(hardwareMap, true);
         this.roadRunnerController.setPos(startPositionBlue);
         this.roadRunnerDrive = roadRunnerController.getDrive();
-        this.originalSlideController = robot.getSlideCtrl();
-        this.intakeControllerBlue = robot.getIntakeCtrlBlue();
-        this.intakeControllerRed = robot.getIntakeCtrlRed();
-        this.duckCarouselController = robot.getDuckCtrl();
+
+        this.slideController = new SlideController(hardwareMap, telemetry);
+        this.intakeControllerBlue = new IntakeControllerBlue(hardwareMap, slideController.blueDumperServo, telemetry);
+        this.intakeControllerRed = new IntakeControllerRed(hardwareMap, slideController.redDumperServo, telemetry);
+        this.duckCarouselController = new DuckCarouselController(hardwareMap, telemetry);
         this.ledDriver = hardwareMap.get(RevBlinkinLedDriver.class, "rgb");
     }
 
     private void initServoPositions() {
         intakeControllerBlue.setState(IntakeState.PARK);
         intakeControllerRed.setState(IntakeState.PARK);
-        originalSlideController.blueDumperServo.setPosition(SlideController.dumperPosition_CLOSED);
+        slideController.blueDumperServo.setPosition(SlideController.dumperPosition_CLOSED);
     }
 
     public void getInitialBlockDone() {
@@ -103,11 +100,11 @@ public class AutonomousClientSafe {
 
         Thread initialSlideControlThread = new Thread(() -> {
             try {
-                Thread.sleep(AInitExtendMilliTimeOffset);
+                Thread.sleep(AInitExtendTimeOffset_waitTime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            originalSlideController.extendDropRetract_NewAutonomous(initialSlideTarget);
+            slideController.extendDropRetract_NewAutonomous(initialSlideTarget);
         });
 
         initialSlideControlThread.start();
@@ -115,7 +112,7 @@ public class AutonomousClientSafe {
         ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_FOREST_PALETTE);
         roadRunnerController.followLineToSpline(initialDropPosition);
 
-        while (originalSlideController.slideMotor.getCurrentPosition() > AEarlyRetractToTrajectoryOffset) {
+        while (slideController.slideMotor.getCurrentPosition() > AEarlyRetractToTrajectoryOffset_SlidePosition) {
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
@@ -149,7 +146,7 @@ public class AutonomousClientSafe {
     }
 
     public void pickUp() {
-        if (!AutonomousTimer.canContinue())
+        if (!AutonomousTimer.canContinue(AutonomousTimer.CurrentState.DepositToPickUp))
             return;
 
         boolean isInWarehouse = false;
@@ -172,7 +169,7 @@ public class AutonomousClientSafe {
             if (!objectIsInRobot)    //PickUp is not successful.
                 ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
 
-            if (!AutonomousTimer.canContinue(AutonomousTimer.CurrentState.PickUpSecondaryToDeposit))
+            if (!AutonomousTimer.canContinue(AutonomousTimer.CurrentState.PickUpToDeposit))
                 return;
         }
 
@@ -185,19 +182,20 @@ public class AutonomousClientSafe {
     public static boolean TEST = true;
 
     public void deposit() {
-        if (!AutonomousTimer.canContinue())
+        if (!AutonomousTimer.canContinue(AutonomousTimer.CurrentState.PickUpToDeposit))
             return;
 
-        if (!extendRetractThread.isAlive())
-            extendRetractThread = startExtendDropRetractThread();
-        else {
+        if (extendRetractThread.isAlive())
             extendRetractThread.interrupt();
-            extendRetractThread = startExtendDropRetractThread();
-        }
+
+        extendRetractThread = startExtendDropRetractThread();
 
         runTrajectory_Deposit();
 
-        while (originalSlideController.slideMotor.getCurrentPosition() > AEarlyRetractToTrajectoryOffset) {
+        while (slideController.slideMotor.getCurrentPosition() > AEarlyRetractToTrajectoryOffset_SlidePosition) {
+            if (needToStopAllThreads)
+                return;
+
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
@@ -210,15 +208,17 @@ public class AutonomousClientSafe {
 
     private Thread startExtendDropRetractThread() {
         Thread extendDropRetractThread = new Thread(() -> {
-            while (roadRunnerDrive.getPoseEstimate().getX() > AEarlyExtendSlideOffset) {
+            while (roadRunnerDrive.getPoseEstimate().getX() > AEarlyExtendSlideOffset_xValue) {
+                if (needToStopAllThreads)
+                    return;
+
                 try {
                     Thread.sleep(50);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-
-            originalSlideController.extendDropRetract_NewAutonomous(SlideTarget.TOP_DEPOSIT);
+            slideController.extendDropRetract_NewAutonomous(SlideTarget.TOP_DEPOSIT);
             //TODO start path here
         });
         extendDropRetractThread.start();
@@ -226,6 +226,9 @@ public class AutonomousClientSafe {
     }
 
     public void park() {
+        if (AutonomousTimer.currentState == AutonomousTimer.CurrentState.PickUpToDeposit)  //Already inside warehouse
+            return;
+
         runTrajectory_Park();
     }
 
@@ -248,6 +251,7 @@ public class AutonomousClientSafe {
                 initialDropPosition = depositPositionBlueTOP;
         }
         telemetry.addData("Camera Read: ", initialSlideTarget.toString());
+        telemetry.update();
         needToReadCamera = false;
     }
 
@@ -257,7 +261,6 @@ public class AutonomousClientSafe {
                         roadRunnerDrive.getPoseEstimate())
                         .lineToSplineHeading(PICK_UP_TRAJECTORY_FIX_HEADING_POSITION)
                         .splineToConstantHeading(PICK_UP_TRAJECTORY_PASS_PIPE_POSITION, PICK_UP_TRAJECTORY_PASS_PIPE_POSITION_TANGENT)
-//                        .splineToConstantHeading(PICK_UP_TRAJECTORY_MOVE_OUT_POSITION, PICK_UP_TRAJECTORY_MOVE_OUT_POSITION_TANGENT)
                         .splineToConstantHeading(PICK_UP_TRAJECTORY_PICK_UP_POSITION, ZERO)
                         .addSpatialMarker(PICK_UP_TRAJECTORY_OPEN_PICK_UP_POSITION, () -> intakeControllerBlue.setState(IntakeState.BASE))
                         .addDisplacementMarker(this::runAntiBlockingChecker_PickUp)
@@ -299,6 +302,7 @@ public class AutonomousClientSafe {
     private void runAntiBlockingChecker_PickUp() {
         if (roadRunnerController.getPos().getX() < ANTI_BLOCKING_CHECKER_PICK_UP_X) {
             stopRoadRunner();
+            intakeControllerBlue.setState(IntakeState.PARK);
             roadRunnerDrive.followTrajectory(
                     roadRunnerDrive.trajectoryBuilder(roadRunnerDrive.getPoseEstimate(), true)
                             .lineToLinearHeading(ABC_RESET_POSITION_PICK_UP)
@@ -311,6 +315,8 @@ public class AutonomousClientSafe {
     private void runAntiBlockingChecker_Deposit() {
         if (roadRunnerController.getPos().getX() > ANTI_BLOCKING_CHECKER_DEPOSIT_X) {
             stopRoadRunner();
+            extendRetractThread.interrupt();
+
             roadRunnerDrive.followTrajectory(
                     roadRunnerDrive.trajectoryBuilder(roadRunnerDrive.getPoseEstimate(), true)
                             .lineToLinearHeading(ABC_RESET_POSITION_DEPOSIT)
@@ -345,17 +351,14 @@ public class AutonomousClientSafe {
     private static final double ANTI_BLOCKING_CHECKER_PICK_UP_X = 40.0;
     private static final double ANTI_BLOCKING_CHECKER_PARK_X = 32.0;
 
-    private static final Vector2d PICK_UP_TRAJECTORY_OPEN_PICK_UP_POSITION = new Vector2d(20.0, 65.5);
+    private static final Vector2d PICK_UP_TRAJECTORY_OPEN_PICK_UP_POSITION = new Vector2d(17.0, 66);
     private static final Pose2d PICK_UP_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(14.0, 65.5, ZERO);
     private static final Vector2d PICK_UP_TRAJECTORY_PASS_PIPE_POSITION = new Vector2d(35.0, 66.0);
     private static final double PICK_UP_TRAJECTORY_PASS_PIPE_POSITION_TANGENT = Math.toRadians(-15.0);
-    private static final Vector2d PICK_UP_TRAJECTORY_MOVE_OUT_POSITION = new Vector2d(45.0, 64.0);
-    private static final double PICK_UP_TRAJECTORY_MOVE_OUT_POSITION_TANGENT = Math.toRadians(-10.0);
     private static final Vector2d PICK_UP_TRAJECTORY_PICK_UP_POSITION = new Vector2d(56.0, 65.5);
 
     private static final Pose2d DEPOSIT_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(40.0, 67.0, ZERO);
     private static final Pose2d DEPOSIT_TRAJECTORY_PASS_PIPE_POSITION = new Pose2d(20.0, 65.5, ZERO);   //Heading is identical to B_FIX_HEADING_POSITION
-    private static final double DEPOSIT_TRAJECTORY_START_SLIDE_X = 20;
 
     private static final Pose2d PICK_UP_SECONDARY_TRAJECTORY_PICK_UP_BLOCK_POSITION = new Pose2d(57.0, 65.0, Math.toRadians(0.0));
 
@@ -369,7 +372,7 @@ public class AutonomousClientSafe {
     private static final Vector2d ABC_CHECK_POSITION_PARK = ABC_CHECK_POSITION_PICK_UP;
 
 
-    public static Pose2d depositPositionBlueTOP = new Pose2d(7.15, 63.0, -Math.toRadians(33.0));
-    public static Pose2d depositPositionBlueMID = new Pose2d(7.15, 63.0, -Math.toRadians(33.0));
-    public static Pose2d depositPositionBlueBOT = new Pose2d(7.15, 63.0, -Math.toRadians(33.0));
+    public static Pose2d depositPositionBlueTOP = new Pose2d(5.0, 63.0, -Math.toRadians(34.0));
+    public static Pose2d depositPositionBlueMID = new Pose2d(5.0, 63.0, -Math.toRadians(34.0));
+    public static Pose2d depositPositionBlueBOT = new Pose2d(5.0, 63.0, -Math.toRadians(34.0));
 }

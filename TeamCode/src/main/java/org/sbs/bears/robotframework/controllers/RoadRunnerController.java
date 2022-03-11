@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousBrain;
 import org.firstinspires.ftc.teamcode.drive.DriveConstantsMain;
+import org.firstinspires.ftc.teamcode.drive.NewAutonomousMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -63,6 +64,16 @@ public class RoadRunnerController {
     public RoadRunnerController(HardwareMap hardwareMap, Telemetry telemetry) {
         // initialize everyone.
         this.drive = new SampleMecanumDrive(hardwareMap);
+        this.dashboard = FtcDashboard.getInstance();
+        this.runner = drive.trajectorySequenceRunner;
+    }
+
+    public RoadRunnerController(HardwareMap hardwareMap, boolean isNewAutonomous) {
+        if (isNewAutonomous)
+            this.drive = new NewAutonomousMecanumDrive(hardwareMap);
+        else
+            this.drive = new SampleMecanumDrive(hardwareMap);
+
         this.dashboard = FtcDashboard.getInstance();
         this.runner = drive.trajectorySequenceRunner;
     }
@@ -334,21 +345,21 @@ public class RoadRunnerController {
                         .build()
         );
     }
-    public void simpleAutonParkingProbeRed()
-    {
-       drive.followTrajectory(
+
+    public void simpleAutonParkingProbeRed() {
+        drive.followTrajectory(
                 drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .splineToSplineHeading(AutonomousBrain.resetPositionB4WarehouseRed2,0)
+                        .splineToSplineHeading(AutonomousBrain.resetPositionB4WarehouseRed2, 0)
                         .lineToSplineHeading(AutonomousBrain.parkingPositionRed)
                         //.forward(AutonomousBrainMerged.distanceIntake,velocityConstraintSlow,accelerationConstraint)
                         .build()
         );
     }
-    public void simpleAutonParkingProbeBlue()
-    {
+
+    public void simpleAutonParkingProbeBlue() {
         drive.followTrajectory(
                 drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .splineToSplineHeading(AutonomousBrain.resetPositionB4WarehouseBlue2,0)
+                        .splineToSplineHeading(AutonomousBrain.resetPositionB4WarehouseBlue2, 0)
                         .lineToSplineHeading(AutonomousBrain.parkingPositionBlue)
                         //.forward(AutonomousBrainMerged.distanceIntake,velocityConstraintSlow,accelerationConstraint)
                         .build()
@@ -363,16 +374,15 @@ public class RoadRunnerController {
         );
     }
 
-    public double distanceTo(Pose2d target)
-    {
-        return distanceTo(getPos(),target);
+    public double distanceTo(Pose2d target) {
+        return distanceTo(getPos(), target);
     }
-    public double distanceTo(Pose2d a, Pose2d b)
-    {  //                                                                                                        ___________
-        return Math.sqrt((a.getX()-b.getX())*(a.getX()-b.getX()) + (a.getY()-b.getY())*(a.getY()-b.getY())); // √∆x^2 + ∆y^2
+
+    public double distanceTo(Pose2d a, Pose2d b) {  //                                                                                                        ___________
+        return Math.sqrt((a.getX() - b.getX()) * (a.getX() - b.getX()) + (a.getY() - b.getY()) * (a.getY() - b.getY())); // √∆x^2 + ∆y^2
     }
-    public void followLineToSpline(Pose2d[] poss)
-    {
+
+    public void followLineToSpline(Pose2d[] poss) {
         TrajectoryBuilder tmp = drive.trajectoryBuilder(drive.getPoseEstimate());
         for (Pose2d pos : poss) {
             tmp.lineToSplineHeading(pos);
@@ -548,7 +558,7 @@ public class RoadRunnerController {
     public void followLineToSpline(Pose2d pose2d, TrajectoryVelocityConstraint velocityConstraintFast, TrajectoryAccelerationConstraint accelerationConstraint) {
         drive.followTrajectory(
                 drive.trajectoryBuilder(drive.getPoseEstimate())
-                .lineToSplineHeading(pose2d,velocityConstraintFast,accelerationConstraint)
-                .build());
+                        .lineToSplineHeading(pose2d, velocityConstraintFast, accelerationConstraint)
+                        .build());
     }
 }

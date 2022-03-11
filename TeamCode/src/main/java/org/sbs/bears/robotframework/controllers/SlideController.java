@@ -42,7 +42,7 @@ public class SlideController {
     public static double SERVO_VELOCITY_CONSTANT = 0.8;
     public static boolean SERVO_TEST = false;
 
-    public static int ASlideExtendPositionOffSet = -100;
+    public static int ASlideExtendPositionOffSet = -200;
     public static int ASlideRetractPositionOffset = 500;
 
     public SlideController(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -301,7 +301,6 @@ public class SlideController {
      * Moves the bucket servo to drop the cube, then returns the servo to original position.
      **/
     public void dropCube() {
-
         //Checks to make sure the bucket is outside of the slide before dumping
         if (slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT) {
             if (targetParams == SlideTarget.CAP_FROM_CAROUSEL) {
@@ -323,7 +322,7 @@ public class SlideController {
                 blueDumperServo.setPosition(dumperPosition_EJECT);
                 redDumperServo.setPosition(dumperPosition_EJECT);
                 try {
-                    Thread.sleep(400); // 250
+                    Thread.sleep(350); // 250
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -442,6 +441,7 @@ public class SlideController {
                 e.printStackTrace();
             }
         }
+
         //Now that the bucket is out, start lifting the slide
         //setHeightToParams(verticalServoTargetPos);
         setHeightTo_NewAutonomous(verticalServoTargetPos);
