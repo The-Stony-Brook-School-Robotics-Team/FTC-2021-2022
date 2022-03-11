@@ -240,8 +240,8 @@ public class AutonomousBrainSimple {
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_FOREST_PALETTE);
                 RRctrl.followLineToSpline(iniDropPosition);
                 new Thread(()->{
-                    Log.d("AutonBrain","Skipping slide drop");
-                    //TODO remove after slide fixed slideCtrl.extendDropRetractAuton(iniTarget);
+                 //   Log.d("AutonBrain","Skipping slide drop");
+                    slideCtrl.extendDropRetractAuton(iniTarget);
                     Log.d("AutonBrain","Slide drop complete");
                 }).start();
                 robot.getDuckCtrl().spinOneDuck(isBlue);
