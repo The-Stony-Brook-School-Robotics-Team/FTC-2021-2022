@@ -147,7 +147,7 @@ public class AutonomousClientTest {
 
         runTrajectory_PickUp();
 
-        if (!AutonomousTimer.canContinue(AutonomousTimer.CurrentState.PickUpSecondaryToDeposit))
+        if (!AutonomousTimer.canContinue(AutonomousTimer.CurrentState.PickUpToDeposit))
             return;
 
         ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);

@@ -139,7 +139,7 @@ public class AutonomousClientBeta {
             //Picking-up is not successful.
             ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
 
-            if (!AutonomousTimer.canContinue(AutonomousTimer.CurrentState.PickUpSecondaryToDeposit))
+            if (!AutonomousTimer.canContinue(AutonomousTimer.CurrentState.PickUpToDeposit))
                 return;
         }
         intakeChecker.interrupt();
