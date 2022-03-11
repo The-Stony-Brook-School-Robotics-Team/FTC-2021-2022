@@ -7,14 +7,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
+@Deprecated
 public class ParkingProbingSensorController {
     Rev2mDistanceSensor sensorBlue;
     Rev2mDistanceSensor sensorRed;
     public ParkingProbingSensorController(HardwareMap hardwareMap, Telemetry telemetry){
-        sensorBlue = hardwareMap.get(Rev2mDistanceSensor.class, "bdist");
-        sensorRed = hardwareMap.get(Rev2mDistanceSensor.class, "rdist");
-        Log.d("ParkingProberController","All sensors initialized");
+        //sensorBlue = hardwareMap.get(Rev2mDistanceSensor.class, "bdist");
+        //sensorRed = hardwareMap.get(Rev2mDistanceSensor.class, "rdist");
+        Log.d("ParkingProberController","All sensors failed to initialize: not in config. DO NOT USE THIS CLASS");
     }
     public double getDistBlue()
     {

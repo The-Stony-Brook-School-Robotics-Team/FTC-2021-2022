@@ -68,18 +68,16 @@ public class ButtonHandler {
     }
     public static SegmentPositions currentSegmentPosition = SegmentPositions.EXTEND;
 
-    // TODO: CHECK IF DUCK SPINNER IS SPINNING THE WRONG WAY
-    public static Boolean invertedDucKSpinner = false;
     public static Thread asyncDuck = new Thread(() -> {
-        if(invertedDucKSpinner) {
-            duckspinnerSpinning = true;
-            carouselController.spinOneDuck(false);
-            duckspinnerSpinning = false;
-        } else {
-            duckspinnerSpinning = true;
-            carouselController.spinOneDuck();
-            duckspinnerSpinning = false;
-        }
+        duckspinnerSpinning = true;
+        carouselController.spinOneDuck();
+        duckspinnerSpinning = false;
+    });
+
+    public static Thread asyncDuckInverted = new Thread(() -> {
+        duckspinnerSpinning = true;
+        carouselController.spinOneDuck(false);
+        duckspinnerSpinning = false;
     });
 
     public static Boolean runningAsyncSlideExtend = false;
@@ -356,6 +354,14 @@ public class ButtonHandler {
                     if(primaryGamepad.left_trigger > 0.2) {
                         asyncExtendSlide.interrupt();
                         runningAsyncSlideExtend = false;
+                    }
+
+                    /**
+                     * RIGHT TRIGGER
+                     * @usage Inverted Duck Spinner
+                     */
+                    if(primaryGamepad.left_trigger > 0.2) {
+                        asyncDuckInverted.start();
                     }
 
 
