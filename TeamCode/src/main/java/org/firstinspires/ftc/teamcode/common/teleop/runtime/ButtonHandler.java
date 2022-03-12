@@ -16,8 +16,6 @@ import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.slideHandl
 
 import android.util.Log;
 
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
@@ -116,6 +114,12 @@ public class ButtonHandler {
 
     public static Thread primaryRuntime = new Thread(() -> {
         while(currentState == TeleOpRobotStates.RUNNING || currentState.equals(TeleOpRobotStates.INITIALIZING)) {
+
+
+
+            // MARC  & MICHAEL ADDED @ COMP
+
+
 
             /**
              * Primary Gamepad Shift
@@ -422,7 +426,24 @@ public class ButtonHandler {
                     } else if(!primaryGamepad.dpad_down && isPressingDownDpad) {
                         isPressingDownDpad = false;
                     }
+                    /**
+                     * RIGHT BUMPER
+                     * @usage Reset encoder of slide
+                     */
+                    if(primaryGamepad.right_bumper && !isPressingRightBumper) {
+                        slideHandler.resetSlideEncoder();
+                        isPressingRightBumper = true;
+                    }
+                    else if(!primaryGamepad.right_bumper && isPressingRightBumper)
+                    {
+                        isPressingRightBumper = false;
+                    }
+
+
                     break;
+
+
+
             }
         }
     });
