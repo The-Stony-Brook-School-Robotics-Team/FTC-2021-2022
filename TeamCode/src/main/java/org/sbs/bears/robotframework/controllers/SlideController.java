@@ -520,14 +520,14 @@ public class SlideController {
         double deltaTime_s;
 
         if (verticalServo.getPosition() < targetPos) {  //Move the slide up
-            double omegaI = 0.798 * deltaTheta / runTime;
+            double omegaI = 0.83 * deltaTheta / runTime;
             while (currentServoPosition <= targetPos) {
                 deltaTime_s = NanoClock.system().seconds() - initialServoTime;
                 verticalServo.setPosition(currentServoPosition);
                 currentServoPosition = 0.25 * omegaI * omegaI * deltaTime_s * deltaTime_s / deltaTheta + omegaI * deltaTime_s + initialServoPosition;
             }
         } else {    //Move the slide down
-            double omegaI = 1.773 * deltaTheta / runTime;
+            double omegaI = 2.00 * deltaTheta / runTime;
             while (currentServoPosition >= targetPos) {
                 deltaTime_s = NanoClock.system().seconds() - initialServoTime;
                 verticalServo.setPosition(currentServoPosition);
