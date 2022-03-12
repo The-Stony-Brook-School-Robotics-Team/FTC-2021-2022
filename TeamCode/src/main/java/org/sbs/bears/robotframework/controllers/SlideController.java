@@ -42,8 +42,8 @@ public class SlideController {
     public static double SERVO_VELOCITY_CONSTANT = 0.8;
     public static boolean SERVO_TEST = false;
 
-    public static int ASlideExtendPositionOffSet = -600;
-    public static int ASlideRetractPositionOffset = 500;
+    public static int ASlideExtendPositionOffSet = -700;
+    public static int ASlideRetractPositionOffset = 400;
 
     public SlideController(HardwareMap hardwareMap, Telemetry telemetry) {
         /** Initialization **/

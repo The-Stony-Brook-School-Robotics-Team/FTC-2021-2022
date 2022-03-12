@@ -57,7 +57,7 @@ public class AutonomousClientSafe {
     Thread intakeChecker = new Thread();
     Thread extendRetractThread = new Thread();
     public volatile boolean needToStopAllThreads = false;
-    public static int AEarlyExtendSlideOffset_xValue = 13;
+    public static int AEarlyExtendSlideOffset_xValue = 10;
     public static int AEarlyRetractToTrajectoryOffset_SlidePosition = 600;
     public static int AInitExtendTimeOffset_waitTime = 700;
 
