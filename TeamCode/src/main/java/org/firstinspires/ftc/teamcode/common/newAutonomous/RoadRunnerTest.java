@@ -9,12 +9,12 @@ import org.sbs.bears.robotframework.enums.SlideTarget;
 
 //@Autonomous(name = "A_William - RoadRunnerTest")
 public class RoadRunnerTest extends LinearOpMode {
-    AutonomousClientBeta autonomousClientBeta;
+    AutonomousClientSafe autonomousClientBeta;
 
     @Override
     public void runOpMode() {
         OpenCVController.isDuck = false;
-        autonomousClientBeta = new AutonomousClientBeta(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
+        autonomousClientBeta = new AutonomousClientSafe(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
         msStuckDetectLoop = Integer.MAX_VALUE;  //Turn off infinite loop detection.
 
         Thread localizeThread = new Thread(() -> {
@@ -38,9 +38,9 @@ public class RoadRunnerTest extends LinearOpMode {
 
         waitForStart();
 
-        autonomousClientBeta.originalSlideController.extendDropRetract_NewAutonomous(SlideTarget.TOP_DEPOSIT);
+        autonomousClientBeta.slideController.extendDropRetract_NewAutonomous(SlideTarget.TOP_DEPOSIT);
 
-        autonomousClientBeta.stopRobot();
+        autonomousClientBeta.stopRoadRunner();
         stop();
     }
 }
