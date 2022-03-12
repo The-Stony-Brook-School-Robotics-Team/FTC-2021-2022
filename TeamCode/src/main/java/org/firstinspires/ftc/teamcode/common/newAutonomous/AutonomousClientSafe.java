@@ -213,7 +213,7 @@ public class AutonomousClientSafe {
                     return;
 
                 try {
-                    Thread.sleep(50);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -274,7 +274,7 @@ public class AutonomousClientSafe {
                         roadRunnerDrive.getPoseEstimate(), true)
                         .lineToSplineHeading(DEPOSIT_TRAJECTORY_FIX_HEADING_POSITION)
                         .splineToLinearHeading(DEPOSIT_TRAJECTORY_PASS_PIPE_POSITION, Math.toRadians(-165.0))
-                        .splineToSplineHeading(AutonomousClientBeta.firstDepositPositionBlueTOP, Math.toRadians(175.0))
+                        .splineToSplineHeading(AutonomousClientSafe.depositPositionBlueTOP, Math.toRadians(175.0))
                         .addDisplacementMarker(this::runAntiBlockingChecker_Deposit)
                         .build()
         );
