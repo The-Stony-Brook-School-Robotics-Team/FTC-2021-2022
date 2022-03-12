@@ -37,9 +37,9 @@ public class AutonomousBlue extends LinearOpMode {
 
         localizeThread.start();
 
-        autonomousClient.readCamera();
-
         waitForStart();
+
+        autonomousClient.readCamera();
 
         AutonomousTimer.startTimer();
         autonomousClient.getInitialBlockDone();
