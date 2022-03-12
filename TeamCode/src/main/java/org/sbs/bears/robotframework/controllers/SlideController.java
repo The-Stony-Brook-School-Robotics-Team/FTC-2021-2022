@@ -270,8 +270,19 @@ public class SlideController {
         this.targetParams = SlideTarget.NA;
     }
 
+    public void resetSlideMotorConfigs(){
+        slideMotor.resetDeviceConfigurationForOpMode();
+        slideMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(10, 0, 0, 0));
+        slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        slideMotor.setTargetPosition(0); // should be where it reset to
+        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
     public void extendDropRetract_NewAutonomous(SlideTarget target) {
         this.targetParams = target;
+        resetSlideMotorConfigs();
 
         extendSlide_NewAutonomous();
         dropCube();
@@ -497,13 +508,13 @@ public class SlideController {
                 e.printStackTrace();
             }
             //Once triggered, kill the motor's PID and stop to prevent overshooting and hitting the robot.
-            if (!magswitch.getState()) {
+            if (!magswitch.getState() || slideMotor.getCurrentPosition()<10) {
                 hardStopReset();
                 break;
             }
         }
 
-        creepBack();
+        creepBack_NewAutonomous();
         Log.d("SlideController", "Set the dumper servo to ready (485)");
         blueDumperServo.setPosition(dumperPosition_READY);
         redDumperServo.setPosition(dumperPosition_READY);
@@ -830,6 +841,19 @@ public class SlideController {
         slideMotor.setPower(-.3);
         try {
             Thread.sleep(300);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        slideMotor.setPower(0);
+        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+
+    private void creepBack_NewAutonomous() {
+        slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        slideMotor.setPower(-.25);
+        try {
+            Thread.sleep(600);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
