@@ -900,7 +900,7 @@ public class SlideController {
 
 
     public static double dumperPosition_CLOSED = .53;//0.269;  // remeasured on jan 31 at 16h08
-    public static double dumperPosition_READY = .69;//0.55;
+    public static double dumperPosition_READY = .71;//0.55; // 0.69
     public static double dumperPosition_EJECT = .85;//0.74;
     public static double dumperPosition_RETRACTING = .29;//0.05;
 
