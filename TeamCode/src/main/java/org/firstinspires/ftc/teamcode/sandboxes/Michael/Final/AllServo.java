@@ -61,7 +61,7 @@ public class AllServo extends LinearOpMode {
 
             if(gamepad1.dpad_up && !qUp){
                 qUp = true;
-                place.setPosition(place.getPosition() + .05);
+                place.setPosition(place.getPosition() + .01);
             }
             if(!gamepad1.dpad_up && qUp){
                 qUp = false;
@@ -69,7 +69,7 @@ public class AllServo extends LinearOpMode {
 
             if(gamepad1.dpad_down && !qDown){
                 qDown = true;
-                place.setPosition(place.getPosition() - .05);
+                place.setPosition(place.getPosition() - .01);
             }
             if(!gamepad1.dpad_down && qDown){
                 qDown = false;
