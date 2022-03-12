@@ -104,7 +104,7 @@ public class AutonomousClientSafe {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            slideController.extendDropRetract_NewAutonomous(initialSlideTarget);
+            slideController.extendDropRetract(initialSlideTarget);
         });
 
         initialSlideControlThread.start();
@@ -218,7 +218,7 @@ public class AutonomousClientSafe {
                     e.printStackTrace();
                 }
             }
-            slideController.extendDropRetract_NewAutonomous(SlideTarget.TOP_DEPOSIT);
+            slideController.extendDropRetract(SlideTarget.TOP_DEPOSIT);
             //TODO start path here
         });
         extendDropRetractThread.start();

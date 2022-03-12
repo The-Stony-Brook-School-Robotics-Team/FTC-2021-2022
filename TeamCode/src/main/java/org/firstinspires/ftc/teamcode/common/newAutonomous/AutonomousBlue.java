@@ -39,9 +39,9 @@ public class AutonomousBlue extends LinearOpMode {
 
         waitForStart();
 
-        autonomousClient.readCamera();
-
         AutonomousTimer.startTimer();
+
+        autonomousClient.readCamera();
         autonomousClient.getInitialBlockDone();
 
         while (opModeIsActive() && AutonomousTimer.canContinue(AutonomousTimer.CurrentState.DepositToPickUp)) {
