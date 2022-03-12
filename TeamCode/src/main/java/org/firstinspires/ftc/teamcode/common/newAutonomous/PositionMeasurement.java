@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 
-@Autonomous(name = "A_William - PositionMeasurement")
+//@Autonomous(name = "A_William - PositionMeasurement")
 public class PositionMeasurement extends LinearOpMode {
     AutonomousClientSafe autonomousClient;
     double startTime_s;

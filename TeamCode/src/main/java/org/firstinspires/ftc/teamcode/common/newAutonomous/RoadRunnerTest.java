@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 
-@Autonomous(name = "A_William - RoadRunnerTest")
+//@Autonomous(name = "A_William - RoadRunnerTest")
 public class RoadRunnerTest extends LinearOpMode {
     AutonomousClientSafe autonomousClientBeta;
 

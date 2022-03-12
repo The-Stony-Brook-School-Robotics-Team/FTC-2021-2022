@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 
-@Autonomous(name = "A_William - AutonomousBlue")
+@Autonomous(name = "A - Auton (Blue Main William)")
 public class AutonomousBlue extends LinearOpMode {
     AutonomousClientSafe autonomousClient;
     private int counter = 0;
@@ -48,13 +48,13 @@ public class AutonomousBlue extends LinearOpMode {
             autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
             autonomousClient.pickUp();
             autonomousClient.deposit();
-//            counter++;
+           // counter++;
         }
 
         if (!AutonomousTimer.canContinue()) {
             autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BREATH_RED);
-//            telemetry.addData("Result: ", counter + " + 1");
-//            telemetry.update();
+            //telemetry.addData("Result: ", counter + " + 1");
+            //telemetry.update();
             autonomousClient.park();
         }
 

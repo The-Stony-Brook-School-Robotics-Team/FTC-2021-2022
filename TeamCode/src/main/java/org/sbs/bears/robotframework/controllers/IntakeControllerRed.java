@@ -24,7 +24,7 @@ public class IntakeControllerRed implements IntakeController {
 
     /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/
 //    private double[] basePos = {.025, 0.7}; //.141
-    private static double dumpPosdouble = .417;
+    private static double dumpPosdouble = .425;
     private double[] basePos = {.975, 1};
     private double[] parkPos = {.45, 0}; //.375 for gobilda servo
     public static double[] dumpPos = {dumpPosdouble, 0}; //??????? messed up .375 is the same???
