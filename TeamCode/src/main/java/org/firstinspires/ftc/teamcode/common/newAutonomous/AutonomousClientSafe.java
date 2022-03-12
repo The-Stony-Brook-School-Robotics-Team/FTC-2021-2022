@@ -226,10 +226,14 @@ public class AutonomousClientSafe {
     }
 
     public void park() {
-        if (AutonomousTimer.currentState == AutonomousTimer.CurrentState.PickUpToDeposit)  //Already inside warehouse
-            return;
-
-        runTrajectory_Park();
+        if (AutonomousTimer.currentState == AutonomousTimer.CurrentState.PickUpToDeposit){  //Already inside warehouse
+            roadRunnerDrive.followTrajectory(
+                    roadRunnerDrive.trajectoryBuilder(roadRunnerDrive.getPoseEstimate())
+                    .lineToLinearHeading(AutonomousClientSafe.PARK_TRAJECTORY_PARK_POSITION)
+                    .build()
+            );
+        } else
+            runTrajectory_Park();
     }
 
     public void readCamera() {
@@ -352,17 +356,17 @@ public class AutonomousClientSafe {
     private static final double ANTI_BLOCKING_CHECKER_PARK_X = 32.0;
 
     private static final Vector2d PICK_UP_TRAJECTORY_OPEN_PICK_UP_POSITION = new Vector2d(17.0, 66);
-    private static final Pose2d PICK_UP_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(12.0, 65.5, ZERO);
+    private static final Pose2d PICK_UP_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(10.0, 65.5, ZERO);
     private static final Vector2d PICK_UP_TRAJECTORY_PASS_PIPE_POSITION = new Vector2d(35.0, 66.0);
     private static final double PICK_UP_TRAJECTORY_PASS_PIPE_POSITION_TANGENT = Math.toRadians(-15.0);
-    private static final Vector2d PICK_UP_TRAJECTORY_PICK_UP_POSITION = new Vector2d(58.0, 65.0);
+    private static final Vector2d PICK_UP_TRAJECTORY_PICK_UP_POSITION = new Vector2d(58.0, 64.0);
 
     private static final Pose2d DEPOSIT_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(40.0, 67.0, ZERO);
     private static final Pose2d DEPOSIT_TRAJECTORY_PASS_PIPE_POSITION = new Pose2d(20.0, 65.5, ZERO);   //Heading is identical to B_FIX_HEADING_POSITION
 
-    private static final Pose2d PICK_UP_SECONDARY_TRAJECTORY_PICK_UP_BLOCK_POSITION = new Pose2d(59.0, 65.0, Math.toRadians(0.0));
+    private static final Pose2d PICK_UP_SECONDARY_TRAJECTORY_PICK_UP_BLOCK_POSITION = new Pose2d(59.0, 64.0, Math.toRadians(0.0));
 
-    private static final Pose2d PARK_TRAJECTORY_PARK_POSITION = new Pose2d(50.0, 66.0, 0);
+    public static final Pose2d PARK_TRAJECTORY_PARK_POSITION = new Pose2d(50.0, 66.0, 0);
 
     private static final Pose2d ABC_RESET_POSITION_PICK_UP = new Pose2d(10.0, 64.0, 0);
     private static final Pose2d ABC_RESET_POSITION_DEPOSIT = new Pose2d(55.0, 64.0, 0.0);
@@ -372,7 +376,7 @@ public class AutonomousClientSafe {
     private static final Vector2d ABC_CHECK_POSITION_PARK = ABC_CHECK_POSITION_PICK_UP;
 
 
-    public static Pose2d depositPositionBlueTOP = new Pose2d(2.0, 63.0, -Math.toRadians(34.0));
-    public static Pose2d depositPositionBlueMID = new Pose2d(2.0, 63.0, -Math.toRadians(35.0));
-    public static Pose2d depositPositionBlueBOT = new Pose2d(2.0, 63.0, -Math.toRadians(36.0));
+    public static Pose2d depositPositionBlueTOP = new Pose2d(2.0, 63.0, -Math.toRadians(33.0));
+    public static Pose2d depositPositionBlueMID = new Pose2d(2.0, 63.0, -Math.toRadians(34.0));
+    public static Pose2d depositPositionBlueBOT = new Pose2d(2.0, 63.0, -Math.toRadians(35.0));
 }
