@@ -21,6 +21,8 @@ import org.sbs.bears.robotframework.Sleep;
 import org.sbs.bears.robotframework.enums.SlideState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 
+import java.sql.Time;
+
 @Config
 public class SlideController {
     public Servo verticalServo;
@@ -298,11 +300,18 @@ public class SlideController {
         verticalServo.setPosition(vertServoPosition_GRAB_CAP);
         slideMotor.setTargetPosition(slideMotorPosition_CAP_ON_GROUND);
         slideMotor.setPower(slideMotorPowerGrabCap);
+        double TIMER_KILL = 2;
+        double currentTime = NanoClock.system().seconds();
+        double timeToKill = currentTime + TIMER_KILL;
         while (slideMotor.getCurrentPosition() < slideMotorPosition_CAP_ON_GROUND) {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            }
+            if(timeToKill <= NanoClock.system().seconds())
+            {
+                hardStopReset();
             }
         }
         slideMotor.setPower(0);
@@ -445,11 +454,18 @@ public class SlideController {
         }
 
         //Wait until the slide bucket is extended outside of the robot
+        double TIMER_MAX = 2; // s
+        double currentTime = NanoClock.system().seconds();
+        double timeToKill = currentTime + TIMER_MAX;
         while (slideMotor.getCurrentPosition() <= slideMotorPosition_BUCKET_OUT + ASlideExtendPositionOffSet) {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            }
+            if(timeToKill <= NanoClock.system().seconds())
+            {
+                hardStopReset();
             }
         }
 
@@ -460,11 +476,18 @@ public class SlideController {
         //setHeightWithSlope(targetPosFinal, verticalServoTargetPos);
 
         //Wait until the slide has reached its final position
+         TIMER_MAX = 2; // s
+         currentTime = NanoClock.system().seconds();
+         timeToKill = currentTime + TIMER_MAX;
         while (slideMotor.getCurrentPosition() < targetPosFinal) {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            }
+            if(timeToKill <= NanoClock.system().seconds())
+            {
+                hardStopReset();
             }
 
         }
@@ -487,12 +510,19 @@ public class SlideController {
         slideMotor.setPower(slideMotorPowerMoving);
         slideMotor.setTargetPosition(slideMotorPosition_PARKED);
 
+        double TIMER_MAX = 2; // s
+        double currentTime = NanoClock.system().seconds();
+        double timeToKill = currentTime + TIMER_MAX;
         //Wait until the slide is retracted to right outside the robot
         while (slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT_RET + ASlideRetractPositionOffset) {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            }
+            if(timeToKill <= NanoClock.system().seconds())
+            {
+                hardStopReset();
             }
         }
 
@@ -501,11 +531,18 @@ public class SlideController {
         slideMotor.setPower(slideMotorPowerMovingBack);
 
         //Wait until the magnetic switch is triggered.
+         TIMER_MAX = 2; // s
+         currentTime = NanoClock.system().seconds();
+         timeToKill = currentTime + TIMER_MAX;
         while (slideMotor.isBusy()) {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            }
+            if(timeToKill <= NanoClock.system().seconds())
+            {
+                hardStopReset();
             }
             //Once triggered, kill the motor's PID and stop to prevent overshooting and hitting the robot.
             if (!magswitch.getState() || slideMotor.getCurrentPosition()<10) {
@@ -634,11 +671,18 @@ public class SlideController {
                 }
 
                 //Wait until the slide bucket is extended outside of the robot
+                double TIMER_MAX = 2; // s
+                double currentTime = NanoClock.system().seconds();
+                double timeToKill = currentTime + TIMER_MAX;
                 while (slideMotor.getCurrentPosition() <= slideMotorPosition_BUCKET_OUT) {
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
+                    }
+                    if(timeToKill <= NanoClock.system().seconds())
+                    {
+                        hardStopReset();
                     }
                 }
                 //Now that the bucket is out, start lifting the slide
@@ -648,11 +692,18 @@ public class SlideController {
                 //setHeightWithSlope(targetPosFinal, verticalServoTargetPos);
 
                 //Wait until the slide has reached its final position
+                 TIMER_MAX = 2; // s
+                 currentTime = NanoClock.system().seconds();
+                 timeToKill = currentTime + TIMER_MAX;
                 while (slideMotor.getCurrentPosition() < targetPosFinal) {
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
+                    }
+                    if(timeToKill <= NanoClock.system().seconds())
+                    {
+                        hardStopReset();
                     }
 
                 }
@@ -676,13 +727,18 @@ public class SlideController {
                 slideMotor.setTargetPosition(targetPos);
                 //Wait until the slide is retracted to right outside the robot
                 //setHeightWithSlope(slideMotorPosition_PARKED, vertServoPosition_PARKED);
-
-
+                 TIMER_MAX = 2; // s
+                 currentTime = NanoClock.system().seconds();
+                 timeToKill = currentTime + TIMER_MAX;
                 while (slideMotor.getCurrentPosition() > slideMotorPosition_BUCKET_OUT_RET) {
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
+                    }
+                    if(timeToKill <= NanoClock.system().seconds())
+                    {
+                        hardStopReset();
                     }
                 }
                 setHeightToParams(vertServoPosition_PARKED);
@@ -695,11 +751,18 @@ public class SlideController {
                 //verticalServo.setPosition(vertServoPosition_PARKED);
                 //setHeightWithSlope(slideMotorPosition_PARKED, vertServoPosition_PARKED);
                 //Wait until the magnetic switch is triggered.
+                TIMER_MAX = 2; // s
+                currentTime = NanoClock.system().seconds();
+                timeToKill = currentTime + TIMER_MAX;
                 while (slideMotor.isBusy()) {
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
+                    }
+                    if(timeToKill <= NanoClock.system().seconds())
+                    {
+                        hardStopReset();
                     }
                     //Once triggered, kill the motor's PID and stop to prevent overshooting and hitting the robot.
                     if (!magswitch.getState()) {
