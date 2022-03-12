@@ -32,7 +32,7 @@ public class DuckCarouselController {
 
     //MAGICAL_CONSTANT should be between 0.30 to 0.40. Because of the lack of enough torque, the wheel actually never achieve the ideal acceleration.
     public double MAGICAL_CONSTANT = 0.25;
-    public double MAGICAL_CONSTANT_TIME_OFFSET = 0.1;
+    public double MOTOR_POWER_OFFSET = 0.15;
 
     public double FIRST_STAGE_TIME_FLAG = -1;
     public double FIRST_STAGE_TIME_INTERVAL = 2; //1.4
@@ -43,7 +43,6 @@ public class DuckCarouselController {
     public double runTime;
 
     public static DcMotor wheelMover;
-
 
     public DuckCarouselController(HardwareMap hardwareMap, Telemetry telemetry) {
         wheelMover = hardwareMap.get(DcMotor.class, "duck");
@@ -97,6 +96,6 @@ public class DuckCarouselController {
      * @return The speed of the real-time target speed of the motor.
      */
     private double getFirstStageMotorSpeed() {
-        return MAGICAL_CONSTANT * (getCurrentSystemSecond() - initTime + MAGICAL_CONSTANT_TIME_OFFSET);
+        return MAGICAL_CONSTANT * (getCurrentSystemSecond() - initTime + MOTOR_POWER_OFFSET);
     }
 }
