@@ -48,7 +48,7 @@ public class AutonomousBlue extends LinearOpMode {
             autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
             autonomousClient.pickUp();
             autonomousClient.deposit();
-           // counter++;
+            // counter++;
         }
 
         if (!AutonomousTimer.canContinue()) {
