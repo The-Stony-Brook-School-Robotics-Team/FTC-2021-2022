@@ -5,8 +5,15 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.OdometrySubsystem;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
+import com.arcrobotics.ftclib.purepursuit.Path;
+import com.arcrobotics.ftclib.purepursuit.Waypoint;
+import com.arcrobotics.ftclib.purepursuit.waypoints.EndWaypoint;
+import com.arcrobotics.ftclib.purepursuit.waypoints.GeneralWaypoint;
+import com.arcrobotics.ftclib.purepursuit.waypoints.PointTurnWaypoint;
+import com.arcrobotics.ftclib.purepursuit.waypoints.StartWaypoint;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -22,7 +29,7 @@ import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 //@Deprecated
 public class PurePursuitTesting extends LinearOpMode {
 
-
+    //TODO MOST LIKELY BROKEN BE CAREFUL LMAOO
     private static final double TRACKWIDTH = 9.5;
     private static final double CENTER_WHEEL_OFFSET = -.62;
     private static final double WHEEL_DIAMETER = .738188976*2;
@@ -31,7 +38,7 @@ public class PurePursuitTesting extends LinearOpMode {
 
 
 
-    private DcMotorEx lf, rf, lb, rb;
+    private Motor lf, rf, lb, rb;
     private MecanumDrive drive;
     private OdometrySubsystem odometry;
     private MotorEx encoderLeft, encoderRight, encoderPerp;
@@ -44,13 +51,13 @@ public class PurePursuitTesting extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        lf = hardwareMap.get(DcMotorEx.class, "lf");
-        rf = hardwareMap.get(DcMotorEx.class, "rf");
-        lb = hardwareMap.get(DcMotorEx.class, "lb");
-        rb = hardwareMap.get(DcMotorEx.class, "rb");
+        lf = hardwareMap.get(Motor.class, "lf");
+        rf = hardwareMap.get(Motor.class, "rf");
+        lb = hardwareMap.get(Motor.class, "lb");
+        rb = hardwareMap.get(Motor.class, "rb");
 
-        lb.setDirection(DcMotorSimple.Direction.REVERSE);
-        rf.setDirection(DcMotorSimple.Direction.REVERSE);
+        lb.setInverted(true);
+        rf.setInverted(true);
 
         encoderLeft = new MotorEx(hardwareMap, "leftodom");
         encoderRight = new MotorEx(hardwareMap, "rightodom");
@@ -74,40 +81,28 @@ public class PurePursuitTesting extends LinearOpMode {
                 () -> -(encoderPerp.getCurrentPosition() * TICKS_TO_INCHES),
                 TRACKWIDTH, CENTER_WHEEL_OFFSET
         );
+        drive = new MecanumDrive(lf, rf, lb, rb);
         odometry = new OdometrySubsystem(holOdom);
 
+
+        Waypoint p1 = new StartWaypoint(odometry.getPose());
+        Waypoint p2 = new GeneralWaypoint(new com.arcrobotics.ftclib.geometry.Pose2d(10,10,  odometry.getPose().getRotation()), 10, 10, 1);
+        Waypoint p3 = new PointTurnWaypoint(
+                15, 15, Math.PI/2, 10,
+                10, 1,
+                .5, .5
+        );
+        Path path = new Path(p1, p2, p3);
+        path.init();
         waitForStart();
 
 
         while (opModeIsActive() && !isStopRequested())
         {
+            path.followPath(drive, holOdom);
             odometry.update();
 
-            if(gamepad1.a && !pressingA) {
-                pressingA = true;
-            } else if(!gamepad1.a && pressingA) {
-                encoderLeft.resetEncoder();
-                encoderRight.resetEncoder();
-                encoderPerp.resetEncoder();
-                pressingA = false;
-            }
 
-
-            // Weighted Driving
-            double y = -gamepad1.left_stick_y;
-            double x = gamepad1.left_stick_x;
-            double rx = gamepad1.right_stick_x;
-
-            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            double frontLeftPower = (y + x + rx) / denominator;
-            double backLeftPower = (y - x + rx) / denominator;
-            double frontRightPower = (y - x - rx) / denominator;
-            double backRightPower = (y + x - rx) / denominator;
-
-            lf.setPower(frontLeftPower);
-            lb.setPower(backLeftPower);
-            rf.setPower(frontRightPower);
-            rb.setPower(backRightPower);
 
 
 
