@@ -54,7 +54,7 @@ public class PurePursuitTesting extends LinearOpMode {
 
         encoderLeft = new MotorEx(hardwareMap, "leftodom");
         encoderRight = new MotorEx(hardwareMap, "rightodom");
-        encoderPerp = new MotorEx(hardwareMap, "centerodom");
+        encoderPerp = new MotorEx(hardwareMap, "duck");
 
         encoderLeft.setDistancePerPulse(TICKS_TO_INCHES);
         encoderRight.setDistancePerPulse(TICKS_TO_INCHES);
