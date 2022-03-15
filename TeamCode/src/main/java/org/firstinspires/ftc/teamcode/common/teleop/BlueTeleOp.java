@@ -31,12 +31,12 @@ import org.sbs.bears.robotframework.enums.IntakeState;
 import java.util.HashMap;
 import java.util.Map;
 
-@TeleOp(name = "A - Official TeleOp")
+@TeleOp(name = "A - TeleOp v1")
 public class BlueTeleOp extends OpMode {
 
 
     /**
-     * Teleop States
+     * TeleOp States
      */
     public static volatile TeleOpRobotStates currentState = TeleOpRobotStates.STOPPED;
     private static Object stateMutex = new Object();
