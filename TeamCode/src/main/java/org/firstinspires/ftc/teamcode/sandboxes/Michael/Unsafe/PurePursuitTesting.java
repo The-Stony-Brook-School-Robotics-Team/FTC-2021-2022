@@ -69,8 +69,8 @@ public class PurePursuitTesting extends LinearOpMode {
         dashboard = FtcDashboard.getInstance();
 
         HolonomicOdometry holOdom = new HolonomicOdometry(
-                () -> -encoderLeft.getCurrentPosition() * TICKS_TO_INCHES,
-                () -> (encoderRight.getCurrentPosition() * TICKS_TO_INCHES),
+                () -> encoderRight.getCurrentPosition() * TICKS_TO_INCHES,
+                () -> -(encoderLeft.getCurrentPosition() * TICKS_TO_INCHES),
                 () -> -(encoderPerp.getCurrentPosition() * TICKS_TO_INCHES),
                 TRACKWIDTH, CENTER_WHEEL_OFFSET
         );
