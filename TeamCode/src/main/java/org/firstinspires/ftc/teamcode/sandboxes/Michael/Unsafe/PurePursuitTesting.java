@@ -51,12 +51,13 @@ public class PurePursuitTesting extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        lf = hardwareMap.get(Motor.class, "lf");
-        rf = hardwareMap.get(Motor.class, "rf");
-        lb = hardwareMap.get(Motor.class, "lb");
-        rb = hardwareMap.get(Motor.class, "rb");
+        lf = new Motor(hardwareMap, "lf");
+        rf = new Motor(hardwareMap, "rf");
+        lb = new Motor(hardwareMap, "lb");
+        rb = new Motor(hardwareMap, "rb");
 
-        lb.setInverted(true);
+
+        lf.setInverted(true);
         rf.setInverted(true);
 
         encoderLeft = new MotorEx(hardwareMap, "leftodom");
@@ -81,13 +82,13 @@ public class PurePursuitTesting extends LinearOpMode {
                 () -> -(encoderPerp.getCurrentPosition() * TICKS_TO_INCHES),
                 TRACKWIDTH, CENTER_WHEEL_OFFSET
         );
-        drive = new MecanumDrive(lf, rf, lb, rb);
+        drive = new MecanumDrive(false, lf, rf, lb, rb);
         odometry = new OdometrySubsystem(holOdom);
 
 
         Waypoint p1 = new StartWaypoint(odometry.getPose());
         Waypoint p2 = new GeneralWaypoint(new com.arcrobotics.ftclib.geometry.Pose2d(10,10,  odometry.getPose().getRotation()), 10, 10, 1);
-        Waypoint p3 = new PointTurnWaypoint(
+        Waypoint p3 = new EndWaypoint(
                 15, 15, Math.PI/2, 10,
                 10, 1,
                 .5, .5
@@ -101,6 +102,8 @@ public class PurePursuitTesting extends LinearOpMode {
         {
             path.followPath(drive, holOdom);
             odometry.update();
+            holOdom.updatePose();
+
 
 
 
