@@ -1,9 +1,11 @@
 package org.sbs.bears.robotframework.controllers;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -16,7 +18,7 @@ public class IntakeControllerBlue implements IntakeController{
 
     private Servo scooper;
     private DcMotor compliantWheel;
-    public Rev2mDistanceSensor distanceSensor;
+    public DistanceSensor distanceSensor;
     private Servo sweeper;
     private Servo stopper;
     public Servo dumperServo;
@@ -32,7 +34,7 @@ public class IntakeControllerBlue implements IntakeController{
     private double[] reversePos = {.975, -1}; //75
 
     /** Distance needed to switch states (mm) **/
-    private double distThreshold = 60;
+    private double distThreshold = 50; // was 60, but new sensor.
     private double distThreshold2 = 80;
 
     public double timeToOpenStopper = 300; //ms 400
@@ -41,7 +43,7 @@ public class IntakeControllerBlue implements IntakeController{
 
     private double sweeperOut = .725;
     private double sweeperIn = 1;
-    public static double stopperClosed = 0.30; //TODO //.3
+    public static double stopperClosed = 0.26;  // was .3 //TODO //.3
     private double stopperOpen = 0.1; //TODO
     private boolean qIsObjectInPayload = false;
 
@@ -53,7 +55,7 @@ public class IntakeControllerBlue implements IntakeController{
         /** Different hardwareMap depending on the intake side. **/
         scooper = hardwareMap.get(Servo.class, "bi");
         compliantWheel = hardwareMap.get(DcMotor.class, "leftodom");
-        distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "bd");
+        distanceSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "bd");
         sweeper = hardwareMap.get(Servo.class, "sweep");
         stopper = hardwareMap.get(Servo.class, "bs");
         this.dumperServo = dumperServo;
@@ -193,7 +195,8 @@ public class IntakeControllerBlue implements IntakeController{
                    }
 
                    dumperServo.setPosition(SlideController.dumperPosition_CLOSED);
-
+                    // reset position of sweeper!
+                   sweeper.setPosition(sweeperIn);
                    break;
 
                case REVERSE:

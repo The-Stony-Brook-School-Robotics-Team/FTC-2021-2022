@@ -1,12 +1,16 @@
 package org.firstinspires.ftc.teamcode.sandboxes.Marc;
 
+import android.util.Log;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
@@ -15,6 +19,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
 import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
 import org.sbs.bears.robotframework.controllers.SlideController;
+import org.sbs.bears.robotframework.enums.IntakeState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 @Config
 @TeleOp(name = "A - Slide Controller Debugger")
@@ -30,10 +35,13 @@ public class SlideControllerDebugger extends LinearOpMode
     private boolean qX;
     private boolean pB;
     private boolean pRB;
-    public Rev2mDistanceSensor distanceSensor;
+    public DistanceSensor distanceSensor;
     public static SlideTarget target = SlideTarget.TOP_DEPOSIT;
 
     State state = State.OFF;
+    private boolean qDR;
+    private boolean qDL;
+
     @Override
     public void runOpMode() throws InterruptedException {
         slideController = new SlideController(hardwareMap, telemetry);
@@ -53,6 +61,7 @@ public class SlideControllerDebugger extends LinearOpMode
 
         while(!isStopRequested()) {
 
+
             drive.setWeightedDrivePower(
                     new Pose2d(
                             -gamepad1.left_stick_x,
@@ -61,7 +70,24 @@ public class SlideControllerDebugger extends LinearOpMode
                     )
             );
 
-
+            if(gamepad1.dpad_right && !qDR)
+            {
+                bu.setState(IntakeState.BASE);
+                qDR = true;
+            }
+            else if(!gamepad1.dpad_right && qDR)
+            {
+                qDR = false;
+            }
+            if(gamepad1.dpad_left && !qDL)
+            {
+                bu.setState(IntakeState.DUMP);
+                qDL = true;
+            }
+            else if(!gamepad1.dpad_left && qDL)
+            {
+                qDL = false;
+            }
             if(gamepad1.y && !pY) {
                 slideController.retractSlide();
                 pY = true;
@@ -152,6 +178,11 @@ public class SlideControllerDebugger extends LinearOpMode
             telemetry.addData("Slide Angle",slideController.verticalServo.getPosition());
             telemetry.addData("Intake Dist",distanceSensor.getDistance(DistanceUnit.MM));
             telemetry.addData("Slide params",slideController.targetParams);
+            if(bu.state.equals(IntakeState.BASE))
+            {
+                Log.d("SlideControllerDebugger","Distance reading: " + bu.distanceSensor.getDistance(DistanceUnit.MM));
+                telemetry.addData("Distance: ",bu.distanceSensor.getDistance(DistanceUnit.MM));
+            }
             telemetry.update();
 
 

@@ -1,5 +1,6 @@
 package org.sbs.bears.robotframework.controllers;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
@@ -9,5 +10,5 @@ public interface IntakeController {
    void setState(IntakeState state);
    boolean isObjectInPayload();
    void loadItemIntoSlideForAutonomousOnly();
-   public Rev2mDistanceSensor distanceSensor = null;
+   public ModernRoboticsI2cRangeSensor distanceSensor = null;
 }
