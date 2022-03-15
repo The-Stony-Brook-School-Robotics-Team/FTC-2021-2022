@@ -5,6 +5,7 @@ import static java.lang.Thread.sleep;
 import android.util.Log;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.sun.tools.doclint.Checker;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -16,6 +17,8 @@ import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.sbs.bears.robotframework.enums.DuckPosition;
 import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 public class OpenCVController {
     // MARK - Class Variables
     static final int STREAM_WIDTH = 1920;
@@ -25,7 +28,7 @@ public class OpenCVController {
     public static volatile boolean doAnalysisMaster = true;
 
 
-    public static boolean isDuck = true;
+    public static boolean isDuck = false; // false by default: TSE
 
     OpenCvPipeline currentEngine;
     OpenCvCamera webcam;
@@ -37,8 +40,28 @@ public class OpenCVController {
         WebcamName webcamName = hardwareMap.get(WebcamName.class, "WebcamMain");
         webcam = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
         Log.d("OpenCVController","Init Engine");
+        Log.d("OpenCVController","mode: " + mode);
         // TODO switch for all autonomous types only on constructor
-        engine = isDuck ? new DuckOpenCVEngineBlueFull() : new CapstoneOpenCVEngineBlueFull();
+        if(isDuck) {
+            engine = new DuckOpenCVEngineBlueFull();
+        }
+        else {
+            switch(mode) {
+                case BlueStatesDuckSimple:
+                case BlueStatesDuckSimpleWarehouse:
+                    engine = new CapstoneOpenCVEngineBlueSimple();
+                    break;
+                case BlueStatesWarehouse:
+                    engine = new CapstoneOpenCVEngineBlueFull();
+                    break;
+                case RedStatesDuckSimple:
+                case RedStatesDuckSimpleWarehouse:
+                    engine = new CapstoneOpenCVEngineRedSimple();
+                    break;
+                default:
+                    engine = new CapstoneOpenCVEngineRedFull();
+            }
+        }
         webcam.setPipeline(engine);
         currentEngine = engine;
         Log.d("OpenCVController","Init Complete");
@@ -141,6 +164,35 @@ public class OpenCVController {
         webcam.stopStreaming();
         engine = null;
 
+    }
+
+    public boolean prepareWhiteLineEngine() {
+        engine = new WhiteLineAvailOpenCVEngineBlueSimple();
+        webcam.setPipeline(engine);
+        currentEngine = engine;
+        Log.d("OpenCVController","Init Complete");
+        AtomicReference<Boolean> FLAG = new AtomicReference<>();
+        FLAG.set(true);
+        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+            @Override
+            public void onOpened()
+            {
+                webcam.startStreaming(STREAM_WIDTH, STREAM_HEIGHT, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode) {
+                Log.d("OpenCVController","Error preparing white line engine. Aborting...");
+                FLAG.set(false);
+            }
+        });
+        return FLAG.get();
+    }
+
+    public boolean getWhiteLineAvailable() {
+        return engine.getPosition().equals(DuckPosition.A);
+        // TODO finish this
     }
 }
 

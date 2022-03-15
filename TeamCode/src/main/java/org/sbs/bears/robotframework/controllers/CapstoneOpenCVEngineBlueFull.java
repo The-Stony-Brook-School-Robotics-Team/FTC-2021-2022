@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 
 /**
- * This class is the OpenCV Pipeline for Analyzing Duck Position.
+ * This class is the OpenCV Pipeline for Analyzing TSE Position from Blue side.
  * @author Marc N
  * @version 5.1
  */
@@ -27,7 +27,7 @@ public class CapstoneOpenCVEngineBlueFull extends DuckOpenCVEngine {
 
     public CapstoneOpenCVEngineBlueFull() {
         super();
-        Log.d("BlueFullDuckOpenCVController","Init req");
+        Log.d("BlueFullCapstoneOpenCVController","Init req");
     }
 
     /**

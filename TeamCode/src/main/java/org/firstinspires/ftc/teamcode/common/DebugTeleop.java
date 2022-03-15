@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-@TeleOp(name="T - Robot Debugger")
+//@TeleOp(name="T - Robot Debugger")
 public class DebugTeleop extends LinearOpMode {
 
     private Servo scooperBlue;

@@ -1,10 +1,9 @@
 package org.firstinspires.ftc.teamcode.common.teleop.runtime;
 
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.blueIntake;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.drive;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.movementHandler;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideController;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideHandler;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.drive;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.movementHandler;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.slideController;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.slideHandler;
 
 import android.util.Log;
 
@@ -13,13 +12,9 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 
-import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousBrain;
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
-import org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop;
-import org.firstinspires.ftc.teamcode.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.drive.DriveConstantsMain;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.sbs.bears.robotframework.enums.IntakeState;
-import org.sbs.bears.robotframework.enums.SlideTarget;
 
 /**
  * Brings Automatic Movement To TeleOp
@@ -69,11 +64,8 @@ public class RoadrunnerHandler {
     /**
      * Movement Stuff
      */
-    private final TrajectoryVelocityConstraint turnVelocityConstraint = SampleMecanumDrive.getVelocityConstraint(30, 2, DriveConstants.TRACK_WIDTH);
-    private final TrajectoryAccelerationConstraint turnAccelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
-
-    private final TrajectoryVelocityConstraint quickMoveVelocityConstraint = SampleMecanumDrive.getVelocityConstraint(80, 3, DriveConstants.TRACK_WIDTH);
-    private final TrajectoryAccelerationConstraint quickMoveAccelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
+    private final TrajectoryVelocityConstraint turnVelocityConstraint = SampleMecanumDrive.getVelocityConstraint(30, 2, DriveConstantsMain.TRACK_WIDTH);
+    private final TrajectoryAccelerationConstraint turnAccelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstantsMain.MAX_ACCEL);
 
     /**
      * Internal executor
@@ -123,12 +115,15 @@ public class RoadrunnerHandler {
 
             case WAREHOUSE_AUTO_TURN:
                 Log.d(interfaceTag, "Going Forward");
-                drive.setPoseEstimate(new Pose2d(28.5, 65.5, 0));
+                // drive.setPoseEstimate(new Pose2d(28.5, 65.5, 0));
+                drive.setPoseEstimate(new Pose2d(14, 65.5, 0));
 
                 drive.followTrajectory(
                         drive.trajectoryBuilder(drive.getPoseEstimate())
-                                .lineToSplineHeading(new Pose2d(14,65.5,0), quickMoveVelocityConstraint, quickMoveAccelerationConstraint)
+                                // .lineToSplineHeading(new Pose2d(14,65.5,0), quickMoveVelocityConstraint, quickMoveAccelerationConstraint)
                                 .splineToSplineHeading(new Pose2d(5.58,64.47,-Math.toRadians(55)), Math.PI)
+                          //      .splineToSplineHeading(new Pose2d(drive.getPoseEstimate().getX(),drive.getPoseEstimate().getY(),-Math.toRadians(55)), Math.PI)
+
                                 .build());
 
 
@@ -156,13 +151,6 @@ public class RoadrunnerHandler {
                 break;
 
             case CURRENT_POSITION_TO_DEPOSIT:
-                Log.d(interfaceTag, "Im about to go from here to there (ong)");
-                Log.d(interfaceTag, "michael says hi uwu :3");
-
-                // drive.followTrajectory(
-                //         drive.trajectoryBuilder(drive.getPoseEstimate())
-                //                 .splineToSplineHeading(new Pose2d())
-                // );
 
                 break;
 

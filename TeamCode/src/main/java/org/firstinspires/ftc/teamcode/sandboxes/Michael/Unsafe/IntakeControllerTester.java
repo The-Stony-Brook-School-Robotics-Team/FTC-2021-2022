@@ -7,18 +7,21 @@
     import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
     import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
     import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
+    import org.sbs.bears.robotframework.controllers.SlideController;
     import org.sbs.bears.robotframework.enums.IntakeState;
 
-    @TeleOp(name="Intake Controller Tester", group="Linear Opmode")
+   // @TeleOp(name="Intake Controller Tester", group="Linear Opmode")
     public class IntakeControllerTester extends LinearOpMode {
         private IntakeControllerBlue blueIntake;
         private IntakeControllerRed redIntake;
+        private SlideController slideController;
         private boolean qA = false;
         private boolean qB = false;
         private double position = .03;
 
         public void runOpMode() throws InterruptedException {
-           // blueIntake = new IntakeControllerBlue(hardwareMap, telemetry);
+            slideController = new SlideController(hardwareMap, telemetry);
+            blueIntake = new IntakeControllerBlue(hardwareMap, slideController.blueDumperServo, telemetry);
             //redIntake = new IntakeControllerRed(hardwareMap, telemetry);
             blueIntake.setState(IntakeState.DUMP);
             //redIntake.setState(IntakeState.PARK);
@@ -47,12 +50,12 @@
                 }
                 else if(gamepad1.y){
                     //blueIntake.setState(IntakeState.PARK);
-                    blueIntake.setState(IntakeState.PARK);
+                    blueIntake.setState(IntakeState.DUMP);
                   //  redIntake.setState(IntakeState.PARK);
                 }
                 else if(gamepad1.dpad_up && !qA){
                     //position += .005;
-                    blueIntake.sleepAmount += 50;
+                    blueIntake.timeToOpenStopper += 50;
                     qA = true;
                 }
                 else if(!gamepad1.dpad_up && qA){
@@ -60,7 +63,7 @@
                 }
                 else if(gamepad1.dpad_down && !qB){
                     //position -= .005;
-                    blueIntake.sleepAmount -= 50;
+                    blueIntake.timeToOpenStopper -= 50;
                     qB = true;
                 }
                 else if(!gamepad1.dpad_down && qB){
@@ -72,7 +75,7 @@
 
                 telemetry.addData("blue State: ", blueIntake.getState());
                // telemetry.addData("red State: ", redIntake.getState());
-                telemetry.addData("Sleep: ", blueIntake.sleepAmount);
+                telemetry.addData("Sleep: ", blueIntake.timeToOpenStopper);
                 telemetry.addData("blue servo ", blueIntake.getServoPos());
                 //telemetry.addData("red servo ", redIntake.getServoPos());
                // telemetry.addData("red distance", redIntake.distanceSensor.getDistance(DistanceUnit.MM));

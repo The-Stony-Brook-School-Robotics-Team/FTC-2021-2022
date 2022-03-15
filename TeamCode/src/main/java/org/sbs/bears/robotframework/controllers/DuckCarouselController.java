@@ -2,6 +2,7 @@ package org.sbs.bears.robotframework.controllers;
 
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -31,7 +32,7 @@ public class DuckCarouselController {
 
     //MAGICAL_CONSTANT should be between 0.30 to 0.40. Because of the lack of enough torque, the wheel actually never achieve the ideal acceleration.
     public double MAGICAL_CONSTANT = 0.25;
-    public double MAGICAL_CONSTANT_TIME_OFFSET = 0.1;
+    public double MOTOR_POWER_OFFSET = 0.15;
 
     public double FIRST_STAGE_TIME_FLAG = -1;
     public double FIRST_STAGE_TIME_INTERVAL = 2; //1.4
@@ -41,21 +42,24 @@ public class DuckCarouselController {
     public double initTime;
     public double runTime;
 
-    public DcMotor wheelMover;
-
+    public static DcMotor wheelMover;
 
     public DuckCarouselController(HardwareMap hardwareMap, Telemetry telemetry) {
         wheelMover = hardwareMap.get(DcMotor.class, "duck");
         wheelMover.setPower(0);
     }
-
     public void spinOneDuck() {
-
+        spinOneDuck(true);
+    }
+    public void spinOneDuck(boolean qBlue) {
+        if(!qBlue) {wheelMover.setDirection(DcMotorSimple.Direction.REVERSE);}
+        else {wheelMover.setDirection(DcMotorSimple.Direction.FORWARD);}
         initTime = getCurrentSystemSecond();
         FIRST_STAGE_TIME_FLAG = initTime + FIRST_STAGE_TIME_INTERVAL;
         SECOND_STAGE_TIME_FLAG = FIRST_STAGE_TIME_FLAG + SECOND_STAGE_TIME_INTERVAL;
         while (updateMotorSpeed());
     }
+
 
     private double getCurrentSystemSecond() {
         return NanoClock.system().seconds();
@@ -92,6 +96,6 @@ public class DuckCarouselController {
      * @return The speed of the real-time target speed of the motor.
      */
     private double getFirstStageMotorSpeed() {
-        return MAGICAL_CONSTANT * (getCurrentSystemSecond() - initTime + MAGICAL_CONSTANT_TIME_OFFSET);
+        return MAGICAL_CONSTANT * (getCurrentSystemSecond() - initTime + MOTOR_POWER_OFFSET);
     }
 }

@@ -1,16 +1,16 @@
 package org.firstinspires.ftc.teamcode.sandboxes.Marc;
 
-import android.transition.Slide;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
-import org.firstinspires.ftc.teamcode.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.drive.DriveConstantsMain;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
 import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
@@ -30,17 +30,19 @@ public class SlideControllerDebugger extends LinearOpMode
     private boolean qX;
     private boolean pB;
     private boolean pRB;
-    public static SlideTarget target = SlideTarget.BOTTOM_DEPOSIT;
+    public Rev2mDistanceSensor distanceSensor;
+    public static SlideTarget target = SlideTarget.TOP_DEPOSIT;
 
     State state = State.OFF;
     @Override
     public void runOpMode() throws InterruptedException {
         slideController = new SlideController(hardwareMap, telemetry);
         drive = new SampleMecanumDrive(hardwareMap);
-        TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(30, 2,DriveConstants.TRACK_WIDTH);
-        TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL);
-        bu = new IntakeControllerBlue(hardwareMap, slideController.dumperServo, telemetry);
-        red = new IntakeControllerRed(hardwareMap,telemetry);
+        TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(30, 2, DriveConstantsMain.TRACK_WIDTH);
+        TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(DriveConstantsMain.MAX_ACCEL);
+        bu = new IntakeControllerBlue(hardwareMap, slideController.blueDumperServo, telemetry);
+        red = new IntakeControllerRed(hardwareMap, slideController.redDumperServo, telemetry);
+        distanceSensor = bu.distanceSensor;
 
         //bu.setState(IntakeState.PARK);
 //        red.setState(IntakeState.PARK);
@@ -82,6 +84,7 @@ public class SlideControllerDebugger extends LinearOpMode
                 pA = false;
             }
             if(gamepad1.b && !pB) {
+                slideController.targetParams = SlideTarget.TOP_DEPOSIT;
                 slideController.extendSlide();
                 pB = true;
             } else if(!gamepad1.b && pB) {
@@ -90,8 +93,8 @@ public class SlideControllerDebugger extends LinearOpMode
 
             if(gamepad1.right_stick_y < -0.02 || gamepad1.right_stick_y > -0.02) {
                 //drive.setWeightedDrivePower(new Pose2d());
-                double stickValue = gamepad1.right_stick_y * -0.2;
-                slideController.incrementEncoderPosition((int) (stickValue * Configuration.DefaultSlideTicks));
+                double stickValue = gamepad1.right_stick_y * -1;
+                slideController.incrementEncoderPosition((int) (stickValue * Configuration.DefaultSlideTicks), true);
                 //Log.d("SLIDE TESTER", "Current Slide Motor Ticks: " + slideController.getSlideMotorPosition());
             }
 
@@ -114,7 +117,7 @@ public class SlideControllerDebugger extends LinearOpMode
             }
             if(gamepad1.x && !qX) {
                 qX = true;
-                switch(state) {
+                /*switch(state) {
                     case OFF:
                         slideController.collectCapstone();
                         state = State.LIFT;
@@ -136,13 +139,19 @@ public class SlideControllerDebugger extends LinearOpMode
                     case PULLBACK:
                         state = State.OFF;
                         break;
-                }
+                }*/
+               // slideController.blueDumperServo.setPosition(SlideController.dumperPosition_CLOSED);
+                slideController.targetParams = SlideTarget.SHARED_TWO;
+                slideController.extendSlide();
+
             } else if(!gamepad1.x && qX) {
                 qX = false;
             }
 
             telemetry.addData("Slide Ext",slideController.slideMotor.getCurrentPosition());
             telemetry.addData("Slide Angle",slideController.verticalServo.getPosition());
+            telemetry.addData("Intake Dist",distanceSensor.getDistance(DistanceUnit.MM));
+            telemetry.addData("Slide params",slideController.targetParams);
             telemetry.update();
 
 

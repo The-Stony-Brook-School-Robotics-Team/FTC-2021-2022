@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@TeleOp(name = "TestBreak", group = "-WC")
+//@TeleOp(name = "TestBreak", group = "-WC")
 public class TestBreak extends OpMode {
     DcMotor wheelMover;
     double power = 0.2;

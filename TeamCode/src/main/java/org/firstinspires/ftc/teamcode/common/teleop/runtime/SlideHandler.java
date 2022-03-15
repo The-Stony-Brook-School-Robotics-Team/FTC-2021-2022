@@ -1,13 +1,17 @@
 package org.firstinspires.ftc.teamcode.common.teleop.runtime;
 
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.buttonHandler;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideController;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.buttonHandler;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.slideController;
 //import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideHandler;
 
 import android.util.Log;
 
+import org.checkerframework.checker.units.qual.A;
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
+import org.sbs.bears.robotframework.Sleep;
 import org.sbs.bears.robotframework.enums.SlideTarget;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 public class SlideHandler {
     /**
@@ -42,10 +46,22 @@ public class SlideHandler {
         if(!slideMoving) {
             slideMoving = true;
             stickValue = stickValue * -2;
-            slideController.incrementEncoderPosition(stickValue * Configuration.DefaultSlideTicks);
+            slideController.incrementEncoderPosition(stickValue * Configuration.DefaultSlideTicks, true);
             Log.d(interfaceTag, "Current Slide Motor Ticks: " + slideController.getSlideMotorPosition());
             slideMoving = false;
         }
+    }
+
+    public AtomicReference<Boolean> hasFinishedReset = new AtomicReference<>();
+    public boolean hasStartedMagswitchRoutine = false;
+
+
+    // MARC & MICHAEL ADDED @ COMP
+    public void resetSlideEncoder()
+    {
+
+            slideController.resetEncoder();
+            Log.d("SlideController","Reset Encoder to 0");
     }
 
     /**

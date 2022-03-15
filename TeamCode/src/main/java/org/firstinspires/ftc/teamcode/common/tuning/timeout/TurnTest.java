@@ -24,8 +24,7 @@ import org.firstinspires.ftc.teamcode.drive.timeout.CustomTimeoutTuningDrive;
  * This opmode is designed as a convenient, coarse tuning for the follower PID coefficients. It
  * is recommended that you use the FollowerPIDTuner opmode for further fine tuning.
  */
-@Config
-@Autonomous(group = "drive", name="**INFINITE** TurnTest")
+//@Autonomous(group = "drive", name="**INFINITE** TurnTest")
 public class TurnTest extends LinearOpMode {
 
     public static double DISTANCE = 48;

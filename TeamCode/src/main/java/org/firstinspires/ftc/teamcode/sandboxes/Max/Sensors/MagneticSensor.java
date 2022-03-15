@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 
-@TeleOp
+//@TeleOp
 public class MagneticSensor extends LinearOpMode {
 TouchSensor MagneticSensor;
 RevTouchSensor DigChannel;

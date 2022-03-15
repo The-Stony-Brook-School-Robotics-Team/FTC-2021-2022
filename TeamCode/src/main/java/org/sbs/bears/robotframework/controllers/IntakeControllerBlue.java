@@ -1,5 +1,6 @@
 package org.sbs.bears.robotframework.controllers;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -10,32 +11,41 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.sbs.bears.robotframework.enums.IntakeState;
 
-public class IntakeControllerBlue {
+@Config
+public class IntakeControllerBlue implements IntakeController{
 
     private Servo scooper;
     private DcMotor compliantWheel;
     public Rev2mDistanceSensor distanceSensor;
-    private Servo mini;
     private Servo sweeper;
-    private Servo dumperServo;
+    private Servo stopper;
+    public Servo dumperServo;
 
 
     /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/
-//    private double[] basePos = {.025, 0.7}; //.141 // COMMENTED OUT BY MARC ON SUN JAN 9 2022 AT 22h12m54s
+//    private double[] basePos = {.025, 0.7}; //.141
 
-    private double[] basePos = {.04, .75}; //.03 // CHANGED BY MARC ON SUN JAN 9 2022 AT 22h12m54s
-
-    private double[] dumpPos = {.375, 0}; //.45 //.41
-    private double[] parkPos = {.33, 0.0}; //75
+    public static double dumpPosdouble = .385;
+    private double[] basePos = {.975, 1};
+    private double[] parkPos = {.45, 0}; //.375 for gobilda servo
+    public static double[] dumpPos = {dumpPosdouble, 0}; //??????? messed up .375 is the same???
+    private double[] reversePos = {.975, -1}; //75
 
     /** Distance needed to switch states (mm) **/
     private double distThreshold = 60;
+    private double distThreshold2 = 80;
 
-    public long sleepAmount;
+    public double timeToOpenStopper = 300; //ms 400
+    public static double timeToCloseBucket = 360; //ms 650
+    public double timeToPushSweeper = 230; //ms 400
 
+    private double sweeperOut = .725;
+    private double sweeperIn = 1;
+    public static double stopperClosed = 0.30; //TODO //.3
+    private double stopperOpen = 0.1; //TODO
     private boolean qIsObjectInPayload = false;
 
-    volatile IntakeState state = IntakeState.BASE;
+    public volatile IntakeState state = IntakeState.BASE;
     Object stateMutex = new Object();
 
     /** Initialization **/
@@ -44,38 +54,39 @@ public class IntakeControllerBlue {
         scooper = hardwareMap.get(Servo.class, "bi");
         compliantWheel = hardwareMap.get(DcMotor.class, "leftodom");
         distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "bd");
-        mini = hardwareMap.get(Servo.class, "vout");
         sweeper = hardwareMap.get(Servo.class, "sweep");
+        stopper = hardwareMap.get(Servo.class, "bs");
         this.dumperServo = dumperServo;
         scooper.setDirection(Servo.Direction.FORWARD);
         compliantWheel.setDirection(DcMotorSimple.Direction.FORWARD);
         sweeper.setDirection(Servo.Direction.FORWARD);
         compliantWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        sleepAmount = 800;
     }
 
 
 
     /** Returns if the distance sensor reads less than distThreshold **/
     public boolean isObjectInPayload() {
+        qIsObjectInPayload = (distanceSensor.getDistance(DistanceUnit.MM) < distThreshold && state == IntakeState.BASE);
+        return qIsObjectInPayload;
+    }
 
-        qIsObjectInPayload = distanceSensor.getDistance(DistanceUnit.MM) < distThreshold;
+    public boolean isObjectInPayload2() {
+
+        qIsObjectInPayload = distanceSensor.getDistance(DistanceUnit.MM) < distThreshold2;
         return qIsObjectInPayload;
     }
 
     /** Marc's autonomous adjusted method: do not touch or use outside of the auton brain pls.*/
     public void loadItemIntoSlideForAutonomousOnly() {
         setState(IntakeState.DUMP);
-        try {
-            Thread.sleep(1500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         //setState(IntakeState.PARK);
 
     }
 
     /** Autonomous method-- waits until object is seen, dumps, then sets to park. **/
+    @Deprecated
     public void waitForIntake() {
         if(state != IntakeState.BASE){setState(IntakeState.BASE);}
         while(!isObjectInPayload()){
@@ -91,20 +102,13 @@ public class IntakeControllerBlue {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        setState(IntakeState.PARK);
+
     }
 
     /** TeleOp method-- checks if object is seen. If so, dumps and sets to park. **/
     public void checkIntake(){
         if(state == IntakeState.BASE && isObjectInPayload()){
             setState(IntakeState.DUMP);
-           /** //mini.setPosition(0);
-            try {
-                Thread.sleep(450);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            setState(IntakeState.PARK); **/
 
 
         }
@@ -135,9 +139,11 @@ public class IntakeControllerBlue {
             case DUMP:
                 dumpPos[0] = x;
                 break;
+            case REVERSE:
+                reversePos[0] = x;
+                break;
             case PARK:
                 parkPos[0] = x;
-                break;
         }
     }
 
@@ -148,39 +154,73 @@ public class IntakeControllerBlue {
 
 
 
-    /** Assigns position and motor power to their respective states **/
+    /**
+     * Assigns position and motor power to their respective states \
+     * **/
     private void doStateAction(){
-        switch(state){
-            case BASE:
-                scooper.setPosition(basePos[0]);
-               sweeper.setPosition(1);
-                compliantWheel.setPower(basePos[1]);
-                return;
+       new Thread(() -> {
+           switch (state) {
+               case BASE:
+                   scooper.setPosition(basePos[0]);
+                   sweeper.setPosition(sweeperIn);
+                   stopper.setPosition(stopperClosed);
+                   compliantWheel.setPower(basePos[1]);
+                   dumperServo.setPosition(SlideController.dumperPosition_READY);
+                   break;
 
-            case DUMP:
-                compliantWheel.setPower(dumpPos[1]);
-                scooper.setPosition(dumpPos[0]);
-                try {
-                    Thread.sleep(sleepAmount);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                sweeper.setPosition(.75);
-                try {
-                    Thread.sleep(750);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                dumperServo.setPosition(SlideController.dumperPosition_CLOSED);
+               case DUMP:
+                   // maybe add here a thing to open the bucket
+                   dumperServo.setPosition(SlideController.dumperPosition_READY);
+                   //compliantWheel.setPower(dumpPos[1]);
+                   scooper.setPosition(dumpPos[0]);
+                   try {
+                       Thread.sleep((long)timeToOpenStopper);
+                   } catch (InterruptedException e) {
+                       e.printStackTrace();
+                   }
+                   compliantWheel.setPower(dumpPos[1]);
+                   stopper.setPosition(stopperOpen);
+                   try {
+                       Thread.sleep((long)timeToPushSweeper);
+                   } catch (InterruptedException e) {
+                       e.printStackTrace();
+                   }
+                   sweeper.setPosition(sweeperOut);
+                   try {
+                       Thread.sleep((long)timeToCloseBucket);
+                   } catch (InterruptedException e) {
+                       e.printStackTrace();
+                   }
 
-                return;
+                   dumperServo.setPosition(SlideController.dumperPosition_CLOSED);
 
-            case PARK:
-                scooper.setPosition(parkPos[0]);
-                compliantWheel.setPower(parkPos[1]);
+                   break;
 
-                return;
-        }
+               case REVERSE:
+                   scooper.setPosition(reversePos[0]);
+                   compliantWheel.setPower(reversePos[1]);
+                   try {
+                       Thread.sleep(200);
+                   } catch (InterruptedException e) {
+                       e.printStackTrace();
+                   }
+                   sweeper.setPosition(sweeperIn);
+                   break;
+               case PARK:
+                   scooper.setPosition(parkPos[0]);
+                   compliantWheel.setPower(parkPos[1]);
+                   sweeper.setPosition(sweeperIn);
+                   stopper.setPosition(stopperClosed);
+           }
+       }).start();
     }
+
+    public boolean isDown() {
+        return (state == IntakeState.BASE);
+    };
+
+    public boolean isReversed() {
+        return (state == IntakeState.REVERSE);
+    };
 }
 

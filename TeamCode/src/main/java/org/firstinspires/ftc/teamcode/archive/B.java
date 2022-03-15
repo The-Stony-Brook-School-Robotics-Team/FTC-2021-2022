@@ -36,7 +36,6 @@ public class B extends LinearOpMode {
     private OdometrySubsystem odometry;
     private MotorEx encoderLeft, encoderRight, encoderPerp;
 
-    // TODO: push to github
     private MecanumDrive robotDrive;
 
     private boolean pressingA = false;
@@ -84,7 +83,6 @@ public class B extends LinearOpMode {
                 TRACKWIDTH, CENTER_WHEEL_OFFSET
         );
         odometry = new OdometrySubsystem(holOdom);
-        //TODO: list raw encoder values-- what does it look like when it tracks? what about when it doesnt?
         com.arcrobotics.ftclib.geometry.Pose2d currentPose = new com.arcrobotics.ftclib.geometry.Pose2d(odometry.getPose().getX(), odometry.getPose().getY(), odometry.getPose().getRotation());
         Waypoint p1 = new StartWaypoint(0.0, 0.0);
         Waypoint p2 = new GeneralWaypoint(

@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.controllers.SlideController;
 
-@TeleOp(name="increment", group="Linear Opmode")
+//@TeleOp(name="increment", group="Linear Opmode")
 public class Increment extends LinearOpMode {
     private boolean qDR, qDL,qX,qY;
     private SampleMecanumDrive drive;
@@ -38,8 +38,8 @@ public class Increment extends LinearOpMode {
             if(gamepad1.dpad_right && !qDR)
             {
                 qDR = true;
-                slideCtrl.slideMotorPowerMoving += 0.1;
-                slideCtrl.slideMotorPowerMovingBack += 0.1;
+                SlideController.slideMotorPowerMoving += 0.1;
+                SlideController.slideMotorPowerMovingBack += 0.1;
             }
             if(!gamepad1.dpad_right && qDR)
             {
@@ -48,8 +48,8 @@ public class Increment extends LinearOpMode {
             if(gamepad1.dpad_left && !qDL)
             {
                 qDL = true;
-                slideCtrl.slideMotorPowerMoving -= 0.1;
-                slideCtrl.slideMotorPowerMovingBack -= 0.1;
+                SlideController.slideMotorPowerMoving -= 0.1;
+                SlideController.slideMotorPowerMovingBack -= 0.1;
             }
             if(!gamepad1.dpad_left && qDL)
             {
@@ -88,11 +88,6 @@ public class Increment extends LinearOpMode {
                 qX = false;
             }
 
-
-
-
-
-
             if(gamepad1.dpad_up && !pressingA){
                 pressingA = true;}
             if(!gamepad1.dpad_up && pressingA){
@@ -123,7 +118,7 @@ public class Increment extends LinearOpMode {
 //BASE .4 DUMP .87  PARK .787
 
             telemetry.addData("Posiiton: ", slideCtrl.verticalServo.getPosition());
-            telemetry.addData("MotorPow: ", slideCtrl.slideMotorPowerMoving);
+            telemetry.addData("MotorPow: ", SlideController.slideMotorPowerMoving);
             telemetry.addData("SlidePos: ", slideCtrl.slideMotor.getCurrentPosition());
 
             telemetry.update();

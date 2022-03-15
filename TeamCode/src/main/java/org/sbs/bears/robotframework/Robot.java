@@ -11,6 +11,7 @@ import org.sbs.bears.robotframework.controllers.DuckCarouselController;
 import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
 import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
+import org.sbs.bears.robotframework.controllers.ParkingProbingSensorController;
 import org.sbs.bears.robotframework.controllers.RoadRunnerController;
 import org.sbs.bears.robotframework.controllers.SlideController;
 
@@ -22,15 +23,17 @@ public class Robot {
     protected IntakeControllerRed IntakeCtrlRed;
     protected ColorStripController colorCtrl;
     protected DuckCarouselController duckCtrl;
+    protected ParkingProbingSensorController parkProber;
     // TODO add other controllers here.
     public Robot(HardwareMap hardwareMap, Telemetry telemetry, AutonomousMode mode) {
         this.CVctrl = new OpenCVController(hardwareMap,telemetry,mode);
         this.RRctrl = new RoadRunnerController(hardwareMap,telemetry);
         this.slideCtrl = new SlideController(hardwareMap,telemetry);
-        this.IntakeCtrlBlue = new IntakeControllerBlue(hardwareMap, slideCtrl.dumperServo, telemetry);
-        this.IntakeCtrlRed = new IntakeControllerRed(hardwareMap,telemetry);
+        this.IntakeCtrlBlue = new IntakeControllerBlue(hardwareMap, slideCtrl.blueDumperServo, telemetry);
+        this.IntakeCtrlRed = new IntakeControllerRed(hardwareMap, slideCtrl.redDumperServo, telemetry);
         //this.colorCtrl = new ColorStripController(hardwareMap, telemetry);
         this.duckCtrl = new DuckCarouselController(hardwareMap,telemetry);
+        this.parkProber = new ParkingProbingSensorController(hardwareMap,telemetry);
     }
     public OpenCVController getCVctrl()
     {
@@ -55,6 +58,9 @@ public class Robot {
     }
     public DuckCarouselController getDuckCtrl() {
         return duckCtrl;
+    }
+    public ParkingProbingSensorController getParkProber() {
+        return this.parkProber;
     }
 
 }

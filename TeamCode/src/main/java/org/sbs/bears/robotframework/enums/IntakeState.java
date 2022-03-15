@@ -1,7 +1,8 @@
 package org.sbs.bears.robotframework.enums;
 
 public enum IntakeState {
-    PARK,
+    REVERSE,
     DUMP,
-    BASE
+    BASE,
+    PARK
 }

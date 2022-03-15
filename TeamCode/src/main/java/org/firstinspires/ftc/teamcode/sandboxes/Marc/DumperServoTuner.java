@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name="A - Dumper Servo Tuner")
+//@TeleOp(name="A - Dumper Servo Tuner")
 public class DumperServoTuner extends LinearOpMode {
     private boolean qUp,qDown;
 

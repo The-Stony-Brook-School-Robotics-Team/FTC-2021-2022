@@ -1,17 +1,18 @@
 package org.firstinspires.ftc.teamcode.common.teleop.runtime;
 
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.currentState;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.drive;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.driveSpeed;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.intakeHandler;
-import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.primaryGamepad;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.currentState;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.drive;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.driveSpeedStrafe;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.intakeHandler;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.isColorStripBlue;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.primaryGamepad;
 
 import android.util.Log;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 
-import org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop;
+import org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
 import org.firstinspires.ftc.teamcode.common.teleop.misc.Beta;
 
@@ -119,6 +120,7 @@ public class MovementHandler {
  */
 class MovementHandlers {
 
+
     public static String interfaceTag = "Movement Handlers";
     public static Thread defaultDriving = new Thread(MovementHandlers::defaultRunner);
 
@@ -129,18 +131,21 @@ class MovementHandlers {
         if (MovementHandler.autonomousRunning) {
             return;
         }
-
-        if(driveSpeed < 1) {
-            OfficialTeleop.revBlinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
+        if(driveSpeedStrafe < 1) {
+            BlueTeleOp.revBlinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
+            isColorStripBlue = false;
         } else if(!intakeHandler.objectInBucket) {
-            OfficialTeleop.resetColor();
+            if(!isColorStripBlue) {
+            BlueTeleOp.resetColor();
+                isColorStripBlue = true;
+            }
         }
         
         drive.setWeightedDrivePower(
                 new Pose2d(
-                        -primaryGamepad.left_stick_x * driveSpeed,
-                        primaryGamepad.left_stick_y * driveSpeed,
-                        -primaryGamepad.right_stick_x * driveSpeed
+                        -primaryGamepad.left_stick_x * driveSpeedStrafe,
+                        primaryGamepad.left_stick_y * driveSpeedStrafe,
+                        -primaryGamepad.right_stick_x * driveSpeedStrafe
                 )
         );
         drive.update();

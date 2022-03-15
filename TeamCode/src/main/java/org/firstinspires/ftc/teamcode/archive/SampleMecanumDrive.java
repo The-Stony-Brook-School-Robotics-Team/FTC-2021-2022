@@ -1,20 +1,19 @@
 package org.firstinspires.ftc.teamcode.archive;
 
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ACCEL;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_ACCEL;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_VEL;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_VEL;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MOTOR_VELO_PID;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.TRACK_WIDTH;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.encoderTicksToInches;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kA;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kStatic;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.MAX_ANG_ACCEL;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.MAX_ANG_VEL;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.MAX_VEL;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.MOTOR_VELO_PID;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.TRACK_WIDTH;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.kA;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.kStatic;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.kV;
 
 import androidx.annotation.NonNull;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.drive.DriveSignal;
 import com.acmerobotics.roadrunner.drive.MecanumDrive;
@@ -123,7 +122,6 @@ public class SampleMecanumDrive extends MecanumDrive {
             setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
 
-        // TODO: CHANGE LOCALIZER HERE
         setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
 
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
@@ -280,7 +278,6 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     @Override
     public Double getExternalHeadingVelocity() {
-        // TODO: This must be changed to match your configuration
         //                           | Z axis
         //                           |
         //     (Motor Port Side)     |   / X axis

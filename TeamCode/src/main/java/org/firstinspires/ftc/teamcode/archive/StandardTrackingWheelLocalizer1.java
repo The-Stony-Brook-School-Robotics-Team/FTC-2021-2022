@@ -49,7 +49,6 @@ public class StandardTrackingWheelLocalizer1 extends ThreeTrackingWheelLocalizer
         rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rightodom"));
         frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "backodom"));
 
-        // TODO: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
     }
 
     public static double encoderTicksToInches(double ticks) {
@@ -69,7 +68,7 @@ public class StandardTrackingWheelLocalizer1 extends ThreeTrackingWheelLocalizer
     @NonNull
     @Override
     public List<Double> getWheelVelocities() {
-        // TODO: If your encoder velocity can exceed 32767 counts / second (such as the REV Through Bore and other
+        //  If your encoder velocity can exceed 32767 counts / second (such as the REV Through Bore and other
         //  competing magnetic encoders), change Encoder.getRawVelocity() to Encoder.getCorrectedVelocity() to enable a
         //  compensation method
 

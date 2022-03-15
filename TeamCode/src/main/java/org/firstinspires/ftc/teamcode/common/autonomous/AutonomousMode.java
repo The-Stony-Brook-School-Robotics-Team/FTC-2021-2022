@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.common.autonomous;
 
 public enum AutonomousMode {
-    BlueSimple,
-    BlueSpline,
-    RedSimple,
-    RedSpline,
-    BlueFull,
-    RedFull,
+    BlueStatesWarehouse,
+    BlueStatesSpline,
+    RedStatesWarehouse,
+    RedStatesSpline,
+    BlueStatesDuckSimple,
+    RedStatesDuckSimple,
+    RedStatesDuckSimpleWarehouse,
+    BlueStatesDuckSimpleWarehouse,
     TELEOP
 }

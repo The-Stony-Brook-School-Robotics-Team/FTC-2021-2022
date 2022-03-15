@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<Robot type="FirstInspires-FTC">
+    <LynxUsbDevice name="Control Hub Portal" serialNumber="(embedded)" parentModuleAddress="173">
+        <LynxModule name="Expansion Hub 4" port="4">
+            <goBILDA5202SeriesMotor name="duck" port="0" />
+            <goBILDA5202SeriesMotor name="leftodom" port="1" />
+            <goBILDA5202SeriesMotor name="rightodom" port="2" />
+            <goBILDA5202SeriesMotor name="spool" port="3" />
+            <Servo name="sweep" port="0" />
+            <Servo name="rsweep" port="1" />
+            <Servo name="bi" port="2" />
+            <Servo name="rs" port="3" />
+            <Servo name="bs" port="5" />
+            <DigitalDevice name="stop" port="7" />
+        </LynxModule>
+        <LynxModule name="Control Hub" port="173">
+            <goBILDA5202SeriesMotor name="lf" port="0" />
+            <goBILDA5202SeriesMotor name="rf" port="1" />
+            <goBILDA5202SeriesMotor name="lb" port="2" />
+            <goBILDA5202SeriesMotor name="rb" port="3" />
+            <Servo name="vt" port="0" />
+            <Servo name="ri" port="2" />
+            <Servo name="rdu" port="3" />
+            <Servo name="du" port="4" />
+            <RevBlinkinLedDriver name="rgb" port="5" />
+            <LynxEmbeddedIMU name="imu" port="0" bus="0" />
+            <REV_VL53L0X_RANGE_SENSOR name="rd" port="0" bus="1" />
+            <REV_VL53L0X_RANGE_SENSOR name="bd" port="0" bus="2" />
+            <RevColorSensorV3 name="color" port="0" bus="3" />
+        </LynxModule>
+    </LynxUsbDevice>
+    <Webcam name="WebcamMain" serialNumber="CD8390EF" />
+</Robot>

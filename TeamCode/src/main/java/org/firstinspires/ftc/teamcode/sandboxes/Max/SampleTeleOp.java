@@ -15,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 //This is the code of Max
-@TeleOp(name="Max TeleOp", group="drive")
+//@TeleOp(name="Max TeleOp", group="drive")
 @Disabled
 public class SampleTeleOp extends OpMode {
     private static BNO055IMU imu;

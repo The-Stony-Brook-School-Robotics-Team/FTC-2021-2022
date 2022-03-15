@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
-@TeleOp(name="SAFE TRACKING", group="drive")
+//@TeleOp(name="SAFE TRACKING", group="drive")
 @Disabled
 @Deprecated
 public class PurePursuitTestingSafe extends LinearOpMode {
