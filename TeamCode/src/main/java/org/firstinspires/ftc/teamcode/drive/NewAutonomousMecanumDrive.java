@@ -51,8 +51,8 @@ import java.util.List;
 @Config
 public class NewAutonomousMecanumDrive extends SampleMecanumDrive {
 
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(30, 0.3, 15);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(10, 0.1, 3);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(30, 0.0, 7);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(30, 0, 1);
 
     public NewAutonomousMecanumDrive(HardwareMap hardwareMap) {
         super(hardwareMap, TRANSLATIONAL_PID, HEADING_PID);
