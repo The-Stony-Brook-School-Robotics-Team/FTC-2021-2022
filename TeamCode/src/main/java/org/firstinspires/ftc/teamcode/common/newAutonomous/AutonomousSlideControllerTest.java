@@ -8,12 +8,12 @@ import org.sbs.bears.robotframework.controllers.OpenCVController;
 
 @Autonomous(name = "A_William - AutonomousSlideControllerTest")
 public class AutonomousSlideControllerTest extends LinearOpMode {
-    AutonomousClientSafe autonomousClientBeta;
+    AutonomousClient autonomousClientBeta;
 
     @Override
     public void runOpMode() throws InterruptedException {
         OpenCVController.isDuck = false;
-        autonomousClientBeta = new AutonomousClientSafe(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
+        autonomousClientBeta = new AutonomousClient(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
 
         waitForStart();
 

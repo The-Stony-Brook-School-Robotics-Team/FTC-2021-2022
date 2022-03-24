@@ -25,7 +25,7 @@ import org.sbs.bears.robotframework.enums.SlideTarget;
 import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
 
 @Config
-public class AutonomousClientSafe {
+public class AutonomousClient {
     final boolean isTest = false;
 
     final HardwareMap hardwareMap;
@@ -61,7 +61,7 @@ public class AutonomousClientSafe {
     public static int AEarlyRetractToTrajectoryOffset_SlidePosition = 600;
     public static int AInitExtendTimeOffset_waitTime = 700;
 
-    public AutonomousClientSafe(HardwareMap hardwareMap, Telemetry telemetry, AutonomousMode autonomousMode) {
+    public AutonomousClient(HardwareMap hardwareMap, Telemetry telemetry, AutonomousMode autonomousMode) {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
         this.autonomousMode = autonomousMode;
@@ -77,7 +77,7 @@ public class AutonomousClientSafe {
     private void initControllers(HardwareMap hardwareMap, Telemetry telemetry, AutonomousMode mode) {
         this.openCVController = new OpenCVController(hardwareMap, telemetry, mode);
 
-        this.roadRunnerController = new RoadRunnerController(hardwareMap, true);
+        this.roadRunnerController = new RoadRunnerController(hardwareMap, telemetry);
         this.roadRunnerController.setPos(startPositionBlue);
         this.roadRunnerDrive = roadRunnerController.getDrive();
 
@@ -229,7 +229,7 @@ public class AutonomousClientSafe {
         if (AutonomousTimer.currentState == AutonomousTimer.CurrentState.PickUpToDeposit){  //Already inside warehouse
             roadRunnerDrive.followTrajectory(
                     roadRunnerDrive.trajectoryBuilder(roadRunnerDrive.getPoseEstimate())
-                    .lineToLinearHeading(AutonomousClientSafe.PARK_TRAJECTORY_PARK_POSITION)
+                    .lineToLinearHeading(AutonomousClient.PARK_TRAJECTORY_PARK_POSITION)
                     .build()
             );
         } else
@@ -272,14 +272,36 @@ public class AutonomousClientSafe {
         );
     }
 
+    public void runRawPickUpTrajectory() {
+        roadRunnerDrive.followTrajectory(
+                roadRunnerDrive.trajectoryBuilder(
+                        roadRunnerDrive.getPoseEstimate())
+                        .lineToSplineHeading(PICK_UP_TRAJECTORY_FIX_HEADING_POSITION)
+                        .splineToConstantHeading(PICK_UP_TRAJECTORY_PASS_PIPE_POSITION, PICK_UP_TRAJECTORY_PASS_PIPE_POSITION_TANGENT)
+                        .splineToConstantHeading(PICK_UP_TRAJECTORY_PICK_UP_POSITION, ZERO)
+                        .build()
+        );
+    }
+
     public void runTrajectory_Deposit() {
         roadRunnerDrive.followTrajectory(
                 roadRunnerDrive.trajectoryBuilder(
                         roadRunnerDrive.getPoseEstimate(), true)
                         .lineToSplineHeading(DEPOSIT_TRAJECTORY_FIX_HEADING_POSITION)
                         .splineToLinearHeading(DEPOSIT_TRAJECTORY_PASS_PIPE_POSITION, Math.toRadians(-165.0))
-                        .splineToSplineHeading(AutonomousClientSafe.depositPositionBlueTOP, Math.toRadians(175.0))
+                        .splineToSplineHeading(AutonomousClient.depositPositionBlueTOP, Math.toRadians(175.0))
                         .addDisplacementMarker(this::runAntiBlockingChecker_Deposit)
+                        .build()
+        );
+    }
+
+    public void runRawDepositTrajectory() {
+        roadRunnerDrive.followTrajectory(
+                roadRunnerDrive.trajectoryBuilder(
+                        roadRunnerDrive.getPoseEstimate(), true)
+                        .lineToSplineHeading(DEPOSIT_TRAJECTORY_FIX_HEADING_POSITION)
+                        .splineToLinearHeading(DEPOSIT_TRAJECTORY_PASS_PIPE_POSITION, Math.toRadians(-165.0))
+                        .splineToSplineHeading(AutonomousClient.depositPositionBlueTOP, Math.toRadians(175.0))
                         .build()
         );
     }

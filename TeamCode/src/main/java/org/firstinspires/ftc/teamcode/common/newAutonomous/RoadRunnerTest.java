@@ -5,25 +5,24 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
-import org.sbs.bears.robotframework.enums.SlideTarget;
 
-//@Autonomous(name = "A_William - RoadRunnerTest")
+@Autonomous(name = "A_William - RoadRunnerTest")
 public class RoadRunnerTest extends LinearOpMode {
-    AutonomousClientSafe autonomousClientBeta;
+    AutonomousClient autonomousClient;
 
     @Override
     public void runOpMode() {
         OpenCVController.isDuck = false;
-        autonomousClientBeta = new AutonomousClientSafe(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
+        autonomousClient = new AutonomousClient(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
         msStuckDetectLoop = Integer.MAX_VALUE;  //Turn off infinite loop detection.
 
         Thread localizeThread = new Thread(() -> {
             while (true) {
                 try {
-                    if (autonomousClientBeta.roadRunnerDrive.isRunningFollowTrajectory)
-                        Thread.sleep(10);
+                    if (autonomousClient.roadRunnerDrive.isRunningFollowTrajectory)
+                        Thread.sleep(100);
                     else {
-                        autonomousClientBeta.roadRunnerDrive.update();
+                        autonomousClient.roadRunnerDrive.update();
                         Thread.sleep(2);
                     }
                 } catch (InterruptedException e) {
@@ -32,15 +31,28 @@ public class RoadRunnerTest extends LinearOpMode {
             }
         });
 
-        localizeThread.start();
+//        localizeThread.start();
 
-        autonomousClientBeta.readCamera();
+//        autonomousClientBeta.readCamera();
 
         waitForStart();
 
-        autonomousClientBeta.slideController.extendDropRetract_NewAutonomous(SlideTarget.TOP_DEPOSIT);
+        new Thread(() -> {
+            while (opModeIsActive()) {
+                try {
+                    Thread.sleep(20);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            autonomousClient.stopRoadRunner();
+        }).start();
 
-        autonomousClientBeta.stopRoadRunner();
+        while (opModeIsActive()) {
+            autonomousClient.runRawPickUpTrajectory();
+            autonomousClient.runRawDepositTrajectory();
+        }
+
         stop();
     }
 }

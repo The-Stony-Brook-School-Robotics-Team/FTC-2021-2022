@@ -16,7 +16,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousBrain;
 import org.firstinspires.ftc.teamcode.drive.DriveConstantsMain;
-import org.firstinspires.ftc.teamcode.drive.NewAutonomousMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -64,16 +63,6 @@ public class RoadRunnerController {
     public RoadRunnerController(HardwareMap hardwareMap, Telemetry telemetry) {
         // initialize everyone.
         this.drive = new SampleMecanumDrive(hardwareMap);
-        this.dashboard = FtcDashboard.getInstance();
-        this.runner = drive.trajectorySequenceRunner;
-    }
-
-    public RoadRunnerController(HardwareMap hardwareMap, boolean isNewAutonomous) {
-        if (isNewAutonomous)
-            this.drive = new NewAutonomousMecanumDrive(hardwareMap);
-        else
-            this.drive = new SampleMecanumDrive(hardwareMap);
-
         this.dashboard = FtcDashboard.getInstance();
         this.runner = drive.trajectorySequenceRunner;
     }

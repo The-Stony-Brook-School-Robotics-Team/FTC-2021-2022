@@ -7,22 +7,42 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 
-//@Autonomous(name = "A_William - AutonomousTrajectoryTest")
+@Autonomous(name = "A_William - AutonomousTrajectoryTest")
 public class AutonomousTrajectoryTest extends LinearOpMode {
-    AutonomousClientSafe autonomousClientBeta;
+    AutonomousClient autonomousClient;
 
     @Override
     public void runOpMode() {
         OpenCVController.isDuck = false;
-        autonomousClientBeta = new AutonomousClientSafe(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
+        autonomousClient = new AutonomousClient(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
 
         waitForStart();
 
-//        autonomousClient.getInitialBlockDone();
-        autonomousClientBeta.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
-        autonomousClientBeta.pickUp();
-//        autonomousClient.goDeliverBlock();
-//        autonomousClient.goParking();
+        Thread stopTrajectoryThread = new Thread(() -> {
+            while (opModeIsActive()) {
+                try {
+                    Thread.sleep(20);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            autonomousClient.stopRoadRunner();
+        });
+
+        stopTrajectoryThread.start();
+
+        autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
+
+        while (opModeIsActive()) {
+            autonomousClient.runRawPickUpTrajectory();
+            autonomousClient.runRawDepositTrajectory();
+        }
+
+        try {
+            stopTrajectoryThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         stop();
     }
