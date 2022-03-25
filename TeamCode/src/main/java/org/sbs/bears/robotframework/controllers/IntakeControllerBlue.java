@@ -40,9 +40,10 @@ public class IntakeControllerBlue implements IntakeController{
     public double timeToOpenStopper = 300; //ms 400
     public static double timeToCloseBucket = 360; //ms 650
     public double timeToPushSweeper = 230; //ms 400
+    public double timeToResetSweeper = 440;
 
-    private double sweeperOut = .725;
-    private double sweeperIn = 1;
+    private double sweeperOut = .088; //.725;
+    private double sweeperIn = .338; //1;
     public static double stopperClosed = 0.26;  // was .3 //TODO //.3
     private double stopperOpen = 0.1; //TODO
     private boolean qIsObjectInPayload = false;
@@ -196,6 +197,11 @@ public class IntakeControllerBlue implements IntakeController{
 
                    dumperServo.setPosition(SlideController.dumperPosition_CLOSED);
                     // reset position of sweeper!
+                   try {
+                       Thread.sleep((long)timeToResetSweeper);
+                   } catch (InterruptedException e) {
+                       e.printStackTrace();
+                   }
                    sweeper.setPosition(sweeperIn);
                    break;
 

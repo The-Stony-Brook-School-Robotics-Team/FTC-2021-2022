@@ -602,6 +602,10 @@ public class SlideController {
                         targetPosFinal = slideMotorPosition_SHARED;
                         verticalServoTargetPos = vertServoPosition_SHARED_TWO;
                         break;
+                    case SHARED_THREE:
+                        targetPosFinal = slideMotorPosition_SHARED;
+                        verticalServoTargetPos = vertServoPosition_SHARED_THREE;
+                        break;
                     case SHARED_ONE:
                         targetPosFinal = slideMotorPosition_SHARED;
                         verticalServoTargetPos = vertServoPosition_SHARED_ONE;
@@ -903,6 +907,7 @@ public class SlideController {
     public static double vertServoPosition_CUSTOM = .6;//11;//0.06;
     public static double vertServoPosition_SHARED_TWO = .447;//11;//0.06;
     public static double vertServoPosition_SHARED_ONE = .227;//11;//0.06;
+    public static double vertServoPosition_SHARED_THREE = .667;//11;//0.06;
     public static double vertServoPosition_GRAB_CAP = 0.09; //.09
 
 

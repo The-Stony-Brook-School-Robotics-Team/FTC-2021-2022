@@ -12,6 +12,8 @@ public enum SlideTarget {
     BOTTOM_DEPOSIT,
     CAP_FROM_CAROUSEL,
     SHARED_TWO,
+    SHARED_THREE,
     SHARED_ONE,
-    CUSTOM
+    CUSTOM;
+
 }
