@@ -56,8 +56,8 @@ public class SlideController {
         slideMotor = hardwareMap.get(DcMotorEx.class, "spool");
 
 
-        slideMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(10, 0, 0, 0));
         slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slideMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(p, 0, 0, 0));
         slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -660,8 +660,11 @@ public class SlideController {
                     }
 
                 }
+
                 //Kill the motor's PID and stop so it doesn't try to correct and jitter
                 hardStopReset();
+
+
 
 
                 // if(targetParams == SlideTarget.CAP_FROM_CAROUSEL)
@@ -947,7 +950,7 @@ public class SlideController {
     public static int slideMotorPosition_ONE_CAROUSEL = 1665;
     public static int slideMotorPosition_CAP_FROM_CAROUSEL = 1476; // TODO
     public static int slideMotorPosition_CAP_FROM_CAROUSEL_RET = 1442; // TODO
-    public static int slideMotorPosition_SHARED = 2030; // TODO
+    public static int slideMotorPosition_SHARED = 1965;//2030; // TODO
     public static int slideMotorPosition_CUSTOM = 600; // TODO
     public static int slideMotorPosition_FULL = 2050;
     public static int slideMotorPosition_CAP_ON_GROUND = 473;
@@ -957,6 +960,9 @@ public class SlideController {
     public static double slideMotorPowerMovingBack = .9;
     public static double slideMotorPowerGrabCap = .9;
     public static final double slideMotorPowerStill = 0;
+    public static int p = 10;
+    public static double shared_power = 1;
+    public static int shared_wait = 4000;
 
 
 }
