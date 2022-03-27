@@ -33,48 +33,31 @@ public class SlideHandler {
         /**
          * Check if slide movement is enabled
          */
-        if(slideMovementEnabled != true) { return; }
+        if (!slideMovementEnabled) {
+            return;
+        }
+
+        if(slideMoving) {
+            return;
+        }
+
         /**
          * Reset The Capstone Logic
          */
-        if(buttonHandler.currentSegmentPosition != ButtonHandler.SegmentPositions.EXTEND) {
-            buttonHandler.currentSegmentPosition = ButtonHandler.SegmentPositions.EXTEND;
+        if (ButtonHandler.currentSegmentPosition != ButtonHandler.SegmentPositions.EXTEND) {
+            ButtonHandler.currentSegmentPosition = ButtonHandler.SegmentPositions.EXTEND;
         }
-        /**
-         * Check if the slide is already moving
-         */
-        if(!slideMoving) {
-            slideMoving = true;
-            stickValue = stickValue * -2;
-            slideController.incrementEncoderPosition(stickValue * Configuration.DefaultSlideTicks, true);
-            Log.d(interfaceTag, "Current Slide Motor Ticks: " + slideController.getSlideMotorPosition());
-            slideMoving = false;
-        }
+
+        slideMoving = true;
+        stickValue = stickValue * -2;
+        slideController.incrementEncoderPosition(stickValue * Configuration.DefaultSlideTicks, true);
+        Log.d(interfaceTag, "Current Slide Motor Ticks: " + slideController.getSlideMotorPosition());
+        slideMoving = false;
     }
 
-    public AtomicReference<Boolean> hasFinishedReset = new AtomicReference<>();
-    public boolean hasStartedMagswitchRoutine = false;
-
-
-    // MARC & MICHAEL ADDED @ COMP
     public void resetSlideEncoder()
     {
-
             slideController.resetEncoder();
             Log.d("SlideController","Reset Encoder to 0");
     }
-
-    /**
-     * Deposit (B)
-     */
-    public void DuckToTop() {
-        if(slideMovementEnabled != true) { return; }
-        if(!slideMoving) {
-            slideMoving = true;
-            slideController.extendDropRetract(SlideTarget.TOP_DEPOSIT);
-            slideMoving = false;
-        }
-    }
-
-
 }
