@@ -15,11 +15,8 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
 import org.firstinspires.ftc.teamcode.common.teleop.runtime.ButtonHandler;
-import org.firstinspires.ftc.teamcode.common.teleop.runtime.IntakeHandler;
-import org.firstinspires.ftc.teamcode.common.teleop.runtime.MovementHandler;
 import org.firstinspires.ftc.teamcode.common.teleop.runtime.RoadrunnerHandler;
 import org.firstinspires.ftc.teamcode.common.teleop.runtime.SlideHandler;
-
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.sbs.bears.robotframework.controllers.DuckCarouselController;
@@ -39,7 +36,7 @@ public class BlueTeleOp extends OpMode {
      * TeleOp States
      */
     public static volatile TeleOpRobotStates currentState = TeleOpRobotStates.STOPPED;
-    private static Object stateMutex = new Object();
+    private static final Object stateMutex = new Object();
 
     /**
      * Controller Modes
@@ -47,13 +44,11 @@ public class BlueTeleOp extends OpMode {
     public static Gamepad primaryGamepad;
     public static Gamepad secondaryGamepad;
     public static ControllerModes primaryControllerMode = ControllerModes.PRIMARY;
-    public static ControllerModes secondaryControllerMode = ControllerModes.PRIMARY;
     public static double driveSpeedStrafe = 1;
 
     /**
      * Information Provisioning
      */
-    public static double systemRuntime = 0;
     public static boolean systemStopRequested = false;
     public static boolean objectInBucket = false;
 
@@ -90,7 +85,7 @@ public class BlueTeleOp extends OpMode {
     /**
      * 线程池
      */
-    private static HashMap<String, Thread> threadPool = new HashMap<>();
+    private static final HashMap<String, Thread> threadPool = new HashMap<>();
 
     /**
      * Interface Tag
@@ -106,17 +101,10 @@ public class BlueTeleOp extends OpMode {
         multipleTelemetry.addLine("Initializing...");
         multipleTelemetry.update();
 
-        /**
-         * Roadrunner initialization
-         * */
         drive = new SampleMecanumDrive(hardwareMap);
         dashboard = FtcDashboard.getInstance();
-        this.primaryGamepad = gamepad1;
-        this.secondaryGamepad = gamepad2;
-
-        /**
-         * Initialization
-         */
+        primaryGamepad = gamepad1;
+        secondaryGamepad = gamepad2;
 
         slideController = new SlideController(hardwareMap, telemetry);
         blueIntake = new IntakeControllerBlue(hardwareMap, slideController.blueDumperServo, telemetry);
@@ -126,19 +114,12 @@ public class BlueTeleOp extends OpMode {
         bottomColorSensor = hardwareMap.get(RevColorSensorV3.class, "color");
         expansionHubEx = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 4");
 
-        /**
-         * Increase Read Speeds
-         */
         // LS: Light Sensor
         // PS: Proximity Sensor
         // MEAS: Measure Rate
         bottomColorSensor.write8(BroadcomColorSensor.Register.LS_MEAS_RATE, 0x01010000);
         bottomColorSensor.write8(BroadcomColorSensor.Register.PS_MEAS_RATE, 0x00000001);
         bottomColorSensor.write8(BroadcomColorSensor.Register.LS_GAIN, 0x00000000);
-
-        /**
-         * Configuration
-         */
 
         redIntake.setState(IntakeState.DUMP);
         blueIntake.setState(IntakeState.DUMP);
@@ -169,9 +150,6 @@ public class BlueTeleOp extends OpMode {
             initPass = 1;
         }
 
-        /**
-         * Pass through the runtimes and make sure that they are running
-         */
         for(Map.Entry<String, Thread> set : checkRuntimes().entrySet()) {
             if(set != null && !set.getValue().isAlive()) {
                 startInterface(set.getKey());
@@ -197,16 +175,10 @@ public class BlueTeleOp extends OpMode {
                 break;
 
                 case RUNNING:
-                    /**
-                     * Check Buckets / Intakes
-                     */
                     BlueTeleOp.redIntake.checkIntake();
                     BlueTeleOp.blueIntake.checkIntake();
 
-                    /**
-                     * Update Color
-                     */
-                    if(BlueTeleOp.redIntake.isObjectInPayload() == true || BlueTeleOp.blueIntake.isObjectInPayload() == true) {
+                    if(BlueTeleOp.redIntake.isObjectInPayload() || BlueTeleOp.blueIntake.isObjectInPayload()) {
                         objectInBucket = true;
                         BlueTeleOp.revBlinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
                         BlueTeleOp.isColorStripBlue = false;
@@ -215,9 +187,6 @@ public class BlueTeleOp extends OpMode {
                     }
 
 
-                    /**
-                     * Set Colors
-                     */
                     if(driveSpeedStrafe < 1) {
                         BlueTeleOp.revBlinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
                         isColorStripBlue = false;
@@ -228,9 +197,6 @@ public class BlueTeleOp extends OpMode {
                         }
                     }
 
-                    /**
-                     * Set Drive Speeds
-                     */
                     drive.setWeightedDrivePower(
                             new Pose2d(
                                     -primaryGamepad.left_stick_x * driveSpeedStrafe,
@@ -259,8 +225,8 @@ public class BlueTeleOp extends OpMode {
      * Flood Thread Pool
      */
     private static void floodRuntimes() {
-        registerThread(buttonHandler.primaryInterfaceTag, buttonHandler.primaryRuntime);
-        registerThread(buttonHandler.secondaryInterfaceTag, buttonHandler.secondaryRuntime);
+        registerThread(ButtonHandler.primaryInterfaceTag, ButtonHandler.primaryRuntime);
+        registerThread(ButtonHandler.secondaryInterfaceTag, ButtonHandler.secondaryRuntime);
     }
 
     /**
@@ -290,17 +256,6 @@ public class BlueTeleOp extends OpMode {
     }
 
     /**
-     * Lists every thread in the thread pool
-     */
-    public static void listThreadPool() {
-        Log.d(interfaceTag, "-------------------------------------------------------------------------------------------------");
-        for (Map.Entry<String, Thread> set : threadPool.entrySet()) {
-            Log.d(interfaceTag, "Thread Name: " + set.getKey());
-        }
-        Log.d(interfaceTag, "-------------------------------------------------------------------------------------------------");
-    }
-
-    /**
      * Registers a thread to the thread pool
      *
      * @param interfaceTag the interface tag for the handler
@@ -320,7 +275,7 @@ public class BlueTeleOp extends OpMode {
      */
     public static void startThreadPool() {
         for (Map.Entry<String, Thread> set : threadPool.entrySet()) {
-            if (set.getValue().isAlive() == false) {
+            if (!set.getValue().isAlive()) {
                 set.getValue().start();
                 Log.d(interfaceTag, "Started Process: " + set.getKey());
             }
