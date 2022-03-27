@@ -20,6 +20,7 @@ import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
+import org.sbs.bears.robotframework.controllers.SlideController;
 import org.sbs.bears.robotframework.enums.IntakeState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 
@@ -83,10 +84,10 @@ public class ButtonHandler {
     public static Boolean runningAsyncSlideExtend = false;
     public static Thread asyncExtendSlide = new Thread(() -> {
         runningAsyncSlideExtend = true;
-        if(slideController.slideMotor.getCurrentPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
+        if(slideController.slideMotor.getCurrentPosition() < SlideController.slideMotorPosition_BUCKET_OUT) {
             slideController.extendSlide();
             driveSpeedStrafe = Configuration.SlowMovementStrafeMultiplier;
-        } else if(slideController.slideMotor.getCurrentPosition() > slideController.slideMotorPosition_BUCKET_OUT) {
+        } else if(slideController.slideMotor.getCurrentPosition() > SlideController.slideMotorPosition_BUCKET_OUT) {
             slideController.retractSlide();
             if(currentSegmentPosition != SegmentPositions.EXTEND) {
                 currentSegmentPosition = SegmentPositions.EXTEND;
@@ -102,7 +103,7 @@ public class ButtonHandler {
     public static Thread secondaryRuntime = new Thread(() -> {
         while(currentState == TeleOpRobotStates.RUNNING || currentState.equals(TeleOpRobotStates.INITIALIZING)) {
             if(secondaryGamepad.y && !isPressingSecondaryY) {
-                if(duckspinnerSpinning == false) {
+                if(!duckspinnerSpinning) {
                     asyncDuck.start();
                 }
                 isPressingSecondaryY = true;
@@ -114,13 +115,6 @@ public class ButtonHandler {
 
     public static Thread primaryRuntime = new Thread(() -> {
         while(currentState == TeleOpRobotStates.RUNNING || currentState.equals(TeleOpRobotStates.INITIALIZING)) {
-
-
-
-            // MARC  & MICHAEL ADDED @ COMP
-
-
-
             /**
              * Primary Gamepad Shift
              */
@@ -211,7 +205,7 @@ public class ButtonHandler {
                      * @usage Detect White Line and deposit
                      */
                     if(primaryGamepad.right_bumper && !isPressingRightBumper) {
-                        if(duckspinnerSpinning == false) {
+                        if(!duckspinnerSpinning) {
                             Log.d(interfaceTag, "Running duck red");
                             invertedDuckSpinner = true;
                             asyncDuck.start();
@@ -231,7 +225,7 @@ public class ButtonHandler {
                         if(!LEFT_DPAD_COMPARE_FLAG) {
                             LEFT_DPAD_COMPARE_FLAG = true;
                             new Thread(() -> {
-                                if(blueIntake.getState() == IntakeState.DUMP && slideController.getSlideMotorPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
+                                if(blueIntake.getState() == IntakeState.DUMP && slideController.getSlideMotorPosition() < SlideController.slideMotorPosition_BUCKET_OUT) {
                                     blueIntake.setState(IntakeState.BASE);
                                 } else {
                                     blueIntake.setState(IntakeState.DUMP);
@@ -251,7 +245,7 @@ public class ButtonHandler {
                      * @usage Right Intake (Red Intake)
                      */
                     if(primaryGamepad.dpad_right && !isPressingRightDpad) {
-                        if(redIntake.getState() == IntakeState.DUMP && slideController.getSlideMotorPosition() < slideController.slideMotorPosition_BUCKET_OUT) {
+                        if(redIntake.getState() == IntakeState.DUMP && slideController.getSlideMotorPosition() < SlideController.slideMotorPosition_BUCKET_OUT) {
                             redIntake.setState(IntakeState.BASE);
                         } else {
                             redIntake.setState(IntakeState.DUMP);
@@ -438,12 +432,7 @@ public class ButtonHandler {
                     {
                         isPressingRightBumper = false;
                     }
-
-
                     break;
-
-
-
             }
         }
     });
