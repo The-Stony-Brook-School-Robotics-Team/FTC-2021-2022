@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.common.teleop.runtime;
 import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.currentState;
 import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.drive;
 import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.driveSpeedStrafe;
-import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.intakeHandler;
 import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.isColorStripBlue;
 import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.primaryGamepad;
 
@@ -95,24 +94,6 @@ public class MovementHandler {
         MovementHandlers.defaultDriving.interrupt();
     }
 
-    /**
-     * Enable Driving
-     */
-    public static void enableDriving() {
-        if(!movementEnabled) {
-            movementEnabled = true;
-        }
-    }
-
-    /**
-     * Disable Drivign
-     */
-    public static void disableDriving() {
-        if(movementEnabled) {
-            movementEnabled = false;
-        }
-    }
-
 }
 
 /**
@@ -134,13 +115,13 @@ class MovementHandlers {
         if(driveSpeedStrafe < 1) {
             BlueTeleOp.revBlinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
             isColorStripBlue = false;
-        } else if(!intakeHandler.objectInBucket) {
+        } else if(BlueTeleOp.objectInBucket) {
             if(!isColorStripBlue) {
             BlueTeleOp.resetColor();
                 isColorStripBlue = true;
             }
         }
-        
+
         drive.setWeightedDrivePower(
                 new Pose2d(
                         -primaryGamepad.left_stick_x * driveSpeedStrafe,

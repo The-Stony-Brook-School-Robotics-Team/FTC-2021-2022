@@ -55,6 +55,7 @@ public class BlueTeleOp extends OpMode {
      */
     public static double systemRuntime = 0;
     public static boolean systemStopRequested = false;
+    public static boolean objectInBucket = false;
 
     /**
      * Roadrunner Items
@@ -74,10 +75,8 @@ public class BlueTeleOp extends OpMode {
     /**
      * Run Time Applications
      */
-    public static MovementHandler movementHandler = new MovementHandler();
     public static ButtonHandler buttonHandler = new ButtonHandler();
     public static SlideHandler slideHandler = new SlideHandler();
-    public static IntakeHandler intakeHandler = new IntakeHandler();
     public static RoadrunnerHandler roadrunnerHandler = new RoadrunnerHandler();
 
     /**
@@ -190,7 +189,6 @@ public class BlueTeleOp extends OpMode {
                 break;
 
             case INITIALIZING:
-                movementHandler.movementEnabled = true;
                 slideHandler.slideMovementEnabled = true;
                 startThreadPool();
                 synchronized (stateMutex) {
@@ -199,28 +197,48 @@ public class BlueTeleOp extends OpMode {
                 break;
 
                 case RUNNING:
+                    /**
+                     * Check Buckets / Intakes
+                     */
+                    BlueTeleOp.redIntake.checkIntake();
+                    BlueTeleOp.blueIntake.checkIntake();
 
-                    if(!threadPool.get(MovementHandler.interfaceTag).isAlive()) {
-                        threadPool.get(MovementHandler.interfaceTag).start();
+                    /**
+                     * Update Color
+                     */
+                    if(BlueTeleOp.redIntake.isObjectInPayload() == true || BlueTeleOp.blueIntake.isObjectInPayload() == true) {
+                        objectInBucket = true;
+                        BlueTeleOp.revBlinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+                        BlueTeleOp.isColorStripBlue = false;
+                    } else {
+                        objectInBucket = false;
                     }
 
 
+                    /**
+                     * Set Colors
+                     */
+                    if(driveSpeedStrafe < 1) {
+                        BlueTeleOp.revBlinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
+                        isColorStripBlue = false;
+                    } else if(!objectInBucket) {
+                        if(!isColorStripBlue) {
+                            BlueTeleOp.resetColor();
+                            isColorStripBlue = true;
+                        }
+                    }
 
-                int numThreads = threadPool.size();
-                multipleTelemetry.addLine("---------------------------------------------------------");
-                multipleTelemetry.addData("Current # Threads Running: ", numThreads);
-                multipleTelemetry.addLine("---------------------------------------------------------");
-                multipleTelemetry.addData("Drive Handler Thread Status: ", threadPool.get(MovementHandler.interfaceTag).isAlive());
-                multipleTelemetry.addData("Intake Handler Thread Status: ", threadPool.get(IntakeHandler.interfaceTag).isAlive());
-                multipleTelemetry.addData("(Primary) Button Handler Thread Status: ", threadPool.get(ButtonHandler.primaryInterfaceTag).isAlive());
-                multipleTelemetry.addData("(Secondary) Button Handler Thread Status: ", threadPool.get(ButtonHandler.secondaryInterfaceTag).isAlive());
-                multipleTelemetry.addLine("---------------------------------------------------------");
-                multipleTelemetry.addData("Drive Handler Thread State: ", threadPool.get(MovementHandler.interfaceTag).getState());
-                multipleTelemetry.addData("Intake Handler Thread State: ", threadPool.get(IntakeHandler.interfaceTag).getState());
-                multipleTelemetry.addData("(Primary) Button Handler Thread State: ", threadPool.get(ButtonHandler.primaryInterfaceTag).getState());
-                multipleTelemetry.addData("(Secondary) Button Handler Thread State: ", threadPool.get(ButtonHandler.secondaryInterfaceTag).getState());
-                multipleTelemetry.addLine("---------------------------------------------------------");
-                multipleTelemetry.update();
+                    /**
+                     * Set Drive Speeds
+                     */
+                    drive.setWeightedDrivePower(
+                            new Pose2d(
+                                    -primaryGamepad.left_stick_x * driveSpeedStrafe,
+                                    primaryGamepad.left_stick_y * driveSpeedStrafe,
+                                    -primaryGamepad.right_stick_x * driveSpeedStrafe
+                            )
+                    );
+                    drive.update();
                 break;
         }
     }
@@ -233,7 +251,6 @@ public class BlueTeleOp extends OpMode {
         synchronized (currentState) {
             currentState = TeleOpRobotStates.STOPPED;
         }
-        movementHandler.sendKillSignal();
         roadrunnerHandler.sendKillSignal();
         killThreadPool();
     }
@@ -244,8 +261,6 @@ public class BlueTeleOp extends OpMode {
     private static void floodRuntimes() {
         registerThread(buttonHandler.primaryInterfaceTag, buttonHandler.primaryRuntime);
         registerThread(buttonHandler.secondaryInterfaceTag, buttonHandler.secondaryRuntime);
-        registerThread(movementHandler.interfaceTag, movementHandler.runtime);
-        registerThread(intakeHandler.interfaceTag, intakeHandler.runtime);
     }
 
     /**

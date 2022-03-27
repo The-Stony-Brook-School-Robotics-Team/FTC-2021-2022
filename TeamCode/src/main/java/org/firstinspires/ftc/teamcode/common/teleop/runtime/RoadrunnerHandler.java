@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.common.teleop.runtime;
 
 import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.drive;
-import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.movementHandler;
 import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.slideController;
 import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.slideHandler;
 
@@ -71,7 +70,6 @@ public class RoadrunnerHandler {
      * Internal executor
      */
     private Thread movementExecutor = new Thread(() -> {
-        movementHandler.autonomousRunning = true;
         switch (scheduledMovement) {
             case LEFT:
                 Trajectory left = drive.trajectoryBuilder(drive.getPoseEstimate())
@@ -130,24 +128,6 @@ public class RoadrunnerHandler {
                 Log.d(interfaceTag, "Extending Slide");
                 // Extend Drop Retract
                 slideController.extendSlide();
-
-//                slideController.extendDropRetract(SlideTarget.TOP_DEPOSIT, OfficialTeleop.gamepad);
-//                Log.d(interfaceTag, "Turning back onto the wall");
-//                // Turn Back Onto The Wall
-//                drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
-//                        .lineToSplineHeading(new Pose2d(14,80,0), quickTurnVelocityConstraint, quickTurnAccelerationConstraint)
-//                        .build());
-//
-//                Log.d(interfaceTag, "Going back into the warehouse");
-//                drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate())
-//                        .addTemporalMarker(1, () -> {
-//                            Log.d(interfaceTag, "Dropping blue intake");
-//                            // Drop Blue Intake
-//                            blueIntake.setState(IntakeState.BASE);
-//                        })
-//                        .forward(24)
-//                        .build());
-
                 break;
 
             case CURRENT_POSITION_TO_DEPOSIT:
@@ -156,8 +136,6 @@ public class RoadrunnerHandler {
 
         }
         scheduledMovement = MovementTypes.EMPTY;
-        movementHandler.movementEnabled = true;
-        movementHandler.autonomousRunning = false;
         slideHandler.slideMovementEnabled = true;
         isBusy = false;
         requestKill();
@@ -169,17 +147,10 @@ public class RoadrunnerHandler {
      */
     // TODO: Add an indicator showing if the robot took the movement
     public void scheduleMovement(MovementTypes movementType) {
-        if (movementHandler.autonomousRunning || isBusy) {
-            return;
-        }
         isBusy = true;
-        movementHandler.movementEnabled = false;
         slideHandler.slideMovementEnabled = false;
         if (scheduledMovement != MovementTypes.EMPTY) {
             scheduledMovement = MovementTypes.EMPTY;
-        }
-        if (movementHandler.currentDriverMode != MovementHandler.DriverMode.AUTOMATIC) {
-            movementHandler.currentDriverMode = MovementHandler.DriverMode.AUTOMATIC;
         }
         scheduledMovement = movementType;
         movementExecutor.start();
@@ -198,9 +169,6 @@ public class RoadrunnerHandler {
     public void softKill() {
         drive.trajectorySequenceRunner.cancelTraj();
         movementExecutor.interrupt();
-        movementHandler.autonomousRunning = false;
-        movementHandler.currentDriverMode = MovementHandler.DriverMode.DRIVER;
-        movementHandler.movementEnabled = true;
         slideHandler.slideMovementEnabled = true;
     }
 }
