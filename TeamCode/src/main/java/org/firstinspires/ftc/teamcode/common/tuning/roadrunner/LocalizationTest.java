@@ -12,7 +12,7 @@ import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.RevBulkData;
 import org.sbs.bears.robotframework.controllers.RoadRunnerController;
 
-
+@TeleOp
 public class LocalizationTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

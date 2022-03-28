@@ -58,7 +58,6 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public volatile boolean isRunningFollowTrajectory = false;
 
-    public static boolean isUsingT265 = true;
 
     public static double LATERAL_MULTIPLIER = 1;
     public static double VX_WEIGHT = 1;

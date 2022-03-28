@@ -5,14 +5,15 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.sbs.bears.robotframework.controllers.JRR;
+import org.sbs.bears.robotframework.controllers.RoadRunnerController;
 
 @TeleOp(name = "JRRTest", group = "JRR")
 public class JRRTest extends LinearOpMode {
-    JRR jrr = new JRR(hardwareMap, gamepad1);
+    RoadRunnerController jrr;
 
     @Override
     public void runOpMode() throws InterruptedException {
-
+        jrr =  new RoadRunnerController(hardwareMap, telemetry);
         waitForStart();
 
         Thread stopJRRThread = new Thread(() -> {
@@ -28,10 +29,10 @@ public class JRRTest extends LinearOpMode {
 
         stopJRRThread.start();
 
-        jrr.setCurrentPosition(new Pose2d());
+        jrr.setPos(new Pose2d());
         while (opModeIsActive()) {
             jrr.getDrive().followTrajectory(
-                    jrr.getDrive().trajectoryBuilder(jrr.getCurrentPosition())
+                    jrr.getDrive().trajectoryBuilder(jrr.getPos())
                             .lineToLinearHeading(new Pose2d(40, 0, 0))
                             .build()
             );
@@ -39,7 +40,7 @@ public class JRRTest extends LinearOpMode {
             Thread.sleep(1000);
 
             jrr.getDrive().followTrajectory(
-                    jrr.getDrive().trajectoryBuilder(jrr.getCurrentPosition(), true)
+                    jrr.getDrive().trajectoryBuilder(jrr.getPos(), true)
                             .lineToLinearHeading(new Pose2d(0, 0, 0))
                             .build()
             );
