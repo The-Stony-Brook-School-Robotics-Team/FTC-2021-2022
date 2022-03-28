@@ -6,20 +6,28 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.util.Encoder;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.RevBulkData;
 import org.sbs.bears.robotframework.controllers.RoadRunnerController;
 
 @TeleOp
 public class LocalizationTest extends LinearOpMode {
+    Encoder leftEncoder,rightEncoder,frontEncoder;
     @Override
     public void runOpMode() throws InterruptedException {
         RoadRunnerController drive = new RoadRunnerController(hardwareMap,telemetry);
         ExpansionHubEx ctrlhub = hardwareMap.get(ExpansionHubEx.class,"Control Hub");
 
+        leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "leftodom"));
+        rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rightodom"));
+        frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "duck"));
 
+        leftEncoder.setDirection(Encoder.Direction.REVERSE);
+        frontEncoder.setDirection(Encoder.Direction.REVERSE);
         waitForStart();
 
         while (!isStopRequested()) {
@@ -37,10 +45,9 @@ public class LocalizationTest extends LinearOpMode {
             telemetry.addData("heading", poseEstimate.getHeading());
 
             drive.getDrive().update();
-            RevBulkData bulk = ctrlhub.getBulkInputData();
-            telemetry.addData("L",encoderTicksToInches(-bulk.getMotorCurrentPosition(1)));
-            telemetry.addData("R",encoderTicksToInches(bulk.getMotorCurrentPosition(2)));
-            telemetry.addData("C",encoderTicksToInches(-bulk.getMotorCurrentPosition(0)));
+            telemetry.addData("L",encoderTicksToInches(leftEncoder.getCurrentPosition()));
+            telemetry.addData("R",encoderTicksToInches(rightEncoder.getCurrentPosition()));
+            telemetry.addData("C",encoderTicksToInches(frontEncoder.getCurrentPosition()));
             telemetry.update();
         }
     }
