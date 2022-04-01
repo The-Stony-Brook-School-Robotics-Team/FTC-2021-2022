@@ -6,17 +6,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
-@TeleOp(name="B - ALL SERVOS", group="Linear Opmode")
-public class AllServo extends LinearOpMode {
-    private Servo redIntake;
-    private Servo blueIntake;
-    private Servo blueSweeper;
-    private Servo verticalServo;
-    private Servo dumper;
-    private Servo stopper;
-    private Servo redSweeper;
-    private Servo redStopper;
-    private Servo redDumper;
+@TeleOp(name="B - ALL SERVOS TANK", group="Linear Opmode")
+public class AllServoTank extends LinearOpMode {
+    private Servo dunker;
 
     private boolean qA = false;
     private boolean qUp = false;
@@ -32,19 +24,10 @@ public class AllServo extends LinearOpMode {
 
 
     public void runOpMode() throws InterruptedException {
-        redIntake = hardwareMap.get(Servo.class, "ri");
-        blueIntake = hardwareMap.get(Servo.class, "bi");
-        blueSweeper = hardwareMap.get(Servo.class, "sweep");
-        verticalServo = hardwareMap.get(Servo.class, "vt");
-        dumper = hardwareMap.get(Servo.class, "du");
-        stopper = hardwareMap.get(Servo.class, "bs");
-        redSweeper = hardwareMap.get(Servo.class, "rsweep");
-        redStopper = hardwareMap.get(Servo.class, "rs");
-        redDumper = hardwareMap.get(Servo.class, "rdu");
+        dunker = hardwareMap.get(Servo.class, "dunk");
 
-
-        Servo[] servos = {redIntake, blueIntake, blueSweeper, verticalServo, dumper, stopper, redSweeper, redStopper, redDumper};
-        String[] servoNames = {"red intake", "blue intake", "blue sweeper", "vertical servo", "blue dumper", "blue stopper", "red sweeper", "red stopper", "red dumper"};
+        Servo[] servos = {dunker};
+        String[] servoNames = {"dunker"};
         place = servos[0];
         waitForStart();
 

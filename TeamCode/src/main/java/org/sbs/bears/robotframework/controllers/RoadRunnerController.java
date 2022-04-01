@@ -367,7 +367,11 @@ public class RoadRunnerController {
         return distanceTo(getPos(), target);
     }
 
+
     public double distanceTo(Pose2d a, Pose2d b) {  //                                                                                                        ___________
+        return Math.sqrt((a.getX() - b.getX()) * (a.getX() - b.getX()) + (a.getY() - b.getY()) * (a.getY() - b.getY())); // √∆x^2 + ∆y^2
+    }
+    public static double distanceTwoPoints(Pose2d a, Pose2d b) {  //                                                                                                        ___________
         return Math.sqrt((a.getX() - b.getX()) * (a.getX() - b.getX()) + (a.getY() - b.getY()) * (a.getY() - b.getY())); // √∆x^2 + ∆y^2
     }
 

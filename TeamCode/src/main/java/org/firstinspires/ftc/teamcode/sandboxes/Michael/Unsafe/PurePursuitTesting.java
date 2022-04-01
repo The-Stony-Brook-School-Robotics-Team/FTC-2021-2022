@@ -26,7 +26,7 @@ import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 @TeleOp(name="awful", group="drive")
 //@Disabled
-//@Deprecated
+@Deprecated
 public class PurePursuitTesting extends LinearOpMode {
 
     //TODO MOST LIKELY BROKEN BE CAREFUL LMAOO
