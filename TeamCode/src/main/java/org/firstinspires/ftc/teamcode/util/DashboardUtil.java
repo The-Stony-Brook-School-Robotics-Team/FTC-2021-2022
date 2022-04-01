@@ -18,23 +18,6 @@ public class DashboardUtil {
     private static final double ROBOT_RADIUS = 6; // in
 
     public static void drawPoseHistory(Canvas canvas, List<Pose2d> poseHistory) {
-        if(internalColorIndex < 5) {
-            canvas.setStroke("RED");
-        } else if(internalColorIndex < 9) {
-            canvas.setStroke("ORANGE");
-        } else if(internalColorIndex < 13) {
-            canvas.setStroke("YELLOW");
-        } else if(internalColorIndex < 17) {
-            canvas.setStroke("GREEN");
-        } else if(internalColorIndex < 21) {
-            canvas.setStroke("CYAN");
-        } else if(internalColorIndex < 25) {
-            canvas.setStroke("BLUE");
-        } else if(internalColorIndex < 29) {
-            canvas.setStroke("PINK");
-        } else if(internalColorIndex < 29) {
-            canvas.setStroke("MAGENTA");
-        }
         canvas.setStroke("BLUE");
         canvas.setFill("GREEN");
 
@@ -69,26 +52,8 @@ public class DashboardUtil {
 
     private static int internalColorIndex = 0;
     public static void drawRobot(Canvas canvas, Pose2d pose) {
-        if(internalColorIndex > 29) {
-            internalColorIndex = 1;
-        }
-        if(internalColorIndex < 5) {
-            canvas.setStroke("RED");
-        } else if(internalColorIndex < 9) {
-            canvas.setStroke("ORANGE");
-        } else if(internalColorIndex < 13) {
-            canvas.setStroke("YELLOW");
-        } else if(internalColorIndex < 17) {
-            canvas.setStroke("GREEN");
-        } else if(internalColorIndex < 21) {
-            canvas.setStroke("CYAN");
-        } else if(internalColorIndex < 25) {
-            canvas.setStroke("BLUE");
-        } else if(internalColorIndex < 29) {
-            canvas.setStroke("PINK");
-        } else if(internalColorIndex < 29) {
-            canvas.setStroke("MAGENTA");
-        }
+        canvas.setStroke("BLUE");
+
         // Border
         canvas.strokeRect(-72, -72, 144, 144);
         // Square
@@ -139,6 +104,5 @@ public class DashboardUtil {
 
 
 
-        internalColorIndex++;
     }
 }

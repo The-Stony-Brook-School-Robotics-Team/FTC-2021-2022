@@ -279,7 +279,7 @@ public class AutonomousBrain {
                         RRctrl.getDrive().trajectorySequenceBuilder(RRctrl.getPos())
                                 .lineToSplineHeading(isBlue ? warehousePickupPositionBlue : warehousePickupPositionRed)
                                 .turn(Math.toRadians(5))
-                                .forward(25)
+                                .forward(14)
                                 .build()
                 );
                 Log.d("AutonBrain","Intake Redo: trajectory ended");
@@ -327,7 +327,7 @@ public class AutonomousBrain {
                                     .lineToSplineHeading(PICK_UP_TRAJECTORY_FIX_HEADING_POSITION)
                                     .addSpatialMarker(dropIntakePosition,()->{intakeCtrlBlue.setState(IntakeState.BASE);})
                                     .splineToConstantHeading(PICK_UP_TRAJECTORY_PASS_PIPE_POSITION, PICK_UP_TRAJECTORY_PASS_PIPE_POSITION_TANGENT)
-                                    .forward(25)
+                                    .forward(14)
                                     .build()
                     );
                     if(qObjectInRobot.get())
@@ -380,7 +380,7 @@ public class AutonomousBrain {
                 }
                 if(RRctrl.distanceTo(isBlue ? depositPositionAllianceBlueTOP : depositPositionRedNoTurn) > ERROR_TOLERANCE_DROPOFF)
                 {
-                    Log.d("AutonBrain","Detected not arrived at designated position. Fixing");
+                    Log.d("AutonBrain","Detected not arrived at designated position: " + RRctrl.distanceTo(isBlue ? depositPositionAllianceBlueTOP : depositPositionRedNoTurn) + ". Fixing");
                     Log.d("AutonBrain","Current X: " + RRctrl.getPos().getX() + " Y: " + RRctrl.getPos().getY() + " H: " + RRctrl.getPos().getHeading());
                     Log.d("AutonBrain","Target X: " + depositPositionBlueTOP.getX() + " Y: " + depositPositionBlueTOP.getY() + " H: " + depositPositionBlueTOP.getHeading());
                     RRctrl.followLineToSpline(depositPositionBlueTOP);
@@ -430,7 +430,7 @@ public class AutonomousBrain {
 
     public static Pose2d startPositionBlue = new Pose2d(startPositionBlueX,startPositionBlueY,startPositionBlueH);
     public static Pose2d startPositionRed = new Pose2d(startPositionRedX,startPositionRedY,Math.toRadians(startPositionRedH)); // TODO may need to remeasure
-    public static Pose2d warehousePickupPositionBlue = new Pose2d(43,70,0);
+    public static Pose2d warehousePickupPositionBlue = new Pose2d(35,70,0);
     public static Pose2d warehousePickupPositionRed = new Pose2d(43,-70,-Math.PI);
     public static Pose2d depositPositionBlueNoTurn = new Pose2d(-18,75,0);
     public static Pose2d depositPositionRedNoTurn = new Pose2d(-24,-75,-Math.PI);
@@ -444,7 +444,7 @@ public class AutonomousBrain {
     public static Pose2d resetPositionB4WarehouseRed = new Pose2d(14,-75,-Math.PI);
     public static Pose2d resetPositionB4WarehouseBlue2 = new Pose2d(14,70,0);
     public static Pose2d resetPositionB4WarehouseRed2 = new Pose2d(14,-70,-Math.PI);
-    public static Pose2d parkingPositionBlue = new Pose2d(65,70,0);
+    public static Pose2d parkingPositionBlue = new Pose2d(45,75,0);
     public static Pose2d parkingPositionRed = new Pose2d(65,-70,-Math.PI);
     public static Pose2d whiteLinePosBlue = new Pose2d(29.5,65.5,0);
     public static Pose2d whiteLinePosRed = new Pose2d(29.5,-65.5,-Math.PI);
@@ -453,31 +453,31 @@ public class AutonomousBrain {
     public static double intakeTurnAmount = 5; // TODO test and adjust as needed
     //public static double distanceIntake = 40;
 
-    private static final double ANTI_BLOCKING_CHECKER_DEPOSIT_X = 25.0;
-    private static final double ANTI_BLOCKING_CHECKER_PICK_UP_X = 40.0;
-    private static final double ANTI_BLOCKING_CHECKER_PARK_X = 32.0;
-    private static final int ZERO = 0;
+    private static  double ANTI_BLOCKING_CHECKER_DEPOSIT_X = 25.0;
+    private static  double ANTI_BLOCKING_CHECKER_PICK_UP_X = 40.0;
+    private static  double ANTI_BLOCKING_CHECKER_PARK_X = 32.0;
+    private static  int ZERO = 0;
 
-    private static final Vector2d PICK_UP_TRAJECTORY_OPEN_PICK_UP_POSITION = new Vector2d(17.0, 66);
-    private static final Pose2d PICK_UP_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(10.0, 65.5, ZERO);
-    private static final Vector2d PICK_UP_TRAJECTORY_PASS_PIPE_POSITION = new Vector2d(35.0, 66.0);
-    private static final Vector2d dropIntakePosition = new Vector2d(32.0, 66.0);
-    private static final double PICK_UP_TRAJECTORY_PASS_PIPE_POSITION_TANGENT = Math.toRadians(0);
-    private static final Vector2d PICK_UP_TRAJECTORY_PICK_UP_POSITION = new Vector2d(58.0, 64.0);
+    private static  Vector2d PICK_UP_TRAJECTORY_OPEN_PICK_UP_POSITION = new Vector2d(17.0, 66);
+    private static  Pose2d PICK_UP_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(10.0, 75, ZERO);
+    private static  Vector2d PICK_UP_TRAJECTORY_PASS_PIPE_POSITION = new Vector2d(35.0, 70.0);
+    private static  Vector2d dropIntakePosition = new Vector2d(32.0, 66.0);
+    private static  double PICK_UP_TRAJECTORY_PASS_PIPE_POSITION_TANGENT = Math.toRadians(0);
+    private static  Vector2d PICK_UP_TRAJECTORY_PICK_UP_POSITION = new Vector2d(58.0, 64.0);
 
-    private static final Pose2d DEPOSIT_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(40.0, 67.0, ZERO);
-    private static final Pose2d DEPOSIT_TRAJECTORY_PASS_PIPE_POSITION = new Pose2d(20.0, 65.5, ZERO);   //Heading is identical to B_FIX_HEADING_POSITION
+    private static  Pose2d DEPOSIT_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(40.0, 67.0, ZERO);
+    private static  Pose2d DEPOSIT_TRAJECTORY_PASS_PIPE_POSITION = new Pose2d(20.0, 65.5, ZERO);   //Heading is identical to B_FIX_HEADING_POSITION
 
-    private static final Pose2d PICK_UP_SECONDARY_TRAJECTORY_PICK_UP_BLOCK_POSITION = new Pose2d(59.0, 64.0, Math.toRadians(0.0));
+    private static  Pose2d PICK_UP_SECONDARY_TRAJECTORY_PICK_UP_BLOCK_POSITION = new Pose2d(59.0, 64.0, Math.toRadians(0.0));
 
-    public static final Pose2d PARK_TRAJECTORY_PARK_POSITION = new Pose2d(50.0, 66.0, 0);
+    public static  Pose2d PARK_TRAJECTORY_PARK_POSITION = new Pose2d(50.0, 66.0, 0);
 
-    private static final Pose2d ABC_RESET_POSITION_PICK_UP = new Pose2d(10.0, 64.0, 0);
-    private static final Pose2d ABC_RESET_POSITION_DEPOSIT = new Pose2d(55.0, 64.0, 0.0);
-    private static final Pose2d ABC_RESET_POSITION_PARK = new Pose2d(10.0, 64.0, 0);
-    private static final Vector2d ABC_CHECK_POSITION_PICK_UP = new Vector2d(50.5, 65.5);
-    private static final Vector2d ABC_CHECK_POSITION_DEPOSIT = new Vector2d(12.0, 65.5);
-    private static final Vector2d ABC_CHECK_POSITION_PARK = ABC_CHECK_POSITION_PICK_UP;
+    private static  Pose2d ABC_RESET_POSITION_PICK_UP = new Pose2d(10.0, 64.0, 0);
+    private static  Pose2d ABC_RESET_POSITION_DEPOSIT = new Pose2d(55.0, 64.0, 0.0);
+    private static  Pose2d ABC_RESET_POSITION_PARK = new Pose2d(10.0, 64.0, 0);
+    private static  Vector2d ABC_CHECK_POSITION_PICK_UP = new Vector2d(50.5, 65.5);
+    private static  Vector2d ABC_CHECK_POSITION_DEPOSIT = new Vector2d(12.0, 65.5);
+    private static  Vector2d ABC_CHECK_POSITION_PARK = ABC_CHECK_POSITION_PICK_UP;
 
 
     public static Pose2d depositPositionBlueTOP = new Pose2d(2.0, 63.0, -Math.toRadians(30.0));
@@ -485,7 +485,7 @@ public class AutonomousBrain {
     public static Pose2d depositPositionBlueBOT = new Pose2d(2.0, 63.0, -Math.toRadians(35.0));
 
 
-    public static double ERROR_TOLERANCE_DROPOFF = 4;
+    public static double ERROR_TOLERANCE_DROPOFF = 5;
 
     public static Pose2d firstDepositPositionBlueTOP = new Pose2d(5.58, 64.47, -Math.toRadians(33.0));
     public static Pose2d firstDepositPositionBlueMID = new Pose2d(5.58, 64.47, -Math.toRadians(31.0));

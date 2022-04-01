@@ -99,10 +99,10 @@ public class AutonomousBrain {
         iniMaxVel = DriveConstantsMain.MAX_VEL;
         iniMaxAngAccel = DriveConstantsMain.MAX_ANG_ACCEL;
         iniMaxAngVel = DriveConstantsMain.MAX_ANG_VEL;
-        DriveConstantsMain.MAX_ACCEL = CustomMaxAccel;
-        DriveConstantsMain.MAX_VEL = CustomMaxVel;
-        DriveConstantsMain.MAX_ANG_ACCEL = CustomMaxAngAccel;
-        DriveConstantsMain.MAX_ANG_VEL = CustomMaxAngVel;
+        //DriveConstantsMain.MAX_ACCEL = CustomMaxAccel;
+        //DriveConstantsMain.MAX_VEL = CustomMaxVel;
+       // DriveConstantsMain.MAX_ANG_ACCEL = CustomMaxAngAccel;
+       // DriveConstantsMain.MAX_ANG_VEL = CustomMaxAngVel;
         majorState.set(MajorAutonomousState.STOPPED);
         minorState.set(MinorAutonomousState.STOPPED);
         qObjectInRobot.set(false);
@@ -449,7 +449,7 @@ public class AutonomousBrain {
 
     public static Pose2d startPositionBlue = new Pose2d(startPositionBlueX,startPositionBlueY,startPositionBlueH);
     public static Pose2d startPositionRed = new Pose2d(startPositionRedX,startPositionRedY,Math.toRadians(startPositionRedH)); // TODO may need to remeasure
-    public static Pose2d warehousePickupPositionBlue = new Pose2d(43,70,0);
+    public static Pose2d warehousePickupPositionBlue = new Pose2d(43,65.5,0);
     public static Pose2d warehousePickupPositionRed = new Pose2d(43,-70,-Math.PI);
     public static Pose2d depositPositionBlueNoTurn = new Pose2d(-18,75,0);
     public static Pose2d depositPositionRedNoTurn = new Pose2d(-24,-75,-Math.PI);
@@ -461,7 +461,7 @@ public class AutonomousBrain {
     public static Pose2d depositPositionAllianceRedBOT = new Pose2d(5.58,-64.47, -Math.toRadians(145));//59
     public static Pose2d resetPositionB4WarehouseBlue = new Pose2d(14,75,0);
     public static Pose2d resetPositionB4WarehouseRed = new Pose2d(14,-75,-Math.PI);
-    public static Pose2d resetPositionB4WarehouseBlue2 = new Pose2d(14,70,0);
+    public static Pose2d resetPositionB4WarehouseBlue2 = new Pose2d(14,65.5,0);
     public static Pose2d resetPositionB4WarehouseRed2 = new Pose2d(14,-70,-Math.PI);
     public static Pose2d parkingPositionBlue = new Pose2d(65,70,0);
     public static Pose2d parkingPositionRed = new Pose2d(65,-70,-Math.PI);

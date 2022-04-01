@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 
-@Disabled
+@Config
 @Autonomous(name = "T - BackAndForthLineToSpline", group = "drive")
 public class BackAndForthLineToSpline extends LinearOpMode {
 

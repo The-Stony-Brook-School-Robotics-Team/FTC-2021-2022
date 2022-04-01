@@ -55,7 +55,7 @@ public class SlideController {
         redDumperServo = hardwareMap.get(Servo.class, "rdu");
         slideMotor = hardwareMap.get(DcMotorEx.class, "spool");
 
-
+ 
         slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slideMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(p, 0, 0, 0));
         slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -419,7 +419,7 @@ public class SlideController {
                 break;
             case CUSTOM:
                 targetPosFinal = slideMotorPosition_CUSTOM;
-                verticalServoTargetPos = vertServoPosition_CUSTOM;
+                verticalServoTargetPos = vertServoPosition_THREE_DEPOSIT;
                 break;
             case NA:
                 Log.d("SlideController", "Slide Extension failed: did not specify target. Exiting");
@@ -965,4 +965,9 @@ public class SlideController {
     public static int shared_wait = 4000;
 
 
+    public void extendSlideToTicks(int customTicks) {
+        slideMotorPosition_CUSTOM = customTicks;
+        targetParams = SlideTarget.CUSTOM;
+        extendSlide();
+    }
 }

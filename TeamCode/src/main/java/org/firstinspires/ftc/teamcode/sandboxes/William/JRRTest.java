@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.sandboxes.William;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -7,9 +8,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.sbs.bears.robotframework.controllers.JRR;
 import org.sbs.bears.robotframework.controllers.RoadRunnerController;
 
+@Config
 @TeleOp(name = "JRRTest", group = "JRR")
 public class JRRTest extends LinearOpMode {
     RoadRunnerController jrr;
+    public static int forwardDistance = 40;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -33,7 +36,7 @@ public class JRRTest extends LinearOpMode {
         while (opModeIsActive()) {
             jrr.getDrive().followTrajectory(
                     jrr.getDrive().trajectoryBuilder(jrr.getPos())
-                            .lineToLinearHeading(new Pose2d(40, 0, 0))
+                            .splineToLinearHeading(new Pose2d(forwardDistance, forwardDistance, 0),0)
                             .build()
             );
 
@@ -44,6 +47,8 @@ public class JRRTest extends LinearOpMode {
                             .lineToLinearHeading(new Pose2d(0, 0, 0))
                             .build()
             );
+
+            Thread.sleep(1000);
         }
         stopJRRThread.join();
         stop();

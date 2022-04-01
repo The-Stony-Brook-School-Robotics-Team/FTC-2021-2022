@@ -36,7 +36,7 @@ public class BlueTeleOp extends OpMode {
      * TeleOp States
      */
     public static volatile TeleOpRobotStates currentState = TeleOpRobotStates.STOPPED;
-    private static final Object stateMutex = new Object();
+    private static Object stateMutex = new Object();
 
     /**
      * Controller Modes
