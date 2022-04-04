@@ -85,7 +85,7 @@ public class BlueTeleOp extends OpMode {
     /**
      * 线程池
      */
-    private static final HashMap<String, Thread> threadPool = new HashMap<>();
+    private static HashMap<String, Thread> threadPool = new HashMap<>();
 
     /**
      * Interface Tag

@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
+import org.firstinspires.ftc.teamcode.common.tentativeAuton.AutonomousBrain;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe.AutomaticSlide;
 import org.jetbrains.annotations.TestOnly;
 import org.sbs.bears.robotframework.Robot;
@@ -23,8 +25,8 @@ public class SlideExtTesting extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Robot robot = new Robot(hardwareMap,telemetry, AutonomousMode.TELEOP);
         SlideController slideCtrl = robot.getSlideCtrl();
-        RoadRunnerController rrCtrl = robot.getRRctrl();
-        
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        drive.setPoseEstimate(AutonomousBrain.startPositionBlue);
         new Thread(()->{
             while(opModeIsActive() && !isStopRequested()) {
                 telemetry.addData("Slide Ext",slideCtrl.slideMotor.getCurrentPosition());
@@ -40,18 +42,19 @@ public class SlideExtTesting extends LinearOpMode {
         boolean qB = false;
         while(opModeIsActive() && !isStopRequested()) {
 
-            rrCtrl.getDrive().setWeightedDrivePower(
+            drive.setWeightedDrivePower(
                     new Pose2d(
                             -gamepad1.left_stick_x,
                             gamepad1.left_stick_y,
                             -gamepad1.right_stick_x
                     )
             );
+            drive.update();
             
             if (gamepad1.a && !qA)
             {
                 qA= true;
-                slideCtrl.extendSlideToTicks(AutomaticSlide.calculateSlidePosition(rrCtrl.getPos()));
+                slideCtrl.extendSlideToTicks(AutomaticSlide.calculateSlidePosition(drive.getPoseEstimate()));
             }
             else if(!gamepad1.a && qA)
             {
@@ -67,7 +70,7 @@ public class SlideExtTesting extends LinearOpMode {
                 qB = false;
             }
             if(gamepad1.dpad_up && !pUp) {
-                rrCtrl.getDrive().setWeightedDrivePower(new Pose2d());
+                drive.setWeightedDrivePower(new Pose2d());
                 slideCtrl.incrementVerticalServo(0.02);
                 //Log.d("SLIDE TESTER", "Current Slide Servo Position: " + slideController.getVerticalServoPosition());
                 pUp = true;
@@ -76,7 +79,7 @@ public class SlideExtTesting extends LinearOpMode {
             }
 
             if(gamepad1.dpad_down && !pDown) {
-                rrCtrl.getDrive().setWeightedDrivePower(new Pose2d());
+                drive.setWeightedDrivePower(new Pose2d());
                 slideCtrl.incrementVerticalServo(-0.02);
                 //Log.d("SLIDE TESTER", "Current Slide Servo Position: " + slideController.getVerticalServoPosition());
                 pDown = true;
