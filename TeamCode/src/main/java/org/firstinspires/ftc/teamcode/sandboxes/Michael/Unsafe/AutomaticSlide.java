@@ -13,5 +13,8 @@ public class AutomaticSlide {
         Log.d("AutomaticSlide","Distance is " + distance + ", extending to " + (int) (29.82542209*distance));
         return (int) (29.82542209*distance);
     }
+    public static double calculateTurnNeeded(Pose2d pose){
+        return blueShippingHub.getHeading() - pose.getHeading();
+    }
 
 }
