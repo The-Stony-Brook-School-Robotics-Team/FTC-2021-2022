@@ -14,7 +14,11 @@ public class AutomaticSlide {
         return (int) (29.82542209*distance);
     }
     public static double calculateTurnNeeded(Pose2d pose){
-        return blueShippingHub.getHeading() - pose.getHeading();
+        //return blueShippingHub.getHeading() - pose.getHeading();
+
+        //double deltaX = Math.sqrt(Math.pow(pose.getX() + blueShippingHub.getX(), 2));
+        //double deltaY = Math.sqrt(Math.pow(pose.getY() + blueShippingHub.getY(), 2));
+        return Math.atan2(pose.getY() - blueShippingHub.getY(), pose.getX() - blueShippingHub.getX());
     }
 
 }
