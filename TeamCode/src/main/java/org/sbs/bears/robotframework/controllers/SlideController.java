@@ -1007,4 +1007,9 @@ public class SlideController {
         targetParams = SlideTarget.CUSTOM;
         extendSlide();
     }
+    public void extendDropRetractTicks(int customTicks) {
+        slideMotorPosition_CUSTOM = customTicks;
+        targetParams = SlideTarget.CUSTOM;
+        extendDropRetractAuton(targetParams);
+    }
 }

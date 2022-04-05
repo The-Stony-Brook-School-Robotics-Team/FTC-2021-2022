@@ -7,6 +7,8 @@ import android.util.Log;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.hardware.broadcom.BroadcomColorSensor;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
@@ -19,6 +21,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.firstinspires.ftc.teamcode.common.sharedResources.SharedData;
 import org.firstinspires.ftc.teamcode.drive.DriveConstantsMain;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe.AutomaticSlide;
 import org.sbs.bears.robotframework.Robot;
 import org.sbs.bears.robotframework.controllers.DuckCarouselController;
@@ -217,9 +220,11 @@ public class AutonomousBrain {
                 return;
             case FOUR_PARKING_CLEANUP:
                 Log.d("AutonBrain","parking1");
+                TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(1000, DriveConstantsMain.MAX_ANG_VEL, DriveConstantsMain.TRACK_WIDTH);
+                TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(1000);
                 intakeCtrlBlue.setState(IntakeState.DUMP);
                 intakeCtrlRed.setState(IntakeState.DUMP);
-                RRctrl.followLineToSpline(isBlue ? parkingPositionBlue : parkingPositionRed);
+                RRctrl.followLineToSpline(isBlue ? parkingPositionBlue : parkingPositionRed,velocityConstraint,accelerationConstraint);
                 SharedData.autonomousLastPosition = RRctrl.getPos();
                 majorState.set(MajorAutonomousState.FINISHED);
                 minorState.set(MinorAutonomousState.FINISHED);
@@ -276,14 +281,16 @@ public class AutonomousBrain {
                 });
                 intakeChecker.start();
                 Log.d("AutonBrain","Intake Redo: thread launched");
-                RRctrl.getDrive().followTrajectorySequence(
-                        RRctrl.getDrive().trajectorySequenceBuilder(RRctrl.getPos())
-                                .lineToSplineHeading(isBlue ? warehousePickupPositionBlue : warehousePickupPositionRed)
-                                .turn(Math.toRadians(5))
-                                .forward(14)
+                TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(velocityIntake, DriveConstantsMain.MAX_ANG_VEL, DriveConstantsMain.TRACK_WIDTH);
+                TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(15);
+                RRctrl.getDrive().followTrajectory(
+                        RRctrl.getDrive().trajectoryBuilder(
+                                RRctrl.getDrive().getPoseEstimate())
+                                .lineToSplineHeading(warehousePickupPositionBlue)
+                                .forward(18,velocityConstraint,accelerationConstraint)
                                 .build()
                 );
-                Log.d("AutonBrain","Intake Redo: thread launched");
+                Log.d("AutonBrain","Intake Redo: trajectory ended");
                 if(qObjectInRobot.get())
                 {
                     Log.d("AutonBrain","Successfully have block. Proceeding to next stage.");
@@ -300,6 +307,7 @@ public class AutonomousBrain {
             case ONE_INTAKE:
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE_VIOLET);
                 Log.d("AutonBrain","intake prepped");
+                Log.d("AutonBrain","Side: " + (isBlue ? "Blue" : "Red"));
                 if(isBlue){
                     new Thread(() -> {
                         leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
@@ -323,16 +331,18 @@ public class AutonomousBrain {
                         Log.d("AutonBrainThread","status2: qObj " + qObjectInRobot.get() + " qIntake " + getIntake().isObjectInPayload());
                     }).start();
                     Log.d("AutonBrain","Intake: thread launched");
+                     velocityConstraint = SampleMecanumDrive.getVelocityConstraint(velocityIntake, DriveConstantsMain.MAX_ANG_VEL, DriveConstantsMain.TRACK_WIDTH);
+                     accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(15);
                     RRctrl.getDrive().followTrajectory(
                             RRctrl.getDrive().trajectoryBuilder(
                                     RRctrl.getDrive().getPoseEstimate())
                                     .lineToSplineHeading(PICK_UP_TRAJECTORY_FIX_HEADING_POSITION)
                                     .addSpatialMarker(dropIntakePosition,()->{intakeCtrlBlue.setState(IntakeState.BASE);})
                                     .splineToConstantHeading(PICK_UP_TRAJECTORY_PASS_PIPE_POSITION, PICK_UP_TRAJECTORY_PASS_PIPE_POSITION_TANGENT)
-                                    .forward(18)
+                                    .forward(25,velocityConstraint,accelerationConstraint)
                                     .build()
                     );
-                    Log.d("AutonBrain","Intake Redo: trajectory ended");
+                    Log.d("AutonBrain","Intake: trajectory ended");
                     if(qObjectInRobot.get())
                     {
                         Log.d("AutonBrain","Successfully have block. Proceeding to next stage.");
@@ -402,8 +412,8 @@ public class AutonomousBrain {
                     return;
                 }
                 if(qObjectIsLoaded.get()) {
-                    slideCtrl.extendDropRetractAutonCustom(AutomaticSlide.calculateSlidePosition(RRctrl.getPos()));
-                    qObjectInRobot.set(false); // reset
+                    Log.d("AutonBrain","Slide drop init");
+                    slideCtrl.extendDropRetractTicks(AutomaticSlide.calculateSlidePosition(RRctrl.getPos()));                    qObjectInRobot.set(false); // reset
                     qObjectIsLoaded.set(false); // reset
                     Log.d("AutonBrain","Slide drop complete");
                     minorState.set(MinorAutonomousState.ONE_INTAKE);
@@ -462,9 +472,9 @@ public class AutonomousBrain {
     private static  int ZERO = 0;
 
     private static  Vector2d PICK_UP_TRAJECTORY_OPEN_PICK_UP_POSITION = new Vector2d(17.0, 66);
-    private static  Pose2d PICK_UP_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(10.0, 75, ZERO);
+    private static  Pose2d PICK_UP_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(10.0, 68, ZERO);
     private static  Vector2d PICK_UP_TRAJECTORY_PASS_PIPE_POSITION = new Vector2d(35.0, 70.0);
-    private static  Vector2d dropIntakePosition = new Vector2d(32.0, 66.0);
+    private static  Vector2d dropIntakePosition = new Vector2d(28.0, 66.0);
     private static  double PICK_UP_TRAJECTORY_PASS_PIPE_POSITION_TANGENT = Math.toRadians(0);
     private static  Vector2d PICK_UP_TRAJECTORY_PICK_UP_POSITION = new Vector2d(58.0, 64.0);
 
