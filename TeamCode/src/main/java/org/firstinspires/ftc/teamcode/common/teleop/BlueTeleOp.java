@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.ControllerModes;
 import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
 import org.firstinspires.ftc.teamcode.common.teleop.runtime.ButtonHandler;
@@ -205,6 +206,9 @@ public class BlueTeleOp extends OpMode {
                             )
                     );
                     drive.update();
+                    telemetry.addData("distance", redIntake.distanceSensor.getDistance(DistanceUnit.MM));
+                    telemetry.update();
+                    Log.d("DISTANCE", String.valueOf(redIntake.distanceSensor.getDistance(DistanceUnit.MM)));
                 break;
         }
     }

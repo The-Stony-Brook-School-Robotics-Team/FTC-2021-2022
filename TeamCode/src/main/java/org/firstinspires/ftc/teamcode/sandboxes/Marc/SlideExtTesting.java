@@ -50,12 +50,11 @@ public class SlideExtTesting extends LinearOpMode {
                     )
             );
             drive.update();
-            
             if (gamepad1.a && !qA)
             {
                 qA= true;
                 drive.turn(AutomaticSlide.calculateTurnNeeded(drive.getPoseEstimate()));
-                slideCtrl.extendSlideToTicks(AutomaticSlide.calculateSlidePosition(drive.getPoseEstimate()));
+                //slideCtrl.extendSlideToTicks(AutomaticSlide.calculateSlidePosition(drive.getPoseEstimate()));
             }
             else if(!gamepad1.a && qA)
             {

@@ -1,6 +1,9 @@
 
 package org.sbs.bears.robotframework.controllers;
 
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.driveSpeedStrafe;
+import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.interfaceTag;
+
 import android.util.Log;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -270,6 +273,36 @@ public class SlideController {
         this.targetParams = SlideTarget.NA;
     }
 
+
+    public void extendDropRetractAutonCustom(int extendAmount) {
+        this.targetParams = SlideTarget.CUSTOM;
+        slideMotorPosition_CUSTOM = extendAmount;
+        extendSlide();
+        if (flagToLeave) {
+            return;
+        }
+
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (flagToLeave) {
+            return;
+        }
+
+        dropCube();
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        new Thread(() -> {
+            retractSlide();
+        }).start();
+        Sleep.sleep(300);
+        this.targetParams = SlideTarget.NA;
+    }
     public void resetSlideMotorConfigs(){
         slideMotor.resetDeviceConfigurationForOpMode();
         slideMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, new PIDFCoefficients(10, 0, 0, 0));
@@ -376,6 +409,8 @@ public class SlideController {
         double verticalServoTargetPos = 0;
 
         BlueTeleOp.driveSpeedStrafe = Configuration.SlowMovementStrafeMultiplier;
+        Log.d(interfaceTag, "Addr: extendSlide_NewAutonomous");
+        Log.d(interfaceTag, "value write to drive speed strafe: " + driveSpeedStrafe);
         switch (targetParams) {
             case BOTTOM_CAROUSEL:
                 targetPosFinal = slideMotorPosition_ONE_CAROUSEL;
@@ -565,6 +600,8 @@ public class SlideController {
             case EXTENDING:
                 //Switch to set the height and distance of extension depending on the target
                 BlueTeleOp.driveSpeedStrafe = Configuration.SlowMovementStrafeMultiplier;
+                Log.d(interfaceTag, "Addr: doStateAction");
+                Log.d(interfaceTag, "value write to drive speed strafe: " + driveSpeedStrafe);
                 switch (targetParams) {
                     case BOTTOM_CAROUSEL:
                         targetPosFinal = slideMotorPosition_ONE_CAROUSEL;

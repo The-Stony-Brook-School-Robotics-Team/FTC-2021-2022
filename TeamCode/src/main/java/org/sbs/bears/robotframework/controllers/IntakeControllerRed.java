@@ -1,9 +1,11 @@
 package org.sbs.bears.robotframework.controllers;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -16,7 +18,7 @@ public class IntakeControllerRed implements IntakeController {
 
     private Servo scooper;
     private DcMotor compliantWheel;
-    public Rev2mDistanceSensor distanceSensor;
+    public DistanceSensor distanceSensor;
     private Servo sweeper;
     private Servo stopper;
     public Servo dumperServo;
@@ -24,19 +26,20 @@ public class IntakeControllerRed implements IntakeController {
 
     /** Arrays of state positions. Scooper, then motor. 1 is sky, 0 is ground. **/
 //    private double[] basePos = {.025, 0.7}; //.141
-    private static double dumpPosdouble = .425;
+    public static double dumpPosdouble = .425;
     private double[] basePos = {.975, 1};
     private double[] parkPos = {.45, 0}; //.375 for gobilda servo
     public static double[] dumpPos = {dumpPosdouble, 0}; //??????? messed up .375 is the same???
     private double[] reversePos = {.975, -1}; //75
 
     /** Distance needed to switch states (mm) **/
-    private double distThreshold = 60;
+    private double distThreshold = 50;
     private double distThreshold2 = 80;
 
     public double timeToOpenStopper = 300; //ms 400
     public static double timeToCloseBucket = 360; //ms 650
     public double timeToPushSweeper = 230; //ms 400
+    public double timeToResetSweeper = 440;
 
     private double sweeperOut = .725;
     private static double sweeperIn = 1;
@@ -52,7 +55,7 @@ public class IntakeControllerRed implements IntakeController {
         /** Different hardwareMap depending on the intake side. **/
         scooper = hardwareMap.get(Servo.class, "ri");
         compliantWheel = hardwareMap.get(DcMotor.class, "rightodom");
-        distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "rd");
+        distanceSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rd");
         sweeper = hardwareMap.get(Servo.class, "rsweep");
         stopper = hardwareMap.get(Servo.class, "rs");
         this.dumperServo = dumperServo;
@@ -193,6 +196,13 @@ public class IntakeControllerRed implements IntakeController {
                     }
 
                     dumperServo.setPosition(SlideController.dumperPosition_CLOSED);
+                    // reset position of sweeper!
+                    try {
+                        Thread.sleep((long)timeToResetSweeper);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    sweeper.setPosition(sweeperIn);
 
                     break;
 

@@ -23,10 +23,10 @@
             <Servo name="rdu" port="3" />
             <Servo name="du" port="4" />
             <RevBlinkinLedDriver name="rgb" port="5" />
+            <RevColorSensorV3 name="color" port="0" bus="1" /> <!-- used to be 3 !-->
             <LynxEmbeddedIMU name="imu" port="0" bus="0" />
-            <REV_VL53L0X_RANGE_SENSOR name="rd" port="0" bus="1" />
-            <REV_VL53L0X_RANGE_SENSOR name="bd" port="0" bus="2" />
-            <RevColorSensorV3 name="color" port="0" bus="3" />
+            <ModernRoboticsI2cRangeSensor name="bd" port="0" bus="2" />
+            <ModernRoboticsI2cRangeSensor name="rd" port="0" bus="3" /> <!-- used to be 1 !-->
         </LynxModule>
     </LynxUsbDevice>
     <Webcam name="WebcamMain" serialNumber="CD8390EF" />

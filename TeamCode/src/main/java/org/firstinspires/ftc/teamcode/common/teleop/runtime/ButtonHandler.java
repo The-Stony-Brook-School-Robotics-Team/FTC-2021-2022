@@ -87,6 +87,8 @@ public class ButtonHandler {
         if(slideController.slideMotor.getCurrentPosition() < SlideController.slideMotorPosition_BUCKET_OUT) {
             slideController.extendSlide();
             driveSpeedStrafe = Configuration.SlowMovementStrafeMultiplier;
+            Log.d(interfaceTag, "Addr: Async Slide Extend");
+            Log.d(interfaceTag, "value write to drive speed strafe: " + driveSpeedStrafe);
         } else if(slideController.slideMotor.getCurrentPosition() > SlideController.slideMotorPosition_BUCKET_OUT) {
             slideController.retractSlide();
             if(currentSegmentPosition != SegmentPositions.EXTEND) {
@@ -307,6 +309,8 @@ public class ButtonHandler {
                             driveSpeedStrafe = 1;
                         } else if(driveSpeedStrafe == 1) {
                             driveSpeedStrafe = Configuration.SlowMovementStrafeMultiplier;
+                            Log.d(interfaceTag, "Addr: A BUTTON - SLOWMODE TOGGLE");
+                            Log.d(interfaceTag, "value write to drive speed strafe: " + driveSpeedStrafe);
                         }
                         isPressingA = true;
                     } else if(!primaryGamepad.a && isPressingA && primaryControllerMode == ControllerModes.SECONDARY) {

@@ -19,6 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.firstinspires.ftc.teamcode.common.sharedResources.SharedData;
 import org.firstinspires.ftc.teamcode.drive.DriveConstantsMain;
+import org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe.AutomaticSlide;
 import org.sbs.bears.robotframework.Robot;
 import org.sbs.bears.robotframework.controllers.DuckCarouselController;
 import org.sbs.bears.robotframework.controllers.IntakeController;
@@ -282,7 +283,7 @@ public class AutonomousBrain {
                                 .forward(14)
                                 .build()
                 );
-                Log.d("AutonBrain","Intake Redo: trajectory ended");
+                Log.d("AutonBrain","Intake Redo: thread launched");
                 if(qObjectInRobot.get())
                 {
                     Log.d("AutonBrain","Successfully have block. Proceeding to next stage.");
@@ -321,15 +322,17 @@ public class AutonomousBrain {
                         }
                         Log.d("AutonBrainThread","status2: qObj " + qObjectInRobot.get() + " qIntake " + getIntake().isObjectInPayload());
                     }).start();
+                    Log.d("AutonBrain","Intake: thread launched");
                     RRctrl.getDrive().followTrajectory(
                             RRctrl.getDrive().trajectoryBuilder(
                                     RRctrl.getDrive().getPoseEstimate())
                                     .lineToSplineHeading(PICK_UP_TRAJECTORY_FIX_HEADING_POSITION)
                                     .addSpatialMarker(dropIntakePosition,()->{intakeCtrlBlue.setState(IntakeState.BASE);})
                                     .splineToConstantHeading(PICK_UP_TRAJECTORY_PASS_PIPE_POSITION, PICK_UP_TRAJECTORY_PASS_PIPE_POSITION_TANGENT)
-                                    .forward(14)
+                                    .forward(18)
                                     .build()
                     );
+                    Log.d("AutonBrain","Intake Redo: trajectory ended");
                     if(qObjectInRobot.get())
                     {
                         Log.d("AutonBrain","Successfully have block. Proceeding to next stage.");
@@ -337,7 +340,7 @@ public class AutonomousBrain {
                         minorState.set(MinorAutonomousState.TWO_PREP_DEPOSIT);
                     }
                     else {
-                        Log.d("AutonBrain","No block captured. Trying again.");
+                        Log.d("AutonBrain","Intake Main: No block captured. Trying again.");
                         majorState.set(MajorAutonomousState.THREE_BACK_FORTH);
                         minorState.set(MinorAutonomousState.ONE_INTAKE_REDO);
                     }
@@ -380,10 +383,10 @@ public class AutonomousBrain {
                 }
                 if(RRctrl.distanceTo(isBlue ? depositPositionAllianceBlueTOP : depositPositionRedNoTurn) > ERROR_TOLERANCE_DROPOFF)
                 {
-                    Log.d("AutonBrain","Detected not arrived at designated position: " + RRctrl.distanceTo(isBlue ? depositPositionAllianceBlueTOP : depositPositionRedNoTurn) + ". Fixing");
+                    /*Log.d("AutonBrain","Detected not arrived at designated position: " + RRctrl.distanceTo(isBlue ? depositPositionAllianceBlueTOP : depositPositionRedNoTurn) + ". Fixing");
                     Log.d("AutonBrain","Current X: " + RRctrl.getPos().getX() + " Y: " + RRctrl.getPos().getY() + " H: " + RRctrl.getPos().getHeading());
                     Log.d("AutonBrain","Target X: " + depositPositionBlueTOP.getX() + " Y: " + depositPositionBlueTOP.getY() + " H: " + depositPositionBlueTOP.getHeading());
-                    RRctrl.followLineToSpline(depositPositionBlueTOP);
+                    RRctrl.followLineToSpline(depositPositionBlueTOP);*/
                     if(Math.abs(RRctrl.getPos().getHeading() - depositPositionBlueTOP.getHeading())%(2*Math.PI) >= 4)
                     {
                         double delta = Math.abs(RRctrl.getPos().getHeading() - depositPositionBlueTOP.getHeading() % (2*Math.PI) - 2*Math.PI);
@@ -399,7 +402,7 @@ public class AutonomousBrain {
                     return;
                 }
                 if(qObjectIsLoaded.get()) {
-                    slideCtrl.extendDropRetractAuton(normalTarget);
+                    slideCtrl.extendDropRetractAutonCustom(AutomaticSlide.calculateSlidePosition(RRctrl.getPos()));
                     qObjectInRobot.set(false); // reset
                     qObjectIsLoaded.set(false); // reset
                     Log.d("AutonBrain","Slide drop complete");
