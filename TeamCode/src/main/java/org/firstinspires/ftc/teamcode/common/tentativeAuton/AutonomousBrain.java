@@ -71,6 +71,8 @@ public class AutonomousBrain {
 
     SlideTarget iniTarget; // decides randomized position
     SlideTarget normalTarget = SlideTarget.TOP_DEPOSIT_AUTON;
+    private long iniTime2;
+    private long deltaTime2;
 
     enum MajorAutonomousState {
         STOPPED,
@@ -99,6 +101,9 @@ public class AutonomousBrain {
     double iniTemps = 0;
     boolean isBlue = true;
     boolean isSpline = true;
+
+    long iniTime = 0;
+    long deltaTime = 0;
 
     public AutonomousBrain(HardwareMap hardwareMap, Telemetry telemetry, AutonomousMode mode) // call in init.
     {
@@ -150,10 +155,13 @@ public class AutonomousBrain {
     {
         switch(majorState.get()) {
             case STOPPED:
+                startTimer();
                 doAnalysisMaster = true;
                 majorState.set(MajorAutonomousState.ONE_CAMERA_READ);
+                logDeltaTime("STOPPED");
                 return;
             case ONE_CAMERA_READ:
+                startTimer();
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_OCEAN_PALETTE);
                 heightFromDuck = CVctrl.getWhichTowerHeight();
                 Log.d("height: ", heightFromDuck.toString());
@@ -173,8 +181,10 @@ public class AutonomousBrain {
                         break;
                 }
                 majorState.set(MajorAutonomousState.TWO_DEPOSIT_INI_BLOCK);
+                logDeltaTime("ONE_CAMERA_READ");
                 return;
             case TWO_DEPOSIT_INI_BLOCK:
+                startTimer();
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_FOREST_PALETTE);
                 RRctrl.followLineToSpline(iniDropPosition);
                 slideCtrl.extendDropRetractAuton(iniTarget);
@@ -182,6 +192,7 @@ public class AutonomousBrain {
                 if(isBlue) {
                     majorState.set(MajorAutonomousState.THREE_BACK_FORTH);
                     minorState.set(MinorAutonomousState.ONE_INTAKE);
+                    logDeltaTime("TWO_DEPOSIT_INI_BLOCK");
                     return;
                 }
                 else {
@@ -200,9 +211,12 @@ public class AutonomousBrain {
                 }
                 majorState.set(MajorAutonomousState.THREE_BACK_FORTH);
                 minorState.set(MinorAutonomousState.ONE_INTAKE);
+                logDeltaTime("TWO_DEPOSIT_INI_BLOCK");
                 return;
             case TWO_PLUS_SPLINE_WAREHOUSE:
+                startTimer();
                 RRctrl.followSplineTrajWarehouse(true);
+                logDeltaTime("TWO_PLUS_SPLINE_WAREHOUSE");
                 return;
             case THREE_BACK_FORTH:
                 doGoBack();
@@ -213,18 +227,23 @@ public class AutonomousBrain {
                 }
                 // time check
                double currentTime = NanoClock.system().seconds();
-                if(currentTime - iniTemps > 27) {
+                if(currentTime - iniTemps > 26) {
                     Log.d("AutonBrain","Time Constraint: parking");
                     majorState.set(MajorAutonomousState.FOUR_PARKING_CLEANUP);
                 }
                 return;
             case FOUR_PARKING_CLEANUP:
+                startTimer();
                 Log.d("AutonBrain","parking1");
-                TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(1000, DriveConstantsMain.MAX_ANG_VEL, DriveConstantsMain.TRACK_WIDTH);
-                TrajectoryAccelerationConstraint accelerationConstraint = SampleMecanumDrive.getAccelerationConstraint(1000);
                 intakeCtrlBlue.setState(IntakeState.DUMP);
                 intakeCtrlRed.setState(IntakeState.DUMP);
-                RRctrl.followLineToSpline(isBlue ? parkingPositionBlue : parkingPositionRed,velocityConstraint,accelerationConstraint);
+               // RRctrl.followLineToSpline(isBlue ? parkingPositionBlue : parkingPositionRed,velocityConstraint,accelerationConstraint);
+                RRctrl.getDrive().followTrajectory(
+                        RRctrl.getDrive().trajectoryBuilder(
+                                RRctrl.getDrive().getPoseEstimate())
+                                .lineToSplineHeading(warehousePickupPositionBlue)
+                                .splineToSplineHeading(parkingPositionBlue,0)
+                                .build());
                 SharedData.autonomousLastPosition = RRctrl.getPos();
                 majorState.set(MajorAutonomousState.FINISHED);
                 minorState.set(MinorAutonomousState.FINISHED);
@@ -232,6 +251,7 @@ public class AutonomousBrain {
                 DriveConstantsMain.MAX_VEL = iniMaxVel;
                 DriveConstantsMain.MAX_ANG_ACCEL = iniMaxAngAccel;
                 DriveConstantsMain.MAX_ANG_VEL = iniMaxAngVel;
+                logDeltaTime("FOUR_CLEANUP");
                 return;
             case FINISHED:
                 DriveConstantsMain.MAX_ACCEL = iniMaxAccel;
@@ -250,6 +270,7 @@ public class AutonomousBrain {
                 // No associated action
                 return;
             case ONE_INTAKE_REDO:
+                startTimer();
                 if(qObjectInRobot.get())
                 {
                     Log.d("AutonBrain","Oops! I should not be in this state. Continuing!");
@@ -286,7 +307,7 @@ public class AutonomousBrain {
                 RRctrl.getDrive().followTrajectory(
                         RRctrl.getDrive().trajectoryBuilder(
                                 RRctrl.getDrive().getPoseEstimate())
-                                .lineToSplineHeading(warehousePickupPositionBlue)
+                                .splineToSplineHeading(warehousePickupPositionBlue,0)
                                 .forward(18,velocityConstraint,accelerationConstraint)
                                 .build()
                 );
@@ -303,8 +324,12 @@ public class AutonomousBrain {
                     majorState.set(MajorAutonomousState.THREE_BACK_FORTH);
                     minorState.set(MinorAutonomousState.ONE_INTAKE_REDO);
                 }
+                logDeltaTime("ONE_INTAKE_REDO");
                 return;
             case ONE_INTAKE:
+                if(this.iniTime2 != 0) {logDeltaTime1();}
+                startTimer2();
+                startTimer();
                 leds.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE_VIOLET);
                 Log.d("AutonBrain","intake prepped");
                 Log.d("AutonBrain","Side: " + (isBlue ? "Blue" : "Red"));
@@ -354,6 +379,7 @@ public class AutonomousBrain {
                         majorState.set(MajorAutonomousState.THREE_BACK_FORTH);
                         minorState.set(MinorAutonomousState.ONE_INTAKE_REDO);
                     }
+                    logDeltaTime("ONE_INTAKE_BLUE");
                     return;
                 }
                 else {
@@ -361,10 +387,12 @@ public class AutonomousBrain {
                 }
                 Log.d("AutonBrain","reset status and init for intake");
                 minorState.set(MinorAutonomousState.ONE_INTAKE);
+                logDeltaTime("ONE_INTAKE_RED");
                 return;
 
 
             case TWO_PREP_DEPOSIT:
+                startTimer();
                 if(isBlue) {
                     //RRctrl.doBlueDepositTrajectoryNoTurnNonMerged();
                     RRctrl.getDrive().followTrajectory(
@@ -381,14 +409,17 @@ public class AutonomousBrain {
                 }
                 Log.d("AutonBrain","Preparation Complete");
                 minorState.set(MinorAutonomousState.THREE_DEPOSIT);
+                logDeltaTime("TWO_PREP_DEPOSIT");
                 return;
             case THREE_DEPOSIT:
+                startTimer();
                 if (RRctrl.isInWarehouse(isBlue))
                 {
                     Log.d("AutonBrain","Stuck detected on deposit trying, retrying.");
                     RRctrl.followLineToSpline(new Pose2d(RRctrl.getPos().getX()+ (isBlue ? 15 : -15),isBlue ? 70 : -70,RRctrl.getPos().getHeading()),100);
                     RRctrl.followLineToSpline(isBlue ? warehousePickupPositionBlue : warehousePickupPositionRed);
                     minorState.set(MinorAutonomousState.TWO_PREP_DEPOSIT);
+                    logDeltaTime("THREE_DEPOSIT_STUCK");
                     return;
                 }
                 if(RRctrl.distanceTo(isBlue ? depositPositionAllianceBlueTOP : depositPositionRedNoTurn) > ERROR_TOLERANCE_DROPOFF)
@@ -409,19 +440,24 @@ public class AutonomousBrain {
                             RRctrl.turnR(delta);
                         }
                     }
+                    logDeltaTime("THREE_DEPOSIT_CORRECTION");
                     return;
                 }
                 if(qObjectIsLoaded.get()) {
                     Log.d("AutonBrain","Slide drop init");
-                    slideCtrl.extendDropRetractTicks(AutomaticSlide.calculateSlidePosition(RRctrl.getPos()));                    qObjectInRobot.set(false); // reset
+                    slideCtrl.extendDropRetractAutonAUTOMATIC(RRctrl.getPos());
+                    qObjectInRobot.set(false); // reset
                     qObjectIsLoaded.set(false); // reset
                     Log.d("AutonBrain","Slide drop complete");
                     minorState.set(MinorAutonomousState.ONE_INTAKE);
                 }
+                logDeltaTime("THREE_DEPOSIT");
                 return;
             case FOUR_RETURN_TO_INTAKE:
+                startTimer();
                 Log.d("AutonBrain","I should not arrive in this state...proceeding to merged intake...");
                 minorState.set(MinorAutonomousState.ONE_INTAKE);
+                logDeltaTime("FOUR_RETURN_TO_INTAKE");
         }
     }
 
@@ -432,6 +468,37 @@ public class AutonomousBrain {
     {
         return isBlue ? intakeCtrlBlue : intakeCtrlRed;
     }
+
+    private void startTimer()
+    {
+        this.iniTime = System.nanoTime();
+    }
+    private void startTimer2()
+    {
+        this.iniTime2 = System.nanoTime();
+    }
+    private double deltaTimeSecs()
+    {
+        this.deltaTime = System.nanoTime()-iniTime;
+        return deltaTime / 1E9;
+    }
+    private double deltaTimeSecs2()
+    {
+        this.deltaTime2 = System.nanoTime()-iniTime2;
+        return deltaTime2 / 1E9;
+    }
+    private void logDeltaTime(String stage)
+    {
+        double tmp = deltaTimeSecs();
+        Log.d("AutonBrainTimer","Stage " + stage + " took " + tmp + " seconds, " + tmp/0.3 + "% of total Auton");
+    }
+    private void logDeltaTime1()
+    {
+        double tmp = deltaTimeSecs2();
+        Log.d("AutonBrainTimer","Cycle took " + tmp + " seconds, " + tmp/0.3 + "% of total Auton. Projected can do " + 25/tmp + " cycles.");
+    }
+
+
 
 
     public static double startPositionBlueX = 14;
@@ -472,7 +539,7 @@ public class AutonomousBrain {
     private static  int ZERO = 0;
 
     private static  Vector2d PICK_UP_TRAJECTORY_OPEN_PICK_UP_POSITION = new Vector2d(17.0, 66);
-    private static  Pose2d PICK_UP_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(10.0, 68, ZERO);
+    private static  Pose2d PICK_UP_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(10.0, 72, ZERO);
     private static  Vector2d PICK_UP_TRAJECTORY_PASS_PIPE_POSITION = new Vector2d(35.0, 70.0);
     private static  Vector2d dropIntakePosition = new Vector2d(28.0, 66.0);
     private static  double PICK_UP_TRAJECTORY_PASS_PIPE_POSITION_TANGENT = Math.toRadians(0);

@@ -7,6 +7,7 @@ import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.interfaceT
 import android.util.Log;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -20,6 +21,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp;
+import org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe.AutomaticSlide;
 import org.sbs.bears.robotframework.Sleep;
 import org.sbs.bears.robotframework.enums.SlideState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
@@ -246,7 +248,10 @@ public class SlideController {
 
     public void extendDropRetractAuton(SlideTarget target) {
         this.targetParams = target;
-        extendSlide();
+        if(targetParams.equals(SlideTarget.CUSTOM)) {
+            vertServoPosition_CUSTOM = vertServoPosition_THREE_DEPOSIT;
+        }
+            extendSlide();
         if (flagToLeave) {
             return;
         }
@@ -1011,5 +1016,19 @@ public class SlideController {
         slideMotorPosition_CUSTOM = customTicks;
         targetParams = SlideTarget.CUSTOM;
         extendDropRetractAuton(targetParams);
+    }
+    public void extendToTicksWithAngle(int customTicks, double angle) {
+        slideMotorPosition_CUSTOM = customTicks;
+        vertServoPosition_CUSTOM = angle;
+        targetParams = SlideTarget.CUSTOM;
+        extendSlide();
+    }
+    public void extendDropRetractAutonAUTOMATIC(Pose2d currentPose)
+    {
+        targetParams = SlideTarget.CUSTOM;
+        slideMotorPosition_CUSTOM = AutomaticSlide.calculateSlidePosition(currentPose);
+        vertServoPosition_CUSTOM = AutomaticSlide.calculateServoPosNeeded(currentPose);
+        extendDropRetractAuton(targetParams);
+
     }
 }

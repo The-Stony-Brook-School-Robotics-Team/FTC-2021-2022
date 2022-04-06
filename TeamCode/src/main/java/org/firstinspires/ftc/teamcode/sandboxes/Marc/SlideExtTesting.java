@@ -1,21 +1,16 @@
 package org.firstinspires.ftc.teamcode.sandboxes.Marc;
 
-import android.util.Log;
-
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.firstinspires.ftc.teamcode.common.tentativeAuton.AutonomousBrain;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe.AutomaticSlide;
-import org.jetbrains.annotations.TestOnly;
 import org.sbs.bears.robotframework.Robot;
-import org.sbs.bears.robotframework.controllers.RoadRunnerController;
 import org.sbs.bears.robotframework.controllers.SlideController;
-import org.sbs.bears.robotframework.enums.IntakeState;
+
 @TeleOp
 public class SlideExtTesting extends LinearOpMode {
     private boolean pUp;
@@ -53,8 +48,10 @@ public class SlideExtTesting extends LinearOpMode {
             if (gamepad1.a && !qA)
             {
                 qA= true;
-                drive.turn(AutomaticSlide.calculateTurnNeeded(drive.getPoseEstimate()));
+                //drive.turn(AutomaticSlide.calculateTurnNeeded(drive.getPoseEstimate()));
                 //slideCtrl.extendSlideToTicks(AutomaticSlide.calculateSlidePosition(drive.getPoseEstimate()));
+                slideCtrl.extendToTicksWithAngle(AutomaticSlide.calculateSlidePosition(drive.getPoseEstimate()),AutomaticSlide.calculateServoPosNeeded(drive.getPoseEstimate()));
+
             }
             else if(!gamepad1.a && qA)
             {
