@@ -258,7 +258,7 @@ public class AutonomousBrain {
                 RRctrl.getDrive().followTrajectory(
                         RRctrl.getDrive().trajectoryBuilder(
                                 RRctrl.getDrive().getPoseEstimate())
-                                .lineToSplineHeading(warehousePickupPositionBlue)
+                                .lineToSplineHeading(warehousePickupPositionBluePre)
                                 .splineToSplineHeading(parkingPositionBlue,0)
                                 .build());
                 SharedData.autonomousLastPosition = RRctrl.getPos();
@@ -433,33 +433,34 @@ public class AutonomousBrain {
                 if (RRctrl.isInWarehouse(isBlue))
                 {
                     Log.d("AutonBrain","Stuck detected on deposit trying, retrying.");
-                    RRctrl.followLineToSpline(new Pose2d(RRctrl.getPos().getX()+ (isBlue ? 15 : -15),isBlue ? 70 : -70,RRctrl.getPos().getHeading()),100);
-                    RRctrl.followLineToSpline(isBlue ? warehousePickupPositionBlue : warehousePickupPositionRed);
+                    RRctrl.followLineToSpline(new Pose2d(RRctrl.getPos().getX() + (isBlue ? 15 : -15),isBlue ? 70 : -70,isBlue ? 0 : Math.PI),100);
+                    //RRctrl.followLineToSpline(isBlue ? warehousePickupPositionBlue : warehousePickupPositionRed);
                     minorState.set(MinorAutonomousState.TWO_PREP_DEPOSIT);
                     logDeltaTime("THREE_DEPOSIT_STUCK");
                     return;
                 }
+                if(Math.abs(RRctrl.getPos().getHeading() - depositPositionBlueTOP.getHeading())%(2*Math.PI) - 2*Math.PI >= ERROR_TOLERANCE_DROPOFF)
+                {
+                    double delta = Math.abs(RRctrl.getPos().getHeading() - depositPositionBlueTOP.getHeading() % (2*Math.PI) - 2*Math.PI);
+                    Log.d("AutonBrain","Detected Heading is off by " + delta + ". Fixing...");
+                    if(2*Math.PI - RRctrl.getPos().getHeading() < depositPositionBlueTOP.getHeading())
+                    { // too far right
+                        RRctrl.turnL(delta);
+                    }
+                    else {
+                        RRctrl.turnR(delta);
+                    }
+                    logDeltaTime("THREE_DEPOSIT_CORRECTION");
+                    return;
+                }/*
                 if(RRctrl.distanceTo(isBlue ? depositPositionAllianceBlueTOP : depositPositionRedNoTurn) > ERROR_TOLERANCE_DROPOFF)
                 {
                     /*Log.d("AutonBrain","Detected not arrived at designated position: " + RRctrl.distanceTo(isBlue ? depositPositionAllianceBlueTOP : depositPositionRedNoTurn) + ". Fixing");
                     Log.d("AutonBrain","Current X: " + RRctrl.getPos().getX() + " Y: " + RRctrl.getPos().getY() + " H: " + RRctrl.getPos().getHeading());
                     Log.d("AutonBrain","Target X: " + depositPositionBlueTOP.getX() + " Y: " + depositPositionBlueTOP.getY() + " H: " + depositPositionBlueTOP.getHeading());
-                    RRctrl.followLineToSpline(depositPositionBlueTOP);*/
-                    if(Math.abs(RRctrl.getPos().getHeading() - depositPositionBlueTOP.getHeading())%(2*Math.PI) >= 4)
-                    {
-                        double delta = Math.abs(RRctrl.getPos().getHeading() - depositPositionBlueTOP.getHeading() % (2*Math.PI) - 2*Math.PI);
-                        Log.d("AutonBrain","Detected Heading is off by " + delta + ". Fixing...");
-                        if(2*Math.PI - RRctrl.getPos().getHeading() < depositPositionBlueTOP.getHeading())
-                        { // too far right
-                            RRctrl.turnL(delta);
-                        }
-                        else {
-                            RRctrl.turnR(delta);
-                        }
-                    }
-                    logDeltaTime("THREE_DEPOSIT_CORRECTION");
-                    return;
-                }
+                    RRctrl.followLineToSpline(depositPositionBlueTOP);
+
+                }*/
                 if(qObjectIsLoaded.get()) {
                     Log.d("AutonBrain","Slide drop init");
                     slideCtrl.extendDropRetractAutonAUTOMATIC(RRctrl.getPos());
@@ -528,6 +529,7 @@ public class AutonomousBrain {
     public static Pose2d startPositionBlue = new Pose2d(startPositionBlueX,startPositionBlueY,startPositionBlueH);
     public static Pose2d startPositionRed = new Pose2d(startPositionRedX,startPositionRedY,Math.toRadians(startPositionRedH)); // TODO may need to remeasure
     public static Pose2d warehousePickupPositionBlue = new Pose2d(35,70,0);
+    public static Pose2d warehousePickupPositionBluePre = new Pose2d(25,70,0);
     public static Pose2d warehousePickupPositionRed = new Pose2d(43,-70,-Math.PI);
     public static Pose2d depositPositionBlueNoTurn = new Pose2d(-18,75,0);
     public static Pose2d depositPositionRedNoTurn = new Pose2d(-24,-75,-Math.PI);
@@ -558,12 +560,12 @@ public class AutonomousBrain {
     private static  Vector2d PICK_UP_TRAJECTORY_OPEN_PICK_UP_POSITION = new Vector2d(17.0, 66);
     private static  Pose2d PICK_UP_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(10.0, 72, ZERO);
     private static  Vector2d PICK_UP_TRAJECTORY_PASS_PIPE_POSITION = new Vector2d(35.0, 70.0);
-    private static  Vector2d dropIntakePosition = new Vector2d(28.0, 66.0);
+    private static  Vector2d dropIntakePosition = new Vector2d(25, 66.0);
     private static  double PICK_UP_TRAJECTORY_PASS_PIPE_POSITION_TANGENT = Math.toRadians(0);
     private static  Vector2d PICK_UP_TRAJECTORY_PICK_UP_POSITION = new Vector2d(58.0, 64.0);
 
     private static  Pose2d DEPOSIT_TRAJECTORY_FIX_HEADING_POSITION = new Pose2d(40.0, 67.0, ZERO);
-    private static  Pose2d DEPOSIT_TRAJECTORY_PASS_PIPE_POSITION = new Pose2d(20.0, 65.5, ZERO);   //Heading is identical to B_FIX_HEADING_POSITION
+    private static  Pose2d DEPOSIT_TRAJECTORY_PASS_PIPE_POSITION = new Pose2d(18, 68, ZERO);   //Heading is identical to B_FIX_HEADING_POSITION
 
     private static  Pose2d PICK_UP_SECONDARY_TRAJECTORY_PICK_UP_BLOCK_POSITION = new Pose2d(59.0, 64.0, Math.toRadians(0.0));
 
@@ -582,7 +584,7 @@ public class AutonomousBrain {
     public static Pose2d depositPositionBlueBOT = new Pose2d(2.0, 63.0, -Math.toRadians(35.0));
 
 
-    public static double ERROR_TOLERANCE_DROPOFF = 5;
+    public static double ERROR_TOLERANCE_DROPOFF = 4;
 
     public static Pose2d firstDepositPositionBlueTOP = new Pose2d(5.58, 64.47, -Math.toRadians(33.0));
     public static Pose2d firstDepositPositionBlueMID = new Pose2d(5.58, 64.47, -Math.toRadians(31.0));

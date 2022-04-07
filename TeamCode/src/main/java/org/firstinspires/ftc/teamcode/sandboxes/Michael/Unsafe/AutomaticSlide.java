@@ -11,7 +11,7 @@ public class AutomaticSlide {
     public static int calculateSlidePosition(Pose2d pose){
         double distance = RoadRunnerController.distanceTwoPoints(pose, blueShippingHub);
         Log.d("AutomaticSlide","Distance is " + distance + ", extending to " + (int) (29.82542209*distance));
-        return (int) (29.82542209*distance);
+        return (int) (29.82542209*distance-50);
     }
     public static double calculateTurnNeeded(Pose2d pose){
         //return blueShippingHub.getHeading() - pose.getHeading();
@@ -24,7 +24,7 @@ public class AutomaticSlide {
     {
         double distance = RoadRunnerController.distanceTwoPoints(pose, blueShippingHub);
         double angle = Math.atan(19.0/distance);
-        double servoPos = 0.0395*Math.toDegrees(angle) - ((distance > 1600) ? 0 : 0.10);
+        double servoPos = 0.0395*Math.toDegrees(angle) - ((distance > 1600) ? -0.04 : 0.10);
         Log.d("AutomaticSlide","Distance is " + distance + ", lifting to angle " + angle + " servo Pos " + servoPos);
         return servoPos;
     }
