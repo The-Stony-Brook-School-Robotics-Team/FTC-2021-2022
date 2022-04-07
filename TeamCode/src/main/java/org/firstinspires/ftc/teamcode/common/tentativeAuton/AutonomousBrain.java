@@ -462,7 +462,7 @@ public class AutonomousBrain {
     }
 
     private boolean getRightIntakeIsObjectInside() {
-        return isBlue ? intakeCtrlBlue.isObjectInPayload() : intakeCtrlRed.isObjectInPayload();
+        return isBlue ? intakeCtrlBlue.isObjectInPayload2() : intakeCtrlRed.isObjectInPayload2();
     }
     private IntakeController getIntake()
     {

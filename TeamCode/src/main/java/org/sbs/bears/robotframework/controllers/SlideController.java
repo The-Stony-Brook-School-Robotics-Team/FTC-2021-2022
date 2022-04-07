@@ -274,7 +274,7 @@ public class SlideController {
         new Thread(() -> {
             retractSlide();
         }).start();
-        Sleep.sleep(300);
+        Sleep.sleep(AUTON_SLEEP_AMOUNT);
         this.targetParams = SlideTarget.NA;
     }
 
@@ -1006,6 +1006,8 @@ public class SlideController {
     public static double shared_power = 1;
     public static int shared_wait = 4000;
 
+
+    public static int AUTON_SLEEP_AMOUNT = 150;
 
     public void extendSlideToTicks(int customTicks) {
         slideMotorPosition_CUSTOM = customTicks;

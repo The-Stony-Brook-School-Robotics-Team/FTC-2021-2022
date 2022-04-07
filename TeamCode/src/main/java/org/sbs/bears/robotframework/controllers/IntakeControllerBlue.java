@@ -35,7 +35,7 @@ public class IntakeControllerBlue implements IntakeController{
 
     /** Distance needed to switch states (mm) **/
     private double distThreshold = 50; // was 60, but new sensor.
-    private double distThreshold2 = 80;
+    public static double distThreshold2 = 30;
 
     public double timeToOpenStopper = 300; //ms 400
     public static double timeToCloseBucket = 360; //ms 650
