@@ -37,6 +37,23 @@ import org.sbs.bears.robotframework.enums.TowerHeightFromDuck;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+/*
+
+RED SIDE - RED SIDE - RED SIDE - RED SIDE - RED SIDE - RED SIDE - RED SIDE
+
+builderA    //From Deposit to Pickup
+    .lineToSplineHeading(Pose2d(15.0, -67.0, 0.0))
+    .splineToConstantHeading(Vector2d(53.0, -70.0), 0.0)
+
+builderB    //From Pickup to Deposit
+    .lineToSplineHeading(Pose2d(40.0, -69.0, 0.0))
+    .splineToConstantHeading(Vector2d(18.0, -66.0), Math.toRadians(160.0))
+    .splineToSplineHeading(Pose2d(7.15, -63.0, Math.toRadians(33.0)), Math.toRadians(175.0))
+
+builderC    //Retry Pickup
+    .splineToSplineHeading(Pose2d(HEAVEN),12.25)
+*/
+
 @Config
 public class AutonomousBrain {
     AutonomousMode mode;
