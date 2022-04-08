@@ -371,7 +371,7 @@ public class SlideController {
                 blueDumperServo.setPosition(dumperPosition_EJECT);
                 redDumperServo.setPosition(dumperPosition_EJECT);
                 try {
-                    Thread.sleep(400); // 250
+                    Thread.sleep(500); // 250
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -973,17 +973,17 @@ public class SlideController {
     public static double incrementDeltaRetractCaptsone = 0.002;
 
 
-    public static double dumperPosition_CLOSED = 0.02;//0.269;  // remeasured on jan 31 at 16h08
-    public static double dumperPosition_READY = 0.25;//0.55; // 0.69
-    public static double dumperPosition_EJECT = 0.7;//0.74;
-    public static double dumperPosition_RETRACTING = 0.01;//0.05;
+    public static double dumperPosition_CLOSED = 0.4;//0.269;  // remeasured on jan 31 at 16h08
+    public static double dumperPosition_READY = 0.65;//0.55; // 0.69
+    public static double dumperPosition_EJECT = 1 ;//0.74;
+    public static double dumperPosition_RETRACTING = 0.3;//0.05;
 
 
     int slideMotorPosition_PARKED = 5;
     public static int slideMotorPosition_BUCKET_OUT = 225;//250;//380//150; // minimum position for the bucket to be out, measured
     public static int slideMotorPosition_BUCKET_OUT_RET = 800; // minimum position for the bucket to be out, measured
     public static int slideMotorPosition_AUTON_EARLY = 400; // minimum position for the bucket to be out, measured
-    public static int slideMotorPosition_THREE_DEPOSIT = 1316; // remeasured // last 1310
+    public static int slideMotorPosition_THREE_DEPOSIT = 1057; // new bucket// 1316; // remeasured // last 1310
     public static int slideMotorPosition_THREE_DEPOSIT_AUTON = 1360; // remeasured // last 1360
     public static int slideMotorPosition_TWO_DEPOSIT = 1320; //measured
     public static int slideMotorPosition_ONE_DEPOSIT = 1190;//1000; //measured

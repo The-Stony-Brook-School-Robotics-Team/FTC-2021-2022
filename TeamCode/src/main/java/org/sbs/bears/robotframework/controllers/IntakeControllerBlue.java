@@ -38,7 +38,7 @@ public class IntakeControllerBlue implements IntakeController{
     public static double distThreshold2 = 25;
 
     public double timeToOpenStopper = 300; //ms 400
-    public static double timeToCloseBucket = 360; //ms 650
+    public static double timeToCloseBucket = 400;/// new bucket! //360; //ms 650
     public double timeToPushSweeper = 230; //ms 400
     public double timeToResetSweeper = 440;
 
