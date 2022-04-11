@@ -176,18 +176,6 @@ public class BlueTeleOp extends OpMode {
                 break;
 
                 case RUNNING:
-                    BlueTeleOp.redIntake.checkIntake();
-                    BlueTeleOp.blueIntake.checkIntake();
-
-                    if(BlueTeleOp.redIntake.isObjectInPayload() || BlueTeleOp.blueIntake.isObjectInPayload()) {
-                        objectInBucket = true;
-                        BlueTeleOp.revBlinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
-                        BlueTeleOp.isColorStripBlue = false;
-                    } else {
-                        objectInBucket = false;
-                    }
-
-
                     if(driveSpeedStrafe < 1) {
                         BlueTeleOp.revBlinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
                         isColorStripBlue = false;
@@ -198,13 +186,6 @@ public class BlueTeleOp extends OpMode {
                         }
                     }
 
-                    drive.setWeightedDrivePower(
-                            new Pose2d(
-                                    -primaryGamepad.left_stick_x * driveSpeedStrafe,
-                                    primaryGamepad.left_stick_y * driveSpeedStrafe,
-                                    -primaryGamepad.right_stick_x * driveSpeedStrafe
-                            )
-                    );
                     drive.update();
                     telemetry.addData("distance", redIntake.distanceSensor.getDistance(DistanceUnit.MM));
                     telemetry.update();

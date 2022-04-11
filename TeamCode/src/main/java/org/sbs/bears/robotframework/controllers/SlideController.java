@@ -371,25 +371,10 @@ public class SlideController {
                 blueDumperServo.setPosition(dumperPosition_EJECT);
                 redDumperServo.setPosition(dumperPosition_EJECT);
                 try {
-                    Thread.sleep(200); // 250
+                    Thread.sleep(500); // 250
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                blueDumperServo.setPosition(dumperPosition_CLOSED);
-                redDumperServo.setPosition(dumperPosition_CLOSED);
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                blueDumperServo.setPosition(dumperPosition_EJECT);
-                redDumperServo.setPosition(dumperPosition_EJECT);
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
 
             }
             Log.d("SlideController", "Bucket in retract position");
@@ -989,9 +974,9 @@ public class SlideController {
     public static double incrementDeltaRetractCaptsone = 0.002;
 
 
-    public static double dumperPosition_CLOSED = 0.4;//0.269;  // remeasured on jan 31 at 16h08
-    public static double dumperPosition_READY = 0.65;//0.55; // 0.69
-    public static double dumperPosition_EJECT = 1 ;//0.74;
+    public static double dumperPosition_CLOSED = 0.37;//0.269;  // remeasured on jan 31 at 16h08
+    public static double dumperPosition_READY = 0.59;//0.55; // 0.69 .61
+    public static double dumperPosition_EJECT = 1;//0.74;
     public static double dumperPosition_RETRACTING = 0.3;//0.05;
 
 
