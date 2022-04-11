@@ -21,7 +21,6 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
 import org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp;
-import org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe.AutomaticSlide;
 import org.sbs.bears.robotframework.Sleep;
 import org.sbs.bears.robotframework.enums.SlideState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
@@ -947,9 +946,9 @@ public class SlideController {
     public static double vertServoPosition_ONE_CAROUSEL = 0.175;
     public static double vertServoPosition_TWO_CAROUSEL = 0.3767; ///measured
     public static double vertServoPosition_THREE_CAROUSEL = 0.647;
-    public static double vertServoPosition_THREE_DEPOSIT = .89; // 0.85; // TODO //.754; //measured
-    public static double vertServoPosition_TWO_DEPOSIT = 0.44;//.4188;//0.3688;
-    public static double vertServoPosition_ONE_DEPOSIT = 0.14;//11;//0.06;
+    public static double vertServoPosition_THREE_DEPOSIT = .87;//.89; // 0.85; // TODO //.754; //measured
+    public static double vertServoPosition_TWO_DEPOSIT = .448;//0.44;//.4188;//0.3688;
+    public static double vertServoPosition_ONE_DEPOSIT = .107;//0.14;//11;//0.06;
     public static double vertServoPosition_CUSTOM = .6;//11;//0.06;
     public static double vertServoPosition_SHARED_TWO = .447;//11;//0.06;
     public static double vertServoPosition_SHARED_ONE = .227;//11;//0.06;
@@ -984,10 +983,10 @@ public class SlideController {
     public static int slideMotorPosition_BUCKET_OUT = 225;//250;//380//150; // minimum position for the bucket to be out, measured
     public static int slideMotorPosition_BUCKET_OUT_RET = 800; // minimum position for the bucket to be out, measured
     public static int slideMotorPosition_AUTON_EARLY = 400; // minimum position for the bucket to be out, measured
-    public static int slideMotorPosition_THREE_DEPOSIT = 1057; // new bucket// 1316; // remeasured // last 1310
-    public static int slideMotorPosition_THREE_DEPOSIT_AUTON = 1360; // remeasured // last 1360
-    public static int slideMotorPosition_TWO_DEPOSIT = 1320; //measured
-    public static int slideMotorPosition_ONE_DEPOSIT = 1190;//1000; //measured
+    public static int slideMotorPosition_THREE_DEPOSIT = 1142;//1057; // new bucket// 1316; // remeasured // last 1310
+    public static int slideMotorPosition_THREE_DEPOSIT_AUTON = 1142;//1360; // remeasured // last 1360
+    public static int slideMotorPosition_TWO_DEPOSIT = 1020;//1320; //measured
+    public static int slideMotorPosition_ONE_DEPOSIT = 935;//1190;//1000; //measured
     public static int slideMotorPosition_THREE_CAROUSEL = 1713;
     public static int slideMotorPosition_TWO_CAROUSEL = 1600;
     public static int slideMotorPosition_ONE_CAROUSEL = 1665;

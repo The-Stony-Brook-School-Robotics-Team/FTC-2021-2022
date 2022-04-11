@@ -18,7 +18,7 @@ public class IntakeControllerRed implements IntakeController {
 
     private Servo scooper;
     private DcMotor compliantWheel;
-    public DistanceSensor distanceSensor;
+    public ModernRoboticsI2cRangeSensor distanceSensor;
     private Servo sweeper;
     private Servo stopper;
     public Servo dumperServo;

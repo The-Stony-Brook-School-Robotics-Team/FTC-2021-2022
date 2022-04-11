@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -18,7 +19,7 @@ public class IntakeControllerBlue implements IntakeController{
 
     private Servo scooper;
     private DcMotor compliantWheel;
-    public DistanceSensor distanceSensor;
+    public ModernRoboticsI2cRangeSensor distanceSensor;
     private Servo sweeper;
     private Servo stopper;
     public Servo dumperServo;
@@ -57,6 +58,7 @@ public class IntakeControllerBlue implements IntakeController{
         scooper = hardwareMap.get(Servo.class, "bi");
         compliantWheel = hardwareMap.get(DcMotor.class, "leftodom");
         distanceSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "bd");
+        distanceSensor.setI2cAddress(I2cAddr.create8bit(0x24));
         sweeper = hardwareMap.get(Servo.class, "sweep");
         stopper = hardwareMap.get(Servo.class, "bs");
         this.dumperServo = dumperServo;
