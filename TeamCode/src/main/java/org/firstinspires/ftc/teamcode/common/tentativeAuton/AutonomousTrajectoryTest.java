@@ -12,11 +12,14 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 @Config
 @TeleOp(name = "AutonomousTrajectoryTest")
 public class AutonomousTrajectoryTest extends LinearOpMode {
-    public static Vector2d PICK_UP_POSE = new Vector2d(63.0, 70.0);
-    public static Pose2d PICK_UP_FIX_HEADING_POSE = new Pose2d(15.0, 67.0, 0.0);
-    public static Pose2d DEPOSIT_POSE = new Pose2d(5.58,64.47, -Math.toRadians(30));
-    public static Pose2d DEPOSIT_FIX_HEADING_POSE = new Pose2d(40.0, 69.0, 0.0);
-    public static Vector2d DEPOSIT_PASS_PIPE_POSE = new Vector2d(18.0, 66.0);
+    public static double PICK_UP_POSE_X = 61.0;
+    public static double PICK_UP_POSE_Y = 70.0;
+    public static double PICK_UP_FIX_HEADING_X = 15.0;
+    public static double PICK_UP_FIX_HEADING_Y = 67.0;
+    public static double DEPOSIT_FIX_HEADING_X = 40.0;
+    public static double DEPOSIT_FIX_HEADING_Y = 69.0;
+    public static double DEPOSIT_PASS_PIPE_X = 18.0;
+    public static double DEPOSIT_PASS_PIPE_Y = 66.0;
 
     AutonomousBrain brain;
     SampleMecanumDrive RRDrive;
@@ -42,11 +45,10 @@ public class AutonomousTrajectoryTest extends LinearOpMode {
         RRDrive = brain.RRctrl.getDrive();
 
         waitForStart();
-
         RRDrive.followTrajectory(
                 RRDrive.trajectoryBuilder(
                         RRDrive.getPoseEstimate())
-                        .lineToLinearHeading(DEPOSIT_POSE)
+                        .lineToLinearHeading(new Pose2d(7.15, 63.0, Math.toRadians(33.0)))
                         .build()
         );
 
@@ -54,17 +56,17 @@ public class AutonomousTrajectoryTest extends LinearOpMode {
             RRDrive.followTrajectory(
                     RRDrive.trajectoryBuilder(
                             RRDrive.getPoseEstimate())
-                            .lineToSplineHeading(PICK_UP_FIX_HEADING_POSE)
-                            .splineToConstantHeading(PICK_UP_POSE, 0.0)
+                            .lineToSplineHeading(new Pose2d(PICK_UP_FIX_HEADING_X, PICK_UP_FIX_HEADING_Y, 0.0))
+                            .splineToConstantHeading(new Vector2d(PICK_UP_POSE_X, PICK_UP_POSE_Y), 0.0)
                             .build()
             );
 
             RRDrive.followTrajectory(
                     RRDrive.trajectoryBuilder(
                             RRDrive.getPoseEstimate())
-                            .lineToSplineHeading(DEPOSIT_FIX_HEADING_POSE)
-                            .splineToConstantHeading(DEPOSIT_PASS_PIPE_POSE, Math.toRadians(-160.0))
-                            .splineToSplineHeading(DEPOSIT_POSE, Math.toRadians(-175.0))
+                            .lineToSplineHeading(new Pose2d(DEPOSIT_FIX_HEADING_X, DEPOSIT_FIX_HEADING_Y, 0.0))
+                            .splineToConstantHeading(new Vector2d(DEPOSIT_PASS_PIPE_X, DEPOSIT_PASS_PIPE_Y), Math.toRadians(-160.0))
+                            .splineToSplineHeading(new Pose2d(7.15, 63.0, Math.toRadians(33.0)), Math.toRadians(-175.0))
                             .build()
             );
         }
