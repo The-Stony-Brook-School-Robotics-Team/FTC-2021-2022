@@ -28,10 +28,6 @@ import java.util.List;
 public class RRTesting extends LinearOpMode {
     private boolean qA;
 
-
-
-
-
     @Override
     public void runOpMode() throws InterruptedException {
         RoadRunnerController RRctrl = new RoadRunnerController(hardwareMap,telemetry);
