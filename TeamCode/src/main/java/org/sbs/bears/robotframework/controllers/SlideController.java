@@ -371,10 +371,26 @@ public class SlideController {
                 blueDumperServo.setPosition(dumperPosition_EJECT);
                 redDumperServo.setPosition(dumperPosition_EJECT);
                 try {
-                    Thread.sleep(500); // 250
+                    Thread.sleep(200); // 250
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                blueDumperServo.setPosition(dumperPosition_CLOSED);
+                redDumperServo.setPosition(dumperPosition_CLOSED);
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                blueDumperServo.setPosition(dumperPosition_EJECT);
+                redDumperServo.setPosition(dumperPosition_EJECT);
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+
             }
             Log.d("SlideController", "Bucket in retract position");
             blueDumperServo.setPosition(dumperPosition_RETRACTING);
