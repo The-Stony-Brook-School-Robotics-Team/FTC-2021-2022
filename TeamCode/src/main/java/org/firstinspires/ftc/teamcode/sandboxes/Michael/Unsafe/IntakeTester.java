@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drive.SampleTankDrive;
 import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
 import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
@@ -33,12 +34,15 @@ public class IntakeTester extends OpMode {
             intakeControllerBlue.setState(IntakeState.BASE);
         }
         if(intakeControllerBlue.getState() == IntakeState.BASE){
-            intakeControllerBlue.checkIntake();
+            //intakeControllerBlue.checkIntake();
         }
         if(gamepad1.dpad_right){
             intakeControllerBlue.setState(IntakeState.DUMP);
         }
         drive.update();
+        telemetry.addData("distance", intakeControllerBlue.distanceSensor.getDistance(DistanceUnit.MM));
         telemetry.update();
     }
 }
+
+
