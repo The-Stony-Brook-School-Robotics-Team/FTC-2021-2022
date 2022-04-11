@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 @Config
 @TeleOp(name = "AutonomousTrajectoryTest")
 public class AutonomousTrajectoryTest extends LinearOpMode {
-    public static double PICK_UP_POSE_X = 53.0;
+    public static double PICK_UP_POSE_X = 61.0;
     public static double PICK_UP_POSE_Y = 70.0;
     public static double PICK_UP_FIX_HEADING_X = 15.0;
     public static double PICK_UP_FIX_HEADING_Y = 67.0;
