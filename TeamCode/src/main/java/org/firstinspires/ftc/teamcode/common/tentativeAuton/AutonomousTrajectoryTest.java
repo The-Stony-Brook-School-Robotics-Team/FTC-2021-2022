@@ -13,8 +13,8 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 @Config
 @TeleOp(name = "AutonomousTrajectoryTest")
 public class AutonomousTrajectoryTest extends LinearOpMode {
-    public static Vector2d PICK_UP_POSE = new Vector2d(53.0, 70.0);
-    public static Pose2d DEPOSIT_POSE = new Pose2d(7.15, 63.0, Math.toRadians(33.0));
+    public static Vector2d PICK_UP_POSE = new Vector2d(63.0, 70.0);
+    public static Pose2d DEPOSIT_POSE = new Pose2d(5.58,64.47, -Math.toRadians(30));
 
     AutonomousBrain brain;
     SampleMecanumDrive RRDrive;
