@@ -36,7 +36,7 @@ public class IntakeTester extends OpMode {
             intakeControllerBlue.setState(IntakeState.BASE);
         }
         if(intakeControllerBlue.getState() == IntakeState.BASE){
-            //intakeControllerBlue.checkIntake();
+            intakeControllerBlue.checkIntake();
         }
         if(gamepad1.dpad_right){
             intakeControllerBlue.setState(IntakeState.DUMP);
