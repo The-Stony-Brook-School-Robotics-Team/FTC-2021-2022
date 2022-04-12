@@ -128,10 +128,10 @@ public class AutonomousBrain {
         iniMaxVel = DriveConstantsMain.MAX_VEL;
         iniMaxAngAccel = DriveConstantsMain.MAX_ANG_ACCEL;
         iniMaxAngVel = DriveConstantsMain.MAX_ANG_VEL;
-        DriveConstantsMain.MAX_ACCEL = CustomMaxAccel;
-        DriveConstantsMain.MAX_VEL = CustomMaxVel;
-        DriveConstantsMain.MAX_ANG_ACCEL = CustomMaxAngAccel;
-        DriveConstantsMain.MAX_ANG_VEL = CustomMaxAngVel;
+//        DriveConstantsMain.MAX_ACCEL = CustomMaxAccel;
+//        DriveConstantsMain.MAX_VEL = CustomMaxVel;
+//        DriveConstantsMain.MAX_ANG_ACCEL = CustomMaxAngAccel;
+//        DriveConstantsMain.MAX_ANG_VEL = CustomMaxAngVel;
         majorState.set(MajorAutonomousState.STOPPED);
         minorState.set(MinorAutonomousState.STOPPED);
         qObjectInRobot.set(false);
