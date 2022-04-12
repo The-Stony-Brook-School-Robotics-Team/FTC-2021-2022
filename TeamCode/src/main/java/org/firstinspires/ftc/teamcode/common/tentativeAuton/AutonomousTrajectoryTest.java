@@ -48,7 +48,7 @@ public class AutonomousTrajectoryTest extends LinearOpMode {
         RRDrive.followTrajectory(
                 RRDrive.trajectoryBuilder(
                         RRDrive.getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(7.15, 63.0, Math.toRadians(33.0)))
+                        .lineToLinearHeading(new Pose2d(7.15, 63.0, Math.toRadians(-33.0)))
                         .build()
         );
 
@@ -66,7 +66,7 @@ public class AutonomousTrajectoryTest extends LinearOpMode {
                             RRDrive.getPoseEstimate())
                             .lineToSplineHeading(new Pose2d(DEPOSIT_FIX_HEADING_X, DEPOSIT_FIX_HEADING_Y, 0.0))
                             .splineToConstantHeading(new Vector2d(DEPOSIT_PASS_PIPE_X, DEPOSIT_PASS_PIPE_Y), Math.toRadians(-160.0))
-                            .splineToSplineHeading(new Pose2d(7.15, 63.0, Math.toRadians(33.0)), Math.toRadians(-175.0))
+                            .splineToSplineHeading(new Pose2d(7.15, 63.0, Math.toRadians(-33.0)), Math.toRadians(-175.0))
                             .build()
             );
         }
