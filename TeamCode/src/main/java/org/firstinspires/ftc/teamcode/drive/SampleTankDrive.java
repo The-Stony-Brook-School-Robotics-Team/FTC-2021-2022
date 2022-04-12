@@ -6,6 +6,7 @@
         import com.acmerobotics.roadrunner.control.PIDCoefficients;
         import com.acmerobotics.roadrunner.drive.DriveSignal;
         import com.acmerobotics.roadrunner.drive.TankDrive;
+        import com.acmerobotics.roadrunner.followers.RamseteFollower;
         import com.acmerobotics.roadrunner.followers.TankPIDVAFollower;
         import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
         import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -61,8 +62,8 @@ public class SampleTankDrive extends TankDrive {
 
     private TrajectorySequenceRunner trajectorySequenceRunner;
 
-    private static final TrajectoryVelocityConstraint VEL_CONSTRAINT = getVelocityConstraint(MAX_VEL, MAX_ANG_VEL, TRACK_WIDTH);
-    private static final TrajectoryAccelerationConstraint accelConstraint = getAccelerationConstraint(MAX_ACCEL);
+    public static final TrajectoryVelocityConstraint VEL_CONSTRAINT = getVelocityConstraint(MAX_VEL, MAX_ANG_VEL, TRACK_WIDTH);
+    public static final TrajectoryAccelerationConstraint accelConstraint = getAccelerationConstraint(MAX_ACCEL);
 
     private TrajectoryFollower follower;
 
@@ -74,8 +75,10 @@ public class SampleTankDrive extends TankDrive {
     public SampleTankDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH);
 
-        follower = new TankPIDVAFollower(AXIAL_PID, CROSS_TRACK_PID,
-                new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
+        follower = new RamseteFollower(2, .7);
+
+      /**  follower = new TankPIDVAFollower(AXIAL_PID, CROSS_TRACK_PID,
+                new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5); **/
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
