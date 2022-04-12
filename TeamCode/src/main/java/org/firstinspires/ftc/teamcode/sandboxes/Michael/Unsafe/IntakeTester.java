@@ -24,6 +24,8 @@ public class IntakeTester extends OpMode {
         slideController = new SlideController(hardwareMap, telemetry);
         intakeControllerBlue = new IntakeControllerBlue(hardwareMap, slideController.blueDumperServo, telemetry);
         intakeControllerRed = new IntakeControllerRed(hardwareMap, slideController.redDumperServo, telemetry);
+        intakeControllerBlue.setState(IntakeState.DUMP);
+        slideController.initTeleop();
     }
 
     @Override
@@ -34,10 +36,19 @@ public class IntakeTester extends OpMode {
             intakeControllerBlue.setState(IntakeState.BASE);
         }
         if(intakeControllerBlue.getState() == IntakeState.BASE){
-            //intakeControllerBlue.checkIntake();
+            intakeControllerBlue.checkIntake();
         }
         if(gamepad1.dpad_right){
             intakeControllerBlue.setState(IntakeState.DUMP);
+        }
+        if(gamepad1.a){
+            slideController.extendSlide();
+        }
+        if(gamepad1.b){
+            slideController.retractSlide();
+        }
+        if(gamepad1.x){
+            slideController.dropCube();
         }
         drive.update();
         telemetry.addData("distance", intakeControllerBlue.distanceSensor.getDistance(DistanceUnit.MM));

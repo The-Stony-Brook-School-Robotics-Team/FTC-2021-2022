@@ -9,8 +9,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.firstinspires.ftc.teamcode.common.tentativeAuton.AutonomousBrain;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe.AutomaticSlide;
 import org.sbs.bears.robotframework.Robot;
+import org.sbs.bears.robotframework.controllers.AutomaticSlide;
 import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
 import org.sbs.bears.robotframework.controllers.SlideController;
 import org.sbs.bears.robotframework.enums.IntakeState;
@@ -25,18 +25,18 @@ public class SlideExtTesting extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Robot robot = new Robot(hardwareMap,telemetry, AutonomousMode.TELEOP);
         SlideController slideCtrl = robot.getSlideCtrl();
-        //SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         IntakeControllerBlue bu = robot.getIntakeCtrlBlue();
          telemetry = new MultipleTelemetry(telemetry);
 
-        //drive.setPoseEstimate(AutonomousBrain.startPositionBlue);
+        drive.setPoseEstimate(AutonomousBrain.startPositionBlue);
         new Thread(()->{
             while(opModeIsActive() && !isStopRequested()) {
-               /* telemetry.addData("Slide Ext",slideCtrl.slideMotor.getCurrentPosition());
+                telemetry.addData("Slide Ext",slideCtrl.slideMotor.getCurrentPosition());
                 telemetry.addData("Slide Angle",slideCtrl.verticalServo.getPosition());
                 telemetry.addData("Slide params",slideCtrl.targetParams);
                 //telemetry.addData("Robot Distance",rrCtrl.distanceTo(AutomaticSlide.blueShippingHub));
-                telemetry.update();*/
+                telemetry.update();
 
             }
         }).start();
@@ -48,20 +48,20 @@ public class SlideExtTesting extends LinearOpMode {
         while(opModeIsActive() && !isStopRequested()) {
             telemetry.addData("Intake",bu.distanceSensor.getDistance(DistanceUnit.MM));
             telemetry.update();
-            /*drive.setWeightedDrivePower(
+            drive.setWeightedDrivePower(
                     new Pose2d(
                             -gamepad1.left_stick_x,
                             gamepad1.left_stick_y,
                             -gamepad1.right_stick_x
                     )
-            );*/
-           // drive.update();
+            );
+           drive.update();
             if (gamepad1.a && !qA)
             {
                 qA= true;
                 //drive.turn(AutomaticSlide.calculateTurnNeeded(drive.getPoseEstimate()));
                 //slideCtrl.extendSlideToTicks(AutomaticSlide.calculateSlidePosition(drive.getPoseEstimate()));
-                //slideCtrl.extendToTicksWithAngle(AutomaticSlide.calculateSlidePosition(drive.getPoseEstimate()),AutomaticSlide.calculateServoPosNeeded(drive.getPoseEstimate()));
+                slideCtrl.extendToTicksWithAngle(AutomaticSlide.calculateSlidePosition(drive.getPoseEstimate()),AutomaticSlide.calculateServoPosNeeded(drive.getPoseEstimate()));
 
             }
             else if(!gamepad1.a && qA)
