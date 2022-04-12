@@ -21,8 +21,8 @@ public class DriveConstantsMain {
     public static double kA = 0.0064;
     public static double kStatic = 0.03;
 
-    public static double MAX_VEL = 60;      //140
-    public static double MAX_ACCEL = 25;    // 60
+    public static double MAX_VEL = 80;
+    public static double MAX_ACCEL = 40;
     public static double MAX_ANG_VEL = 3;
     public static double MAX_ANG_ACCEL = 2;
 
