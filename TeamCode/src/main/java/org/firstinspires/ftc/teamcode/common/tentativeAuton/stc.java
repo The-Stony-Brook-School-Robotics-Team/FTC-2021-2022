@@ -40,12 +40,19 @@ public class stc extends LinearOpMode {
 
         waitForStart();
 
-        TrajectoryVelocityConstraint tvc = SampleMecanumDrive.getVelocityConstraint(MAX_VELOCITY,3,9.5);
+        TrajectoryVelocityConstraint tvc = SampleMecanumDrive.getVelocityConstraint(MAX_VELOCITY, 3, 9.5);
         TrajectoryAccelerationConstraint tac = SampleMecanumDrive.getAccelerationConstraint(MAX_ACCELERATION);
 
         RRDrive.followTrajectory(
                 RRDrive.trajectoryBuilder(
-                        RRDrive.getPoseEstimate(),tvc,tac)
+                        RRDrive.getPoseEstimate(), tvc, tac)
+                        .splineToLinearHeading(new Pose2d(-24.04958, 25.68238, 4.71904), Math.toRadians(270.0))
+                        .build()
+        );
+
+        RRDrive.followTrajectory(
+                RRDrive.trajectoryBuilder(
+                        RRDrive.getPoseEstimate(), tvc, tac)
                         .splineToSplineHeading(new Pose2d(31.51588944736609, 82.78047852985107, 1.5396784188674317), Math.toRadians(90.0))
                         .splineToSplineHeading(
                                 new Pose2d(14.448214975643213, 99.94967611888816, 3.1206004029256498),
@@ -72,7 +79,7 @@ public class stc extends LinearOpMode {
                                 Math.toRadians(180.0)
                         )
                         .splineToSplineHeading(
-                                new  Pose2d(-2.7420649476401002, 82.6480860639469, 4.667356119961884),
+                                new Pose2d(-2.7420649476401002, 82.6480860639469, 4.667356119961884),
                                 Math.toRadians(270.0)
                         )
                         .splineToSplineHeading(new Pose2d(14.0, 65.5, 0.0), Math.toRadians(0.0))
