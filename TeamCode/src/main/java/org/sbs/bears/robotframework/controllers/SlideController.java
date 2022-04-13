@@ -973,10 +973,10 @@ public class SlideController {
     public static double incrementDeltaRetractCaptsone = 0.002;
 
 
-    public static double dumperPosition_CLOSED = 0.37;//0.269;  // remeasured on jan 31 at 16h08
-    public static double dumperPosition_READY = 0.59;//0.55; // 0.69 .61
-    public static double dumperPosition_EJECT = 1;//0.74;
-    public static double dumperPosition_RETRACTING = 0.3;//0.05;
+    public static double dumperPosition_CLOSED = .328;//0.37;//0.269;  // remeasured on jan 31 at 16h08
+    public static double dumperPosition_READY = .448;//0.59;//0.55; // 0.69 .61
+    public static double dumperPosition_EJECT = .86;//1;//0.74;
+    public static double dumperPosition_RETRACTING = .448;//0.3;//0.05;
 
 
     int slideMotorPosition_PARKED = 5;
