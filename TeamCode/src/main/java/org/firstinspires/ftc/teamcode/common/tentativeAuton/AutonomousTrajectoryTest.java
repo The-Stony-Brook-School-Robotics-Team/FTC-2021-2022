@@ -33,7 +33,7 @@ public class AutonomousTrajectoryTest extends LinearOpMode {
                 if (RRDrive.isRunningFollowTrajectory)
                     Thread.sleep(20);
 
-                brain.RRctrl.getDrive().update();
+                brain.RRctrl.getDrive().updatePoseEstimate();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -44,10 +44,11 @@ public class AutonomousTrajectoryTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         brain = new AutonomousBrain(hardwareMap, telemetry, AutonomousMode.BlueStatesWarehouse);
-        updatePose.start();
         RRDrive = brain.RRctrl.getDrive();
 
         waitForStart();
+
+        updatePose.start();
         RRDrive.followTrajectory(
                 RRDrive.trajectoryBuilder(
                         RRDrive.getPoseEstimate())
@@ -85,7 +86,7 @@ public class AutonomousTrajectoryTest extends LinearOpMode {
                             .build()
             );
         }
-        
+
         updatePose.interrupt();
         brain.majorState.set(AutonomousBrain.MajorAutonomousState.FINISHED);
         brain.minorState.set(AutonomousBrain.MinorAutonomousState.STOPPED);

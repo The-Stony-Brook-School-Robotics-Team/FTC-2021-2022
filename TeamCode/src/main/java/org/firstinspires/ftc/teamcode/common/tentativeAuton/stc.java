@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.common.tentativeAuton;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
@@ -10,7 +11,8 @@ import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.controllers.RoadRunnerController;
 
-@TeleOp(name = "-stc inspire award celebration", group = "STC")
+@Config
+@TeleOp(name = "----stc inspire award celebration", group = "STC")
 public class stc extends LinearOpMode {
     public static double MAX_VELOCITY = 30;
     public static double MAX_ACCELERATION = 10;
