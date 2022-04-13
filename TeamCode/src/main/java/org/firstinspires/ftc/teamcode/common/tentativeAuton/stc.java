@@ -50,6 +50,8 @@ public class stc extends LinearOpMode {
                         .build()
         );
 
+        RRDrive.setPoseEstimate(new Pose2d(14.0, 65.5, 0.0));
+
         RRDrive.followTrajectory(
                 RRDrive.trajectoryBuilder(
                         RRDrive.getPoseEstimate(), tvc, tac)
