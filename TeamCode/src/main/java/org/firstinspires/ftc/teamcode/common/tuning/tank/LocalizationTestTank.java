@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.common.tuning.roadrunner;
+package org.firstinspires.ftc.teamcode.common.tuning.tank;
 
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.SampleTankDrive;
 
 /**
