@@ -31,22 +31,23 @@
         import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
         import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
         import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
+        import org.firstinspires.ftc.teamcode.util.Encoder;
         import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
 
         import java.util.Arrays;
         import java.util.List;
 
-        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.MAX_ACCEL;
-        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.MAX_ANG_ACCEL;
-        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.MAX_ANG_VEL;
-        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.MAX_VEL;
-        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.MOTOR_VELO_PID;
-        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.RUN_USING_ENCODER;
-        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.TRACK_WIDTH;
-        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.encoderTicksToInches;
-        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.kA;
-        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.kStatic;
-        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.kV;
+        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.MAX_ACCEL;
+        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.MAX_ANG_ACCEL;
+        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.MAX_ANG_VEL;
+        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.MAX_VEL;
+        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.MOTOR_VELO_PID;
+        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.RUN_USING_ENCODER;
+        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.TRACK_WIDTH;
+        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.encoderTicksToInches;
+        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.kA;
+        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.kStatic;
+        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.kV;
 
 /*
  * Simple tank drive hardware implementation for REV hardware.
@@ -143,8 +144,8 @@ public class SampleTankDrive extends TankDrive {
         }
 
         // TODO: reverse any motors using DcMotor.setDirection()
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));

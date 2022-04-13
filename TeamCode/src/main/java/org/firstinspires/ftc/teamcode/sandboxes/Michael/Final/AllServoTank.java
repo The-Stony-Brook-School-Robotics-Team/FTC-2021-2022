@@ -6,9 +6,25 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
-@TeleOp(name="B - ALL SERVOS TANK", group="Linear Opmode")
+@TeleOp(name="B - ALL SERVOS Tank", group="Linear Opmode")
 public class AllServoTank extends LinearOpMode {
-    private Servo dunker;
+
+
+    Servo blueTapeRotate; //.47
+    Servo blueTapeTilt; //.49
+    Servo blueTapeExtend;
+    Servo blueIntakeServo;
+
+
+
+    Servo redTapeRotate;
+    Servo redTapeTilt;
+    Servo redTapeExtend;
+    Servo redIntakeServo;
+    Servo claw;
+    Servo flip;
+
+
 
     private boolean qA = false;
     private boolean qUp = false;
@@ -24,10 +40,21 @@ public class AllServoTank extends LinearOpMode {
 
 
     public void runOpMode() throws InterruptedException {
-        dunker = hardwareMap.get(Servo.class, "dunk");
+        blueTapeRotate = hardwareMap.get(Servo.class, "btr");
+        blueTapeTilt = hardwareMap.get(Servo.class, "btt");
+        blueTapeExtend = hardwareMap.get(Servo.class, "bte");
+        blueIntakeServo = hardwareMap.get(Servo.class, "bi");
 
-        Servo[] servos = {dunker};
-        String[] servoNames = {"dunker"};
+        redTapeRotate = hardwareMap.get(Servo.class, "rtr") ;
+        redTapeTilt = hardwareMap.get(Servo.class, "rtt");
+        redTapeExtend = hardwareMap.get(Servo.class, "rte");
+        redIntakeServo = hardwareMap.get(Servo.class, "ri");
+        claw = hardwareMap.get(Servo.class, "cl");
+        flip = hardwareMap.get(Servo.class, "fl");
+
+
+        Servo[] servos = {blueTapeRotate, blueTapeTilt, blueTapeExtend, blueIntakeServo, redTapeRotate, redTapeTilt, redTapeExtend, claw, flip};
+        String[] servoNames = {"blue tape rotate", "blue tape tilt ", "blue tape extend ", "blue intake", "red tape rotate", "red tape tilt", "red tape extend", "claw", "flip"};
         place = servos[0];
         waitForStart();
 
