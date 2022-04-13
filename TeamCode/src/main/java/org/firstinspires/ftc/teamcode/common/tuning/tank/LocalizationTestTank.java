@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.drive.SampleTankDrive;
 
@@ -20,8 +21,11 @@ public class LocalizationTestTank extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         SampleTankDrive drive = new SampleTankDrive(hardwareMap);
-
+        Servo flip = hardwareMap.get(Servo.class, "fl");
         drive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        flip.setPosition(.85);
+
+        drive.setPoseEstimate(new Pose2d(14.0, 65.5, 0));
 
         waitForStart();
         while (!isStopRequested()) {

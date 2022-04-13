@@ -13,9 +13,9 @@ public class DriveConstantsTank {
     public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(5, 0, 0,
             0);
 
-    public static double WHEEL_RADIUS = 1.889765; // in
+    public static double WHEEL_RADIUS = 1.889765;
     //24/16 ?
-    public static double GEAR_RATIO = 24 / 16;
+    public static double GEAR_RATIO = 1.5;
     public static double TRACK_WIDTH = 10.3;
 
     public static double kV = 0;
