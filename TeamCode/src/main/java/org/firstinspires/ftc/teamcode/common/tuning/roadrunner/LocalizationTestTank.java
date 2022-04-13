@@ -22,12 +22,12 @@ public class LocalizationTestTank extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         SampleTankDrive drive = new SampleTankDrive(hardwareMap);
 
-        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        drive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         waitForStart();
-
         while (!isStopRequested()) {
-            drive.setMotorPowers(gamepad1.left_stick_y -gamepad1.right_stick_x, gamepad1.left_stick_y + gamepad1.right_stick_x);
+           // drive.setMotorPowers(gamepad1.left_stick_y -gamepad1.right_stick_x, gamepad1.left_stick_y + gamepad1.right_stick_x);
+            drive.setMotorPowers(-gamepad1.left_stick_y +gamepad1.right_stick_x, -gamepad1.left_stick_y - gamepad1.right_stick_x);
 
             drive.update();
 
