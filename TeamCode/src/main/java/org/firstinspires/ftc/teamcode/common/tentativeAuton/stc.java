@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.controllers.RoadRunnerController;
 
-@TeleOp(name = "----stc inspire award celebration", group = "STC")
+@TeleOp(name = "-stc inspire award celebration", group = "STC")
 public class stc extends LinearOpMode {
     public static double MAX_VELOCITY = 30;
     public static double MAX_ACCELERATION = 10;
