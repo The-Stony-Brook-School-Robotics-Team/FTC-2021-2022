@@ -53,8 +53,8 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     /* public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(45, 5, 2);
      public static PIDCoefficients HEADING_PID = new PIDCoefficients(65, 6, 5);
-     */public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(65, 10, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(10, 1, 4);
+     */public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(40, 7, 4);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(50, 10, 1);
     public static double FOLLOWER_CORRECTION_X = 0.1;
     public static double FOLLOWER_CORRECTION_Y = 0.1;
     public static double FOLLOWER_CORRECTION_HEADING = 3;

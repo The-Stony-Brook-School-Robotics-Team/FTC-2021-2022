@@ -24,22 +24,23 @@ public class IntakeTester extends OpMode {
         slideController = new SlideController(hardwareMap, telemetry);
         intakeControllerBlue = new IntakeControllerBlue(hardwareMap, slideController.blueDumperServo, telemetry);
         intakeControllerRed = new IntakeControllerRed(hardwareMap, slideController.redDumperServo, telemetry);
-        intakeControllerBlue.setState(IntakeState.DUMP);
+        intakeControllerRed.setState(IntakeState.DUMP);
         slideController.initTeleop();
     }
 
     @Override
     public void loop() {
-        drive.setMotorPowers(-gamepad1.left_stick_y + gamepad1.right_stick_x, -gamepad1.left_stick_y - gamepad1.right_stick_x);
+       //drive.setMotorPowers(-gamepad1.left_stick_y + gamepad1.right_stick_x, -gamepad1.left_stick_y - gamepad1.right_stick_x);
+        drive.setMotorPowers(gamepad1.left_stick_y, gamepad1.right_stick_y);
 
         if(gamepad1.dpad_left){
-            intakeControllerBlue.setState(IntakeState.BASE);
+            intakeControllerRed.setState(IntakeState.BASE);
         }
         if(intakeControllerBlue.getState() == IntakeState.BASE){
-            intakeControllerBlue.checkIntake();
+            intakeControllerRed.checkIntake();
         }
         if(gamepad1.dpad_right){
-            intakeControllerBlue.setState(IntakeState.DUMP);
+            intakeControllerRed.setState(IntakeState.DUMP);
         }
         if(gamepad1.a){
             slideController.extendSlide();

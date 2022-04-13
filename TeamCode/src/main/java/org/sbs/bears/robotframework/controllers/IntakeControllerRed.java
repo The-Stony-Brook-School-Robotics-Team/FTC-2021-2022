@@ -41,9 +41,9 @@ public class IntakeControllerRed implements IntakeController {
     public double timeToPushSweeper = 230; //ms 400
     public double timeToResetSweeper = 440;
 
-    private double sweeperOut = .725;
-    private static double sweeperIn = 1;
-    public static double stopperClosed = 0.305; //TODO //.3
+    private double sweeperOut = .61; //.635; //.725;
+    private static double sweeperIn =  .91; //1;
+    public static double stopperClosed = .425; //0.305; //TODO //.3
     private double stopperOpen = 0.1; //TODO
     private boolean qIsObjectInPayload = false;
 

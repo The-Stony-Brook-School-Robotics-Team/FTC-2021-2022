@@ -12,12 +12,12 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 @Config
 @TeleOp(name = "------------AutonomousTrajectoryTest")
 public class AutonomousTrajectoryTest extends LinearOpMode {
-    public static double PICK_UP_POSE_X = 61.0;
+    public static double PICK_UP_POSE_X = 55.0;
     public static double PICK_UP_POSE_Y = 66.0;
     public static double DEPOSIT_POSE_X = 7.15;
     public static double DEPOSIT_POSE_Y = 61.0;
-    public static double PICK_UP_FIX_HEADING_X = 15.0;
-    public static double PICK_UP_FIX_HEADING_Y = 65.0;
+    public static double PICK_UP_FIX_HEADING_X = 14.0;
+    public static double PICK_UP_FIX_HEADING_Y = 66.5;
     public static double DEPOSIT_FIX_HEADING_X = 40.0;
     public static double DEPOSIT_FIX_HEADING_Y = 67.0;
     public static double DEPOSIT_PASS_PIPE_X = 18.0;
@@ -62,7 +62,7 @@ public class AutonomousTrajectoryTest extends LinearOpMode {
                             RRDrive.getPoseEstimate())
                             .lineToSplineHeading(new Pose2d(PICK_UP_FIX_HEADING_X, PICK_UP_FIX_HEADING_Y, 0.0))
                             .splineToConstantHeading(new Vector2d(PICK_UP_POSE_X, PICK_UP_POSE_Y), 0.0)
-                            .addSpatialMarker(new Vector2d(35.0,70.0),()-> RRDrive.setPoseEstimate(new Pose2d(RRDrive.getPoseEstimate().getX(),65.5,RRDrive.getPoseEstimate().getHeading())))
+                            .addSpatialMarker(new Vector2d(40.0, 70.0), () -> RRDrive.setPoseEstimate(new Pose2d(RRDrive.getPoseEstimate().getX(), 65.5, RRDrive.getPoseEstimate().getHeading())))
                             .build()
             );
             Thread.sleep(SLEEP_TIME);
@@ -72,10 +72,20 @@ public class AutonomousTrajectoryTest extends LinearOpMode {
                             .lineToSplineHeading(new Pose2d(DEPOSIT_FIX_HEADING_X, DEPOSIT_FIX_HEADING_Y, 0.0))
                             .splineToConstantHeading(new Vector2d(DEPOSIT_PASS_PIPE_X, DEPOSIT_PASS_PIPE_Y), Math.toRadians(-160.0))
                             .splineToSplineHeading(new Pose2d(DEPOSIT_POSE_X, DEPOSIT_POSE_Y, Math.toRadians(-33.0)), Math.toRadians(-175.0))
+                            .addSpatialMarker(new Vector2d(35.0, 70.0), () -> RRDrive.setPoseEstimate(new Pose2d(RRDrive.getPoseEstimate().getX(), 65.5, RRDrive.getPoseEstimate().getHeading())))
                             .build()
             );
         }
 
+        if (RRDrive.getPoseEstimate().getX() < 40) {
+            RRDrive.followTrajectory(
+                    RRDrive.trajectoryBuilder(
+                            RRDrive.getPoseEstimate())
+                            .lineToLinearHeading(new Pose2d(14, 65.5, 0.0))
+                            .build()
+            );
+        }
+        
         updatePose.interrupt();
         brain.majorState.set(AutonomousBrain.MajorAutonomousState.FINISHED);
         brain.minorState.set(AutonomousBrain.MinorAutonomousState.STOPPED);

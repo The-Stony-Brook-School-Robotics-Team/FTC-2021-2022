@@ -5,10 +5,11 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.SampleTankDrive;
-
+@TeleOp(name="tank trajectory and driving")
 public class TankTrajectoryTest extends OpMode {
 
     private SampleTankDrive drive;
@@ -21,7 +22,7 @@ public class TankTrajectoryTest extends OpMode {
         drive.setPoseEstimate(new Pose2d(0, 0, 0));
         testTraj = new TrajectoryBuilder(drive.getPoseEstimate(), SampleTankDrive.VEL_CONSTRAINT, SampleTankDrive.accelConstraint)
                 .splineTo(new Vector2d(15, 15), Math.toRadians(0))
-                .build();
+               .build();
     }
 
     @Override
@@ -30,5 +31,6 @@ public class TankTrajectoryTest extends OpMode {
         if(gamepad1.a){
             drive.followTrajectory(testTraj);
         }
+        drive.update();
     }
 }
