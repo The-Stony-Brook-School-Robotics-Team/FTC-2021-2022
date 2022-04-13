@@ -56,7 +56,6 @@ public class AutonomousBlueFullNew extends LinearOpMode {
         stop();
     }
 
-
     Thread autonBrainExecutor = new Thread(()->{
         while(opModeIsActive() && !isStopRequested()){
             if(!masterQContinue.get()) {break;}
