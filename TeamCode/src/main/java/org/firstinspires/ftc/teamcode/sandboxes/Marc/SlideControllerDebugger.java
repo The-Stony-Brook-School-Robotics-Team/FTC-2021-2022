@@ -110,7 +110,7 @@ public class SlideControllerDebugger extends LinearOpMode
                 pA = false;
             }
             if(gamepad1.b && !pB) {
-                slideController.targetParams = SlideTarget.TOP_DEPOSIT;
+                slideController.targetParams = SlideTarget.SHARED_THREE;
                 slideController.extendSlide();
                 pB = true;
             } else if(!gamepad1.b && pB) {

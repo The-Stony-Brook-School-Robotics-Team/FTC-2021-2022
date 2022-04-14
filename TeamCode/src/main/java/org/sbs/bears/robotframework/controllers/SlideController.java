@@ -454,6 +454,10 @@ public class SlideController {
                 targetPosFinal = slideMotorPosition_SHARED;
                 verticalServoTargetPos = vertServoPosition_SHARED_TWO;
                 break;
+            case SHARED_THREE:
+                targetPosFinal = slideMotorPosition_SHARED;
+                verticalServoTargetPos = vertServoPosition_SHARED_THREE;
+                break;
             case SHARED_ONE:
                 targetPosFinal = slideMotorPosition_SHARED;
                 verticalServoTargetPos = vertServoPosition_SHARED_ONE;
@@ -953,7 +957,7 @@ public class SlideController {
     public static double vertServoPosition_CUSTOM = .6;//11;//0.06;
     public static double vertServoPosition_SHARED_TWO = .447;//11;//0.06;
     public static double vertServoPosition_SHARED_ONE = .227;//11;//0.06;
-    public static double vertServoPosition_SHARED_THREE = .667;//11;//0.06;
+    public static double vertServoPosition_SHARED_THREE = .59;//11;//0.06;
     public static double vertServoPosition_GRAB_CAP = 0.09; //.09
 
 
@@ -974,10 +978,10 @@ public class SlideController {
     public static double incrementDeltaRetractCaptsone = 0.002;
 
 
-    public static double dumperPosition_CLOSED = .328;//0.37;//0.269;  // remeasured on jan 31 at 16h08
-    public static double dumperPosition_READY = .448;//0.59;//0.55; // 0.69 .61
-    public static double dumperPosition_EJECT = .86;//1;//0.74;
-    public static double dumperPosition_RETRACTING = .448;//0.3;//0.05;
+    public static double dumperPosition_CLOSED = 0.333;//0.37;//0.269;  // remeasured on jan 31 at 16h08
+    public static double dumperPosition_READY = .61;//0.59;//0.55; // 0.69 .61
+    public static double dumperPosition_EJECT = 1;//1;//0.74;
+    public static double dumperPosition_RETRACTING = .37;//0.3;//0.05;
 
 
     int slideMotorPosition_PARKED = 5;
@@ -993,7 +997,7 @@ public class SlideController {
     public static int slideMotorPosition_ONE_CAROUSEL = 1665;
     public static int slideMotorPosition_CAP_FROM_CAROUSEL = 1476; // TODO
     public static int slideMotorPosition_CAP_FROM_CAROUSEL_RET = 1442; // TODO
-    public static int slideMotorPosition_SHARED = 1965;//2030; // TODO
+    public static int slideMotorPosition_SHARED = 1930;//2030; // TODO
     public static int slideMotorPosition_CUSTOM = 600; // TODO
     public static int slideMotorPosition_FULL = 2050;
     public static int slideMotorPosition_CAP_ON_GROUND = 473;
