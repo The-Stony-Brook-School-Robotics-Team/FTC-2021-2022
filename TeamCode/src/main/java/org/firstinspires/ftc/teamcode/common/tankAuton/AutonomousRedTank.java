@@ -11,8 +11,8 @@ import org.sbs.bears.robotframework.controllers.OpenCVController;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-@Autonomous (name = "A - Auton (Blue Tank)")
-public class AutonomousBlueTank extends LinearOpMode {
+@Autonomous (name = "A - Auton (Red Tank)")
+public class AutonomousRedTank extends LinearOpMode {
     AutonomousBrain brain;
     boolean qA = false;
     boolean qContinue = false;
@@ -24,8 +24,8 @@ public class AutonomousBlueTank extends LinearOpMode {
     {
         masterQContinue.set(true);
         OpenCVController.isDuck = false;
-        brain = new AutonomousBrain(hardwareMap,telemetry, AutonomousMode.BlueStatesWarehouse);
-        Log.d("Auton BFT","Init Complete");
+        brain = new AutonomousBrain(hardwareMap,telemetry, AutonomousMode.RedStatesWarehouse);
+        Log.d("Auton RFT","Init Complete");
         msStuckDetectLoop = Integer.MAX_VALUE;
         gamepad = gamepad1;
 
