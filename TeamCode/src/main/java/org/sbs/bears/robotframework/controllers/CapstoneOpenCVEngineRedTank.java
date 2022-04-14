@@ -23,12 +23,12 @@ import java.util.ArrayList;
  * @version 5.1
  */
 @Config
-public class CapstoneOpenCVEngineBlueTank extends DuckOpenCVEngine {
+public class CapstoneOpenCVEngineRedTank extends DuckOpenCVEngine {
     // MARK - Class Variables
 
-    public CapstoneOpenCVEngineBlueTank() {
+    public CapstoneOpenCVEngineRedTank() {
         super();
-        Log.d("BlueTankOpenCVPipeline","Init req");
+        Log.d("RedTankOpenCVPipeline","Init req");
     }
 
     /**

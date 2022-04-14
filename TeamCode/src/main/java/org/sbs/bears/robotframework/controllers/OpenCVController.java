@@ -58,6 +58,12 @@ public class OpenCVController {
                 case RedStatesDuckSimpleWarehouse:
                     engine = new CapstoneOpenCVEngineRedSimple();
                     break;
+                case BlueTankFULL:
+                    engine = new CapstoneOpenCVEngineBlueTank();
+                    break;
+                case RedTankFULL:
+                    engine = new CapstoneOpenCVEngineRedTank();
+                    break;
                 default:
                     engine = new CapstoneOpenCVEngineRedFull();
             }

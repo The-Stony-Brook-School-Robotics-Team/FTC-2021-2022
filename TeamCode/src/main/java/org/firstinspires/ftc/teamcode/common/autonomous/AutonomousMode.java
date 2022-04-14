@@ -9,5 +9,7 @@ public enum AutonomousMode {
     RedStatesDuckSimple,
     RedStatesDuckSimpleWarehouse,
     BlueStatesDuckSimpleWarehouse,
+    BlueTankFULL,
+    RedTankFULL,
     TELEOP
 }

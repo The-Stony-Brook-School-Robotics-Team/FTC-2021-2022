@@ -140,8 +140,8 @@ public class AutonomousBrain { // TANK
         this.duckCtrl = robot.getDuckCtrl();
         this.leds = hardwareMap.get(RevBlinkinLedDriver.class, "rgb");
         this.RRctrl = new SampleTankDrive(hardwareMap);
-        isBlue = (mode == AutonomousMode.BlueStatesWarehouse);
-        isSpline = (mode == AutonomousMode.BlueStatesSpline || mode == AutonomousMode.RedStatesSpline);
+        isBlue = (mode == AutonomousMode.BlueTankFULL);
+        isSpline = false; // never called with this
         if (isBlue) {
             RRctrl.setPoseEstimate(startPositionBlue);
         } else {

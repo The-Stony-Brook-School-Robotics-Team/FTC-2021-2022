@@ -24,7 +24,7 @@ public class AutonomousRedTank extends LinearOpMode {
     {
         masterQContinue.set(true);
         OpenCVController.isDuck = false;
-        brain = new AutonomousBrain(hardwareMap,telemetry, AutonomousMode.RedStatesWarehouse);
+        brain = new AutonomousBrain(hardwareMap,telemetry, AutonomousMode.RedTankFULL);
         Log.d("Auton RFT","Init Complete");
         msStuckDetectLoop = Integer.MAX_VALUE;
         gamepad = gamepad1;

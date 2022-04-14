@@ -24,7 +24,7 @@ public class AutonomousBlueTank extends LinearOpMode {
     {
         masterQContinue.set(true);
         OpenCVController.isDuck = false;
-        brain = new AutonomousBrain(hardwareMap,telemetry, AutonomousMode.BlueStatesWarehouse);
+        brain = new AutonomousBrain(hardwareMap,telemetry, AutonomousMode.BlueTankFULL);
         Log.d("Auton BFT","Init Complete");
         msStuckDetectLoop = Integer.MAX_VALUE;
         gamepad = gamepad1;
