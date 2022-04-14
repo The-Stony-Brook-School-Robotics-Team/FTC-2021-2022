@@ -374,6 +374,7 @@ public class SlideController {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                incrementEncoderPosition(-100,false);
 
             }
             Log.d("SlideController", "Bucket in retract position");
