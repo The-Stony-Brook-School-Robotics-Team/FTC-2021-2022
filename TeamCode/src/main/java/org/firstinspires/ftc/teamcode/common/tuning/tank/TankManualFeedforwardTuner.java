@@ -66,7 +66,7 @@ public class TankManualFeedforwardTuner extends LinearOpMode {
     public void runOpMode() {
         if (RUN_USING_ENCODER) {
             ///RobotLog.setGlobalErrorMsg("Feedforward constants usually don't need to be tuned " +
-                    //"when using the built-in drive motor velocity PID.");
+            //"when using the built-in drive motor velocity PID.");
         }
 
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
@@ -111,8 +111,7 @@ public class TankManualFeedforwardTuner extends LinearOpMode {
 
                     MotionState motionState = activeProfile.get(profileTime);
                     double targetPower = Kinematics.calculateMotorFeedforward(motionState.getV(), motionState.getA(), kV, kA, kStatic);
-
-                    drive.setDrivePower(new Pose2d(targetPower, 0, 0));
+                    drive.setMotorPowers(targetPower, -targetPower);
                     drive.updatePoseEstimate();
 
                     Pose2d poseVelo = Objects.requireNonNull(drive.getPoseVelocity(), "poseVelocity() must not be null. Ensure that the getWheelVelocities() method has been overridden in your localizer.");
@@ -131,7 +130,7 @@ public class TankManualFeedforwardTuner extends LinearOpMode {
                         profileStart = clock.seconds();
                     }
 
-                    drive.setMotorPowers(-gamepad1.left_stick_y +gamepad1.right_stick_x, -gamepad1.left_stick_y - gamepad1.right_stick_x);
+                    drive.setMotorPowers(-gamepad1.left_stick_y + gamepad1.right_stick_x, -gamepad1.left_stick_y - gamepad1.right_stick_x);
                     break;
             }
 

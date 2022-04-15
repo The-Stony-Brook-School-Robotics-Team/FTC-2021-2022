@@ -1,63 +1,63 @@
- package org.firstinspires.ftc.teamcode.drive;
+package org.firstinspires.ftc.teamcode.drive;
 
-        import androidx.annotation.NonNull;
+import androidx.annotation.NonNull;
 
-        import com.acmerobotics.dashboard.config.Config;
-        import com.acmerobotics.roadrunner.control.PIDCoefficients;
-        import com.acmerobotics.roadrunner.drive.DriveSignal;
-        import com.acmerobotics.roadrunner.drive.TankDrive;
-        import com.acmerobotics.roadrunner.followers.RamseteFollower;
-        import com.acmerobotics.roadrunner.followers.TankPIDVAFollower;
-        import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
-        import com.acmerobotics.roadrunner.geometry.Pose2d;
-        import com.acmerobotics.roadrunner.trajectory.Trajectory;
-        import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
-        import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
-        import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
-        import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
-        import com.acmerobotics.roadrunner.trajectory.constraints.TankVelocityConstraint;
-        import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
-        import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
-        import com.qualcomm.hardware.bosch.BNO055IMU;
-        import com.qualcomm.hardware.lynx.LynxModule;
-        import com.qualcomm.robotcore.hardware.DcMotor;
-        import com.qualcomm.robotcore.hardware.DcMotorEx;
-        import com.qualcomm.robotcore.hardware.DcMotorSimple;
-        import com.qualcomm.robotcore.hardware.HardwareMap;
-        import com.qualcomm.robotcore.hardware.PIDFCoefficients;
-        import com.qualcomm.robotcore.hardware.VoltageSensor;
-        import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.acmerobotics.roadrunner.drive.DriveSignal;
+import com.acmerobotics.roadrunner.drive.TankDrive;
+import com.acmerobotics.roadrunner.followers.RamseteFollower;
+import com.acmerobotics.roadrunner.followers.TankPIDVAFollower;
+import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
+import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.TankVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
+import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-        import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-        import org.firstinspires.ftc.teamcode.archive.StandardTrackingWheelLocalizer1;
-        import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-        import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
-        import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
-        import org.firstinspires.ftc.teamcode.util.AxesSigns;
-        import org.firstinspires.ftc.teamcode.util.BNO055IMUUtil;
-        import org.firstinspires.ftc.teamcode.util.Encoder;
-        import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.teamcode.archive.StandardTrackingWheelLocalizer1;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
+import org.firstinspires.ftc.teamcode.util.AxesSigns;
+import org.firstinspires.ftc.teamcode.util.BNO055IMUUtil;
+import org.firstinspires.ftc.teamcode.util.Encoder;
+import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
 
-        import java.util.Arrays;
-        import java.util.List;
+import java.util.Arrays;
+import java.util.List;
 
-        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.MAX_ACCEL;
-        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.MAX_ANG_ACCEL;
-        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.MAX_ANG_VEL;
-        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.MAX_VEL;
-        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.MOTOR_VELO_PID;
-        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.RUN_USING_ENCODER;
-        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.TRACK_WIDTH;
-        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.encoderTicksToInches;
-        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.kA;
-        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.kStatic;
-        import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.kV;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.MAX_ANG_ACCEL;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.MAX_ANG_VEL;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.MAX_VEL;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.MOTOR_VELO_PID;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.TRACK_WIDTH;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.kA;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.kStatic;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.kV;
 
 /*
  * Simple tank drive hardware implementation for REV hardware.
  */
 @Config
-public class                                      SampleTankDrive extends TankDrive {
+public class SampleTankDrive extends TankDrive {
     public static PIDCoefficients AXIAL_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients CROSS_TRACK_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
@@ -82,8 +82,8 @@ public class                                      SampleTankDrive extends TankDr
 
         follower = new RamseteFollower(2, .7);
 
-      /**  follower = new TankPIDVAFollower(AXIAL_PID, CROSS_TRACK_PID,
-                new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5); **/
+        /**  follower = new TankPIDVAFollower(AXIAL_PID, CROSS_TRACK_PID,
+         new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5); **/
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -119,8 +119,8 @@ public class                                      SampleTankDrive extends TankDr
         // and the placement of the dot/orientation from https://docs.revrobotics.com/rev-control-system/control-system-overview/dimensions#imu-location
         //
         // For example, if +Y in this diagram faces downwards, you would use AxisDirection.NEG_Y.
-         //BNO055IMUUtil.remapZAxis(imu, AxisDirection.NEG_Y);
-         //BNO055IMUUtil.remapAxes(imu, AxesOrder., AxesSigns.PNP);
+        //BNO055IMUUtil.remapZAxis(imu, AxisDirection.NEG_Y);
+        //BNO055IMUUtil.remapAxes(imu, AxesOrder., AxesSigns.PNP);
 
         // add/remove motors depending on your robot (e.g., 6WD)
         DcMotorEx leftFront = hardwareMap.get(DcMotorEx.class, "lf");
@@ -131,8 +131,6 @@ public class                                      SampleTankDrive extends TankDr
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
         leftMotors = Arrays.asList(leftFront, leftRear);
         rightMotors = Arrays.asList(rightFront, rightRear);
-
-
 
         for (DcMotorEx motor : motors) {
             MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
@@ -151,17 +149,13 @@ public class                                      SampleTankDrive extends TankDr
         }
 
         // TODO: reverse any motors using DcMotor.setDirection()
-      //  rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        //rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
         rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
         rightRear.setDirection(DcMotorSimple.Direction.FORWARD);
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
 
-
         // TODO: if desired, use setLocalizer() to change the localization method
-       // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
-
+        // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
 
         //trajectorySequenceRunnerCancelable = new TrajectorySequenceRunnerCancelable(follower, HEADING_PID);
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
@@ -315,12 +309,14 @@ public class                                      SampleTankDrive extends TankDr
             rightMotor.setPower(v1);
         }
     }
+
     public void setMotorPowers(double lf, double lb, double rb, double rf) {
         motors.get(0).setPower(lf);
         motors.get(1).setPower(lb);
         motors.get(2).setPower(rb);
         motors.get(3).setPower(rf);
     }
+
     @Override
     public double getRawExternalHeading() {
         return imu.getAngularOrientation().firstAngle;

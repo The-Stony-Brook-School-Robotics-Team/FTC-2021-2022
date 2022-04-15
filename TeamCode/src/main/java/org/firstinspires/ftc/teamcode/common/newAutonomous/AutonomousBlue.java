@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 
-@Autonomous(name = "A - Auton (Blue Main William)")
+@Autonomous(name = "----- Autonomous Blue By William Lord Tao")
 public class AutonomousBlue extends LinearOpMode {
     AutonomousClient autonomousClient;
     private int counter = 0;
@@ -21,6 +21,11 @@ public class AutonomousBlue extends LinearOpMode {
         Thread localizeThread = new Thread(() -> {
             while (true) {
                 try {
+                    if (!opModeIsActive()) {
+                        autonomousClient.stopRoadRunner();
+                        autonomousClient.needToStopAllThreads = true;
+                        return;
+                    }
                     if (autonomousClient.roadRunnerDrive.isRunningFollowTrajectory)
                         Thread.sleep(100);
                     else {
@@ -34,20 +39,20 @@ public class AutonomousBlue extends LinearOpMode {
             }
         });
 
-        localizeThread.start();
-
         waitForStart();
 
+        localizeThread.start();
         AutonomousTimer.startTimer();
 
         autonomousClient.readCamera();
         autonomousClient.getInitialBlockDone();
+        counter++;
 
         while (opModeIsActive() && AutonomousTimer.canContinue(AutonomousTimer.CurrentState.DepositToPickUp)) {
             autonomousClient.ledDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.ORANGE);
             autonomousClient.pickUp();
             autonomousClient.deposit();
-            // counter++;
+            counter++;
         }
 
         if (!AutonomousTimer.canContinue()) {
