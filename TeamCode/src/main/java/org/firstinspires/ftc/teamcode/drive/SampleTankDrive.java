@@ -28,9 +28,13 @@
         import com.qualcomm.robotcore.hardware.VoltageSensor;
         import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+        import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+        import org.firstinspires.ftc.teamcode.archive.StandardTrackingWheelLocalizer1;
         import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
         import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
         import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
+        import org.firstinspires.ftc.teamcode.util.AxesSigns;
+        import org.firstinspires.ftc.teamcode.util.BNO055IMUUtil;
         import org.firstinspires.ftc.teamcode.util.Encoder;
         import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
 
@@ -53,10 +57,10 @@
  * Simple tank drive hardware implementation for REV hardware.
  */
 @Config
-public class SampleTankDrive extends TankDrive {
+public class                                      SampleTankDrive extends TankDrive {
     public static PIDCoefficients AXIAL_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients CROSS_TRACK_PID = new PIDCoefficients(0, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(10, 0, 1);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
 
     public static double VX_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
@@ -115,7 +119,8 @@ public class SampleTankDrive extends TankDrive {
         // and the placement of the dot/orientation from https://docs.revrobotics.com/rev-control-system/control-system-overview/dimensions#imu-location
         //
         // For example, if +Y in this diagram faces downwards, you would use AxisDirection.NEG_Y.
-        // BNO055IMUUtil.remapZAxis(imu, AxisDirection.NEG_Y);
+         //BNO055IMUUtil.remapZAxis(imu, AxisDirection.NEG_Y);
+         //BNO055IMUUtil.remapAxes(imu, AxesOrder., AxesSigns.PNP);
 
         // add/remove motors depending on your robot (e.g., 6WD)
         DcMotorEx leftFront = hardwareMap.get(DcMotorEx.class, "lf");
@@ -126,6 +131,8 @@ public class SampleTankDrive extends TankDrive {
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
         leftMotors = Arrays.asList(leftFront, leftRear);
         rightMotors = Arrays.asList(rightFront, rightRear);
+
+
 
         for (DcMotorEx motor : motors) {
             MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
@@ -151,10 +158,12 @@ public class SampleTankDrive extends TankDrive {
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
 
+
         // TODO: if desired, use setLocalizer() to change the localization method
        // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
 
 
+        //trajectorySequenceRunnerCancelable = new TrajectorySequenceRunnerCancelable(follower, HEADING_PID);
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
     }
 
@@ -306,7 +315,12 @@ public class SampleTankDrive extends TankDrive {
             rightMotor.setPower(v1);
         }
     }
-
+    public void setMotorPowers(double lf, double lb, double rb, double rf) {
+        motors.get(0).setPower(lf);
+        motors.get(1).setPower(lb);
+        motors.get(2).setPower(rb);
+        motors.get(3).setPower(rf);
+    }
     @Override
     public double getRawExternalHeading() {
         return imu.getAngularOrientation().firstAngle;
@@ -331,5 +345,9 @@ public class SampleTankDrive extends TankDrive {
 
     public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel) {
         return new ProfileAccelerationConstraint(maxAccel);
+    }
+
+    public void breakFollowing() {
+        trajectorySequenceRunner.cancelTraj();
     }
 }

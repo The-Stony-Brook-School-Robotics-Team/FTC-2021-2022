@@ -25,12 +25,13 @@ public class LocalizationTestTank extends LinearOpMode {
         drive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         flip.setPosition(.85);
 
-        drive.setPoseEstimate(new Pose2d(14.0, 65.5, 0));
-
         waitForStart();
+
+
         while (!isStopRequested()) {
-           // drive.setMotorPowers(gamepad1.left_stick_y -gamepad1.right_stick_x, gamepad1.left_stick_y + gamepad1.right_stick_x);
-            drive.setMotorPowers(-gamepad1.left_stick_y +gamepad1.right_stick_x, -gamepad1.left_stick_y - gamepad1.right_stick_x);
+           //drive.setMotorPowers(gamepad1.left_stick_y -gamepad1.right_stick_x, gamepad1.left_stick_y + gamepad1.right_stick_x);
+            drive.setMotorPowers(gamepad1.right_stick_x -gamepad1.left_stick_x, gamepad1.right_stick_x + gamepad1.left_stick_x);
+            //drive.setMotorPowers(-gamepad1.left_stick_x +gamepad1.right_stick_x, -gamepad1.left_stick_x - gamepad1.right_stick_x);
 
             drive.update();
 

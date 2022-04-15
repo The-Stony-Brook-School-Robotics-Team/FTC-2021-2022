@@ -18,14 +18,14 @@ public class DriveConstantsTank {
     public static double GEAR_RATIO = 1.5;
     public static double TRACK_WIDTH = 10.3;
 
-    public static double kV = 0;
-    public static double kA = 0;
-    public static double kStatic = 0;
+    public static double kV = 0.0138;
+    public static double kA = 0.0044;
+    public static double kStatic = 0.012;
 
-    public static double MAX_VEL = 80;
-    public static double MAX_ACCEL = 40;
-    public static double MAX_ANG_VEL = 3;
-    public static double MAX_ANG_ACCEL = 2;
+    public static double MAX_VEL = 55;
+    public static double MAX_ACCEL = 55;
+    public static double MAX_ANG_VEL = Math.toRadians(180);
+    public static double MAX_ANG_ACCEL = Math.toRadians(180);
 
     public static double encoderTicksToInches(double ticks) {
         return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;

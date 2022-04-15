@@ -1,13 +1,14 @@
 package org.firstinspires.ftc.teamcode.common.tuning.tank;
 
-import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.MAX_ACCEL;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.MAX_VEL;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.kA;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.kStatic;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.kV;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.MAX_VEL;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.kA;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.kStatic;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstantsTank.kV;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.kinematics.Kinematics;
@@ -39,10 +40,9 @@ import java.util.Objects;
  * user to reset the position of the bot in the event that it drifts off the path.
  * Pressing B/O (Xbox/PS4) will cede control back to the tuning process.
  */
-
-
+@Config
 @Autonomous(name = "T - TankManualFeedforwardTuner", group = "drive")
-public class ManualFeedforwardTuner extends LinearOpMode {
+public class TankManualFeedforwardTuner extends LinearOpMode {
     public static double DISTANCE = 72; // in
 
     private FtcDashboard dashboard = FtcDashboard.getInstance();

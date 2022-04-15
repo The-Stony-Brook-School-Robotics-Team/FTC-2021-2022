@@ -27,9 +27,11 @@ public class TankTrajectoryTest extends OpMode {
 
     @Override
     public void loop() {
-        drive.setMotorPowers(gamepad1.left_stick_y, gamepad1.right_stick_y);
-        if(gamepad1.a){
-            drive.followTrajectory(testTraj);
+        //drive.setMotorPowers(gamepad1.left_stick_y, gamepad1.right_stick_y);
+        drive.setMotorPowers(gamepad1.left_stick_y -gamepad1.right_stick_x, gamepad1.left_stick_y + gamepad1.right_stick_x);
+
+        if(gamepad1.b){
+            drive.setMotorPowers(.5, .5);
         }
         drive.update();
     }

@@ -9,25 +9,21 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.SampleTankDrive;
 
 /*
  * This is a simple routine to test translational drive capabilities.
  */
-@Disabled
 @Autonomous(group = "drive", name = "T - TANKStraightTest")
 public class StraightTest extends LinearOpMode {
-    public static double DISTANCE = 48; // in
+    public static double DISTANCE = 30; // in
 
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        if(gamepad1.a) {drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            telemetry.addData("ENCODER","DISABLED");
-telemetry.update();
-        }
+        SampleTankDrive drive = new SampleTankDrive(hardwareMap);
+        drive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         Trajectory trajectory = drive.trajectoryBuilder(drive.getPoseEstimate())
                 .forward(DISTANCE)
                 .build();
