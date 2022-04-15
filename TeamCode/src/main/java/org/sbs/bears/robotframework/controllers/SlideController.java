@@ -977,10 +977,10 @@ public class SlideController {
     public static double incrementDeltaRetractCaptsone = 0.002;
 
 
-    public static double dumperPosition_CLOSED = 0.333;//0.37;//0.269;  // remeasured on jan 31 at 16h08
-    public static double dumperPosition_READY = .61;//0.59;//0.55; // 0.69 .61
-    public static double dumperPosition_EJECT = 1;//1;//0.74;
-    public static double dumperPosition_RETRACTING = .37;//0.3;//0.05;
+    public static double dumperPosition_CLOSED = 0.21;//0.37;//0.269;  // remeasured on jan 31 at 16h08
+    public static double dumperPosition_READY = .5;//0.59;//0.55; // 0.69 .61
+    public static double dumperPosition_EJECT = 0.85;//1;//0.74;
+    public static double dumperPosition_RETRACTING = .27;//0.3;//0.05;
 
 
     int slideMotorPosition_PARKED = 5;
@@ -990,7 +990,7 @@ public class SlideController {
     public static int slideMotorPosition_THREE_DEPOSIT = 1142;//1057; // new bucket// 1316; // remeasured // last 1310
     public static int slideMotorPosition_THREE_DEPOSIT_AUTON = 1142;//1360; // remeasured // last 1360
     public static int slideMotorPosition_TWO_DEPOSIT = 1020;//1320; //measured
-    public static int slideMotorPosition_ONE_DEPOSIT = 935;//1190;//1000; //measured
+    public static int slideMotorPosition_ONE_DEPOSIT = 970;//1190;//1000; //measured
     public static int slideMotorPosition_THREE_CAROUSEL = 1713;
     public static int slideMotorPosition_TWO_CAROUSEL = 1600;
     public static int slideMotorPosition_ONE_CAROUSEL = 1665;

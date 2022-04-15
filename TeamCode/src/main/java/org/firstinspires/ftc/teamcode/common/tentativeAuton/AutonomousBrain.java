@@ -297,12 +297,20 @@ public class AutonomousBrain {
                             qObjectInRobot.set(true);
                             RRctrl.haltTrajectory();
                             getIntake().setState(IntakeState.DUMP);
-                            qObjectIsLoaded.set(true);
+                            new Thread(()->{
+                                if (isBlue) {
+                                    intakeCtrlBlue.loadItemIntoSlideForAutonomousOnly();
+                                } else {
+                                    intakeCtrlRed.loadItemIntoSlideForAutonomousOnly();
+                                }
+                                qObjectIsLoaded.set(true);
+                            }).start();
                             break;
                         }
                         isInState = minorState.get().equals(MinorAutonomousState.ONE_INTAKE_REDO);
                     }
                     Log.d("AutonBrainThread","status2: qObj " + qObjectInRobot.get() + " qIntake " + getIntake().isObjectInPayload());
+
                 });
                 intakeChecker.start();
                 Log.d("AutonBrain","Intake Redo: thread launched");
@@ -321,6 +329,17 @@ public class AutonomousBrain {
                     Log.d("AutonBrain","Successfully have block. Proceeding to next stage.");
                     majorState.set(MajorAutonomousState.THREE_BACK_FORTH);
                     minorState.set(MinorAutonomousState.TWO_PREP_DEPOSIT);
+                    if(getRightIntakeIsObjectInside() && (isBlue ? intakeCtrlBlue.state == IntakeState.BASE : intakeCtrlRed.state == IntakeState.BASE))
+                    {
+                        Log.d("AutonBrain","Detected fail to lift intake. Loading...");
+                        new Thread(()->{
+                            if (isBlue) {
+                                intakeCtrlBlue.loadItemIntoSlideForAutonomousOnly();
+                            } else {
+                                intakeCtrlRed.loadItemIntoSlideForAutonomousOnly();
+                            }
+                        }).start();
+                    }
                 }
                 else {
                     intakeChecker.interrupt();
@@ -350,15 +369,24 @@ public class AutonomousBrain {
                             if(getRightIntakeIsObjectInside()){
                                 Log.d("AutonBrainThread","status: qObj " + qObjectInRobot.get() + " qIntake " + getIntake().isObjectInPayload() + " intakeDistance " + intakeCtrlBlue.distanceSensor.getDistance(DistanceUnit.MM));
                                 Log.d("AutonBrainThread","Found it at x " + RRctrl.getPos().getX());
-                                qObjectInRobot.set(true);
+                                new Thread(()->{qObjectInRobot.set(true);}).start();
+                                RRctrl.haltTrajectory();
                                 RRctrl.haltTrajectory();
                                 getIntake().setState(IntakeState.DUMP);
-                                qObjectIsLoaded.set(true);
+                                new Thread(()->{
+                                    if (isBlue) {
+                                        intakeCtrlBlue.loadItemIntoSlideForAutonomousOnly();
+                                    } else {
+                                        intakeCtrlRed.loadItemIntoSlideForAutonomousOnly();
+                                    }
+                                    qObjectIsLoaded.set(true);
+                                }).start();
                                 break;
                             }
                             isInState = minorState.get().equals(MinorAutonomousState.ONE_INTAKE);
                         }
                         Log.d("AutonBrainThread","status2: qObj " + qObjectInRobot.get() + " qIntake " + getIntake().isObjectInPayload());
+
                     }).start();
                     Log.d("AutonBrain","Intake: thread launched");
                      velocityConstraint = SampleMecanumDrive.getVelocityConstraint(velocityIntake, DriveConstantsMain.MAX_ANG_VEL, DriveConstantsMain.TRACK_WIDTH);
@@ -378,6 +406,17 @@ public class AutonomousBrain {
                         Log.d("AutonBrain","Successfully have block. Proceeding to next stage.");
                         majorState.set(MajorAutonomousState.THREE_BACK_FORTH);
                         minorState.set(MinorAutonomousState.TWO_PREP_DEPOSIT);
+                        if((isBlue ? intakeCtrlBlue.state == IntakeState.BASE : intakeCtrlRed.state == IntakeState.BASE))
+                        {
+                            Log.d("AutonBrain","Detected fail to lift intake. Loading...");
+                            new Thread(()->{
+                                if (isBlue) {
+                                    intakeCtrlBlue.loadItemIntoSlideForAutonomousOnly();
+                                } else {
+                                    intakeCtrlRed.loadItemIntoSlideForAutonomousOnly();
+                                }
+                            }).start();
+                        }
                     }
                     else {
                         Log.d("AutonBrain","Intake Main: No block captured. Trying again.");
@@ -422,7 +461,6 @@ public class AutonomousBrain {
                 {
                     Log.d("AutonBrain","Stuck detected on deposit trying, retrying.");
                     RRctrl.followLineToSpline(new Pose2d(RRctrl.getPos().getX() + (isBlue ? 15 : -15),isBlue ? 70 : -70,isBlue ? 0 : Math.PI),100);
-                    //RRctrl.followLineToSpline(isBlue ? warehousePickupPositionBlue : warehousePickupPositionRed);
                     minorState.set(MinorAutonomousState.TWO_PREP_DEPOSIT);
                     logDeltaTime("THREE_DEPOSIT_STUCK");
                     return;
@@ -440,15 +478,7 @@ public class AutonomousBrain {
                     }
                     logDeltaTime("THREE_DEPOSIT_CORRECTION");
                     return;
-                }/*
-                if(RRctrl.distanceTo(isBlue ? depositPositionAllianceBlueTOP : depositPositionRedNoTurn) > ERROR_TOLERANCE_DROPOFF)
-                {
-                    /*Log.d("AutonBrain","Detected not arrived at designated position: " + RRctrl.distanceTo(isBlue ? depositPositionAllianceBlueTOP : depositPositionRedNoTurn) + ". Fixing");
-                    Log.d("AutonBrain","Current X: " + RRctrl.getPos().getX() + " Y: " + RRctrl.getPos().getY() + " H: " + RRctrl.getPos().getHeading());
-                    Log.d("AutonBrain","Target X: " + depositPositionBlueTOP.getX() + " Y: " + depositPositionBlueTOP.getY() + " H: " + depositPositionBlueTOP.getHeading());
-                    RRctrl.followLineToSpline(depositPositionBlueTOP);
-
-                }*/
+                }
                 if(qObjectIsLoaded.get()) {
                     Log.d("AutonBrain","Slide drop init");
                     slideCtrl.extendDropRetractAutonAUTOMATIC(RRctrl.getPos());
@@ -521,7 +551,7 @@ public class AutonomousBrain {
     public static Pose2d warehousePickupPositionRed = new Pose2d(43,-70,-Math.PI);
     public static Pose2d depositPositionBlueNoTurn = new Pose2d(-18,75,0);
     public static Pose2d depositPositionRedNoTurn = new Pose2d(-24,-75,-Math.PI);
-    public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(5.58,64.47, -Math.toRadians(24)); //55
+    public static Pose2d depositPositionAllianceBlueTOP = new Pose2d(5.58,64.47, -Math.toRadians(22)); //55
     public static Pose2d depositPositionAllianceRedTOP = new Pose2d(5.58,-64.47, -Math.toRadians(156)); //55
     public static Pose2d depositPositionAllianceBlueMID = new Pose2d(5.58,64.47, -Math.toRadians(29)); //56
     public static Pose2d depositPositionAllianceRedMID = new Pose2d(5.58,-64.47, -Math.toRadians(151)); //56

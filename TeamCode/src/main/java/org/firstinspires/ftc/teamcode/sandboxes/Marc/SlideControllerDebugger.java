@@ -21,6 +21,8 @@ import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
 import org.sbs.bears.robotframework.controllers.SlideController;
 import org.sbs.bears.robotframework.enums.IntakeState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
+import org.tensorflow.lite.task.text.qa.QaAnswer;
+
 @Config
 @TeleOp(name = "A - Slide Controller Debugger")
 public class SlideControllerDebugger extends LinearOpMode
@@ -58,6 +60,21 @@ public class SlideControllerDebugger extends LinearOpMode
         slideController.targetParams = target;
 
         waitForStart();
+        new Thread(()->{
+            while(!isStopRequested()) {
+
+                telemetry.addData("Slide Ext",slideController.slideMotor.getCurrentPosition());
+            telemetry.addData("Slide Angle",slideController.verticalServo.getPosition());
+            telemetry.addData("Intake Dist",distanceSensor.getDistance(DistanceUnit.MM));
+            telemetry.addData("Slide params",slideController.targetParams);
+            if(bu.state.equals(IntakeState.BASE))
+            {
+                Log.d("SlideControllerDebugger","Distance reading: " + bu.distanceSensor.getDistance(DistanceUnit.MM));
+                telemetry.addData("Distance: ",bu.distanceSensor.getDistance(DistanceUnit.MM));
+                telemetry.addData("DistanceR: ",red.distanceSensor.getDistance(DistanceUnit.MM));
+            }
+            telemetry.update();
+        }}).start();
 
         while(!isStopRequested()) {
 
@@ -89,6 +106,7 @@ public class SlideControllerDebugger extends LinearOpMode
                 qDL = false;
             }
             if(gamepad1.y && !pY) {
+                drive.setWeightedDrivePower(new Pose2d());
                 slideController.retractSlide();
                 pY = true;
             } else if(!gamepad1.y && pY) {
@@ -97,7 +115,8 @@ public class SlideControllerDebugger extends LinearOpMode
 
 
             if(gamepad1.right_bumper && !pRB) {
-                slideController.extendDropRetract(SlideTarget.MID_DEPOSIT);
+                drive.setWeightedDrivePower(new Pose2d());
+                slideController.extendDropRetract(SlideTarget.TOP_DEPOSIT);
                 pRB = true;
             } else if(!gamepad1.right_bumper && pRB) {
                 pRB = false;
@@ -110,6 +129,7 @@ public class SlideControllerDebugger extends LinearOpMode
                 pA = false;
             }
             if(gamepad1.b && !pB) {
+                drive.setWeightedDrivePower(new Pose2d());
                 slideController.targetParams = SlideTarget.SHARED_THREE;
                 slideController.extendSlide();
                 pB = true;
@@ -125,7 +145,7 @@ public class SlideControllerDebugger extends LinearOpMode
             }
 
             if(gamepad1.dpad_up && !pUp) {
-                drive.setWeightedDrivePower(new Pose2d());
+                //drive.setWeightedDrivePower(new Pose2d());
                 slideController.incrementVerticalServo(0.02);
                 //Log.d("SLIDE TESTER", "Current Slide Servo Position: " + slideController.getVerticalServoPosition());
                 pUp = true;
@@ -134,7 +154,7 @@ public class SlideControllerDebugger extends LinearOpMode
             }
 
             if(gamepad1.dpad_down && !pDown) {
-                drive.setWeightedDrivePower(new Pose2d());
+                //drive.setWeightedDrivePower(new Pose2d());
                 slideController.incrementVerticalServo(-0.02);
                 //Log.d("SLIDE TESTER", "Current Slide Servo Position: " + slideController.getVerticalServoPosition());
                 pDown = true;
@@ -167,6 +187,7 @@ public class SlideControllerDebugger extends LinearOpMode
                         break;
                 }*/
                // slideController.blueDumperServo.setPosition(SlideController.dumperPosition_CLOSED);
+                drive.setWeightedDrivePower(new Pose2d());
                 slideController.targetParams = SlideTarget.TOP_DEPOSIT;
                 slideController.extendSlide();
 
@@ -174,16 +195,7 @@ public class SlideControllerDebugger extends LinearOpMode
                 qX = false;
             }
 
-            telemetry.addData("Slide Ext",slideController.slideMotor.getCurrentPosition());
-            telemetry.addData("Slide Angle",slideController.verticalServo.getPosition());
-            telemetry.addData("Intake Dist",distanceSensor.getDistance(DistanceUnit.MM));
-            telemetry.addData("Slide params",slideController.targetParams);
-            if(bu.state.equals(IntakeState.BASE))
-            {
-                Log.d("SlideControllerDebugger","Distance reading: " + bu.distanceSensor.getDistance(DistanceUnit.MM));
-                telemetry.addData("Distance: ",bu.distanceSensor.getDistance(DistanceUnit.MM));
-            }
-            telemetry.update();
+
 
 
 

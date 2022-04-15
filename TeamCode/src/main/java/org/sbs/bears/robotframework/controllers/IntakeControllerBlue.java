@@ -39,7 +39,7 @@ public class IntakeControllerBlue implements IntakeController{
     public static double distThreshold2 = 25;
 
     public double timeToOpenStopper = 300; //ms 400
-    public static double timeToCloseBucket = 400;/// new bucket! //360; //ms 650
+    public static double timeToCloseBucket = 450;/// new bucket! //360; //ms 650
     public double timeToPushSweeper = 230; //ms 400
     public double timeToResetSweeper = 440;
 
@@ -58,7 +58,7 @@ public class IntakeControllerBlue implements IntakeController{
         scooper = hardwareMap.get(Servo.class, "bi");
         compliantWheel = hardwareMap.get(DcMotor.class, "leftodom");
         distanceSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "bd");
-        distanceSensor.setI2cAddress(I2cAddr.create8bit(0x24));
+        distanceSensor.setI2cAddress(I2cAddr.create8bit(0x26));
         sweeper = hardwareMap.get(Servo.class, "sweep");
         stopper = hardwareMap.get(Servo.class, "bs");
         this.dumperServo = dumperServo;
