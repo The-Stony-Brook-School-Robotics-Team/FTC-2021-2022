@@ -197,7 +197,7 @@ public class IntakeControllerRed implements IntakeController {
                         e.printStackTrace();
                     }
 
-                    dumperServo.setPosition(SlideController.dumperPosition_CLOSED);
+                    dumperServo.setPosition(SlideController.dumperPosition_red_CLOSED);
                     // reset position of sweeper!
                     try {
                         Thread.sleep((long)timeToResetSweeper);
