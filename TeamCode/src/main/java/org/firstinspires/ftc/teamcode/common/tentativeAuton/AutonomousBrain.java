@@ -151,7 +151,7 @@ public class AutonomousBrain {
         colorNew.write8(BroadcomColorSensor.Register.LS_MEAS_RATE,0x01010000); // see pdf page 20 // increase speed
         colorNew.write8(BroadcomColorSensor.Register.PS_MEAS_RATE,0x00000001); // see pdf page 19 // increase speed
         slideCtrl.blueDumperServo.setPosition(slideCtrl.dumperPosition_CLOSED); // init only
-        slideCtrl.redDumperServo.setPosition(slideCtrl.dumperPosition_CLOSED); // init only
+        slideCtrl.redDumperServo.setPosition(slideCtrl.dumperPosition_red_CLOSED); // init only
     }
     public void start() // call this method before loop, so start method.
     {

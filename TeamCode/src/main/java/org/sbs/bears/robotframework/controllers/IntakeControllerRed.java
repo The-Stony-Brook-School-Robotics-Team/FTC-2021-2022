@@ -44,7 +44,7 @@ public class IntakeControllerRed implements IntakeController {
 
     private double sweeperOut = .61; //.635; //.725;
     private static double sweeperIn =  .91; //1;
-    public static double stopperClosed = .425; //0.305; //TODO //.3
+    public static double stopperClosed = .26; //0.305; //TODO //.3
     private double stopperOpen = 0.1; //TODO
     private boolean qIsObjectInPayload = false;
 
@@ -170,12 +170,12 @@ public class IntakeControllerRed implements IntakeController {
                     sweeper.setPosition(sweeperIn);
                     stopper.setPosition(stopperClosed);
                     compliantWheel.setPower(basePos[1]);
-                    dumperServo.setPosition(SlideController.dumperPosition_READY);
+                    dumperServo.setPosition(SlideController.dumperPosition_red_READY);
                     break;
 
                 case DUMP:
                     // maybe add here a thing to open the bucket
-                    dumperServo.setPosition(SlideController.dumperPosition_READY);
+                    dumperServo.setPosition(SlideController.dumperPosition_red_READY);
                     //compliantWheel.setPower(dumpPos[1]);
                     scooper.setPosition(dumpPos[0]);
                     try {

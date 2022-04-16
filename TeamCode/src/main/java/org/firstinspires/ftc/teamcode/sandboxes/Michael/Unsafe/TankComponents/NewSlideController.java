@@ -39,7 +39,7 @@ public class NewSlideController {
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideMotor.setPositionPIDFCoefficients(10);
         slideMotor.setTargetPositionTolerance(SlideConstants.slideMotorTolerance); //TODO
-        slideMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        slideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //claw.setPosition(SlideConstants.frontBucket_CLOSED);
         magswitch.setMode(DigitalChannel.Mode.INPUT);
