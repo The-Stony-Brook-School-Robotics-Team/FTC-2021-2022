@@ -14,7 +14,7 @@ public class IntakeHandler {
 
     public static boolean objectInBucket = false;
 
-    public Thread runtime = new Thread(() -> {
+    public static Thread runtime = new Thread(() -> {
         while(!BlueTeleOp.systemStopRequested && BlueTeleOp.currentState == TeleOpRobotStates.RUNNING || BlueTeleOp.currentState == TeleOpRobotStates.INITIALIZING) {
             /**
              * Check Buckets / Intakes
