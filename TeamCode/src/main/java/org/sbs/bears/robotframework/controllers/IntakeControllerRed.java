@@ -170,12 +170,12 @@ public class IntakeControllerRed implements IntakeController {
                     sweeper.setPosition(sweeperIn);
                     stopper.setPosition(stopperClosed);
                     compliantWheel.setPower(basePos[1]);
-                    dumperServo.setPosition(SlideController.dumperPosition_READY);
+                    dumperServo.setPosition(SlideController.dumperPosition_red_READY);
                     break;
 
                 case DUMP:
                     // maybe add here a thing to open the bucket
-                    dumperServo.setPosition(SlideController.dumperPosition_READY);
+                    dumperServo.setPosition(SlideController.dumperPosition_red_READY);
                     //compliantWheel.setPower(dumpPos[1]);
                     scooper.setPosition(dumpPos[0]);
                     try {
