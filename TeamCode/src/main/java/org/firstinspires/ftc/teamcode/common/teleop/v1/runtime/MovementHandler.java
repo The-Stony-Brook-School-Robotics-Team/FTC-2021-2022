@@ -1,19 +1,19 @@
-package org.firstinspires.ftc.teamcode.common.teleop.runtime;
+package org.firstinspires.ftc.teamcode.common.teleop.v1.runtime;
 
-import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.currentState;
-import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.drive;
-import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.driveSpeedStrafe;
-import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.isColorStripBlue;
-import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.primaryGamepad;
+import static org.firstinspires.ftc.teamcode.common.teleop.v1.BlueTeleOp.currentState;
+import static org.firstinspires.ftc.teamcode.common.teleop.v1.BlueTeleOp.drive;
+import static org.firstinspires.ftc.teamcode.common.teleop.v1.BlueTeleOp.driveSpeedStrafe;
+import static org.firstinspires.ftc.teamcode.common.teleop.v1.BlueTeleOp.isColorStripBlue;
+import static org.firstinspires.ftc.teamcode.common.teleop.v1.BlueTeleOp.primaryGamepad;
 
 import android.util.Log;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 
-import org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp;
-import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
-import org.firstinspires.ftc.teamcode.common.teleop.misc.Beta;
+import org.firstinspires.ftc.teamcode.common.teleop.v1.BlueTeleOp;
+import org.firstinspires.ftc.teamcode.common.teleop.v1.enums.TeleOpRobotStates;
+import org.firstinspires.ftc.teamcode.common.teleop.v1.misc.Beta;
 
 public class MovementHandler {
 

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.common.teleop.enums;
+package org.firstinspires.ftc.teamcode.common.teleop.v1.enums;
 
 public enum TeleOpRobotStates {
     STOPPED(0), INITIALIZING(1), RUNNING(3), AUTONOMOUS(4), DEBUG(5);

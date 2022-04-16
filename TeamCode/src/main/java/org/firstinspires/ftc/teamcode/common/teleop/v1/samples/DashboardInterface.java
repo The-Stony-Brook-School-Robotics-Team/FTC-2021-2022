@@ -1,11 +1,11 @@
-package org.firstinspires.ftc.teamcode.common.teleop.samples;
+package org.firstinspires.ftc.teamcode.common.teleop.v1.samples;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 
-import org.firstinspires.ftc.teamcode.common.teleop.misc.Beta;
+import org.firstinspires.ftc.teamcode.common.teleop.v1.misc.Beta;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 import org.jetbrains.annotations.NotNull;
