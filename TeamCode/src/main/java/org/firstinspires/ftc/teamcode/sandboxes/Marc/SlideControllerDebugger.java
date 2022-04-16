@@ -89,7 +89,7 @@ public class SlideControllerDebugger extends LinearOpMode
 
             if(gamepad1.dpad_right && !qDR)
             {
-                bu.setState(IntakeState.BASE);
+                red.setState(red.getState() == IntakeState.BASE ? IntakeState.DUMP : IntakeState.BASE);
                 qDR = true;
             }
             else if(!gamepad1.dpad_right && qDR)
@@ -98,7 +98,7 @@ public class SlideControllerDebugger extends LinearOpMode
             }
             if(gamepad1.dpad_left && !qDL)
             {
-                bu.setState(IntakeState.DUMP);
+                bu.setState(bu.getState() == IntakeState.BASE ? IntakeState.DUMP : IntakeState.BASE);
                 qDL = true;
             }
             else if(!gamepad1.dpad_left && qDL)
@@ -137,56 +137,26 @@ public class SlideControllerDebugger extends LinearOpMode
                 pB = false;
             }
 
-            if(gamepad1.right_stick_y < -0.02 || gamepad1.right_stick_y > -0.02) {
-                //drive.setWeightedDrivePower(new Pose2d());
+            if((gamepad1.right_stick_y < -0.02 || gamepad1.right_stick_y > -0.02) && gamepad1.left_bumper) {
                 double stickValue = gamepad1.right_stick_y * -1;
                 slideController.incrementEncoderPosition((int) (stickValue * Configuration.DefaultSlideTicks), true);
-                //Log.d("SLIDE TESTER", "Current Slide Motor Ticks: " + slideController.getSlideMotorPosition());
             }
 
             if(gamepad1.dpad_up && !pUp) {
-                //drive.setWeightedDrivePower(new Pose2d());
                 slideController.incrementVerticalServo(0.02);
-                //Log.d("SLIDE TESTER", "Current Slide Servo Position: " + slideController.getVerticalServoPosition());
                 pUp = true;
             } else if(!gamepad1.dpad_up && pUp) {
                 pUp = false;
             }
 
             if(gamepad1.dpad_down && !pDown) {
-                //drive.setWeightedDrivePower(new Pose2d());
                 slideController.incrementVerticalServo(-0.02);
-                //Log.d("SLIDE TESTER", "Current Slide Servo Position: " + slideController.getVerticalServoPosition());
                 pDown = true;
             } else if(!gamepad1.dpad_down && pDown) {
                 pDown = false;
             }
             if(gamepad1.x && !qX) {
                 qX = true;
-                /*switch(state) {
-                    case OFF:
-                        slideController.collectCapstone();
-                        state = State.LIFT;
-                        break;
-                    case LIFT:
-                        slideController.incrementVerticalServo(0.1);
-                        state = State.DEPOSIT;
-                        break;
-                    case DEPOSIT:
-                        slideController.targetParams = SlideTarget.CAP_FROM_CAROUSEL;
-                        slideController.extendSlide();
-                        state = State.DROP;
-                        break;
-                    case DROP:
-                        slideController.dropCube();
-                        slideController.retractSlide();
-                        state = State.PULLBACK;
-                        break;
-                    case PULLBACK:
-                        state = State.OFF;
-                        break;
-                }*/
-               // slideController.blueDumperServo.setPosition(SlideController.dumperPosition_CLOSED);
                 drive.setWeightedDrivePower(new Pose2d());
                 slideController.targetParams = SlideTarget.TOP_DEPOSIT;
                 slideController.extendSlide();

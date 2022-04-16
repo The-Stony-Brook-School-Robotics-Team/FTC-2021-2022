@@ -72,7 +72,7 @@ public class SlideController {
 
 
         blueDumperServo.setPosition(dumperPosition_READY);
-        redDumperServo.setPosition(dumperPosition_READY);
+        redDumperServo.setPosition(dumperPosition_red_READY);
         Log.d("SlideController", "Set the dumper servo to ready");
     }
 
@@ -368,7 +368,7 @@ public class SlideController {
             } else {
                 Log.d("SlideController", "Bucket Eject");
                 blueDumperServo.setPosition(dumperPosition_EJECT);
-                redDumperServo.setPosition(dumperPosition_EJECT);
+                redDumperServo.setPosition(dumperPosition_red_EJECT);
                 try {
                     Thread.sleep(500); // 250
                 } catch (InterruptedException e) {
@@ -378,7 +378,7 @@ public class SlideController {
             }
             Log.d("SlideController", "Bucket in retract position");
             blueDumperServo.setPosition(dumperPosition_RETRACTING);
-            redDumperServo.setPosition(dumperPosition_RETRACTING);
+            redDumperServo.setPosition(dumperPosition_red_RETRACTING);
         }
     }
 
@@ -480,7 +480,7 @@ public class SlideController {
             incrementDeltaExtend = incrementDeltaExtendTeleOp;
         }
         blueDumperServo.setPosition(dumperPosition_CLOSED);
-        redDumperServo.setPosition(dumperPosition_CLOSED);
+        redDumperServo.setPosition(dumperPosition_red_CLOSED);
         slideMotor.setTargetPosition(targetPosFinal);
         if (targetParams == SlideTarget.CAP_FROM_CAROUSEL) {
             slideMotor.setPower(slideMotorPowerCarousel);
@@ -526,7 +526,7 @@ public class SlideController {
         slideState = SlideState.RETRACTING;
 
         blueDumperServo.setPosition(dumperPosition_RETRACTING);
-        redDumperServo.setPosition(dumperPosition_RETRACTING);
+        redDumperServo.setPosition(dumperPosition_red_RETRACTING);
         BlueTeleOp.driveSpeedStrafe = 1;
         slideMotor.setPower(slideMotorPowerMoving);
         slideMotor.setTargetPosition(slideMotorPosition_PARKED);
@@ -561,7 +561,7 @@ public class SlideController {
         creepBack_NewAutonomous();
         Log.d("SlideController", "Set the dumper servo to ready (485)");
         blueDumperServo.setPosition(dumperPosition_READY);
-        redDumperServo.setPosition(dumperPosition_READY);
+        redDumperServo.setPosition(dumperPosition_red_READY);
         Log.d("SlideController", "Should be inside " + slideMotor.getCurrentPosition() + " " + verticalServo.getPosition());
         slideState = SlideState.PARKED;
     }
@@ -675,7 +675,7 @@ public class SlideController {
                     incrementDeltaExtend = incrementDeltaExtendTeleOp;
                 }
                 blueDumperServo.setPosition(dumperPosition_CLOSED);
-                redDumperServo.setPosition(dumperPosition_CLOSED);
+                redDumperServo.setPosition(dumperPosition_red_CLOSED);
                 slideMotor.setTargetPosition(targetPosFinal);
                 if (targetParams == SlideTarget.CAP_FROM_CAROUSEL) {
                     slideMotor.setPower(slideMotorPowerCarousel);
@@ -722,7 +722,7 @@ public class SlideController {
                 return;
             case RETRACTING:
                 blueDumperServo.setPosition(dumperPosition_RETRACTING);
-                redDumperServo.setPosition(dumperPosition_RETRACTING);
+                redDumperServo.setPosition(dumperPosition_red_RETRACTING);
                 BlueTeleOp.driveSpeedStrafe = 1;
                 targetPos = slideMotorPosition_PARKED;
                 slideMotor.setPower(slideMotorPowerMoving);
@@ -764,7 +764,7 @@ public class SlideController {
                 creepBack();
                 Log.d("SlideController", "Set the dumper servo to ready (485)");
                 blueDumperServo.setPosition(dumperPosition_READY);
-                redDumperServo.setPosition(dumperPosition_READY);
+                redDumperServo.setPosition(dumperPosition_red_READY);
                 return;
         }
     }
@@ -777,7 +777,7 @@ public class SlideController {
         slideState = SlideState.TELEOP;
         verticalServo.setPosition(vertServoPosition_PARKED);
         this.blueDumperServo.setPosition(dumperPosition_READY);
-        this.redDumperServo.setPosition(dumperPosition_READY);
+        this.redDumperServo.setPosition(dumperPosition_red_READY);
         creepBack();
         hardStopReset();
         resetEncoder();
@@ -978,9 +978,13 @@ public class SlideController {
 
 
     public static double dumperPosition_CLOSED = 0.21;//0.37;//0.269;  // remeasured on jan 31 at 16h08
+    public static double dumperPosition_red_CLOSED = 1;//0.37;//0.269;  // remeasured on jan 31 at 16h08
     public static double dumperPosition_READY = .5;//0.59;//0.55; // 0.69 .61
+    public static double dumperPosition_red_READY = .8;//0.59;//0.55; // 0.69 .61
     public static double dumperPosition_EJECT = 0.85;//1;//0.74;
+    public static double dumperPosition_red_EJECT = .27;//1;//0.74;
     public static double dumperPosition_RETRACTING = .27;//0.3;//0.05;
+    public static double dumperPosition_red_RETRACTING = 1;//0.3;//0.05;
 
 
     int slideMotorPosition_PARKED = 5;
