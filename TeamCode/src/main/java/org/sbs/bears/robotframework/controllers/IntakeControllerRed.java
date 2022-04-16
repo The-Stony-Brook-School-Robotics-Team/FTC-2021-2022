@@ -44,7 +44,7 @@ public class IntakeControllerRed implements IntakeController {
 
     private double sweeperOut = .61; //.635; //.725;
     private static double sweeperIn =  .91; //1;
-    public static double stopperClosed = .425; //0.305; //TODO //.3
+    public static double stopperClosed = .26; //0.305; //TODO //.3
     private double stopperOpen = 0.1; //TODO
     private boolean qIsObjectInPayload = false;
 

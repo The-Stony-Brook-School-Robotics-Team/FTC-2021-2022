@@ -979,7 +979,7 @@ public class SlideController {
 
     public static double dumperPosition_CLOSED = 0.21;//0.37;//0.269;  // remeasured on jan 31 at 16h08
     public static double dumperPosition_red_CLOSED = 1;//0.37;//0.269;  // remeasured on jan 31 at 16h08
-    public static double dumperPosition_READY = .5;//0.59;//0.55; // 0.69 .61
+    public static double dumperPosition_READY = .47;//0.59;//0.55; // 0.69 .61
     public static double dumperPosition_red_READY = .8;//0.59;//0.55; // 0.69 .61
     public static double dumperPosition_EJECT = 0.85;//1;//0.74;
     public static double dumperPosition_red_EJECT = .27;//1;//0.74;
