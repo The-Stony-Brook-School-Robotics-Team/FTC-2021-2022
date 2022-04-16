@@ -1,17 +1,14 @@
 package org.sbs.bears.robotframework.controllers;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.common.teleop.misc.Beta;
+import org.firstinspires.ftc.teamcode.common.teleop.v1.misc.Beta;
 import org.firstinspires.ftc.teamcode.drive.SampleTankDrive;
 import org.sbs.bears.robotframework.Sleep;
 import org.sbs.bears.robotframework.enums.DrivingMode;
 import org.sbs.bears.robotframework.enums.MotorName;
-import org.tensorflow.lite.task.text.qa.QaAnswer;
 
 import java.util.HashMap;
 import java.util.Map;
