@@ -1,6 +1,5 @@
-package org.firstinspires.ftc.teamcode.common.teleop.samples;
+package org.firstinspires.ftc.teamcode.common.teleop.v1.samples;
 
-import com.acmerobotics.roadrunner.drive.Drive;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 

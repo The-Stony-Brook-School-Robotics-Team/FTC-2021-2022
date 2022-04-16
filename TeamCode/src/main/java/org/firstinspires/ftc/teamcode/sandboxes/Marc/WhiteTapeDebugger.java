@@ -1,18 +1,8 @@
 package org.firstinspires.ftc.teamcode.sandboxes.Marc;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.broadcom.BroadcomColorSensor;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
-import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-import org.sbs.bears.robotframework.Robot;
-import org.sbs.bears.robotframework.controllers.RoadRunnerController;
-import org.sbs.bears.robotframework.controllers.SlideController;
-import org.tensorflow.lite.task.text.qa.QaAnswer;
 
 public class WhiteTapeDebugger extends LinearOpMode {
 

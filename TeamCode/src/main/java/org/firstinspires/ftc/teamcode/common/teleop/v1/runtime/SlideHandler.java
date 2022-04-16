@@ -1,17 +1,11 @@
-package org.firstinspires.ftc.teamcode.common.teleop.runtime;
+package org.firstinspires.ftc.teamcode.common.teleop.v1.runtime;
 
-import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.buttonHandler;
-import static org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp.slideController;
+import static org.firstinspires.ftc.teamcode.common.teleop.v1.BlueTeleOp.slideController;
 //import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideHandler;
 
 import android.util.Log;
 
-import org.checkerframework.checker.units.qual.A;
-import org.firstinspires.ftc.teamcode.common.teleop.Configuration;
-import org.sbs.bears.robotframework.Sleep;
-import org.sbs.bears.robotframework.enums.SlideTarget;
-
-import java.util.concurrent.atomic.AtomicReference;
+import org.firstinspires.ftc.teamcode.common.teleop.v1.Configuration;
 
 public class SlideHandler {
     /**

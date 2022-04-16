@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.common.teleop.runtime;
+package org.firstinspires.ftc.teamcode.common.teleop.v1.runtime;
 
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 
-import org.firstinspires.ftc.teamcode.common.teleop.BlueTeleOp;
-import org.firstinspires.ftc.teamcode.common.teleop.enums.TeleOpRobotStates;
+import org.firstinspires.ftc.teamcode.common.teleop.v1.BlueTeleOp;
+import org.firstinspires.ftc.teamcode.common.teleop.v1.enums.TeleOpRobotStates;
 
 public class IntakeHandler {
 
