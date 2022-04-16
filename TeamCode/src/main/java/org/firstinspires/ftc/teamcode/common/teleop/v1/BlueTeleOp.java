@@ -16,6 +16,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.common.teleop.v1.enums.ControllerModes;
 import org.firstinspires.ftc.teamcode.common.teleop.v1.enums.TeleOpRobotStates;
 import org.firstinspires.ftc.teamcode.common.teleop.v1.runtime.ButtonHandler;
+import org.firstinspires.ftc.teamcode.common.teleop.v1.runtime.IntakeHandler;
+import org.firstinspires.ftc.teamcode.common.teleop.v1.runtime.MovementHandler;
 import org.firstinspires.ftc.teamcode.common.teleop.v1.runtime.RoadrunnerHandler;
 import org.firstinspires.ftc.teamcode.common.teleop.v1.runtime.SlideHandler;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -71,7 +73,6 @@ public class BlueTeleOp extends OpMode {
     /**
      * Run Time Applications
      */
-    public static ButtonHandler buttonHandler = new ButtonHandler();
     public static SlideHandler slideHandler = new SlideHandler();
     public static RoadrunnerHandler roadrunnerHandler = new RoadrunnerHandler();
 
@@ -212,6 +213,8 @@ public class BlueTeleOp extends OpMode {
     private static void floodRuntimes() {
         registerThread(ButtonHandler.primaryInterfaceTag, ButtonHandler.primaryRuntime);
         registerThread(ButtonHandler.secondaryInterfaceTag, ButtonHandler.secondaryRuntime);
+        registerThread(IntakeHandler.interfaceTag, IntakeHandler.runtime);
+        registerThread(MovementHandler.interfaceTag, MovementHandler.runtime);
     }
 
     /**
