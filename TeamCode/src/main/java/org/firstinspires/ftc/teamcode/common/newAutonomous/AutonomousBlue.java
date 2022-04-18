@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 
-@Autonomous(name = "----- Autonomous Blue By William Lord Tao")
+//@Autonomous(name = "----- Autonomous Blue By William Lord Tao")
 public class AutonomousBlue extends LinearOpMode {
     AutonomousClient autonomousClient;
     private int counter = 0;

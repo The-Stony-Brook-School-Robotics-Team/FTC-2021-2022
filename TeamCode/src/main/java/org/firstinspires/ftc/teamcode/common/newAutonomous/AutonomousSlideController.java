@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.enums.SlideTarget;
 
-@Config
+//@Config
 public class AutonomousSlideController {
     final boolean isDebug = true;
 

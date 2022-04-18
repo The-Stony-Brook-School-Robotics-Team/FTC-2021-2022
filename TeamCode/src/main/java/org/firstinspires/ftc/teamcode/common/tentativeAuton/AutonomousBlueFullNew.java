@@ -11,7 +11,7 @@ import org.sbs.bears.robotframework.controllers.OpenCVController;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-@Autonomous (name = "A - Auton (Blue Main Merged)")
+@Autonomous (name = "A - Auton (Blue Main)")
 public class AutonomousBlueFullNew extends LinearOpMode {
     AutonomousBrain brain;
     boolean qA = false;

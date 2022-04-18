@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 
-@Autonomous(name = "A_William - AutonomousSlideControllerTest")
+//@Autonomous(name = "A_William - AutonomousSlideControllerTest")
 public class AutonomousSlideControllerTest extends LinearOpMode {
     AutonomousClient autonomousClientBeta;
 
