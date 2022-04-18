@@ -4,5 +4,7 @@ public enum MotorName {
     LF,
     RF,
     LB,
-    RB
+    RB,
+    MASTER,
+    MASTER_LOOP,
 }
