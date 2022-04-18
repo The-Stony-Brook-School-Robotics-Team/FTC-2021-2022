@@ -205,7 +205,7 @@ public class IntakeControllerRed implements IntakeController {
                         e.printStackTrace();
                     }
                     sweeper.setPosition(sweeperIn);
-
+                    scooper.setPosition(0.52);
                     break;
 
                 case REVERSE:

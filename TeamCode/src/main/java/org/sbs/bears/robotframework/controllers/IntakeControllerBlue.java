@@ -1,5 +1,7 @@
 package org.sbs.bears.robotframework.controllers;
 
+import android.util.Log;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
@@ -17,7 +19,7 @@ import org.sbs.bears.robotframework.enums.IntakeState;
 @Config
 public class IntakeControllerBlue implements IntakeController{
 
-    private Servo scooper;
+    public Servo scooper;
     private DcMotor compliantWheel;
     public ModernRoboticsI2cRangeSensor distanceSensor;
     private Servo sweeper;
@@ -58,7 +60,7 @@ public class IntakeControllerBlue implements IntakeController{
         scooper = hardwareMap.get(Servo.class, "bi");
         compliantWheel = hardwareMap.get(DcMotor.class, "leftodom");
         distanceSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "bd");
-        distanceSensor.setI2cAddress(I2cAddr.create8bit(0x26));
+        distanceSensor.setI2cAddress(I2cAddr.create7bit(0x26));
         sweeper = hardwareMap.get(Servo.class, "sweep");
         stopper = hardwareMap.get(Servo.class, "bs");
         this.dumperServo = dumperServo;
@@ -89,6 +91,12 @@ public class IntakeControllerBlue implements IntakeController{
         //setState(IntakeState.PARK);
 
     }
+
+/*    public void allowBlockToSlide()
+    {
+        Log.d("IntakeControllerBlue","Allowing block to slide...");
+        scooper.setPosition(0.54);
+    }*/
 
     /** Autonomous method-- waits until object is seen, dumps, then sets to park. **/
     @Deprecated
@@ -205,6 +213,7 @@ public class IntakeControllerBlue implements IntakeController{
                        e.printStackTrace();
                    }
                    sweeper.setPosition(sweeperIn);
+                   scooper.setPosition(0.54); // ADDED BY MARC ON APR 18
                    break;
 
                case REVERSE:

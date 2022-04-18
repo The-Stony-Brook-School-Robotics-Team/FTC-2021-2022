@@ -43,6 +43,7 @@ public class SlideControllerDebugger extends LinearOpMode
 
     @Override
     public void runOpMode() throws InterruptedException {
+        Log.d("SlideControllerDebugger","Requesting init");
         slideController = new SlideController(hardwareMap, telemetry);
         drive = new SampleMecanumDrive(hardwareMap);
         TrajectoryVelocityConstraint velocityConstraint = SampleMecanumDrive.getVelocityConstraint(30, 2, DriveConstantsMain.TRACK_WIDTH);
@@ -75,7 +76,7 @@ public class SlideControllerDebugger extends LinearOpMode
 
         while(!isStopRequested()) {
 
-
+            if(!(gamepad1.left_trigger > 0.2))
             drive.setWeightedDrivePower(
                     new Pose2d(
                             -gamepad1.left_stick_x,
@@ -113,6 +114,7 @@ public class SlideControllerDebugger extends LinearOpMode
 
             if(gamepad1.right_bumper && !pRB) {
                 drive.setWeightedDrivePower(new Pose2d());
+                //bu.scooper.setPosition(0.54);
                 slideController.extendDropRetract(SlideTarget.TOP_DEPOSIT);
                 pRB = true;
             } else if(!gamepad1.right_bumper && pRB) {
@@ -134,8 +136,8 @@ public class SlideControllerDebugger extends LinearOpMode
                 pB = false;
             }
 
-            if((gamepad1.right_stick_y < -0.02 || gamepad1.right_stick_y > -0.02) && gamepad1.left_bumper) {
-                double stickValue = gamepad1.right_stick_y * -1;
+            if((gamepad1.right_stick_y < -0.02 || gamepad1.right_stick_y > -0.02) && (gamepad1.left_trigger > 0.2)) {
+                double stickValue = gamepad1.right_stick_y * -2;
                 slideController.incrementEncoderPosition((int) (stickValue * Configuration.DefaultSlideTicks), true);
             }
 
