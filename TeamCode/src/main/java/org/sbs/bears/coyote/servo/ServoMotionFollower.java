@@ -2,7 +2,7 @@ package org.sbs.bears.coyote.servo;
 
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.common.teleop.v1.misc.Beta;
+import org.firstinspires.ftc.teamcode.common.official.teleop.v1.misc.Beta;
 import org.jetbrains.annotations.NotNull;
 import org.sbs.bears.coyote.enums.DoNotUse;
 

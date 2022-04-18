@@ -1,8 +1,8 @@
 
 package org.sbs.bears.robotframework.controllers;
 
-import static org.firstinspires.ftc.teamcode.common.teleop.v1.BlueTeleOp.driveSpeedStrafe;
-import static org.firstinspires.ftc.teamcode.common.teleop.v1.BlueTeleOp.interfaceTag;
+import static org.firstinspires.ftc.teamcode.common.official.teleop.v1.BlueTeleOp.driveSpeedStrafe;
+import static org.firstinspires.ftc.teamcode.common.official.teleop.v1.BlueTeleOp.interfaceTag;
 
 import android.util.Log;
 
@@ -19,8 +19,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.common.teleop.v1.Configuration;
-import org.firstinspires.ftc.teamcode.common.teleop.v1.BlueTeleOp;
+import org.firstinspires.ftc.teamcode.common.official.teleop.v1.Configuration;
+import org.firstinspires.ftc.teamcode.common.official.teleop.v1.BlueTeleOp;
 import org.sbs.bears.robotframework.Sleep;
 import org.sbs.bears.robotframework.enums.SlideState;
 import org.sbs.bears.robotframework.enums.SlideTarget;

@@ -1,11 +1,10 @@
-package org.firstinspires.ftc.teamcode.common.teleop.v2;
+package org.firstinspires.ftc.teamcode.common.official.teleop.v2;
 
-import com.acmerobotics.roadrunner.drive.Drive;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.common.teleop.v2.enums.TeleOpStatus;
-import org.firstinspires.ftc.teamcode.common.teleop.v2.runtimes.DriverRuntime;
-import org.firstinspires.ftc.teamcode.common.teleop.v2.runtimes.GamepadRuntime;
+import org.firstinspires.ftc.teamcode.common.official.teleop.v2.enums.TeleOpStatus;
+import org.firstinspires.ftc.teamcode.common.official.teleop.v2.runtimes.DriverRuntime;
+import org.firstinspires.ftc.teamcode.common.official.teleop.v2.runtimes.GamepadRuntime;
 import org.firstinspires.ftc.teamcode.drive.SampleTankDrive;
 import org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe.TankComponents.NewIntakeController;
 import org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe.TankComponents.NewSlideController;
@@ -16,7 +15,7 @@ import org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe.TankComponents.Ne
  * @type lightweight
  * @revisions redone trees
  */
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "v2 - TeleOp")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "A - v2 teleop")
 public class TeleOp extends OpMode {
 
     // status
