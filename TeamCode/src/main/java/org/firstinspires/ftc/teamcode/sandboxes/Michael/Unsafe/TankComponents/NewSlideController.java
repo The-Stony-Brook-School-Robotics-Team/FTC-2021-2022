@@ -13,7 +13,8 @@ public class NewSlideController {
 
     public DcMotorEx liftMotor;
     private Servo claw;
-    private Servo flipper;
+    private Servo flipperOne;
+    private Servo flipperTwo;
     private DcMotorEx slideMotor;
     private DigitalChannel magswitch;
     private ModernRoboticsI2cRangeSensor clawDistanceSensor;
@@ -33,8 +34,8 @@ public class NewSlideController {
         claw = hardwareMap.get(Servo.class, "cl");
         clawDistanceSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "cd");
 
-        flipper = hardwareMap.get(Servo.class, "fl");
-        flipper.setPosition(SlideConstants.flipper_READY);
+        flipperOne = hardwareMap.get(Servo.class, "fl");
+        flipperOne.setPosition(SlideConstants.flipper_READY);
 
         slideMotor = hardwareMap.get(DcMotorEx.class, "spool");
         slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -63,12 +64,12 @@ public class NewSlideController {
     public void extend(int targetPosition, double flipperPosition, double potentiometerPosition){
         slideMotor.setPower(SlideConstants.slideMotorPower_EXTENDING);
         slideMotor.setTargetPosition(targetPosition);
-        flipper.setPosition(flipperPosition);
+        flipperOne.setPosition(flipperPosition);
     }
     public void retract(){
         slideMotor.setPower(SlideConstants.slideMotorPower_RETRACTING);
         slideMotor.setTargetPosition(SlideConstants.slideMotorPosition_PARKED);
-        flipper.setPosition(SlideConstants.flipper_READY);
+        flipperOne.setPosition(SlideConstants.flipper_READY);
         waitToCreep.start();
     }
     //Handle threading externally if need be.

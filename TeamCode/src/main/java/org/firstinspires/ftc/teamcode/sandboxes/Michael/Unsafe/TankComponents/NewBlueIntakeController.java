@@ -53,6 +53,7 @@ public class NewBlueIntakeController {
                 case BASE:
                     scooper.setPosition(IntakeConstants.blueScooperPosition_BASE);
                     intakeWheel.setPower(IntakeConstants.intakePower_BASE);
+                    claw.setPosition(SlideConstants.claw_OPEN);
                     break;
                 case PARK:
                     scooper.setPosition(IntakeConstants.blueScooperPosition_DUMP);
@@ -69,6 +70,7 @@ public class NewBlueIntakeController {
 
     public void tick(){
         if(isFreight() && state == IntakeState.BASE) setState(IntakeState.DUMP);
+
     }
 
 }

@@ -50,9 +50,8 @@ public class DriveController {
             for(DcMotorEx motor : motors){
                 motor.setTargetPosition(motor.getCurrentPosition());
             }
-        }
+               }
     }
-
 
 
     public static double inchesToEncoderTicks(double inches){
