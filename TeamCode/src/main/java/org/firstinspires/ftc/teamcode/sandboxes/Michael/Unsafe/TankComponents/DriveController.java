@@ -40,6 +40,7 @@ public class DriveController {
 
     public void driveTo(int ticks){
         for(DcMotorEx motor : motors){
+            motor.setPower(.3);
             motor.setTargetPosition(ticks);
         }
     }
