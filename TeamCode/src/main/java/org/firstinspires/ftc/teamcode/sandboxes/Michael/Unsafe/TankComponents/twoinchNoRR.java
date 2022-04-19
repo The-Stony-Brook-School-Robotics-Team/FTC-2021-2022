@@ -60,6 +60,7 @@ public class twoinchNoRR {
 
 
     static Pose2d blueStartPose = new Pose2d(14, 65.5, 0);
+ /**
     Trajectory goInitialDeposit = new TrajectoryBuilder(blueStartPose, SampleTankDrive.VEL_CONSTRAINT, SampleTankDrive.accelConstraint)
 
             .lineToConstantHeading(new Vector2d(-4.7, 65.5))
@@ -79,5 +80,5 @@ public class twoinchNoRR {
             .splineTo(new Vector2d(35, 75), Math.toRadians(0))
             .build();
 
-    Trajectory goIntakeFromDeposit;
+    Trajectory goIntakeFromDeposit; **/
 }
