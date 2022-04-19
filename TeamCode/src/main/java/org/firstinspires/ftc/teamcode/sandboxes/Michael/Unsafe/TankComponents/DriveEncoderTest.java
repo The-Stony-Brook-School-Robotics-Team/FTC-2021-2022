@@ -42,6 +42,15 @@ public class DriveEncoderTest extends OpMode {
             lb.setPower(0);
             rb.setPower(0);
         }
+        telemetry.addData("lf", lf.getPower());
+        telemetry.addData("rf", rf.getPower());
+        telemetry.addData("lb", lb.getPower());
+        telemetry.addData("rb", rb.getPower());
+        telemetry.addData("lf encoder", lf.getCurrentPosition());
+        telemetry.addData("rf encoder", rf.getCurrentPosition());
+        telemetry.addData("lb encoder", lb.getCurrentPosition());
+        telemetry.addData("rb encoder", rb.getCurrentPosition());
+        telemetry.update();
 
     }
 
