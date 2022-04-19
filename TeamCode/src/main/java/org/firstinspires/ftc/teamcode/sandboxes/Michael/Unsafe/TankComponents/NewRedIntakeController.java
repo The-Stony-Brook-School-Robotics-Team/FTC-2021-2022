@@ -8,19 +8,17 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.sbs.bears.robotframework.enums.IntakeState;
 
-public class NewIntakeController {
+public class NewRedIntakeController {
     private Servo scooper;
     private Servo claw;
     private DcMotor intakeWheel;
     public ModernRoboticsI2cRangeSensor intakeSensor;
     private ModernRoboticsI2cRangeSensor clawSensor;
 
-    private int freightDetectionThreshold = 50;
-
-    public volatile IntakeState state = IntakeState.DUMP;
+    public volatile IntakeState state = IntakeState.PARK;
     Object stateMutex = new Object();
 
-    public NewIntakeController(HardwareMap hardwareMap, Servo clawServo, ModernRoboticsI2cRangeSensor clawSensor){
+    public NewRedIntakeController(HardwareMap hardwareMap, Servo clawServo, ModernRoboticsI2cRangeSensor clawSensor){
         scooper = hardwareMap.get(Servo.class, "ri");
         intakeWheel = hardwareMap.get(DcMotor.class, "rim");
         intakeSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rd");
@@ -42,24 +40,33 @@ public class NewIntakeController {
         new Thread(() -> {
             switch(state){
                 case DUMP:
-                    scooper.setPosition(IntakeConstants.scooperPosition_DUMP);
-                    claw.setPosition(IntakeConstants.clawPosition_DUMP);
+                    scooper.setPosition(IntakeConstants.redScooperPosition_DUMP);
+                    try {
+                        Thread.sleep((long)IntakeConstants.waitForScooper);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     intakeWheel.setPower(IntakeConstants.intakePower_DUMP);
                     break;
                 case BASE:
-                    scooper.setPosition(IntakeConstants.scooperPosition_BASE);
-                    claw.setPosition(IntakeConstants.clawPosition_BASE);
+                    scooper.setPosition(IntakeConstants.redScooperPosition_BASE);
                     intakeWheel.setPower(IntakeConstants.intakePower_BASE);
                     break;
-
+                case PARK:
+                    scooper.setPosition(IntakeConstants.redScooperPosition_DUMP);
+                    intakeWheel.setPower(IntakeConstants.intakePower_PARK);
             }
         }).start();
     }
 
-    public boolean isFreight(){return intakeSensor.getDistance(DistanceUnit.MM) < freightDetectionThreshold;}
+    public boolean isFreight(){
+        double distance = intakeSensor.getDistance(DistanceUnit.MM);
+        return distance < IntakeConstants.freightDetectionThreshold && distance != 0;
+    }
+    public boolean isInClaw(){return clawSensor.getDistance(DistanceUnit.MM) < IntakeConstants.freightDetectionThreshold;}
 
     public void tick(){
-        if(isFreight()) setState(IntakeState.DUMP);
+        if(isFreight() && state == IntakeState.BASE) setState(IntakeState.DUMP);
     }
 
 }

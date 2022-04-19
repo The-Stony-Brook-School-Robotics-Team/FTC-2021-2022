@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe.TankComponents;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -10,22 +11,24 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class NewSlideController {
 
-    private DcMotorEx liftMotor;
+    public DcMotorEx liftMotor;
     private Servo claw;
     private Servo flipper;
     private DcMotorEx slideMotor;
     private DigitalChannel magswitch;
     private ModernRoboticsI2cRangeSensor clawDistanceSensor;
+    private AnalogInput potentiometer;
+
+    private double desiredVoltage;
 
     public NewSlideController(HardwareMap hardwareMap){
         magswitch = hardwareMap.get(DigitalChannel.class, "mag");
+
         liftMotor = hardwareMap.get(DcMotorEx.class, "lift");
-        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        liftMotor.setTargetPosition(0);
-        liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        liftMotor.setPositionPIDFCoefficients(10);
+        //liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //TODO tolerance?
-        liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        liftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         claw = hardwareMap.get(Servo.class, "cl");
         clawDistanceSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "cd");
@@ -44,22 +47,28 @@ public class NewSlideController {
         //claw.setPosition(SlideConstants.frontBucket_CLOSED);
         magswitch.setMode(DigitalChannel.Mode.INPUT);
         //setTargetHeight(SlideConstants.liftServo_THREE_DEPOSIT);
+        potentiometer = hardwareMap.get(AnalogInput.class, "po");
 
         creepBack();
-
+        setTargetHeight(SlideConstants.potentiometer_THREE_DEPOSIT);
 
     }
 
-    public void setTargetHeight(int targetHeight){
-        liftMotor.setTargetPosition(targetHeight);
+    public void setTargetHeight(double desiredVoltage){
+
+        this.desiredVoltage = desiredVoltage;
+        waitForSetHeight.start();
+
     }
-    public void extend(int targetPosition){
+    public void extend(int targetPosition, double flipperPosition, double potentiometerPosition){
         slideMotor.setPower(SlideConstants.slideMotorPower_EXTENDING);
         slideMotor.setTargetPosition(targetPosition);
+        flipper.setPosition(flipperPosition);
     }
     public void retract(){
         slideMotor.setPower(SlideConstants.slideMotorPower_RETRACTING);
         slideMotor.setTargetPosition(SlideConstants.slideMotorPosition_PARKED);
+        flipper.setPosition(SlideConstants.flipper_READY);
         waitToCreep.start();
     }
     //Handle threading externally if need be.
@@ -72,8 +81,8 @@ public class NewSlideController {
         }
         claw.setPosition(SlideConstants.claw_CLOSED);
     }
-    public void extendDropRetract(int targetPosition){
-        extend(targetPosition);
+    public void extendDropRetract(int targetPosition, double flipperPosition, double potentiometerPosition){
+        extend(targetPosition, flipperPosition, potentiometerPosition);
         waitForDropRetract.start();
     }
     private void creepBack() {
@@ -91,6 +100,7 @@ public class NewSlideController {
     public void killThreads(){
         waitForDropRetract.interrupt();
         waitToCreep.interrupt();
+        waitForSetHeight.interrupt();
     }
 
     public Servo getClaw(){return claw;}
@@ -99,6 +109,8 @@ public class NewSlideController {
     public boolean isExtendedPastThreshold(){return slideMotor.getCurrentPosition() > SlideConstants.slideMotorExtensionThreshold;}
 
     public boolean magTriggered(){return !magswitch.getState();}
+
+
 
     Thread waitForDropRetract = new Thread(){
         public void run(){
@@ -118,7 +130,7 @@ public class NewSlideController {
 
     Thread waitToCreep = new Thread(){
         public void run(){
-            while(slideMotor.isBusy() && !magTriggered()) {
+            while(slideMotor.isBusy()) {
                 try {
                     Thread.sleep(SlideConstants.busyWait);
                 } catch (InterruptedException e) {
@@ -129,4 +141,24 @@ public class NewSlideController {
         }
     };
 
+    Thread waitForSetHeight = new Thread(){
+        public void run(){
+          if(desiredVoltage < SlideConstants.potentiometer_IF_LOWER_THAN || desiredVoltage > SlideConstants.potentiometer_IF_HIGHER_THAN){
+                liftMotor.setPower(0);
+              return;
+          }
+            if(potentiometer.getVoltage() < desiredVoltage) {
+                while (potentiometer.getVoltage() < desiredVoltage) {
+                    liftMotor.setPower(SlideConstants.liftMotorPower_MOVING);
+                }
+                liftMotor.setPower(0);
+                return;
+            }
+            while (potentiometer.getVoltage() > desiredVoltage){
+                liftMotor.setPower(-SlideConstants.liftMotorPower_MOVING);
+            }
+            liftMotor.setPower(0);
+
+        }
+    };
 }

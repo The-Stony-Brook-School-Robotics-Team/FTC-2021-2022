@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.sandboxes.Michael.Final;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
@@ -24,7 +26,8 @@ public class AllServoTank extends LinearOpMode {
     Servo claw;
     Servo flip;
 
-
+    DcMotorEx spool;
+    AnalogInput pot;
 
     private boolean qA = false;
     private boolean qUp = false;
@@ -52,9 +55,12 @@ public class AllServoTank extends LinearOpMode {
         claw = hardwareMap.get(Servo.class, "cl");
         flip = hardwareMap.get(Servo.class, "fl");
 
+        spool = hardwareMap.get(DcMotorEx.class, "spool");
+        pot = hardwareMap.get(AnalogInput.class, "po");
 
-        Servo[] servos = {blueTapeRotate, blueTapeTilt, blueTapeExtend, blueIntakeServo, redTapeRotate, redTapeTilt, redTapeExtend, claw, flip};
-        String[] servoNames = {"blue tape rotate", "blue tape tilt ", "blue tape extend ", "blue intake", "red tape rotate", "red tape tilt", "red tape extend", "claw", "flip"};
+
+        Servo[] servos = {blueTapeRotate, blueTapeTilt, blueTapeExtend, blueIntakeServo, redTapeRotate, redTapeTilt, redTapeExtend, redIntakeServo, claw, flip};
+        String[] servoNames = {"blue tape rotate", "blue tape tilt ", "blue tape extend ", "blue intake", "red tape rotate", "red tape tilt", "red tape extend", "red intake", "claw", "flip"};
         place = servos[0];
         waitForStart();
 
@@ -98,6 +104,9 @@ public class AllServoTank extends LinearOpMode {
             telemetry.addData("Current Position: ", place.getPosition());
             telemetry.addLine();
             telemetry.addData("Hit X to set to " + up + ". Hit Y to set to " + down, "");
+            telemetry.addLine();
+            telemetry.addData("Potentiometer: ", pot.getVoltage());
+            telemetry.addData("Slide Motor: ", spool.getCurrentPosition());
             telemetry.update();
 
 
