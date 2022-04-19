@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode.common.teleop.v1.runtime;
+package org.firstinspires.ftc.teamcode.common.official.teleop.v1.runtime;
 
-import static org.firstinspires.ftc.teamcode.common.teleop.v1.BlueTeleOp.drive;
-import static org.firstinspires.ftc.teamcode.common.teleop.v1.BlueTeleOp.slideController;
-import static org.firstinspires.ftc.teamcode.common.teleop.v1.BlueTeleOp.slideHandler;
+import static org.firstinspires.ftc.teamcode.common.official.teleop.v1.BlueTeleOp.drive;
+import static org.firstinspires.ftc.teamcode.common.official.teleop.v1.BlueTeleOp.slideController;
+import static org.firstinspires.ftc.teamcode.common.official.teleop.v1.BlueTeleOp.slideHandler;
 
 import android.util.Log;
 
@@ -11,7 +11,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 
-import org.firstinspires.ftc.teamcode.common.teleop.v1.Configuration;
+import org.firstinspires.ftc.teamcode.common.official.teleop.v1.Configuration;
 import org.firstinspires.ftc.teamcode.drive.DriveConstantsMain;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 

@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.common.newAutonomous;
 
 import static org.sbs.bears.robotframework.controllers.OpenCVController.doAnalysisMaster;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
@@ -11,7 +10,7 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
-import org.firstinspires.ftc.teamcode.common.teleop.v1.Configuration;
+import org.firstinspires.ftc.teamcode.common.official.teleop.v1.Configuration;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.sbs.bears.robotframework.controllers.DuckCarouselController;
 import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;

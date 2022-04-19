@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode.common.teleop.v1;
+package org.firstinspires.ftc.teamcode.common.official.teleop.v1;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 
 @Config
 public class Configuration {

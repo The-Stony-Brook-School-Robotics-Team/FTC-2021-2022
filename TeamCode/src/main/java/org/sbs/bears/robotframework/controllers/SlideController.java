@@ -1,8 +1,8 @@
 
 package org.sbs.bears.robotframework.controllers;
 
-import static org.firstinspires.ftc.teamcode.common.teleop.v1.BlueTeleOp.driveSpeedStrafe;
-import static org.firstinspires.ftc.teamcode.common.teleop.v1.BlueTeleOp.interfaceTag;
+import static org.firstinspires.ftc.teamcode.common.official.teleop.v1.BlueTeleOp.driveSpeedStrafe;
+import static org.firstinspires.ftc.teamcode.common.official.teleop.v1.BlueTeleOp.interfaceTag;
 
 import android.util.Log;
 
@@ -19,8 +19,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.common.teleop.v1.Configuration;
-import org.firstinspires.ftc.teamcode.common.teleop.v1.BlueTeleOp;
+import org.firstinspires.ftc.teamcode.common.official.teleop.v1.Configuration;
+import org.firstinspires.ftc.teamcode.common.official.teleop.v1.BlueTeleOp;
 import org.sbs.bears.robotframework.Sleep;
 import org.sbs.bears.robotframework.enums.SlideState;
 import org.sbs.bears.robotframework.enums.SlideTarget;
@@ -992,7 +992,7 @@ public class SlideController {
     public static int slideMotorPosition_BUCKET_OUT_RET = 800; // minimum position for the bucket to be out, measured
     public static int slideMotorPosition_AUTON_EARLY = 400; // minimum position for the bucket to be out, measured
     public static int slideMotorPosition_THREE_DEPOSIT = 1142;//1057; // new bucket// 1316; // remeasured // last 1310
-    public static int slideMotorPosition_THREE_DEPOSIT_AUTON = 1142;//1360; // remeasured // last 1360
+    public static int slideMotorPosition_THREE_DEPOSIT_AUTON = 1250;//1360; // remeasured // last 1360
     public static int slideMotorPosition_TWO_DEPOSIT = 1020;//1320; //measured
     public static int slideMotorPosition_ONE_DEPOSIT = 970;//1190;//1000; //measured
     public static int slideMotorPosition_THREE_CAROUSEL = 1713;

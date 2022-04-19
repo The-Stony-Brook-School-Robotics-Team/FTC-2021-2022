@@ -1,11 +1,11 @@
-package org.firstinspires.ftc.teamcode.common.teleop.v1.runtime;
+package org.firstinspires.ftc.teamcode.common.official.teleop.v1.runtime;
 
-import static org.firstinspires.ftc.teamcode.common.teleop.v1.BlueTeleOp.slideController;
-//import static org.firstinspires.ftc.teamcode.common.teleop.OfficialTeleop.slideHandler;
+import static org.firstinspires.ftc.teamcode.common.official.teleop.v1.BlueTeleOp.slideController;
+//import static org.firstinspires.ftc.teamcode.common.official.teleop.OfficialTeleop.slideHandler;
 
 import android.util.Log;
 
-import org.firstinspires.ftc.teamcode.common.teleop.v1.Configuration;
+import org.firstinspires.ftc.teamcode.common.official.teleop.v1.Configuration;
 
 public class SlideHandler {
     /**

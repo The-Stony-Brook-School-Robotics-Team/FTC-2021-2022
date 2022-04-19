@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.common.teleop.v1;
+package org.firstinspires.ftc.teamcode.common.official.teleop.v1;
 
 import android.util.Log;
 
@@ -13,13 +13,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.common.teleop.v1.enums.ControllerModes;
-import org.firstinspires.ftc.teamcode.common.teleop.v1.enums.TeleOpRobotStates;
-import org.firstinspires.ftc.teamcode.common.teleop.v1.runtime.ButtonHandler;
-import org.firstinspires.ftc.teamcode.common.teleop.v1.runtime.IntakeHandler;
-import org.firstinspires.ftc.teamcode.common.teleop.v1.runtime.MovementHandler;
-import org.firstinspires.ftc.teamcode.common.teleop.v1.runtime.RoadrunnerHandler;
-import org.firstinspires.ftc.teamcode.common.teleop.v1.runtime.SlideHandler;
+import org.firstinspires.ftc.teamcode.common.official.teleop.v1.enums.ControllerModes;
+import org.firstinspires.ftc.teamcode.common.official.teleop.v1.enums.TeleOpRobotStates;
+import org.firstinspires.ftc.teamcode.common.official.teleop.v1.runtime.ButtonHandler;
+import org.firstinspires.ftc.teamcode.common.official.teleop.v1.runtime.IntakeHandler;
+import org.firstinspires.ftc.teamcode.common.official.teleop.v1.runtime.MovementHandler;
+import org.firstinspires.ftc.teamcode.common.official.teleop.v1.runtime.RoadrunnerHandler;
+import org.firstinspires.ftc.teamcode.common.official.teleop.v1.runtime.SlideHandler;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.sbs.bears.robotframework.controllers.DuckCarouselController;
@@ -31,7 +31,7 @@ import org.sbs.bears.robotframework.enums.IntakeState;
 import java.util.HashMap;
 import java.util.Map;
 
-@TeleOp(name = "A - TeleOp v1")
+@TeleOp(name = "A - v1 teleop")
 public class BlueTeleOp extends OpMode {
 
 
