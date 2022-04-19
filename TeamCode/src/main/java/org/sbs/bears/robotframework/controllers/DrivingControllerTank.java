@@ -7,33 +7,41 @@ import static org.sbs.bears.robotframework.enums.MotorName.MASTER_LOOP;
 import static org.sbs.bears.robotframework.enums.MotorName.RB;
 import static org.sbs.bears.robotframework.enums.MotorName.RF;
 
+import android.util.Log;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.checkerframework.checker.units.qual.A;
+import org.firstinspires.ftc.teamcode.drive.DriveConstantsMain;
 import org.firstinspires.ftc.teamcode.drive.DriveConstantsTank;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.SampleTankDrive;
 import org.sbs.bears.robotframework.Sleep;
 import org.sbs.bears.robotframework.enums.DrivingMode;
 import org.sbs.bears.robotframework.enums.MotorName;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class DrivingControllerTank {
     private static final int EPSILON = 10;
-    public SampleTankDrive RR;
+    public SampleMecanumDrive RR;
     DrivingMode mode;
     AtomicReference<Boolean> isFollowingTraj = new AtomicReference<>();
     Map<MotorName, DcMotorEx> motorMap = new HashMap<>();
     AtomicReference<Map<MotorName, Boolean>> PIDreadySignal = new AtomicReference<>();
     AtomicReference<Map<MotorName, Boolean>> PIDdoneSignal = new AtomicReference<>();
     Map<MotorName, Integer> encoderMap = new HashMap<>();
+    List<Thread> threadPool = new ArrayList<>();
     public DrivingControllerTank(HardwareMap hardwareMap)
     {
-        RR = new SampleTankDrive(hardwareMap);
+        RR = new SampleMecanumDrive(hardwareMap);
         mode  = DrivingMode.STOPPED;
         isFollowingTraj.set(false);
         motorMap.clear();
@@ -43,6 +51,14 @@ public class DrivingControllerTank {
         motorMap.put(RB,hardwareMap.get(DcMotorEx.class,"rb"));
         PIDreadySignal.set(new HashMap<>());
         PIDdoneSignal.set(new HashMap<>());
+    }
+    public void shutDown()
+    {
+        for(Thread tmp : threadPool)
+        {
+            tmp.interrupt();
+        }
+        threadPool = new ArrayList<>();
     }
     public void setPos(Pose2d newPos)
     {
@@ -58,42 +74,86 @@ public class DrivingControllerTank {
         RR.setWeightedDrivePower(info);
     }
 
-    public void goForwardSimple(double distance, double power)
+    public void goForwardSimple(double distance, double power, AtomicReference<Boolean> terminate_signal)
     {
-        goForwardSimpleAsync(distance,power);
+        goForwardSimpleAsync(distance,power,terminate_signal);
         waitForTrajToFinish();
     }
-    public void goForwardSimpleAsync(double distance, double power)
+    public void goForwardSimpleAsync(double distance, double power, AtomicReference<Boolean> terminate_signal)
     {
-        new Thread(()-> {
+        Log.d("DrivingControllerTank","Init Forwards Simple");
+        Thread tmp = new Thread(()-> {
             isFollowingTraj.set(true);
             updateEncoders();
-            int deltaTicks = (int) DriveConstantsTank.inchesToEncoderTicks(distance);
+            int deltaTicks = (int) DriveConstantsMain.inchesToEncoderTicks(distance);
+            Log.d("DrivingControllerTank","Delta Ticks: " + deltaTicks);
             Map<MotorName, Integer> targetEncoderCounts = new HashMap<>();
-            targetEncoderCounts.put(LF, encoderMap.get(LF) - deltaTicks);
-            targetEncoderCounts.put(RF, encoderMap.get(RF) - deltaTicks);
+            targetEncoderCounts.put(LF, encoderMap.get(LF) + deltaTicks);
+            targetEncoderCounts.put(RF, encoderMap.get(RF) + deltaTicks);
             motorMap.get(LF).setPower(power);
             motorMap.get(RF).setPower(power);
             motorMap.get(LB).setPower(power);
             motorMap.get(RB).setPower(power);
-            while(Math.abs(encoderMap.get(LF) - targetEncoderCounts.get(LF)) > EPSILON)
+            while((encoderMap.get(LF) < targetEncoderCounts.get(LF)) && !terminate_signal.get())
             {
                 motorMap.get(LF).setPower(power);
                 motorMap.get(RF).setPower(power);
                 motorMap.get(LB).setPower(power);
                 motorMap.get(RB).setPower(power);
+                updateEncoders();
+                Log.d("DrivingControllerTank","In progress with delta " + (-encoderMap.get(LF) + targetEncoderCounts.get(LF)));
+                RR.update();
             }
+            Log.d("DrivingControllerTank","Finished with delta " + Math.abs(encoderMap.get(LF) - targetEncoderCounts.get(LF)));
             motorMap.get(LF).setPower(0);
             motorMap.get(RF).setPower(0);
             motorMap.get(LB).setPower(0);
             motorMap.get(RB).setPower(0);
             isFollowingTraj.set(false);
-        }).start();
+        });
+        threadPool.add(tmp);
+        tmp.start();
+    }
+
+    public void goBackwardSimpleAsync(double distance, double power, AtomicReference<Boolean> terminate_signal)
+    {
+        Log.d("DrivingControllerTank","Init Backwards Simple");
+        Thread tmp = new Thread(()-> {
+            isFollowingTraj.set(true);
+            updateEncoders();
+            int deltaTicks = (int) DriveConstantsMain.inchesToEncoderTicks(distance);
+            Log.d("DrivingControllerTank","Delta Ticks: " + deltaTicks);
+            Map<MotorName, Integer> targetEncoderCounts = new HashMap<>();
+            targetEncoderCounts.put(LF, encoderMap.get(LF) - deltaTicks);
+            targetEncoderCounts.put(RF, encoderMap.get(RF) - deltaTicks);
+            motorMap.get(LF).setPower(-power);
+            motorMap.get(RF).setPower(-power);
+            motorMap.get(LB).setPower(-power);
+            motorMap.get(RB).setPower(-power);
+            while((encoderMap.get(LF) > targetEncoderCounts.get(LF)) && !terminate_signal.get())
+            {
+                motorMap.get(LF).setPower(-power);
+                motorMap.get(RF).setPower(-power);
+                motorMap.get(LB).setPower(-power);
+                motorMap.get(RB).setPower(-power);
+                updateEncoders();
+                Log.d("DrivingControllerTank","In progress with delta " + (encoderMap.get(LF) - targetEncoderCounts.get(LF)));
+                RR.update();
+            }
+            Log.d("DrivingControllerTank","Finished with delta " + Math.abs(encoderMap.get(LF) - targetEncoderCounts.get(LF)));
+            motorMap.get(LF).setPower(0);
+            motorMap.get(RF).setPower(0);
+            motorMap.get(LB).setPower(0);
+            motorMap.get(RB).setPower(0);
+            isFollowingTraj.set(false);
+        });
+        threadPool.add(tmp);
+        tmp.start();
     }
 
     public void goBackwardAsync(double distance,double speed)
     {
-        new Thread(()->{
+        Thread tmp = new Thread(()->{
             isFollowingTraj.set(true);
             updateEncoders();
             int deltaTicks = (int) DriveConstantsTank.inchesToEncoderTicks(distance);
@@ -125,19 +185,22 @@ public class DrivingControllerTank {
                 PIDreadySignal.get().put(MASTER_LOOP,false);
                 PIDreadySignal.get().replace(LF,false);
                 PIDreadySignal.get().replace(RF,false);
+                RR.update();
             }
             isFollowingTraj.set(false);
-        }).start();
+        });
+        threadPool.add(tmp);
+        tmp.start();
     }
     public void goBackward(double distance,double speed)
     {
-        goForwardAsync(distance,speed);
+        goBackwardAsync(distance,speed);
         waitForTrajToFinish();
     }
 
-    public void goForwardAsync(double distance,double speed)
+    public void goForwardAsync(double distance,double speed, AtomicReference<Boolean> terminator)
     {
-        new Thread(()->{
+        Thread tmp = new Thread(()->{
             isFollowingTraj.set(true);
             updateEncoders();
             int deltaTicks = (int) DriveConstantsTank.inchesToEncoderTicks(distance);
@@ -153,14 +216,16 @@ public class DrivingControllerTank {
             PIDreadySignal.get().put(RF,false);
             PIDdoneSignal.get().put(RF,false);
             PIDreadySignal.get().put(MASTER,false);
-            new Thread(()->{
-                followPIDMotorToEncoderListTank(LF,motorMap.get(LF),motorMap.get(LB),encoderTargetLists.get(LF),0.1,0.5,1,0,0,0.2);
-            }).start();
-            new Thread(()->{
-                followPIDMotorToEncoderListTank(RF,motorMap.get(RF),motorMap.get(RB),encoderTargetLists.get(RF),0.1,0.5,1,0,0,0.2);
-            }).start();
+            Thread left = new Thread(()->{
+                followPIDMotorToEncoderListTank(LF,motorMap.get(LF),motorMap.get(LB),encoderTargetLists.get(LF),0.1,0.5,3,0,0,0.2);
+            });
+            left.start();
+            Thread right = new Thread(()->{
+                followPIDMotorToEncoderListTank(RF,motorMap.get(RF),motorMap.get(RB),encoderTargetLists.get(RF),0.1,0.5,3,0,0,0.2);
+            });
+            right.start();
             PIDreadySignal.get().put(MASTER,true);
-            while(!PIDdoneSignal.get().get(LF) && !PIDdoneSignal.get().get(RF)) {
+            while(!PIDdoneSignal.get().get(LF) && !PIDdoneSignal.get().get(RF) && !terminator.get()) {
                 PIDreadySignal.get().put(MASTER_LOOP,true);
                 while(!(PIDreadySignal.get().get(LF) && PIDreadySignal.get().get(RF)))
                 {
@@ -169,13 +234,21 @@ public class DrivingControllerTank {
                 PIDreadySignal.get().put(MASTER_LOOP,false);
                 PIDreadySignal.get().replace(LF,false);
                 PIDreadySignal.get().replace(RF,false);
+                Log.d("DrivingControllerTank", "Cycle complete");
+            }
+            if(terminator.get())
+            {
+                left.interrupt();
+                right.interrupt();
             }
             isFollowingTraj.set(false);
-        }).start();
+        });
+        threadPool.add(tmp);
+        tmp.start();
     }
-    public void goForward(double distance,double speed)
+    public void goForward(double distance,double speed,AtomicReference<Boolean> terminator)
     {
-        goForwardAsync(distance,speed);
+        goForwardAsync(distance,speed,terminator);
         waitForTrajToFinish();
     }
 
@@ -206,14 +279,17 @@ public class DrivingControllerTank {
             {
                 Sleep.sleep(1);
             }
+            Log.d("DrivingControllerTank", "Start cycle: " + ID);
             currentError = motor1.getCurrentPosition() - encoderTargets[index];
             double powerToApply = floor(cap(basePower + P*currentError + I*totalError + D*(currentError - lastError),1),-1);
             motor1.setPower(powerToApply);
             motor2.setPower(powerToApply);
+            Log.d("DrivingControllerTank", "ID: " + ID + " power sent: " + powerToApply);
             lastError = currentError;
             totalError*=decayFactor;
             totalError += currentError;
             PIDreadySignal.get().replace(ID,true);
+            Log.d("DrivingControllerTank", "Ready and waiting... " + ID);
         }
         motor1.setPower(0);
         motor2.setPower(0);
