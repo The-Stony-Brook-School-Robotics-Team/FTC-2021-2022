@@ -19,6 +19,10 @@ public class TankDrivingTester extends LinearOpMode {
     public static int STATE = 0;
     public static double toTravel = 10;
     public static double speed = 0.2;
+    public static double P = 1;
+    public static double I = 1;
+    public static double D = 1;
+
     @Override
     public void runOpMode() throws InterruptedException {
         DrivingControllerTank driver = new DrivingControllerTank(hardwareMap);
@@ -44,7 +48,7 @@ public class TankDrivingTester extends LinearOpMode {
             {
                 qB = true;
                 driver.stopMotors();
-                driver.goForward(toTravel,speed,terminate_signal);
+                driver.goForwardGyroPIDAsync(toTravel,speed,terminate_signal,P,I,D);
                 STATE = 0;
             }
             if(!gamepad1.b && qB)

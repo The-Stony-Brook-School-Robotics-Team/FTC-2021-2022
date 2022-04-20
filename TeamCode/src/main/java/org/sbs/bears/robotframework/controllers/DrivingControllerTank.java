@@ -10,18 +10,20 @@ import static org.sbs.bears.robotframework.enums.MotorName.RF;
 import android.util.Log;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.checkerframework.checker.units.qual.A;
-import org.firstinspires.ftc.teamcode.drive.DriveConstantsMain;
+import org.firstinspires.ftc.teamcode.archive.B;
 import org.firstinspires.ftc.teamcode.drive.DriveConstantsTank;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.SampleTankDrive;
 import org.sbs.bears.robotframework.Sleep;
 import org.sbs.bears.robotframework.enums.DrivingMode;
 import org.sbs.bears.robotframework.enums.MotorName;
+import org.tensorflow.lite.task.text.qa.QaAnswer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,8 +33,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class DrivingControllerTank {
     private static final int EPSILON = 10;
-    public SampleMecanumDrive RR;
+    public SampleTankDrive RR;
     DrivingMode mode;
+    public BNO055IMU imu;
     AtomicReference<Boolean> isFollowingTraj = new AtomicReference<>();
     Map<MotorName, DcMotorEx> motorMap = new HashMap<>();
     AtomicReference<Map<MotorName, Boolean>> PIDreadySignal = new AtomicReference<>();
@@ -41,7 +44,12 @@ public class DrivingControllerTank {
     List<Thread> threadPool = new ArrayList<>();
     public DrivingControllerTank(HardwareMap hardwareMap)
     {
-        RR = new SampleMecanumDrive(hardwareMap);
+        RR = new SampleTankDrive(hardwareMap);
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        imu.initialize(parameters);
+        //spin around y axis
         mode  = DrivingMode.STOPPED;
         isFollowingTraj.set(false);
         motorMap.clear();
@@ -74,6 +82,51 @@ public class DrivingControllerTank {
         RR.setWeightedDrivePower(info);
     }
 
+
+    public void goForwardGyroPIDAsync(double distance, double power, AtomicReference<Boolean> terminator,double p, double i, double d)
+    {
+        Log.d("DrivingControllerTank","Init Forwards Simple");
+        Thread tmp = new Thread(()-> {
+            isFollowingTraj.set(true);
+            Pose2d iniPos = RR.getPoseEstimate();
+            double iniHeading = imu.getAngularOrientation().secondAngle; // should be y: xyz
+            motorMap.get(LF).setPower(power);
+            motorMap.get(RF).setPower(power);
+            motorMap.get(LB).setPower(power);
+            motorMap.get(RB).setPower(power);
+            double totalError = 0;
+            double lastErr = 0;
+            while((RoadRunnerController.distanceTwoPoints(iniPos,RR.getPoseEstimate()) < distance) && !terminator.get())
+            {
+                double currentHeading = imu.getAngularOrientation().secondAngle;  // positive is to the right
+                double error = currentHeading-iniHeading; // positive is still to the right
+                Log.d("DrivingControllerTank","Heading error is " + error);
+                double powerDiff = error*p + totalError*i + (error-lastErr)*d; // R-L
+                powerDiff = 2*cap(powerDiff/2,1-power);
+                Log.d("DrivingControllerTank","Left power: " + (power-powerDiff/2) + " right power: " + (power+powerDiff/2));
+                motorMap.get(LF).setPower(power-powerDiff/2);
+                motorMap.get(RF).setPower(power+powerDiff/2);
+                motorMap.get(LB).setPower(power-powerDiff/2);
+                motorMap.get(RB).setPower(power+powerDiff/2);
+                RR.update();
+                totalError+=error;
+                lastErr = error;
+            }
+            Log.d("DrivingControllerTank","Finished with delta " + Math.abs(RoadRunnerController.distanceTwoPoints(iniPos,RR.getPoseEstimate())));
+            motorMap.get(LF).setPower(0);
+            motorMap.get(RF).setPower(0);
+            motorMap.get(LB).setPower(0);
+            motorMap.get(RB).setPower(0);
+            isFollowingTraj.set(false);
+        });
+        threadPool.add(tmp);
+        tmp.start();
+    }
+
+
+
+
+
     public void goForwardSimple(double distance, double power, AtomicReference<Boolean> terminate_signal)
     {
         goForwardSimpleAsync(distance,power,terminate_signal);
@@ -85,7 +138,7 @@ public class DrivingControllerTank {
         Thread tmp = new Thread(()-> {
             isFollowingTraj.set(true);
             updateEncoders();
-            int deltaTicks = (int) DriveConstantsMain.inchesToEncoderTicks(distance);
+            int deltaTicks = (int) DriveConstantsTank.inchesToEncoderTicks(distance);
             Log.d("DrivingControllerTank","Delta Ticks: " + deltaTicks);
             Map<MotorName, Integer> targetEncoderCounts = new HashMap<>();
             targetEncoderCounts.put(LF, encoderMap.get(LF) + deltaTicks);
@@ -121,7 +174,7 @@ public class DrivingControllerTank {
         Thread tmp = new Thread(()-> {
             isFollowingTraj.set(true);
             updateEncoders();
-            int deltaTicks = (int) DriveConstantsMain.inchesToEncoderTicks(distance);
+            int deltaTicks = (int) DriveConstantsTank.inchesToEncoderTicks(distance);
             Log.d("DrivingControllerTank","Delta Ticks: " + deltaTicks);
             Map<MotorName, Integer> targetEncoderCounts = new HashMap<>();
             targetEncoderCounts.put(LF, encoderMap.get(LF) - deltaTicks);
@@ -197,6 +250,8 @@ public class DrivingControllerTank {
         goBackwardAsync(distance,speed);
         waitForTrajToFinish();
     }
+
+
 
     public void goForwardAsync(double distance,double speed, AtomicReference<Boolean> terminator)
     {
