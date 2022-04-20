@@ -25,6 +25,7 @@ public class AllServoTank extends LinearOpMode {
     Servo redIntakeServo;
     Servo claw;
     Servo flip;
+    Servo flip2;
 
     DcMotorEx spool;
     AnalogInput pot;
@@ -54,6 +55,7 @@ public class AllServoTank extends LinearOpMode {
         redIntakeServo = hardwareMap.get(Servo.class, "ri");
         claw = hardwareMap.get(Servo.class, "cl");
         flip = hardwareMap.get(Servo.class, "fl");
+        flip2 = hardwareMap.get(Servo.class, "fl2");
 
         spool = hardwareMap.get(DcMotorEx.class, "spool");
         pot = hardwareMap.get(AnalogInput.class, "po");
@@ -62,6 +64,7 @@ public class AllServoTank extends LinearOpMode {
         Servo[] servos = {blueTapeRotate, blueTapeTilt, blueTapeExtend, blueIntakeServo, redTapeRotate, redTapeTilt, redTapeExtend, redIntakeServo, claw, flip};
         String[] servoNames = {"blue tape rotate", "blue tape tilt ", "blue tape extend ", "blue intake", "red tape rotate", "red tape tilt", "red tape extend", "red intake", "claw", "flip"};
         place = servos[0];
+        flip2.setPosition(flip.getPosition());
         waitForStart();
 
         while (opModeIsActive()) {
@@ -80,6 +83,9 @@ public class AllServoTank extends LinearOpMode {
             if(gamepad1.dpad_up && !qUp){
                 qUp = true;
                 place.setPosition(place.getPosition() + .01);
+                if(place == flip){
+                    flip2.setPosition(flip.getPosition());
+                }
             }
             if(!gamepad1.dpad_up && qUp){
                 qUp = false;
@@ -88,15 +94,24 @@ public class AllServoTank extends LinearOpMode {
             if(gamepad1.dpad_down && !qDown){
                 qDown = true;
                 place.setPosition(place.getPosition() - .01);
+                if(place == flip){
+                    flip2.setPosition(flip.getPosition());
+                }
             }
             if(!gamepad1.dpad_down && qDown){
                 qDown = false;
             }
             if(gamepad1.x){
                 place.setPosition(up);
+                if(place == flip){
+                    flip2.setPosition(flip.getPosition());
+                }
             }
             if(gamepad1.y){
                 place.setPosition(down);
+                if(place == flip){
+                    flip2.setPosition(flip.getPosition());
+                }
             }
 
 

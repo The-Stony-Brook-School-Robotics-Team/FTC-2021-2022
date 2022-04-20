@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe.TankComponents;
 
+import android.content.IntentFilter;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -28,7 +30,7 @@ public class twoinchNoRR {
 
         }
         public void initialDeposit(){
-            drive.driveTo((int) DriveController.inchesToEncoderTicks(22));
+            drive.driveTo((int) DriveController.inchesToEncoderTicks(-22));
             while(drive.rb.isBusy()){
 
             }
@@ -54,7 +56,7 @@ public class twoinchNoRR {
 
                 slideController.dropFreight();
                 slideController.retract();
-                //drive.followTrajectory();
+                drive.driveTo((int)DriveController.inchesToEncoderTicks(35));
             }
         }
 

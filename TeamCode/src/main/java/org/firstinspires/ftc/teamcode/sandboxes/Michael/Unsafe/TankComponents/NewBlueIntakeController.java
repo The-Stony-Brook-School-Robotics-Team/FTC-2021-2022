@@ -66,10 +66,28 @@ public class NewBlueIntakeController {
         double distance = intakeSensor.getDistance(DistanceUnit.MM);
         return distance < IntakeConstants.freightDetectionThreshold && distance != 0;
     }
-    public boolean isInClaw(){return clawSensor.getDistance(DistanceUnit.MM) < IntakeConstants.freightDetectionThreshold;}
+    public boolean isInClaw(){return clawSensor.getDistance(DistanceUnit.MM) < IntakeConstants.clawFreightDetectionThreshold;}
 
     public void tick(){
         if(isFreight() && state == IntakeState.BASE) setState(IntakeState.DUMP);
+        if(isInClaw() && state == IntakeState.DUMP) intakeWheel.setPower(0);
+        else{
+            switch(state){
+                case DUMP:
+                    try {
+                        Thread.sleep((long)IntakeConstants.waitForScooper);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    intakeWheel.setPower(IntakeConstants.intakePower_DUMP);
+                    break;
+                case BASE:
+                    intakeWheel.setPower(IntakeConstants.intakePower_BASE);
+                    break;
+                case PARK:
+                    intakeWheel.setPower(0);
+            }
+        }
 
     }
 
