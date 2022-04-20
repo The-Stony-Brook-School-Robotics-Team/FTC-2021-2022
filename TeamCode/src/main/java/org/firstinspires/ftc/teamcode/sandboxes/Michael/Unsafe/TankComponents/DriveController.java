@@ -27,12 +27,14 @@ public class DriveController {
 
         for(DcMotorEx motor : leftMotors){
             motor.setDirection(DcMotorSimple.Direction.REVERSE);
+            motor.setDirection(DcMotorSimple.Direction.REVERSE);
+
         }
 
         for(DcMotorEx motor : motors){
             motor.setTargetPosition(motor.getCurrentPosition());
             motor.setTargetPositionTolerance(5);
-            motor.setPositionPIDFCoefficients(10);
+            //motor.setPositionPIDFCoefficients(10);
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
@@ -43,6 +45,7 @@ public class DriveController {
             motor.setPower(.3);
             motor.setTargetPosition(ticks);
         }
+
     }
 
     public void update(){
@@ -50,7 +53,7 @@ public class DriveController {
             for(DcMotorEx motor : motors){
                 motor.setTargetPosition(motor.getCurrentPosition());
             }
-               }
+        }
     }
 
 

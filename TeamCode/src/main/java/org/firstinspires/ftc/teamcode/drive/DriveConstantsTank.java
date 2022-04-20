@@ -15,7 +15,7 @@ public class DriveConstantsTank {
 
     public static double WHEEL_RADIUS = 1.889765;
     //24/16 ?
-    public static double GEAR_RATIO = 1.5;
+    public static double GEAR_RATIO = 2.14;//1.5;
     public static double TRACK_WIDTH = 10.3;
 
     public static double kV = 0.0138;

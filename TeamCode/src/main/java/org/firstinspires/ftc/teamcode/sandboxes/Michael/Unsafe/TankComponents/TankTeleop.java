@@ -52,10 +52,8 @@ public class TankTeleop extends OpMode {
     public void loop() {
 
 
-        //drive.setMotorPowers(gamepad1.left_stick_x - gamepad1.right_stick_x, gamepad1.left_stick_x + gamepad1.right_stick_x); good
-        //drive.setMotorPowers(-gamepad1.left_stick_y +gamepad1.right_stick_x, -gamepad1.left_stick_y - gamepad1.right_stick_x);
-        //drive.setMotorPowers(gamepad1.left_stick_x + gamepad1.right_stick_x, -gamepad1.left_stick_x + gamepad1.right_stick_x);
-        drive.setMotorPowers(multiplier * -(gamepad1.left_stick_x - gamepad1.right_stick_x), multiplier * -(-gamepad1.left_stick_x - gamepad1.right_stick_x));
+        drive.setMotorPowers(multiplier*(-gamepad1.left_stick_x + gamepad1.right_stick_x), multiplier*(-gamepad1.left_stick_x - gamepad1.right_stick_x));
+        //drive.setMotorPowers(multiplier * -(gamepad1.left_stick_x - gamepad1.right_stick_x), multiplier * -(-gamepad1.left_stick_x - gamepad1.right_stick_x));
         newRedIntakeController.tick();
         newBlueIntakeController.tick();
 

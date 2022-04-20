@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class NewSlideController {
@@ -33,7 +34,7 @@ public class NewSlideController {
 
         claw = hardwareMap.get(Servo.class, "cl");
         clawDistanceSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "cd");
-
+        clawDistanceSensor.setI2cAddress(I2cAddr.create8bit(0x24));
         flipperOne = hardwareMap.get(Servo.class, "fl");
         flipperOne.setPosition(SlideConstants.flipper_READY);
 

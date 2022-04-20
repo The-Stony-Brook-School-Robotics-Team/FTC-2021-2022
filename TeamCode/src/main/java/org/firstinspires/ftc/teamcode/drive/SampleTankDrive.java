@@ -80,7 +80,8 @@ public class SampleTankDrive extends TankDrive {
     public SampleTankDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH);
 
-        follower = new RamseteFollower(2, .7);
+        //follower = new RamseteFollower(2, .7);
+        follower = new TankPIDVAFollower(AXIAL_PID, CROSS_TRACK_PID);
 
         /**  follower = new TankPIDVAFollower(AXIAL_PID, CROSS_TRACK_PID,
          new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5); **/

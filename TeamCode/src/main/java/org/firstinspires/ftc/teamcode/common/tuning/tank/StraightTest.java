@@ -24,22 +24,32 @@ public class StraightTest extends LinearOpMode {
 
         SampleTankDrive drive = new SampleTankDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        Trajectory trajectory = drive.trajectoryBuilder(drive.getPoseEstimate())
+
+        Trajectory traj1 = drive.trajectoryBuilder(drive.getPoseEstimate())
                 .forward(DISTANCE)
+                .build();
+
+        Trajectory traj2 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                .forward(-DISTANCE)
                 .build();
 
         waitForStart();
 
-        if (isStopRequested()) return;
+        while(!isStopRequested() && opModeIsActive()) {
+            drive.followTrajectory(traj1);
+            Pose2d p1 = drive.getPoseEstimate();
+            telemetry.addData("finalX", p1.getX());
+            telemetry.addData("finalY", p1.getY());
+            telemetry.addData("finalHeading", p1.getHeading());
+            telemetry.update();
+            drive.followTrajectory(traj2);
+            Pose2d p2 = drive.getPoseEstimate();
+            telemetry.addData("finalX", p2.getX());
+            telemetry.addData("finalY", p2.getY());
+            telemetry.addData("finalHeading", p2.getHeading());
+            telemetry.update();
 
-        drive.followTrajectory(trajectory);
+        }
 
-        Pose2d poseEstimate = drive.getPoseEstimate();
-        telemetry.addData("finalX", poseEstimate.getX());
-        telemetry.addData("finalY", poseEstimate.getY());
-        telemetry.addData("finalHeading", poseEstimate.getHeading());
-        telemetry.update();
-
-        while (!isStopRequested() && opModeIsActive()) ;
     }
 }
