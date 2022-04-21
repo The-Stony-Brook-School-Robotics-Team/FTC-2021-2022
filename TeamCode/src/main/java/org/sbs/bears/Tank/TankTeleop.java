@@ -28,6 +28,7 @@ public class TankTeleop extends OpMode {
     boolean qA1 = false;
     boolean qA2 = false;
     boolean qY2 = false;
+    boolean qRb1 = false;
 
     private double tapeIncrement = .01;
     private double multiplier = 1;
@@ -138,6 +139,13 @@ public class TankTeleop extends OpMode {
                 }
                 if(!gamepad1.y && qY1){
                     qY1 = false;
+                }
+                if(gamepad1.right_bumper && !qRb1){
+                    qRb1 = true;
+                    newSlideController.doShared();
+                }
+                if(!gamepad1.right_bumper && qRb1){
+                    qRb1 = false;
                 }
 
             }

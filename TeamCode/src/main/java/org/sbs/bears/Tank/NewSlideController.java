@@ -104,6 +104,18 @@ public class NewSlideController {
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideMotor.setTargetPositionTolerance(SlideConstants.slideMotorTolerance);
     }
+
+    public void doShared(){
+        if(flipperOne.getPosition() == SlideConstants.flipper_READY){
+            flipperOne.setPosition(SlideConstants.flipper_THREE_CLOSE);
+            flipperTwo.setPosition(SlideConstants.flipper_THREE_CLOSE - SlideConstants.flipperOffset);
+        }
+        else{
+            flipperOne.setPosition(SlideConstants.flipper_READY);
+            flipperTwo.setPosition(SlideConstants.flipper_READY - SlideConstants.flipperOffset);
+        }
+    }
+
     public void killThreads(){
         waitForDropRetract.interrupt();
         waitToCreep.interrupt();
