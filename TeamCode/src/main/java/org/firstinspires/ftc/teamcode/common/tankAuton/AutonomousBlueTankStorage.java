@@ -2,20 +2,17 @@ package org.firstinspires.ftc.teamcode.common.tankAuton;
 
 import static org.sbs.bears.robotframework.controllers.OpenCVController.doAnalysisMaster;
 
-import android.graphics.Path;
 import android.util.Log;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
-import org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe.TankComponents.NewBlueIntakeController;
-import org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe.TankComponents.NewRedIntakeController;
-import org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe.TankComponents.NewSlideController;
-import org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe.TankComponents.SlideConstants;
+import org.sbs.bears.Tank.NewBlueIntakeController;
+import org.sbs.bears.Tank.NewRedIntakeController;
+import org.sbs.bears.Tank.NewSlideController;
+import org.sbs.bears.Tank.SlideConstants;
 import org.sbs.bears.robotframework.controllers.DrivingControllerTank;
 import org.sbs.bears.robotframework.controllers.OpenCVController;
 import org.sbs.bears.robotframework.controllers.RoadRunnerController;
