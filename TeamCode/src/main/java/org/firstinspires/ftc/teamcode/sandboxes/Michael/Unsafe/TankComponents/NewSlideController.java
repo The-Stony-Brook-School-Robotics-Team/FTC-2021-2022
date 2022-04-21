@@ -170,7 +170,7 @@ public class NewSlideController {
         public void run(){
             claw.setPosition(SlideConstants.claw_OPEN);
             try {
-                Thread.sleep(200);
+                Thread.sleep(600);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
