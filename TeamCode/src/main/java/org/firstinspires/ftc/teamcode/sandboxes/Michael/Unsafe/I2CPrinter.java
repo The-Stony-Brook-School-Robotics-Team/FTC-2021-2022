@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-@TeleOp(name = "I2C Tester Tank")
+
 public class I2CPrinter extends OpMode {
     private ModernRoboticsI2cRangeSensor redIntake;
     private ModernRoboticsI2cRangeSensor blueIntake;

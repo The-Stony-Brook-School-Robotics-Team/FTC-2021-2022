@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.SampleTankDrive;
-@TeleOp(name="tank trajectory and driving")
+
 public class TankTrajectoryTest extends OpMode {
 
     private SampleTankDrive drive;

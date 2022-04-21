@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.SampleTankDrive;
 
-@Autonomous(name = "----TankTank", group = "Tank")
+//@Autonomous(name = "----TankTank", group = "Tank")
 public class ___TankTank extends LinearOpMode {
 
     public static double DISTANCE = 48;

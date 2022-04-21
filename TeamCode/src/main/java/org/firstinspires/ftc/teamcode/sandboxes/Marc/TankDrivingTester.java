@@ -19,9 +19,10 @@ public class TankDrivingTester extends LinearOpMode {
     public static int STATE = 0;
     public static double toTravel = 10;
     public static double speed = 0.2;
-    public static double P = 1;
-    public static double I = 1;
-    public static double D = 1;
+    public static double P = 2;
+    public static double I = 0;
+    public static double D = 0;
+    public static double angle = 45;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -37,7 +38,7 @@ public class TankDrivingTester extends LinearOpMode {
             {
                 qA = true;
                 driver.stopMotors();
-                driver.goForwardSimple(toTravel,speed,terminate_signal);
+                driver.goBackwardGyroPIDAsync(toTravel,speed,terminate_signal,P,I,D);
                 STATE = 0;
             }
             if(!gamepad1.a && qA)
@@ -58,6 +59,26 @@ public class TankDrivingTester extends LinearOpMode {
             if(STATE == 3)
             {
                 driver.shutDown();
+                STATE = 0;
+            }
+            if(STATE == 4)
+            {
+                driver.turnL(angle,speed);
+                STATE = 0;
+            }
+            if(STATE == 5)
+            {
+                driver.turnR(angle,speed);
+                STATE = 0;
+            }
+            if(STATE == 6)
+            {
+                driver.RRturnR(angle);
+                STATE = 0;
+            }
+            if(STATE == 7)
+            {
+                driver.RRturnL(angle);
                 STATE = 0;
             }
         }

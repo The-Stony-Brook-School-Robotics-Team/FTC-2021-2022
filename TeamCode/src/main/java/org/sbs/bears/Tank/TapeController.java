@@ -1,8 +1,7 @@
-package org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe.TankComponents;
+package org.sbs.bears.Tank;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.Range;
 
 public class TapeController {
     private Servo redRotate;

@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.common.autonomous.AutonomousMode;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-@TeleOp(name = "Localizer Test", group = "----William")
+//@TeleOp(name = "Localizer Test", group = "----William")
 public class LocalizerTest extends LinearOpMode {
     AutonomousBrain brain;
     SampleMecanumDrive RRDrive;

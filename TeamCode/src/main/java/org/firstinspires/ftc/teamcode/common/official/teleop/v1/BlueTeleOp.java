@@ -31,7 +31,7 @@ import org.sbs.bears.robotframework.enums.IntakeState;
 import java.util.HashMap;
 import java.util.Map;
 
-@TeleOp(name = "A - v1 teleop")
+@TeleOp(name = "C - Mecanum TeleOp")
 public class BlueTeleOp extends OpMode {
 
 

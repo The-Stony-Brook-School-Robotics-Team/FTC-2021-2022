@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.sbs.bears.robotframework.controllers.JRR;
 import org.sbs.bears.robotframework.controllers.RoadRunnerController;
 
-@Config
-@TeleOp(name = "JRRTest", group = "JRR")
+//@Config
+//@TeleOp(name = "JRRTest", group = "JRR")
 public class JRRTest extends LinearOpMode {
     RoadRunnerController jrr;
     public static int forwardDistance = 40;

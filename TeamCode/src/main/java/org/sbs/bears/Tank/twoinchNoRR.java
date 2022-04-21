@@ -1,17 +1,13 @@
-package org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe.TankComponents;
+package org.sbs.bears.Tank;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.drive.SampleTankDrive;
 import org.sbs.bears.robotframework.enums.IntakeState;
 
-public class twoinch  {
-        private SampleTankDrive drive;
+public class twoinchNoRR {
+        private DriveController drive;
         private NewSlideController slideController;
         private NewRedIntakeController intakeController;
         private Double startTime;
@@ -21,46 +17,46 @@ public class twoinch  {
 
 
 
-        public twoinch(HardwareMap hardwareMap){
-            drive = new SampleTankDrive(hardwareMap);
+        public twoinchNoRR(HardwareMap hardwareMap){
+            drive = new DriveController(hardwareMap);
             slideController = new NewSlideController(hardwareMap);
             intakeController = new NewRedIntakeController(hardwareMap, slideController.getClaw(),slideController.getDistanceSensor(), slideController.getSlideMotor());
 
         }
-
         public void initialDeposit(){
-            drive.followTrajectory(goInitialDeposit);
+            drive.driveTo((int) DriveController.inchesToEncoderTicks(-22));
+            while(drive.rb.isBusy()){
+
+            }
             slideController.extendDropRetract(SlideConstants.slideMotorPosition_THREE_CLOSE, SlideConstants.flipper_THREE_CLOSE, SlideConstants.potentiometer_AUTON);
-            drive.followTrajectoryAsync(goIntakeFromInitialTrajectory);
+            drive.driveTo((int)DriveController.inchesToEncoderTicks(-9.3));
 
         }
 
         public void intakeCycle(){
             elapsedtime = NanoClock.system().seconds() - startTime;
             while(elapsedtime < 2.5) { //TODO time
-                curveY *= curveMultiplier;
                 intakeController.setState(IntakeState.DUMP);
-                while (!intakeController.isFreight() && drive.isBusy()) {
+                while (!intakeController.isFreight() && drive.rb.isBusy()) {
                     drive.update();
                     intakeController.tick();
                 }
-                drive.breakFollowing();
                 if(!intakeController.isFreight()){
-                    drive.followTrajectoryAsync(goCurveTowardsFreight);
-                    while(!intakeController.isFreight() && drive.isBusy()){
+                    while(!intakeController.isFreight() && drive.rb.isBusy()){
                         drive.update();
                         intakeController.tick();
                     }
                 }
-                drive.followTrajectory(goDepositFromIntake);
+
                 slideController.dropFreight();
                 slideController.retract();
-                //drive.followTrajectory();
+                drive.driveTo((int)DriveController.inchesToEncoderTicks(35));
             }
         }
 
 
     static Pose2d blueStartPose = new Pose2d(14, 65.5, 0);
+ /**
     Trajectory goInitialDeposit = new TrajectoryBuilder(blueStartPose, SampleTankDrive.VEL_CONSTRAINT, SampleTankDrive.accelConstraint)
 
             .lineToConstantHeading(new Vector2d(-4.7, 65.5))
@@ -80,5 +76,5 @@ public class twoinch  {
             .splineTo(new Vector2d(35, 75), Math.toRadians(0))
             .build();
 
-    Trajectory goIntakeFromDeposit;
+    Trajectory goIntakeFromDeposit; **/
 }

@@ -13,13 +13,16 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.checkerframework.checker.units.qual.A;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.teamcode.archive.B;
 import org.firstinspires.ftc.teamcode.drive.DriveConstantsTank;
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.SampleTankDrive;
+import org.firstinspires.ftc.teamcode.util.AxesSigns;
+import org.firstinspires.ftc.teamcode.util.BNO055IMUUtil;
 import org.sbs.bears.robotframework.Sleep;
 import org.sbs.bears.robotframework.enums.DrivingMode;
 import org.sbs.bears.robotframework.enums.MotorName;
@@ -49,6 +52,7 @@ public class DrivingControllerTank {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
+        //BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.PNP); // maybe...
         //spin around y axis
         mode  = DrivingMode.STOPPED;
         isFollowingTraj.set(false);
@@ -57,8 +61,15 @@ public class DrivingControllerTank {
         motorMap.put(RF,hardwareMap.get(DcMotorEx.class,"rf"));
         motorMap.put(MotorName.LB,hardwareMap.get(DcMotorEx.class,"lb"));
         motorMap.put(RB,hardwareMap.get(DcMotorEx.class,"rb"));
+        motorMap.get(LF).setDirection(DcMotorSimple.Direction.REVERSE);
+        motorMap.get(LB).setDirection(DcMotorSimple.Direction.REVERSE);
         PIDreadySignal.set(new HashMap<>());
         PIDdoneSignal.set(new HashMap<>());
+        for(DcMotorEx motor : motorMap.values())
+        {
+            motor.setPower(0);
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
     }
     public void shutDown()
     {
@@ -81,15 +92,18 @@ public class DrivingControllerTank {
     {
         RR.setWeightedDrivePower(info);
     }
-
-
+    public void goForwardGyro(double distance,double power, AtomicReference<Boolean> terminator,double p, double i, double d)
+    {
+        goForwardGyroPIDAsync(distance,power,terminator,p,i,d);
+        waitForTrajToFinish();
+    }
     public void goForwardGyroPIDAsync(double distance, double power, AtomicReference<Boolean> terminator,double p, double i, double d)
     {
         Log.d("DrivingControllerTank","Init Forwards Simple");
         Thread tmp = new Thread(()-> {
             isFollowingTraj.set(true);
             Pose2d iniPos = RR.getPoseEstimate();
-            double iniHeading = imu.getAngularOrientation().secondAngle; // should be y: xyz
+            double iniHeading = imu.getAngularOrientation().firstAngle; // should be y: xyz
             motorMap.get(LF).setPower(power);
             motorMap.get(RF).setPower(power);
             motorMap.get(LB).setPower(power);
@@ -98,16 +112,62 @@ public class DrivingControllerTank {
             double lastErr = 0;
             while((RoadRunnerController.distanceTwoPoints(iniPos,RR.getPoseEstimate()) < distance) && !terminator.get())
             {
-                double currentHeading = imu.getAngularOrientation().secondAngle;  // positive is to the right
+                double currentHeading = imu.getAngularOrientation().firstAngle;  // positive is to the left
+                double error = currentHeading-iniHeading; // positive is still to the left
+                Log.d("DrivingControllerTank","Heading error is " + error);
+                double powerDiff = error*p + totalError*i + (error-lastErr)*d; // R-L
+                powerDiff = 2*cap(powerDiff/2,1-power);
+                Log.d("DrivingControllerTank","Left power: " + (power-powerDiff/2) + " right power: " + (power+powerDiff/2));
+                motorMap.get(LF).setPower(power+powerDiff/2);
+                motorMap.get(RF).setPower(power-powerDiff/2);
+                motorMap.get(LB).setPower(power+powerDiff/2);
+                motorMap.get(RB).setPower(power-powerDiff/2);
+                RR.update();
+                totalError+=error;
+                lastErr = error;
+            }
+            Log.d("DrivingControllerTank","Finished with delta " + Math.abs(RoadRunnerController.distanceTwoPoints(iniPos,RR.getPoseEstimate())));
+            motorMap.get(LF).setPower(0);
+            motorMap.get(RF).setPower(0);
+            motorMap.get(LB).setPower(0);
+            motorMap.get(RB).setPower(0);
+            isFollowingTraj.set(false);
+        });
+        threadPool.add(tmp);
+        tmp.start();
+    }
+
+
+    public void goBackwardGyro(double distance,double power, AtomicReference<Boolean> terminator,double p, double i, double d)
+    {
+        goBackwardGyroPIDAsync(distance,power,terminator,p,i,d);
+        waitForTrajToFinish();
+    }
+    public void goBackwardGyroPIDAsync(double distance, double power, AtomicReference<Boolean> terminator,double p, double i, double d)
+    {
+        Log.d("DrivingControllerTank","Init Backwards Simple");
+        Thread tmp = new Thread(()-> {
+            isFollowingTraj.set(true);
+            Pose2d iniPos = RR.getPoseEstimate();
+            double iniHeading = imu.getAngularOrientation().firstAngle;
+            motorMap.get(LF).setPower(-power);
+            motorMap.get(RF).setPower(-power);
+            motorMap.get(LB).setPower(-power);
+            motorMap.get(RB).setPower(-power);
+            double totalError = 0;
+            double lastErr = 0;
+            while((RoadRunnerController.distanceTwoPoints(iniPos,RR.getPoseEstimate()) < distance) && !terminator.get())
+            {
+                double currentHeading = imu.getAngularOrientation().firstAngle;  // positive is to the left
                 double error = currentHeading-iniHeading; // positive is still to the right
                 Log.d("DrivingControllerTank","Heading error is " + error);
                 double powerDiff = error*p + totalError*i + (error-lastErr)*d; // R-L
                 powerDiff = 2*cap(powerDiff/2,1-power);
                 Log.d("DrivingControllerTank","Left power: " + (power-powerDiff/2) + " right power: " + (power+powerDiff/2));
-                motorMap.get(LF).setPower(power-powerDiff/2);
-                motorMap.get(RF).setPower(power+powerDiff/2);
-                motorMap.get(LB).setPower(power-powerDiff/2);
-                motorMap.get(RB).setPower(power+powerDiff/2);
+                motorMap.get(LF).setPower(-power+powerDiff/2);
+                motorMap.get(RF).setPower(-power-powerDiff/2);
+                motorMap.get(LB).setPower(-power+powerDiff/2);
+                motorMap.get(RB).setPower(-power-powerDiff/2);
                 RR.update();
                 totalError+=error;
                 lastErr = error;
@@ -397,4 +457,84 @@ public class DrivingControllerTank {
             motor.setPower(0);
         }
     }
+
+   public void turnL(double angleDegs, double power) {
+        turnLAsync(angleDegs, power);
+        waitForTrajToFinish();
+    }
+    public void turnLAsync(double angleDegs, double power)
+    {
+        Thread tmp = new Thread(()->{
+            isFollowingTraj.set(true);
+            Pose2d iniPos = RR.getPoseEstimate();
+            double iniHeading = RR.getPoseEstimate().getHeading(); // should be y: xyz
+            motorMap.get(LF).setPower(-power);
+            motorMap.get(RF).setPower(power);
+            motorMap.get(LB).setPower(-power);
+            motorMap.get(RB).setPower(power);
+            double targetHeading = iniHeading - Math.toRadians(angleDegs);
+            Log.d("DrivingController","Target heading: " + targetHeading);
+            Log.d("DrivingController","Target heading: " + targetHeading);
+            while(RR.getPoseEstimate().getHeading() < targetHeading)
+            {
+                Log.d("DrivingController","Current heading: " + RR.getPoseEstimate().getHeading());
+                Log.d("DrivingController","Delta heading: " + (RR.getPoseEstimate().getHeading()-targetHeading) + " * NEGATIVE");
+                motorMap.get(LF).setPower(-power);
+                motorMap.get(RF).setPower(power);
+                motorMap.get(LB).setPower(-power);
+                motorMap.get(RB).setPower(power);
+                RR.update();
+            }
+            motorMap.get(LF).setPower(0);
+            motorMap.get(RF).setPower(0);
+            motorMap.get(LB).setPower(0);
+            motorMap.get(RB).setPower(0);
+            isFollowingTraj.set(false);
+        });
+        threadPool.add(tmp);
+        tmp.start();
+    }
+    public void RRturnR(double angleDegs) {
+        RR.turn((-angleDegs));
+    }
+    public void RRturnL(double angleDegs) {
+        RR.turn((angleDegs));
+    }
+
+    public void turnR(double angleDegs, double power) {
+        turnRAsync(angleDegs, power);
+        waitForTrajToFinish();
+    }
+    public void turnRAsync(double angleDegs, double power)
+    {
+        Thread tmp = new Thread(()->{
+            isFollowingTraj.set(true);
+            Pose2d iniPos = RR.getPoseEstimate();
+            double iniHeading = RR.getPoseEstimate().getHeading(); // should be y: xyz
+            motorMap.get(LF).setPower(power);
+            motorMap.get(RF).setPower(-power);
+            motorMap.get(LB).setPower(power);
+            motorMap.get(RB).setPower(-power);
+            double targetHeading = iniHeading - Math.toRadians(angleDegs);
+            Log.d("DrivingController","Target heading: " + targetHeading);
+            while(RR.getPoseEstimate().getHeading() > targetHeading)
+            {
+                Log.d("DrivingController","Current heading: " + RR.getPoseEstimate().getHeading());
+                Log.d("DrivingController","Delta heading: " + (RR.getPoseEstimate().getHeading()-targetHeading)+ " * POSITIVE");
+                motorMap.get(LF).setPower(power);
+                motorMap.get(RF).setPower(-power);
+                motorMap.get(LB).setPower(power);
+                motorMap.get(RB).setPower(-power);
+                RR.update();
+            }
+            motorMap.get(LF).setPower(0);
+            motorMap.get(RF).setPower(0);
+            motorMap.get(LB).setPower(0);
+            motorMap.get(RB).setPower(0);
+            isFollowingTraj.set(false);
+        });
+        threadPool.add(tmp);
+        tmp.start();
+    }
+
 }

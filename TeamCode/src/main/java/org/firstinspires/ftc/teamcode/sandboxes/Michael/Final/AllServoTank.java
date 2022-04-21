@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.sbs.bears.Tank.SlideConstants;
+
 @Config
 @TeleOp(name="B - ALL SERVOS Tank", group="Linear Opmode")
 public class AllServoTank extends LinearOpMode {
@@ -57,14 +59,14 @@ public class AllServoTank extends LinearOpMode {
         flip = hardwareMap.get(Servo.class, "fl");
         flip2 = hardwareMap.get(Servo.class, "fl2");
 
+        flip.setDirection(Servo.Direction.REVERSE);
+
         spool = hardwareMap.get(DcMotorEx.class, "spool");
         pot = hardwareMap.get(AnalogInput.class, "po");
 
-
-        Servo[] servos = {blueTapeRotate, blueTapeTilt, blueTapeExtend, blueIntakeServo, redTapeRotate, redTapeTilt, redTapeExtend, redIntakeServo, claw, flip};
-        String[] servoNames = {"blue tape rotate", "blue tape tilt ", "blue tape extend ", "blue intake", "red tape rotate", "red tape tilt", "red tape extend", "red intake", "claw", "flip"};
+        Servo[] servos = {blueTapeRotate, blueTapeTilt, blueTapeExtend, blueIntakeServo, redTapeRotate, redTapeTilt, redTapeExtend, redIntakeServo, claw, flip, flip2};
+        String[] servoNames = {"blue tape rotate", "blue tape tilt ", "blue tape extend ", "blue intake", "red tape rotate", "red tape tilt", "red tape extend", "red intake", "claw", "flip", "flip2"};
         place = servos[0];
-        flip2.setPosition(flip.getPosition());
         waitForStart();
 
         while (opModeIsActive()) {
@@ -83,9 +85,9 @@ public class AllServoTank extends LinearOpMode {
             if(gamepad1.dpad_up && !qUp){
                 qUp = true;
                 place.setPosition(place.getPosition() + .01);
-                if(place == flip){
-                    flip2.setPosition(flip.getPosition());
-                }
+                flip2.setPosition(flip.getPosition() - SlideConstants.flipperOffset);
+
+
             }
             if(!gamepad1.dpad_up && qUp){
                 qUp = false;
@@ -94,24 +96,21 @@ public class AllServoTank extends LinearOpMode {
             if(gamepad1.dpad_down && !qDown){
                 qDown = true;
                 place.setPosition(place.getPosition() - .01);
-                if(place == flip){
-                    flip2.setPosition(flip.getPosition());
-                }
+                flip2.setPosition(flip.getPosition() - SlideConstants.flipperOffset);
+
+
             }
             if(!gamepad1.dpad_down && qDown){
                 qDown = false;
             }
             if(gamepad1.x){
                 place.setPosition(up);
-                if(place == flip){
-                    flip2.setPosition(flip.getPosition());
-                }
+                flip2.setPosition(flip.getPosition() - SlideConstants.flipperOffset);
+
             }
             if(gamepad1.y){
                 place.setPosition(down);
-                if(place == flip){
-                    flip2.setPosition(flip.getPosition());
-                }
+                flip2.setPosition(flip.getPosition() - SlideConstants.flipperOffset);
             }
 
 

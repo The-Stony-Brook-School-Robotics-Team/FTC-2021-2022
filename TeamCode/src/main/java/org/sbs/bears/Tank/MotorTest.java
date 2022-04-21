@@ -1,9 +1,8 @@
-package org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe.TankComponents;
+package org.sbs.bears.Tank;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-@TeleOp(name = "encoder motoor test")
+
 public class MotorTest extends OpMode {
     public DcMotor lf;
     public DcMotor rf;
