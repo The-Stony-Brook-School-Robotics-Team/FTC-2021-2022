@@ -1,10 +1,11 @@
-package org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe.TankComponents;
+package org.sbs.bears.Tank;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.drive.SampleTankDrive;
 import org.sbs.bears.robotframework.enums.IntakeState;
+import org.sbs.bears.Tank.*;
 
 
 @TeleOp(name = "tank drive", group = "drive")
@@ -24,6 +25,7 @@ public class TankTeleop extends OpMode {
     boolean qB2 = false;
     boolean qX1 = false;
     boolean qY1 = false;
+    boolean qA1 = false;
 
     private double tapeIncrement = .01;
     private double multiplier = 1;

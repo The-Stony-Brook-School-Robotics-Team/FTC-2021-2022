@@ -36,8 +36,8 @@ public class AutonomousRedTankWarehouse extends LinearOpMode {
         DrivingControllerTank driver = new DrivingControllerTank(hardwareMap);
         OpenCVController CV = new OpenCVController(hardwareMap,telemetry,AutonomousMode.RedTankFULL);
         NewSlideController slide = new NewSlideController(hardwareMap);
-        NewBlueIntakeController bu = new NewBlueIntakeController(hardwareMap,slide.getClaw(),slide.getDistanceSensor());
-        NewRedIntakeController red = new NewRedIntakeController(hardwareMap,slide.getClaw(),slide.getDistanceSensor());
+        NewBlueIntakeController bu = new NewBlueIntakeController(hardwareMap,slide.getClaw(),slide.getDistanceSensor(), slide.getSlideMotor());
+        NewRedIntakeController red = new NewRedIntakeController(hardwareMap,slide.getClaw(),slide.getDistanceSensor(), slide.getSlideMotor());
         slide.setTargetHeight(SlideConstants.potentiometer_THREE_DEPOSIT);
         red.setState(IntakeState.PARK);
         bu.setState(IntakeState.PARK);
