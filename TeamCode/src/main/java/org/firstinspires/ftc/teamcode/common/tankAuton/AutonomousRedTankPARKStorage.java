@@ -24,49 +24,28 @@ public class AutonomousRedTankPARKStorage extends LinearOpMode {
     public static double D = 0;
     @Override
     public void runOpMode() {
+        telemetry.addData("Auton","Init Progress...");
+        telemetry.update();
         msStuckDetectStart = Integer.MAX_VALUE;
         msStuckDetectInit = Integer.MAX_VALUE;
         msStuckDetectLoop = Integer.MAX_VALUE;
         DrivingControllerTank driver = new DrivingControllerTank(hardwareMap);
-        OpenCVController CV = new OpenCVController(hardwareMap,telemetry,AutonomousMode.BlueTankFULL);
-        NewSlideController slide = new NewSlideController(hardwareMap);
-        NewBlueIntakeController bu = new NewBlueIntakeController(hardwareMap,slide.getClaw(),slide.getDistanceSensor());
-        NewRedIntakeController red = new NewRedIntakeController(hardwareMap,slide.getClaw(),slide.getDistanceSensor());
-        slide.setTargetHeight(SlideConstants.potentiometer_THREE_DEPOSIT);
-        red.setState(IntakeState.PARK);
-        bu.setState(IntakeState.PARK);/*
-        OpenCVController.isDuck = false;
-        doAnalysisMaster = true;*/
-        driver.setPos(startPosition);
+        telemetry.addData("Auton","Init Complete");
+        telemetry.update();
+
+
         waitForStart();
-        long iniTime = System.nanoTime();
-/*
-        // STEP 1: Camera
-        TowerHeightFromDuck heightFromDuck = CV.getWhichTowerHeight();
-        Log.d("height: ", heightFromDuck.toString());
 
-        // STEP 2: Move To Ini Deposit
-        double distance = RoadRunnerController.distanceTwoPoints(startPosition,depositPosition);
-        AtomicReference<Boolean> terminator = new AtomicReference<>();
-        terminator.set(false);
-        driver.goForwardGyro(distance,0.5,terminator,P,I,D);
-        //driver.goForwardSimple(distance,0.5);
 
-        // STEP 3: Deposit
-        slide.extendDropRetract(SlideConstants.slideMotorPosition_THREE_CLOSE,SlideConstants.flipper_THREE_CLOSE,SlideConstants.potentiometer_THREE_DEPOSIT);
-*/
-        // STEP 4: Park
         AtomicReference<Boolean> terminator = new AtomicReference<>();
-        while((System.nanoTime() - iniTime) < 25*1E9)
-        {
-            Sleep.sleep(10);
-        }
-        //double distance = RoadRunnerController.distanceTwoPoints(driver.getPos(),finalPosition);
-        driver.goForwardGyro(45, 1,terminator,P,I,D);
-        requestOpModeStop();
+        telemetry.addData("Auton","Traj Progres...");
+        telemetry.update();
+        driver.goForwardGyro(45, 0.5,terminator,P,I,D);
+        telemetry.addData("Auton","Traj Done...");
+        telemetry.update();
     }
 
-    Pose2d startPosition = new Pose2d(-12,-65.5,0);
+
 
 
 

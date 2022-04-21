@@ -31,13 +31,6 @@ public class AutonomousBlueTankPARKStorage extends LinearOpMode {
         msStuckDetectInit = Integer.MAX_VALUE;
         msStuckDetectLoop = Integer.MAX_VALUE;
         DrivingControllerTank driver = new DrivingControllerTank(hardwareMap);
-        NewSlideController slide = new NewSlideController(hardwareMap);
-        NewBlueIntakeController bu = new NewBlueIntakeController(hardwareMap,slide.getClaw(),slide.getDistanceSensor());
-        NewRedIntakeController red = new NewRedIntakeController(hardwareMap,slide.getClaw(),slide.getDistanceSensor());
-        slide.setTargetHeight(SlideConstants.potentiometer_THREE_DEPOSIT);
-        red.setState(IntakeState.PARK);
-        bu.setState(IntakeState.PARK);
-        driver.setPos(startPosition);
         telemetry.addData("Auton","Init Complete");
         telemetry.update();
 
@@ -48,14 +41,12 @@ public class AutonomousBlueTankPARKStorage extends LinearOpMode {
         AtomicReference<Boolean> terminator = new AtomicReference<>();
         telemetry.addData("Auton","Traj Progres...");
         telemetry.update();
-        driver.goBackwardGyro(45, 1,terminator,P,I,D);
+        driver.goBackwardGyro(45, 0.5,terminator,P,I,D);
         telemetry.addData("Auton","Traj Done...");
         telemetry.update();
     }
 
-    Pose2d startPosition = new Pose2d(-12,65.5,0);
-    Pose2d depositPosition = new Pose2d(-31.5,65.5,0);
-    Pose2d finalPosition = new Pose2d(36,65.5,0);
+
 
 
 

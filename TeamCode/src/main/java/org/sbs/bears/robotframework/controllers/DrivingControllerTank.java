@@ -65,6 +65,11 @@ public class DrivingControllerTank {
         motorMap.get(LB).setDirection(DcMotorSimple.Direction.REVERSE);
         PIDreadySignal.set(new HashMap<>());
         PIDdoneSignal.set(new HashMap<>());
+        for(DcMotorEx motor : motorMap.values())
+        {
+            motor.setPower(0);
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
     }
     public void shutDown()
     {
