@@ -1,13 +1,9 @@
 package org.firstinspires.ftc.teamcode.sandboxes.Michael.Final;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe.TankComponents.SlideConstants;
+import org.sbs.bears.Tank.SlideConstants;
 
 
 //@TeleOp(name="B - ALL SERVOS Tank2", group="Linear Opmode")

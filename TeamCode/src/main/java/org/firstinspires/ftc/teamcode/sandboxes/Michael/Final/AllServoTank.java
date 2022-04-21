@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe.TankComponents.SlideConstants;
+import org.sbs.bears.Tank.SlideConstants;
 
 @Config
 @TeleOp(name="B - ALL SERVOS Tank", group="Linear Opmode")
