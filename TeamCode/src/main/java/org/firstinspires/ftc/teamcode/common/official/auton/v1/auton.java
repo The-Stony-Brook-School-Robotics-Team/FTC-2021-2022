@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.common.official.auton.v1.movement.DriveTrain;
 
-@Autonomous(name="A - v1 auton")
+
 public class auton extends OpMode {
 
     private DcMotorEx lf, rf, lb, rb;

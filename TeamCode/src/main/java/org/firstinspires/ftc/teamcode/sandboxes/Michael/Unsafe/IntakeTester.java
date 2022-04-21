@@ -10,7 +10,7 @@ import org.sbs.bears.robotframework.controllers.IntakeControllerRed;
 import org.sbs.bears.robotframework.controllers.SlideController;
 import org.sbs.bears.robotframework.enums.IntakeState;
 
-@TeleOp(name = "Intake Tester")
+
 public class IntakeTester extends OpMode {
     SampleTankDrive drive;
     IntakeControllerBlue intakeControllerBlue;

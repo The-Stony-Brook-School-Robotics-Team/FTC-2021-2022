@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@TeleOp(name="slide measure tank")
+
 public class SlidePositionMeasurer extends OpMode {
     private DcMotor slideMotor;
     private DcMotorEx liftMotor;

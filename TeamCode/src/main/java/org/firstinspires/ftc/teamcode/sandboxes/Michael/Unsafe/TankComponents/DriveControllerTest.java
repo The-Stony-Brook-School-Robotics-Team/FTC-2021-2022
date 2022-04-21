@@ -6,8 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@Config
-@TeleOp(name = "drive controller test")
+
 public class DriveControllerTest extends OpMode {
     private DriveController driveController;
     public static double ticks = 800;

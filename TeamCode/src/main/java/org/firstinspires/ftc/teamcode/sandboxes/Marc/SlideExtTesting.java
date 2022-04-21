@@ -15,7 +15,7 @@ import org.sbs.bears.robotframework.controllers.IntakeControllerBlue;
 import org.sbs.bears.robotframework.controllers.SlideController;
 import org.sbs.bears.robotframework.enums.IntakeState;
 
-@TeleOp
+
 public class SlideExtTesting extends LinearOpMode {
     private boolean pUp;
     private boolean pDown;

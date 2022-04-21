@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleTankDrive;
 import org.sbs.bears.robotframework.enums.IntakeState;
 
 
-@TeleOp(name = "tank drive", group = "drive")
+@TeleOp(name = "A - TeleOp Tank")
 public class TankTeleop extends OpMode {
     //Using Ramsete.
     SampleTankDrive drive;
@@ -24,6 +24,8 @@ public class TankTeleop extends OpMode {
     boolean qB2 = false;
     boolean qX1 = false;
     boolean qY1 = false;
+    boolean qUp1 = false;
+    boolean qDown1 = false;
 
     private double tapeIncrement = .01;
     private double multiplier = 1;
@@ -45,6 +47,8 @@ public class TankTeleop extends OpMode {
         newRedIntakeController.setState(IntakeState.PARK);
         newBlueIntakeController.setState(IntakeState.PARK);
         tapeController.initServos();
+        newSlideController.flipperOne.setPosition(SlideConstants.flipper_READY);
+        newSlideController.flipperTwo.setPosition(SlideConstants.flipper_READY - SlideConstants.flipperOffset);
 
     }
 
@@ -130,9 +134,6 @@ public class TankTeleop extends OpMode {
                 }
                 if(!gamepad1.y && qY1){
                     qY1 = false;
-                }
-                if(gamepad1.right_bumper){
-
                 }
             }
         }

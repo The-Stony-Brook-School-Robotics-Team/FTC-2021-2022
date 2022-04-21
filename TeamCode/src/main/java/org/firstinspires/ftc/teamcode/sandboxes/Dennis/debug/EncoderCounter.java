@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @Disabled
-@TeleOp(name = "U - Encoder Counter")
 public class EncoderCounter extends LinearOpMode {
 
     DcMotor left, right, center;

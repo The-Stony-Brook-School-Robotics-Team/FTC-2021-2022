@@ -6,8 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Config
-@TeleOp(name="B - ALL MOTORS Tank", group="Linear Opmode")
+//@TeleOp(name="B - ALL MOTORS Tank", group="Linear Opmode")
 public class AllMotorTank extends LinearOpMode {
 
 

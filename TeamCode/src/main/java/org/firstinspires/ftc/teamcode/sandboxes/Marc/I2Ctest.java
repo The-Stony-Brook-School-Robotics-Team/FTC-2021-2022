@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.I2cAddr;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-@Autonomous
+
 public class I2Ctest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

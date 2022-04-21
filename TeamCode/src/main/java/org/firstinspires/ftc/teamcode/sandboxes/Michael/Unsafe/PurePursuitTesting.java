@@ -25,7 +25,7 @@ import org.firstinspires.ftc.teamcode.drive.DriveConstantsMain;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 @TeleOp(name="awful", group="drive")
-//@Disabled
+@Disabled
 @Deprecated
 public class PurePursuitTesting extends LinearOpMode {
 

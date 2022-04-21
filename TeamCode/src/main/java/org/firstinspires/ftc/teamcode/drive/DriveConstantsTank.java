@@ -28,10 +28,10 @@ public class DriveConstantsTank {
     public static double MAX_ANG_ACCEL = Math.toRadians(180);
 
     public static double encoderTicksToInches(double ticks) {
-        return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
+        return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV * 4/3 / 2 / 0.93;
     }
     public static double inchesToEncoderTicks(double inches) {
-        return inches * TICKS_PER_REV / WHEEL_RADIUS / 2 / Math.PI / GEAR_RATIO;
+        return inches * TICKS_PER_REV / WHEEL_RADIUS / 2 / Math.PI / GEAR_RATIO * 3/4 * 2 * 0.93;
     }
 
     public static double rpmToVelocity(double rpm) {

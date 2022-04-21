@@ -51,6 +51,7 @@ public class NewRedIntakeController {
                 case BASE:
                     scooper.setPosition(IntakeConstants.redScooperPosition_BASE);
                     intakeWheel.setPower(IntakeConstants.intakePower_BASE);
+                    claw.setPosition(SlideConstants.claw_IDLE);
                     break;
                 case PARK:
                     scooper.setPosition(IntakeConstants.redScooperPosition_DUMP);
@@ -65,9 +66,14 @@ public class NewRedIntakeController {
     }
     public boolean isInClaw(){return clawSensor.getDistance(DistanceUnit.MM) < IntakeConstants.clawFreightDetectionThreshold;}
 
+
+
     public void tick(){
         if(isFreight() && state == IntakeState.BASE) setState(IntakeState.DUMP);
-        if(isInClaw() && state == IntakeState.DUMP) intakeWheel.setPower(0);
+        if(isInClaw() && state == IntakeState.DUMP){
+            claw.setPosition(SlideConstants.claw_CLOSED);
+            intakeWheel.setPower(0);
+        }
         else{
             switch(state){
                 case DUMP:
