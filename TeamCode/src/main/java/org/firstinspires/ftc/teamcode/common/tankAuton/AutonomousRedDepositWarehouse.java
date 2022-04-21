@@ -26,10 +26,12 @@ public class AutonomousRedDepositWarehouse extends LinearOpMode {
         NewSlideController slide = new NewSlideController(hardwareMap);
         driver.setPos(startPosition);
         telemetry.addData("Status","Init complete");
-        telemetry.addData("Status","Init complete");
+        telemetry.update();
+
         waitForStart();
+
         telemetry.addData("Status","Slide init");
-        telemetry.addData("Status","Traj init");
+        telemetry.update();
         AtomicReference<Boolean> terminator = new AtomicReference<>();
         terminator.set(false);
         // STEP 1: We start in front of the hub, so deposit.
@@ -38,7 +40,7 @@ public class AutonomousRedDepositWarehouse extends LinearOpMode {
         Sleep.sleep(1000);
         telemetry.addData("Status","traj in progress...");
         // STEP 2: Park in Warehouse
-        driver.goBackwardGyro(45, 0.5,terminator,P,I,D);
+        driver.goBackwardGyro(55, 0.5,terminator,P,I,D);
         telemetry.addData("Status","traj done");
     }
     Pose2d startPosition = new Pose2d(-12,-65.5,0);

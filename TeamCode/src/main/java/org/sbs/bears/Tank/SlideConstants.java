@@ -17,7 +17,7 @@ public class SlideConstants {
 
     public static int slideMotorPosition_THREE_CLOSE = 620; // 663
 
-    public static int slideMotorPosition_THREE_FAR = 1750;
+    public static int slideMotorPosition_THREE_FAR = 1850;
 
     public static double slideMotorPower_EXTENDING = 1;
     public static double slideMotorPower_RETRACTING = 1;

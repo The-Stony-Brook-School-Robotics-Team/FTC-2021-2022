@@ -20,7 +20,7 @@ public class SlidePositionMeasurer extends OpMode {
         potentiometer = hardwareMap.get(AnalogInput.class, "po");
 
     }
-    @Override
+   /* @Override
     public void start(){
         slideMotor.setPower(.3);
         try {
@@ -30,14 +30,15 @@ public class SlidePositionMeasurer extends OpMode {
         }
         slideMotor.setPower(0);
     }
+    */
     @Override
     public void loop() {
-   /**     if(gamepad1.dpad_up){
+        if(gamepad1.dpad_up){
             slideMotor.setTargetPosition(slideMotor.getCurrentPosition()+20);
         }
         if(gamepad1.dpad_down){
             slideMotor.setTargetPosition(slideMotor.getCurrentPosition()-20);
-        } **/
+        }
 
 
 

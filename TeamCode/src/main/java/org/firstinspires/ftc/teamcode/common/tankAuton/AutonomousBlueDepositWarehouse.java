@@ -35,7 +35,7 @@ public class AutonomousBlueDepositWarehouse extends LinearOpMode {
         Sleep.sleep(1000);
         telemetry.addData("Status","traj in progress...");
         // STEP 2: Park in Warehouse
-        driver.goForwardGyro(45, 0.5,terminator,P,I,D);
+        driver.goForwardGyro(55, 0.5,terminator,P,I,D);
         telemetry.addData("Status","traj done");
 
     }

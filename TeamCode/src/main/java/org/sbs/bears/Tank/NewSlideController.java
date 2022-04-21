@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.sbs.bears.robotframework.Sleep;
 import org.sbs.bears.robotframework.enums.SlideState;
 
 public class NewSlideController {
@@ -91,7 +92,7 @@ public class NewSlideController {
         }
         slideMotor.setPower(SlideConstants.slideMotorPower_RETRACTING);
         slideMotor.setTargetPosition(SlideConstants.slideMotorPosition_PARKED);
-        waitToCreep.start();
+        //waitToCreep.start();
     }
     //Handle threading externally if need be.
     public void dropFreight(){
@@ -148,18 +149,15 @@ public class NewSlideController {
         dropFreightThread.interrupt();
     }
 
-    public void incrementEncoderPosition(int encoderTicks, boolean checkSaftey) {
-
+    public void incrementEncoderPosition(int encoderTicks) {
+        Log.d("NewSlideController","Requested: " + encoderTicks);
         encoderTicks += slideMotor.getCurrentPosition();
-        //Checks if the position given is a position that would put the box inside of the robot
-        if ((encoderTicks > (SlideConstants.slideMotorPosition_THREE_FAR + 500) || encoderTicks < SlideConstants.slideMotorPosition_PARKED) && checkSaftey) {
-            return;
-        }
-
-        slideMotor.setPower(SlideConstants.slideMotorPower_EXTENDING);
+        Log.d("NewSlideController","Target: " + encoderTicks);
+        Log.d("NewSlideController","Current: " + slideMotor.getCurrentPosition());
         slideMotor.setTargetPosition(encoderTicks);
+        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideMotor.setPower(SlideConstants.slideMotorPower_EXTENDING);
-
+        Log.d("NewSlideController","Sent");
         return;
     }
 
@@ -184,7 +182,8 @@ public class NewSlideController {
                 }
             }
             //notifyAll(); ?
-            dropFreight();
+            dropFreightNonAsync();
+            retract();
             retract();
         }
     };
@@ -216,9 +215,24 @@ public class NewSlideController {
                 return;
             }
             while (potentiometer.getVoltage() > desiredVoltage){
-                liftMotor.setPower(-SlideConstants.liftMotorPower_MOVING);
+                try {
+                    liftMotor.setPower(-SlideConstants.liftMotorPower_MOVING);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                    Log.d("NewSlideController","Slide height failed");
+                }
             }
-            liftMotor.setPower(0);
+            try {
+                liftMotor.setPower(0);
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                Log.d("NewSlideController","Slide2 height failed");
+
+            }
 
         }
     };
@@ -233,4 +247,14 @@ public class NewSlideController {
             claw.setPosition(SlideConstants.claw_CLOSED);
         }
     };
+    public void dropFreightNonAsync()
+    {
+        claw.setPosition(SlideConstants.claw_OPEN);
+        try {
+            Thread.sleep(400);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        claw.setPosition(SlideConstants.claw_CLOSED);
+    }
 }
