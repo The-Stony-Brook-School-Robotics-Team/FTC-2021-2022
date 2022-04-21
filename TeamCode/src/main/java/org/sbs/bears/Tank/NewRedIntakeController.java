@@ -1,5 +1,6 @@
 package org.sbs.bears.Tank;
 
+import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -19,7 +20,7 @@ public class NewRedIntakeController {
     public volatile IntakeState state = IntakeState.PARK;
     Object stateMutex = new Object();
 
-    public NewRedIntakeController(HardwareMap hardwareMap, Servo clawServo, ModernRoboticsI2cRangeSensor clawSensor, DcMotor slideMotor){
+    public NewRedIntakeController(HardwareMap hardwareMap, Servo clawServo, ModernRoboticsI2cRangeSensor clawSensor, DcMotor slideMotor) {
         scooper = hardwareMap.get(Servo.class, "ri");
         intakeWheel = hardwareMap.get(DcMotor.class, "rim");
         intakeSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rd");
@@ -28,27 +29,43 @@ public class NewRedIntakeController {
         this.slideMotor = slideMotor;
     }
 
-    public void setState(IntakeState intakeState){
-        synchronized(stateMutex){
+    public void setState(IntakeState intakeState) {
+        synchronized (stateMutex) {
             state = intakeState;
         }
         applyStateChange();
     }
 
-    public IntakeState getState(){
+    public IntakeState getState() {
         return state;
     }
-    private void applyStateChange(){
+
+    private void applyStateChange() {
         new Thread(() -> {
-            switch(state){
+            switch (state) {
                 case DUMP:
                     scooper.setPosition(IntakeConstants.redScooperPosition_DUMP);
                     try {
-                        Thread.sleep((long)IntakeConstants.waitForScooper);
+                        Thread.sleep((long) IntakeConstants.waitForScooper);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     intakeWheel.setPower(IntakeConstants.intakePower_DUMP);
+                    //TODO: NEW STUFF
+                    double timeFlag = NanoClock.system().seconds() + 2;
+                    while (!isInClaw()) {
+                        if (NanoClock.system().seconds() > timeFlag) {
+                            setState(IntakeState.PARK);
+                            return;
+                        }
+                        try {
+                            Thread.sleep(1);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    claw.setPosition(SlideConstants.claw_CLOSED);
+                    intakeWheel.setPower(0);
                     break;
                 case BASE:
                     scooper.setPosition(IntakeConstants.redScooperPosition_BASE);
@@ -61,38 +78,39 @@ public class NewRedIntakeController {
         }).start();
     }
 
-    public boolean isFreight(){
+    public boolean isFreight() {
         double distance = intakeSensor.getDistance(DistanceUnit.MM);
         return distance < IntakeConstants.freightDetectionThreshold && distance != 0;
     }
-    public boolean isInClaw(){return clawSensor.getDistance(DistanceUnit.MM) < IntakeConstants.clawFreightDetectionThreshold;}
 
-    public void tick(){
-        if(isFreight() && state == IntakeState.BASE) setState(IntakeState.DUMP);
-        if(isInClaw() && state == IntakeState.DUMP){
+    public boolean isInClaw() {
+        return clawSensor.getDistance(DistanceUnit.MM) < IntakeConstants.clawFreightDetectionThreshold;
+    }
+
+    public void tick() {
+        if (isFreight() && state == IntakeState.BASE)
+            setState(IntakeState.DUMP);
+        /*if (isInClaw() && state == IntakeState.DUMP) {
             claw.setPosition(SlideConstants.claw_CLOSED);
             intakeWheel.setPower(0);
-        }
-        else if(slideMotor.getCurrentPosition() > SlideConstants.slideMotorExtensionThreshold){
+        } else*/ if (slideMotor.getCurrentPosition() > SlideConstants.slideMotorExtensionThreshold) {
             intakeWheel.setPower(0);
-        }
-        else{
-            switch(state){
+        } else {
+            switch (state) {
                 case DUMP:
                     try {
-                        Thread.sleep((long)IntakeConstants.waitForScooper);
+                        Thread.sleep((long) IntakeConstants.waitForScooper);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     intakeWheel.setPower(IntakeConstants.intakePower_DUMP);
-                   break;
+                    break;
                 case BASE:
                     intakeWheel.setPower(IntakeConstants.intakePower_BASE);
                     break;
                 case PARK:
                     intakeWheel.setPower(0);
             }
-
         }
     }
 
