@@ -1,5 +1,7 @@
 package org.sbs.bears.Tank;
 
+import android.util.Log;
+
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -9,6 +11,8 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.sbs.bears.robotframework.enums.SlideState;
 
 public class NewSlideController {
 
@@ -35,6 +39,7 @@ public class NewSlideController {
         claw = hardwareMap.get(Servo.class, "cl");
         clawDistanceSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "cd");
         clawDistanceSensor.setI2cAddress(I2cAddr.create8bit(0x24));
+        Log.d("Slide",clawDistanceSensor.getI2cAddress().toString());
         flipperOne = hardwareMap.get(Servo.class, "fl");
         //flipperOne.setPosition(SlideConstants.flipper_READY);
         flipperOne.setDirection(Servo.Direction.REVERSE);
@@ -67,6 +72,7 @@ public class NewSlideController {
     public void extend(int targetPosition, double flipperPosition, double potentiometerPosition){
         slideMotor.setPower(SlideConstants.slideMotorPower_EXTENDING);
         slideMotor.setTargetPosition(targetPosition);
+        claw.setPosition(SlideConstants.claw_CLOSED);
         try {
             Thread.sleep(200);
         } catch (InterruptedException e) {
@@ -76,10 +82,15 @@ public class NewSlideController {
         flipperTwo.setPosition(flipperPosition - SlideConstants.flipperOffset);
     }
     public void retract(){
-        slideMotor.setPower(SlideConstants.slideMotorPower_RETRACTING);
-        slideMotor.setTargetPosition(SlideConstants.slideMotorPosition_PARKED);
         flipperOne.setPosition(SlideConstants.flipper_READY);
         flipperTwo.setPosition(SlideConstants.flipper_READY - SlideConstants.flipperOffset);
+        try {
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        slideMotor.setPower(SlideConstants.slideMotorPower_RETRACTING);
+        slideMotor.setTargetPosition(SlideConstants.slideMotorPosition_PARKED);
         waitToCreep.start();
     }
     //Handle threading externally if need be.
@@ -107,10 +118,24 @@ public class NewSlideController {
 
     public void doShared(){
         if(flipperOne.getPosition() == SlideConstants.flipper_READY){
+            claw.setPosition(SlideConstants.claw_CLOSED);
             flipperOne.setPosition(SlideConstants.flipper_THREE_CLOSE);
             flipperTwo.setPosition(SlideConstants.flipper_THREE_CLOSE - SlideConstants.flipperOffset);
         }
         else{
+            claw.setPosition(SlideConstants.claw_IDLE);
+            flipperOne.setPosition(SlideConstants.flipper_READY);
+            flipperTwo.setPosition(SlideConstants.flipper_READY - SlideConstants.flipperOffset);
+        }
+    }
+    public void doTallNoSlide(){
+        if(flipperOne.getPosition() == SlideConstants.flipper_READY){
+            claw.setPosition(SlideConstants.claw_CLOSED);
+            flipperOne.setPosition(SlideConstants.flipper_CUSTOM);
+            flipperTwo.setPosition(SlideConstants.flipper_CUSTOM - SlideConstants.flipperOffset);
+        }
+        else{
+            claw.setPosition(SlideConstants.claw_IDLE);
             flipperOne.setPosition(SlideConstants.flipper_READY);
             flipperTwo.setPosition(SlideConstants.flipper_READY - SlideConstants.flipperOffset);
         }
@@ -121,6 +146,21 @@ public class NewSlideController {
         waitToCreep.interrupt();
         waitForSetHeight.interrupt();
         dropFreightThread.interrupt();
+    }
+
+    public void incrementEncoderPosition(int encoderTicks, boolean checkSaftey) {
+
+        encoderTicks += slideMotor.getCurrentPosition();
+        //Checks if the position given is a position that would put the box inside of the robot
+        if ((encoderTicks > (SlideConstants.slideMotorPosition_THREE_FAR + 500) || encoderTicks < SlideConstants.slideMotorPosition_PARKED) && checkSaftey) {
+            return;
+        }
+
+        slideMotor.setPower(SlideConstants.slideMotorPower_EXTENDING);
+        slideMotor.setTargetPosition(encoderTicks);
+        slideMotor.setPower(SlideConstants.slideMotorPower_EXTENDING);
+
+        return;
     }
 
     public Servo getClaw(){return claw;}
@@ -186,7 +226,7 @@ public class NewSlideController {
         public void run(){
             claw.setPosition(SlideConstants.claw_OPEN);
             try {
-                Thread.sleep(600);
+                Thread.sleep(400);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

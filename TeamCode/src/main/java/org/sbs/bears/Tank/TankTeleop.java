@@ -8,14 +8,14 @@ import org.sbs.bears.robotframework.enums.IntakeState;
 import org.sbs.bears.Tank.*;
 
 
-@TeleOp(name = "tank drive", group = "drive")
+@TeleOp(name = "A - ATank TeleOp")
 public class TankTeleop extends OpMode {
     //Using Ramsete.
     SampleTankDrive drive;
     NewSlideController newSlideController;
     NewRedIntakeController newRedIntakeController;
     NewBlueIntakeController newBlueIntakeController;
-    TapeController tapeController;
+    //TapeController tapeController;
     boolean qLeft1 = false;
     boolean qRight1 = false;
     boolean qLeft2 = false;
@@ -30,7 +30,8 @@ public class TankTeleop extends OpMode {
     boolean qY2 = false;
     boolean qRb1 = false;
 
-    private double tapeIncrement = .01;
+    private double tapeIncrement = .01; // 0.01
+    private double tapeIncrementVert = .02; // 0.01
     private double multiplier = 1;
     private boolean isClose = true;
 
@@ -40,16 +41,16 @@ public class TankTeleop extends OpMode {
         newSlideController = new NewSlideController(hardwareMap);
         newRedIntakeController = new NewRedIntakeController(hardwareMap, newSlideController.getClaw(), newSlideController.getDistanceSensor(), newSlideController.getSlideMotor());
         newBlueIntakeController = new NewBlueIntakeController(hardwareMap, newSlideController.getClaw(), newSlideController.getDistanceSensor(), newSlideController.getSlideMotor());
-        tapeController = new TapeController(hardwareMap);
+        //tapeController = new TapeController(hardwareMap);
     }
 
     @Override
     public void start() {
         gamepad1Thread.start();
-        gamepad2Thread.start();
+       // gamepad2Thread.start();
         newRedIntakeController.setState(IntakeState.PARK);
         newBlueIntakeController.setState(IntakeState.PARK);
-        tapeController.initServos();
+        //tapeController.initServos();
         newSlideController.getClaw().setPosition(SlideConstants.claw_IDLE);
 
     }
@@ -68,9 +69,10 @@ public class TankTeleop extends OpMode {
     public void stop(){
         newSlideController.killThreads();
         gamepad1Thread.interrupt();
-        gamepad2Thread.interrupt();
+        //gamepad2Thread.interrupt();
     }
 
+    private boolean qlb1;
     Thread gamepad1Thread = new Thread(){
         public void run(){
             while(!gamepad1Thread.isInterrupted()){
@@ -147,12 +149,28 @@ public class TankTeleop extends OpMode {
                 if(!gamepad1.right_bumper && qRb1){
                     qRb1 = false;
                 }
+                if(gamepad1.left_bumper && !qlb1){
+                    qlb1 = true;
+                    newSlideController.doTallNoSlide();
+                }
+                if(!gamepad1.left_bumper && qlb1){
+                    qlb1 = false;
+                }
+                if(gamepad1.right_trigger > 0.2)
+                {
+                    newSlideController.getClaw().setPosition(SlideConstants.claw_CLOSED);
+                }
+                if(Math.abs(gamepad1.right_stick_y) > 0.2)
+                {
+                    newSlideController.incrementEncoderPosition((int) (gamepad1.right_stick_y*2),true);
+                }
+
 
             }
         }
     };
 
-    Thread gamepad2Thread = new Thread(){
+    /*Thread gamepad2Thread = new Thread(){
         public void run(){
             while(!gamepad2Thread.isInterrupted()){
                 if(gamepad2.b && !qB2){
@@ -164,14 +182,14 @@ public class TankTeleop extends OpMode {
                 }
                 if(gamepad2.dpad_up && !qUp2){
                     qUp2 = true;
-                    tapeController.tilt(tapeIncrement);
+                    tapeController.tilt(-tapeIncrementVert);
                 }
                 if(!gamepad2.dpad_up && qUp2){
                     qUp2 = false;
                 }
                 if(gamepad2.dpad_down && !qDown2){
                     qDown2 = true;
-                    tapeController.tilt(-tapeIncrement);
+                    tapeController.tilt(tapeIncrementVert);
                 }
                 if(!gamepad2.dpad_down && qDown2){
                     qDown2 = false;
@@ -191,19 +209,19 @@ public class TankTeleop extends OpMode {
                     qRight2 = false;
                 }
                 if(gamepad2.a){
-                    tapeController.extend(.7);
+                    tapeController.extend(.5);
                 }
 
                 if(gamepad2.y){
-                    tapeController.extend(.3);
+                    tapeController.extend(-.5);
                 }
 
-                if(gamepad2.x){
-                    tapeController.extend(.5);
+                if(!gamepad2.a && !gamepad2.y){
+                    tapeController.extend(0);
                 }
             }
         }
-    };
+    };*/
 
 
 

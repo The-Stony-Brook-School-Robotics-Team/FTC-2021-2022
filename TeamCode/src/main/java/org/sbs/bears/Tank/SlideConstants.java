@@ -5,7 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 @Config
 public class SlideConstants {
 
-    public static double claw_OPEN = 0;
+    public static double claw_OPEN = 0.4;
     public static double claw_IDLE = 0.5;
     public static double claw_CLOSED = 1;
 
@@ -15,13 +15,12 @@ public class SlideConstants {
     public static int slideMotorPosition_TWO_PRELOAD = 508;
     public static int slideMotorPosition_ONE_PRELOAD = 518;
 
-    public static int slideMotorPosition_THREE_CLOSE = 663;
+    public static int slideMotorPosition_THREE_CLOSE = 620; // 663
 
-    public static int slideMotorPosition_THREE_FAR = 1926;
+    public static int slideMotorPosition_THREE_FAR = 1750;
 
-    public static double slideMotorPower_EXTENDING = .3;
-    public static double slideMotorPower_CAPSTONE = .8;
-    public static double slideMotorPower_RETRACTING = .3;
+    public static double slideMotorPower_EXTENDING = 1;
+    public static double slideMotorPower_RETRACTING = 1;
     public static double slideMotorPower_STILL = 0;
 
     public static double potentiometer_THREE_DEPOSIT = .98;
@@ -41,6 +40,7 @@ public class SlideConstants {
     public static double flipper_ONE_PRELOAD = .05;//0.085;
     public static double flipper_THREE_CLOSE = .05;//0.21;
     public static double flipper_THREE_FAR = .05;//0.18;
+    public static double flipper_CUSTOM = .32;//0.18;
 
     public static int slideMotorTolerance = 8;
     public static int busyWait = 5; //ms

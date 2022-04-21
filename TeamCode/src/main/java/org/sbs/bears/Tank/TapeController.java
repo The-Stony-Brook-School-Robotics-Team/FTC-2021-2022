@@ -1,28 +1,29 @@
 package org.sbs.bears.Tank;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class TapeController {
     private Servo redRotate;
     private Servo redTilt;
-    private Servo redExtend;
+    private CRServo redExtend;
     private Servo blueRotate;
     private Servo blueTilt;
-    private Servo blueExtend;
+    private CRServo blueExtend;
 
 
     private Servo rotate;
     private Servo tilt;
-    private Servo extend;
+    private CRServo extend;
 
     public TapeController(HardwareMap hardwareMap){
         redRotate = hardwareMap.get(Servo.class, "rtr");
         redTilt = hardwareMap.get(Servo.class, "rtt");
-        redExtend = hardwareMap.get(Servo.class, "rte");
+        redExtend = hardwareMap.get(CRServo.class, "rte");
         blueRotate = hardwareMap.get(Servo.class, "btr");
         blueTilt = hardwareMap.get(Servo.class, "btt");
-        blueExtend = hardwareMap.get(Servo.class, "bte");
+        blueExtend = hardwareMap.get(CRServo.class, "bte");
 
 
         rotate = blueRotate;
@@ -36,8 +37,8 @@ public class TapeController {
         blueRotate.setPosition(.5);
         blueTilt.setPosition(.5);
 
-        redExtend.setPosition(.5);
-        blueExtend.setPosition(.5);
+        redExtend.setPower(0);
+        blueExtend.setPower(0);
     }
 
     public void switchTape(){
@@ -60,7 +61,7 @@ public class TapeController {
         redTilt.setPosition(redTilt.getPosition() + increment);
     }
     public void extendRed(double power){
-        redExtend.setPosition(power);
+        redExtend.setPower(power);
     }
     public void rotateBlue(double increment){
         blueRotate.setPosition(blueRotate.getPosition() + increment);
@@ -69,7 +70,7 @@ public class TapeController {
         blueTilt.setPosition(blueTilt.getPosition() + increment);
     }
     public void extendBlue(double power){
-        blueExtend.setPosition(power);
+        blueExtend.setPower(power);
     }
 
     public void rotate(double increment){
@@ -79,7 +80,7 @@ public class TapeController {
         tilt.setPosition(tilt.getPosition() + increment);
     }
     public void extend(double power){
-        extend.setPosition(power);
+        extend.setPower(power);
     }
 
 }

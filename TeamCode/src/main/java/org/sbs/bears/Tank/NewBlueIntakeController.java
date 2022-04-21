@@ -1,5 +1,7 @@
 package org.sbs.bears.Tank;
 
+import android.util.Log;
+
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -28,6 +30,7 @@ public class NewBlueIntakeController {
         intakeWheel.setDirection(DcMotorSimple.Direction.REVERSE);
         intakeSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "bd");
         intakeSensor.setI2cAddress(I2cAddr.create8bit(0x30));
+        Log.d("Sensor",intakeSensor.getI2cAddress().toString());
         this.claw = clawServo;
         this.clawSensor = clawSensor;
         this.slideMotor = slideMotor;
@@ -55,7 +58,7 @@ public class NewBlueIntakeController {
                     }
                     intakeWheel.setPower(IntakeConstants.intakePower_DUMP);
                     //TODO: NEW STUFF
-                    double timeFlag = NanoClock.system().seconds() + 3.5;
+                    double timeFlag = NanoClock.system().seconds() + 1.5;
                     while (!isInClaw()) {
                         if (NanoClock.system().seconds() > timeFlag) {
                             setState(IntakeState.PARK);

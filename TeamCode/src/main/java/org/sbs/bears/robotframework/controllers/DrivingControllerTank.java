@@ -189,8 +189,33 @@ public class DrivingControllerTank {
 
     public void goForwardSimple(double distance, double power, AtomicReference<Boolean> terminate_signal)
     {
-        goForwardSimpleAsync(distance,power,terminate_signal);
-        waitForTrajToFinish();
+        isFollowingTraj.set(true);
+        updateEncoders();
+        int deltaTicks = (int) DriveConstantsTank.inchesToEncoderTicks(distance);
+        Log.d("DrivingControllerTank","Delta Ticks: " + deltaTicks);
+        Map<MotorName, Integer> targetEncoderCounts = new HashMap<>();
+        targetEncoderCounts.put(LF, encoderMap.get(LF) + deltaTicks);
+        targetEncoderCounts.put(RF, encoderMap.get(RF) + deltaTicks);
+        motorMap.get(LF).setPower(power);
+        motorMap.get(RF).setPower(power);
+        motorMap.get(LB).setPower(power);
+        motorMap.get(RB).setPower(power);
+        while((encoderMap.get(LF) < targetEncoderCounts.get(LF)) && !terminate_signal.get())
+        {
+            motorMap.get(LF).setPower(power);
+            motorMap.get(RF).setPower(power);
+            motorMap.get(LB).setPower(power);
+            motorMap.get(RB).setPower(power);
+            updateEncoders();
+            Log.d("DrivingControllerTank","In progress with delta " + (-encoderMap.get(LF) + targetEncoderCounts.get(LF)));
+            RR.update();
+        }
+        Log.d("DrivingControllerTank","Finished with delta " + Math.abs(encoderMap.get(LF) - targetEncoderCounts.get(LF)));
+        motorMap.get(LF).setPower(0);
+        motorMap.get(RF).setPower(0);
+        motorMap.get(LB).setPower(0);
+        motorMap.get(RB).setPower(0);
+        isFollowingTraj.set(false);
     }
     public void goForwardSimpleAsync(double distance, double power, AtomicReference<Boolean> terminate_signal)
     {
