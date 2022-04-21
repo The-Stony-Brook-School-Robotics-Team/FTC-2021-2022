@@ -46,4 +46,6 @@ public class SlideConstants {
     public static int busyWait = 5; //ms
     public static int slideMotorExtensionThreshold = 150;
     public static double flipperOffset = .04;
+
+    public static double driftOffset = 0.875;
 }

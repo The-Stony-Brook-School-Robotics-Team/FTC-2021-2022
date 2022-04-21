@@ -52,7 +52,7 @@ public class NewRedIntakeController {
                     }
                     intakeWheel.setPower(IntakeConstants.intakePower_DUMP);
                     //TODO: NEW STUFF
-                    double timeFlag = NanoClock.system().seconds() + 2;
+                    double timeFlag = NanoClock.system().seconds() + 3.5;
                     while (!isInClaw()) {
                         if (NanoClock.system().seconds() > timeFlag) {
                             setState(IntakeState.PARK);
@@ -66,10 +66,12 @@ public class NewRedIntakeController {
                     }
                     claw.setPosition(SlideConstants.claw_CLOSED);
                     intakeWheel.setPower(0);
+                    state = IntakeState.PARK;
                     break;
                 case BASE:
                     scooper.setPosition(IntakeConstants.redScooperPosition_BASE);
                     intakeWheel.setPower(IntakeConstants.intakePower_BASE);
+                    claw.setPosition(SlideConstants.claw_IDLE);
                     break;
                 case PARK:
                     scooper.setPosition(IntakeConstants.redScooperPosition_DUMP);
@@ -83,6 +85,7 @@ public class NewRedIntakeController {
         return distance < IntakeConstants.freightDetectionThreshold && distance != 0;
     }
 
+
     public boolean isInClaw() {
         return clawSensor.getDistance(DistanceUnit.MM) < IntakeConstants.clawFreightDetectionThreshold;
     }
@@ -90,13 +93,10 @@ public class NewRedIntakeController {
     public void tick() {
         if (isFreight() && state == IntakeState.BASE)
             setState(IntakeState.DUMP);
-        /*if (isInClaw() && state == IntakeState.DUMP) {
-            claw.setPosition(SlideConstants.claw_CLOSED);
-            intakeWheel.setPower(0);
-        } else*/ if (slideMotor.getCurrentPosition() > SlideConstants.slideMotorExtensionThreshold) {
-            intakeWheel.setPower(0);
-        } else {
-            switch (state) {
+       if (slideMotor.getCurrentPosition() > SlideConstants.slideMotorExtensionThreshold) {
+            intakeWheel.setPower(0);}
+       else{
+            switch(state){
                 case DUMP:
                     try {
                         Thread.sleep((long) IntakeConstants.waitForScooper);
@@ -111,7 +111,9 @@ public class NewRedIntakeController {
                 case PARK:
                     intakeWheel.setPower(0);
             }
+
         }
+
     }
 
 }

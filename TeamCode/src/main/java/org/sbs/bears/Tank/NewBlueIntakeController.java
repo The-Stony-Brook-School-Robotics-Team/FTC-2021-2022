@@ -1,5 +1,6 @@
 package org.sbs.bears.Tank;
 
+import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -42,22 +43,38 @@ public class NewBlueIntakeController {
     public IntakeState getState(){
         return state;
     }
-    private void applyStateChange(){
+    private void applyStateChange() {
         new Thread(() -> {
-            switch(state){
+            switch (state) {
                 case DUMP:
                     scooper.setPosition(IntakeConstants.blueScooperPosition_DUMP);
                     try {
-                        Thread.sleep((long)IntakeConstants.waitForScooper);
+                        Thread.sleep((long) IntakeConstants.waitForScooper);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     intakeWheel.setPower(IntakeConstants.intakePower_DUMP);
+                    //TODO: NEW STUFF
+                    double timeFlag = NanoClock.system().seconds() + 3.5;
+                    while (!isInClaw()) {
+                        if (NanoClock.system().seconds() > timeFlag) {
+                            setState(IntakeState.PARK);
+                            return;
+                        }
+                        try {
+                            Thread.sleep(1);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    claw.setPosition(SlideConstants.claw_CLOSED);
+                    intakeWheel.setPower(0);
+                    state = IntakeState.PARK;
                     break;
                 case BASE:
                     scooper.setPosition(IntakeConstants.blueScooperPosition_BASE);
                     intakeWheel.setPower(IntakeConstants.intakePower_BASE);
-                    claw.setPosition(SlideConstants.claw_OPEN);
+                    claw.setPosition(SlideConstants.claw_IDLE);
                     break;
                 case PARK:
                     scooper.setPosition(IntakeConstants.blueScooperPosition_DUMP);
@@ -72,20 +89,16 @@ public class NewBlueIntakeController {
     }
     public boolean isInClaw(){return clawSensor.getDistance(DistanceUnit.MM) < IntakeConstants.clawFreightDetectionThreshold && slideMotor.getCurrentPosition() < SlideConstants.slideMotorExtensionThreshold;}
 
-    public void tick(){
-        if(isFreight() && state == IntakeState.BASE) setState(IntakeState.DUMP);
-        if(isInClaw() && state == IntakeState.DUMP){
-            claw.setPosition(SlideConstants.claw_CLOSED);
-            intakeWheel.setPower(0);
-        }
-        else if(slideMotor.getCurrentPosition() > SlideConstants.slideMotorExtensionThreshold){
-            intakeWheel.setPower(0);
-        }
+    public void tick() {
+        if (isFreight() && state == IntakeState.BASE)
+            setState(IntakeState.DUMP);
+        if (slideMotor.getCurrentPosition() > SlideConstants.slideMotorExtensionThreshold) {
+            intakeWheel.setPower(0);}
         else{
             switch(state){
                 case DUMP:
                     try {
-                        Thread.sleep((long)IntakeConstants.waitForScooper);
+                        Thread.sleep((long) IntakeConstants.waitForScooper);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -97,6 +110,7 @@ public class NewBlueIntakeController {
                 case PARK:
                     intakeWheel.setPower(0);
             }
+
         }
 
     }

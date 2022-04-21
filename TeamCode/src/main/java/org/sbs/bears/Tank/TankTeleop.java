@@ -26,6 +26,8 @@ public class TankTeleop extends OpMode {
     boolean qX1 = false;
     boolean qY1 = false;
     boolean qA1 = false;
+    boolean qA2 = false;
+    boolean qY2 = false;
 
     private double tapeIncrement = .01;
     private double multiplier = 1;
@@ -55,7 +57,7 @@ public class TankTeleop extends OpMode {
     public void loop() {
 
 
-        drive.setMotorPowers(multiplier*(-gamepad1.left_stick_x + gamepad1.right_stick_x), multiplier*(-gamepad1.left_stick_x - gamepad1.right_stick_x));
+        drive.setMotorPowers(multiplier*(-SlideConstants.driftOffset*gamepad1.left_stick_x + gamepad1.right_stick_x), multiplier*(-gamepad1.left_stick_x - gamepad1.right_stick_x));
         //drive.setMotorPowers(multiplier * -(gamepad1.left_stick_x - gamepad1.right_stick_x), multiplier * -(-gamepad1.left_stick_x - gamepad1.right_stick_x));
         newRedIntakeController.tick();
         newBlueIntakeController.tick();
@@ -81,8 +83,11 @@ public class TankTeleop extends OpMode {
                     }
                     else{newSlideController.retract();}
                 }
-                if(gamepad1.a){
+                if(gamepad1.a && !qA1){
                     newSlideController.dropFreight();
+                }
+                if(!gamepad1.a && qA1){
+                    qA1 = false;
                 }
                 if(gamepad1.dpad_left && !qLeft1) {
                     qLeft1 = true;
@@ -134,9 +139,7 @@ public class TankTeleop extends OpMode {
                 if(!gamepad1.y && qY1){
                     qY1 = false;
                 }
-                if(gamepad1.right_bumper){
 
-                }
             }
         }
     };
@@ -179,16 +182,17 @@ public class TankTeleop extends OpMode {
                 if(!gamepad2.dpad_right && qRight2){
                     qRight2 = false;
                 }
-                if(gamepad2.y) {
+                if(gamepad2.a){
                     tapeController.extend(.7);
                 }
-                if(gamepad2.a){
+
+                if(gamepad2.y){
                     tapeController.extend(.3);
                 }
-                if(!gamepad2.y && !gamepad2.a){
+
+                if(gamepad2.x){
                     tapeController.extend(.5);
                 }
-
             }
         }
     };

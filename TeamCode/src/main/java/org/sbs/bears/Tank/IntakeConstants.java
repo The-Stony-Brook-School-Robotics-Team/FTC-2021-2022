@@ -18,7 +18,7 @@ public class IntakeConstants {
     public static double intakePower_PARK = 0;
 
     public static double freightDetectionThreshold = 30;
-    public static double clawFreightDetectionThreshold = 80;
+    public static double clawFreightDetectionThreshold = 90; //80;
     public static double waitForScooper = 400; //ms, was 200.
 
 

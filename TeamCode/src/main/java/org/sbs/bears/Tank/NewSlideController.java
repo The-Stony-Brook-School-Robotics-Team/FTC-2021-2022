@@ -67,6 +67,11 @@ public class NewSlideController {
     public void extend(int targetPosition, double flipperPosition, double potentiometerPosition){
         slideMotor.setPower(SlideConstants.slideMotorPower_EXTENDING);
         slideMotor.setTargetPosition(targetPosition);
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         flipperOne.setPosition(flipperPosition);
         flipperTwo.setPosition(flipperPosition - SlideConstants.flipperOffset);
     }
@@ -173,7 +178,7 @@ public class NewSlideController {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            claw.setPosition(SlideConstants.claw_IDLE);
+            claw.setPosition(SlideConstants.claw_CLOSED);
         }
     };
 }
