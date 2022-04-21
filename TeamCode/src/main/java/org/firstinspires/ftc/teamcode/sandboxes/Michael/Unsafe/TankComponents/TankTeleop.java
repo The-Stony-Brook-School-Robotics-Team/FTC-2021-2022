@@ -33,8 +33,8 @@ public class TankTeleop extends OpMode {
     public void init() {
         drive = new SampleTankDrive(hardwareMap);
         newSlideController = new NewSlideController(hardwareMap);
-        newRedIntakeController = new NewRedIntakeController(hardwareMap, newSlideController.getClaw(), newSlideController.getDistanceSensor());
-        newBlueIntakeController = new NewBlueIntakeController(hardwareMap, newSlideController.getClaw(), newSlideController.getDistanceSensor());
+        newRedIntakeController = new NewRedIntakeController(hardwareMap, newSlideController.getClaw(), newSlideController.getDistanceSensor(), newSlideController.getSlideMotor());
+        newBlueIntakeController = new NewBlueIntakeController(hardwareMap, newSlideController.getClaw(), newSlideController.getDistanceSensor(), newSlideController.getSlideMotor());
         tapeController = new TapeController(hardwareMap);
     }
 
@@ -45,6 +45,7 @@ public class TankTeleop extends OpMode {
         newRedIntakeController.setState(IntakeState.PARK);
         newBlueIntakeController.setState(IntakeState.PARK);
         tapeController.initServos();
+        newSlideController.getClaw().setPosition(SlideConstants.claw_IDLE);
 
     }
 

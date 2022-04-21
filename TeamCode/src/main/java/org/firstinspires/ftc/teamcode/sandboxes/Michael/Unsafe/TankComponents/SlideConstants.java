@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.teamcode.sandboxes.Michael.Unsafe.TankComponents;
 
+import com.acmerobotics.dashboard.config.Config;
+
+@Config
 public class SlideConstants {
 
     public static double claw_OPEN = 0;
+    public static double claw_IDLE = 0.5;
     public static double claw_CLOSED = 1;
-
 
 
     public static int slideMotorPosition_PARKED = 5;
@@ -32,14 +35,15 @@ public class SlideConstants {
 
     public static double liftMotorPower_MOVING = 0.1;
 
-    public static double flipper_READY = 0.86;
-    public static double flipper_THREE_PRELOAD = 0.37;
-    public static double flipper_TWO_PRELOAD = 0.2;
-    public static double flipper_ONE_PRELOAD = 0.085;
-    public static double flipper_THREE_CLOSE = 0.21;
-    public static double flipper_THREE_FAR= 0.18;
+    public static double flipper_READY = .97;//0.825;
+    public static double flipper_THREE_PRELOAD = .05;//0.37;
+    public static double flipper_TWO_PRELOAD = .05;//0.2;
+    public static double flipper_ONE_PRELOAD = .05;//0.085;
+    public static double flipper_THREE_CLOSE = .05;//0.21;
+    public static double flipper_THREE_FAR = .05;//0.18;
 
     public static int slideMotorTolerance = 8;
     public static int busyWait = 5; //ms
     public static int slideMotorExtensionThreshold = 150;
+    public static double flipperOffset = .04;
 }

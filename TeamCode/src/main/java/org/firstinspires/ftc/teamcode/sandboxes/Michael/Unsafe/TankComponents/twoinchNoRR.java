@@ -26,7 +26,7 @@ public class twoinchNoRR {
         public twoinchNoRR(HardwareMap hardwareMap){
             drive = new DriveController(hardwareMap);
             slideController = new NewSlideController(hardwareMap);
-            intakeController = new NewRedIntakeController(hardwareMap, slideController.getClaw(),slideController.getDistanceSensor() );
+            intakeController = new NewRedIntakeController(hardwareMap, slideController.getClaw(),slideController.getDistanceSensor(), slideController.getSlideMotor());
 
         }
         public void initialDeposit(){

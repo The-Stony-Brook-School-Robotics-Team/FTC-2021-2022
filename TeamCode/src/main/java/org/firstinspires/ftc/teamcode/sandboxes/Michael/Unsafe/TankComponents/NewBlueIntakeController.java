@@ -4,6 +4,7 @@ import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -15,17 +16,20 @@ public class NewBlueIntakeController {
     private DcMotor intakeWheel;
     public ModernRoboticsI2cRangeSensor intakeSensor;
     private ModernRoboticsI2cRangeSensor clawSensor;
+    private DcMotor slideMotor;
 
     public volatile IntakeState state = IntakeState.PARK;
     Object stateMutex = new Object();
 
-    public NewBlueIntakeController(HardwareMap hardwareMap, Servo clawServo, ModernRoboticsI2cRangeSensor clawSensor){
+    public NewBlueIntakeController(HardwareMap hardwareMap, Servo clawServo, ModernRoboticsI2cRangeSensor clawSensor, DcMotor slideMotor){
         scooper = hardwareMap.get(Servo.class, "bi");
         intakeWheel = hardwareMap.get(DcMotor.class, "bim");
         intakeWheel.setDirection(DcMotorSimple.Direction.REVERSE);
         intakeSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "bd");
+        intakeSensor.setI2cAddress(I2cAddr.create8bit(0x30));
         this.claw = clawServo;
         this.clawSensor = clawSensor;
+        this.slideMotor = slideMotor;
     }
 
     public void setState(IntakeState intakeState){
@@ -66,11 +70,17 @@ public class NewBlueIntakeController {
         double distance = intakeSensor.getDistance(DistanceUnit.MM);
         return distance < IntakeConstants.freightDetectionThreshold && distance != 0;
     }
-    public boolean isInClaw(){return clawSensor.getDistance(DistanceUnit.MM) < IntakeConstants.clawFreightDetectionThreshold;}
+    public boolean isInClaw(){return clawSensor.getDistance(DistanceUnit.MM) < IntakeConstants.clawFreightDetectionThreshold && slideMotor.getCurrentPosition() < SlideConstants.slideMotorExtensionThreshold;}
 
     public void tick(){
         if(isFreight() && state == IntakeState.BASE) setState(IntakeState.DUMP);
-        if(isInClaw() && state == IntakeState.DUMP) intakeWheel.setPower(0);
+        if(isInClaw() && state == IntakeState.DUMP){
+            claw.setPosition(SlideConstants.claw_CLOSED);
+            intakeWheel.setPower(0);
+        }
+        else if(slideMotor.getCurrentPosition() > SlideConstants.slideMotorExtensionThreshold){
+            intakeWheel.setPower(0);
+        }
         else{
             switch(state){
                 case DUMP:

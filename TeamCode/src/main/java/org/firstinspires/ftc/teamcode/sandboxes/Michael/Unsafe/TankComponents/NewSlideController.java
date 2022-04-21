@@ -36,7 +36,9 @@ public class NewSlideController {
         clawDistanceSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "cd");
         clawDistanceSensor.setI2cAddress(I2cAddr.create8bit(0x24));
         flipperOne = hardwareMap.get(Servo.class, "fl");
-        flipperOne.setPosition(SlideConstants.flipper_READY);
+        //flipperOne.setPosition(SlideConstants.flipper_READY);
+        flipperOne.setDirection(Servo.Direction.REVERSE);
+        flipperTwo = hardwareMap.get(Servo.class, "fl2");
 
         slideMotor = hardwareMap.get(DcMotorEx.class, "spool");
         slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -66,22 +68,20 @@ public class NewSlideController {
         slideMotor.setPower(SlideConstants.slideMotorPower_EXTENDING);
         slideMotor.setTargetPosition(targetPosition);
         flipperOne.setPosition(flipperPosition);
+        flipperTwo.setPosition(flipperPosition - SlideConstants.flipperOffset);
     }
     public void retract(){
         slideMotor.setPower(SlideConstants.slideMotorPower_RETRACTING);
         slideMotor.setTargetPosition(SlideConstants.slideMotorPosition_PARKED);
         flipperOne.setPosition(SlideConstants.flipper_READY);
+        flipperTwo.setPosition(SlideConstants.flipper_READY - SlideConstants.flipperOffset);
         waitToCreep.start();
     }
     //Handle threading externally if need be.
     public void dropFreight(){
-        claw.setPosition(SlideConstants.claw_OPEN);
-        try {
-             Thread.sleep(200);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if(!dropFreightThread.isAlive()){
+            dropFreightThread.start();
         }
-        claw.setPosition(SlideConstants.claw_CLOSED);
     }
     public void extendDropRetract(int targetPosition, double flipperPosition, double potentiometerPosition){
         extend(targetPosition, flipperPosition, potentiometerPosition);
@@ -103,10 +103,12 @@ public class NewSlideController {
         waitForDropRetract.interrupt();
         waitToCreep.interrupt();
         waitForSetHeight.interrupt();
+        dropFreightThread.interrupt();
     }
 
     public Servo getClaw(){return claw;}
     public ModernRoboticsI2cRangeSensor getDistanceSensor(){return clawDistanceSensor;}
+    public DcMotor getSlideMotor(){return slideMotor;}
 
     public boolean isExtendedPastThreshold(){return slideMotor.getCurrentPosition() > SlideConstants.slideMotorExtensionThreshold;}
 
@@ -161,6 +163,17 @@ public class NewSlideController {
             }
             liftMotor.setPower(0);
 
+        }
+    };
+    Thread dropFreightThread = new Thread(){
+        public void run(){
+            claw.setPosition(SlideConstants.claw_OPEN);
+            try {
+                Thread.sleep(600);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            claw.setPosition(SlideConstants.claw_IDLE);
         }
     };
 }

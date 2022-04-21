@@ -14,16 +14,18 @@ public class NewRedIntakeController {
     private DcMotor intakeWheel;
     public ModernRoboticsI2cRangeSensor intakeSensor;
     private ModernRoboticsI2cRangeSensor clawSensor;
+    private DcMotor slideMotor;
 
     public volatile IntakeState state = IntakeState.PARK;
     Object stateMutex = new Object();
 
-    public NewRedIntakeController(HardwareMap hardwareMap, Servo clawServo, ModernRoboticsI2cRangeSensor clawSensor){
+    public NewRedIntakeController(HardwareMap hardwareMap, Servo clawServo, ModernRoboticsI2cRangeSensor clawSensor, DcMotor slideMotor){
         scooper = hardwareMap.get(Servo.class, "ri");
         intakeWheel = hardwareMap.get(DcMotor.class, "rim");
         intakeSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rd");
         this.claw = clawServo;
         this.clawSensor = clawSensor;
+        this.slideMotor = slideMotor;
     }
 
     public void setState(IntakeState intakeState){
@@ -67,7 +69,13 @@ public class NewRedIntakeController {
 
     public void tick(){
         if(isFreight() && state == IntakeState.BASE) setState(IntakeState.DUMP);
-        if(isInClaw() && state == IntakeState.DUMP) intakeWheel.setPower(0);
+        if(isInClaw() && state == IntakeState.DUMP){
+            claw.setPosition(SlideConstants.claw_CLOSED);
+            intakeWheel.setPower(0);
+        }
+        else if(slideMotor.getCurrentPosition() > SlideConstants.slideMotorExtensionThreshold){
+            intakeWheel.setPower(0);
+        }
         else{
             switch(state){
                 case DUMP:

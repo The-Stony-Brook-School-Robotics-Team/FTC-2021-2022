@@ -24,7 +24,7 @@ public class twoinch  {
         public twoinch(HardwareMap hardwareMap){
             drive = new SampleTankDrive(hardwareMap);
             slideController = new NewSlideController(hardwareMap);
-            intakeController = new NewRedIntakeController(hardwareMap, slideController.getClaw(),slideController.getDistanceSensor() );
+            intakeController = new NewRedIntakeController(hardwareMap, slideController.getClaw(),slideController.getDistanceSensor(), slideController.getSlideMotor());
 
         }
 
