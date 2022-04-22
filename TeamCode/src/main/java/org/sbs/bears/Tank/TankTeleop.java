@@ -80,19 +80,21 @@ public class TankTeleop extends OpMode {
         newSlideController.killThreads();
         gamepad1Thread.interrupt();
         //gamepad2Thread.interrupt();
+        telemetryThread.interrupt();
     }
 
     private boolean qlb1;
     private boolean isClosed = false;
-    Thread telemetryThread = new Thread(()->{
-        while(telemetry != null)
-        {
-            telemetry.addData("Slide Status",isClose ? "Close" : "Far");
-            telemetry.addData("Slide Extension",newSlideController.getSlideMotor().getCurrentPosition());
-            telemetry.update();
-            Sleep.sleep(100);
+    Thread telemetryThread = new Thread() {
+        public void run() {
+            while (!telemetryThread.isInterrupted()) {
+                telemetry.addData("Slide Status", isClose ? "Close" : "Far");
+                telemetry.addData("Slide Extension", newSlideController.getSlideMotor().getCurrentPosition());
+                telemetry.update();
+                Sleep.sleep(100);
+            }
         }
-    });
+    };
     Thread gamepad1Thread = new Thread(){
 
         public void run(){
