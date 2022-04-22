@@ -94,8 +94,37 @@ public class DrivingControllerTank {
     }
     public void goForwardGyro(double distance,double power, AtomicReference<Boolean> terminator,double p, double i, double d)
     {
-        goForwardGyroPIDAsync(distance,power,terminator,p,i,d);
-        waitForTrajToFinish();
+        isFollowingTraj.set(true);
+        Pose2d iniPos = RR.getPoseEstimate();
+        double iniHeading = imu.getAngularOrientation().firstAngle; // should be y: xyz
+        motorMap.get(LF).setPower(power);
+        motorMap.get(RF).setPower(power);
+        motorMap.get(LB).setPower(power);
+        motorMap.get(RB).setPower(power);
+        double totalError = 0;
+        double lastErr = 0;
+        while((RoadRunnerController.distanceTwoPoints(iniPos,RR.getPoseEstimate()) < distance) && !terminator.get())
+        {
+            double currentHeading = imu.getAngularOrientation().firstAngle;  // positive is to the left
+            double error = currentHeading-iniHeading; // positive is still to the left
+            Log.d("DrivingControllerTank","Heading error is " + error);
+            double powerDiff = error*p + totalError*i + (error-lastErr)*d; // R-L
+            powerDiff = 2*cap(powerDiff/2,1-power);
+            Log.d("DrivingControllerTank","Left power: " + (power-powerDiff/2) + " right power: " + (power+powerDiff/2));
+            motorMap.get(LF).setPower(power+powerDiff/2);
+            motorMap.get(RF).setPower(power-powerDiff/2);
+            motorMap.get(LB).setPower(power+powerDiff/2);
+            motorMap.get(RB).setPower(power-powerDiff/2);
+            RR.update();
+            totalError+=error;
+            lastErr = error;
+        }
+        Log.d("DrivingControllerTank","Finished with delta " + Math.abs(RoadRunnerController.distanceTwoPoints(iniPos,RR.getPoseEstimate())));
+        motorMap.get(LF).setPower(0);
+        motorMap.get(RF).setPower(0);
+        motorMap.get(LB).setPower(0);
+        motorMap.get(RB).setPower(0);
+        isFollowingTraj.set(false);
     }
     public void goForwardGyroPIDAsync(double distance, double power, AtomicReference<Boolean> terminator,double p, double i, double d)
     {
@@ -140,8 +169,37 @@ public class DrivingControllerTank {
 
     public void goBackwardGyro(double distance,double power, AtomicReference<Boolean> terminator,double p, double i, double d)
     {
-        goBackwardGyroPIDAsync(distance,power,terminator,p,i,d);
-        waitForTrajToFinish();
+        isFollowingTraj.set(true);
+        Pose2d iniPos = RR.getPoseEstimate();
+        double iniHeading = imu.getAngularOrientation().firstAngle;
+        motorMap.get(LF).setPower(-power);
+        motorMap.get(RF).setPower(-power);
+        motorMap.get(LB).setPower(-power);
+        motorMap.get(RB).setPower(-power);
+        double totalError = 0;
+        double lastErr = 0;
+        while((RoadRunnerController.distanceTwoPoints(iniPos,RR.getPoseEstimate()) < distance) && !terminator.get())
+        {
+            double currentHeading = imu.getAngularOrientation().firstAngle;  // positive is to the left
+            double error = currentHeading-iniHeading; // positive is still to the right
+            Log.d("DrivingControllerTank","Heading error is " + error);
+            double powerDiff = error*p + totalError*i + (error-lastErr)*d; // R-L
+            powerDiff = 2*cap(powerDiff/2,1-power);
+            Log.d("DrivingControllerTank","Left power: " + (power-powerDiff/2) + " right power: " + (power+powerDiff/2));
+            motorMap.get(LF).setPower(-power+powerDiff/2);
+            motorMap.get(RF).setPower(-power-powerDiff/2);
+            motorMap.get(LB).setPower(-power+powerDiff/2);
+            motorMap.get(RB).setPower(-power-powerDiff/2);
+            RR.update();
+            totalError+=error;
+            lastErr = error;
+        }
+        Log.d("DrivingControllerTank","Finished with delta " + Math.abs(RoadRunnerController.distanceTwoPoints(iniPos,RR.getPoseEstimate())));
+        motorMap.get(LF).setPower(0);
+        motorMap.get(RF).setPower(0);
+        motorMap.get(LB).setPower(0);
+        motorMap.get(RB).setPower(0);
+        isFollowingTraj.set(false);
     }
     public void goBackwardGyroPIDAsync(double distance, double power, AtomicReference<Boolean> terminator,double p, double i, double d)
     {
@@ -484,9 +542,64 @@ public class DrivingControllerTank {
     }
 
    public void turnL(double angleDegs, double power) {
-        turnLAsync(angleDegs, power);
-        waitForTrajToFinish();
+       isFollowingTraj.set(true);
+       Pose2d iniPos = RR.getPoseEstimate();
+       double iniHeading = RR.getPoseEstimate().getHeading(); // should be y: xyz
+       motorMap.get(LF).setPower(-power);
+       motorMap.get(RF).setPower(power);
+       motorMap.get(LB).setPower(-power);
+       motorMap.get(RB).setPower(power);
+       double targetHeading = iniHeading - Math.toRadians(angleDegs);
+       Log.d("DrivingController","Target heading: " + targetHeading);
+       Log.d("DrivingController","Target heading: " + targetHeading);
+       while(RR.getPoseEstimate().getHeading() < targetHeading)
+       {
+           Log.d("DrivingController","Current heading: " + RR.getPoseEstimate().getHeading());
+           Log.d("DrivingController","Delta heading: " + (RR.getPoseEstimate().getHeading()-targetHeading) + " * NEGATIVE");
+           motorMap.get(LF).setPower(-power);
+           motorMap.get(RF).setPower(power);
+           motorMap.get(LB).setPower(-power);
+           motorMap.get(RB).setPower(power);
+           RR.update();
+       }
+       motorMap.get(LF).setPower(0);
+       motorMap.get(RF).setPower(0);
+       motorMap.get(LB).setPower(0);
+       motorMap.get(RB).setPower(0);
+       isFollowingTraj.set(false);
     }
+    public void turnLSpecial(double angleDegs,double power)
+    {
+        double distanceTravel = DriveConstantsTank.TRACK_WIDTH/2*Math.toRadians(angleDegs);
+        int encoders = (int) DriveConstantsTank.inchesToEncoderTicks(distanceTravel);
+        motorMap.get(LF).setTargetPosition(motorMap.get(LF).getCurrentPosition()-encoders);
+        int targetEncodersLF = motorMap.get(LF).getTargetPosition();
+        motorMap.get(LB).setTargetPosition(motorMap.get(LB).getCurrentPosition()-encoders);
+        motorMap.get(RF).setTargetPosition(motorMap.get(RF).getCurrentPosition()+encoders);
+        motorMap.get(RB).setTargetPosition(motorMap.get(RB).getCurrentPosition()+encoders);
+        for (DcMotorEx motor : motorMap.values())
+        {
+            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+        motorMap.get(LF).setPower(-power);
+        motorMap.get(RF).setPower(power);
+        motorMap.get(LB).setPower(-power);
+        motorMap.get(RB).setPower(power);
+        while(!epsilonEquals(motorMap.get(LF).getCurrentPosition(), targetEncodersLF))
+        {
+            Sleep.sleep(10);
+        }
+        motorMap.get(LF).setPower(0);
+        motorMap.get(RF).setPower(0);
+        motorMap.get(LB).setPower(0);
+        motorMap.get(RB).setPower(0);
+
+    }
+
+    public static boolean epsilonEquals(int a, int b) {
+        return Math.abs(a - b) < EPSILON;
+    }
+
     public void turnLAsync(double angleDegs, double power)
     {
         Thread tmp = new Thread(()->{
@@ -527,8 +640,30 @@ public class DrivingControllerTank {
     }
 
     public void turnR(double angleDegs, double power) {
-        turnRAsync(angleDegs, power);
-        waitForTrajToFinish();
+        isFollowingTraj.set(true);
+        Pose2d iniPos = RR.getPoseEstimate();
+        double iniHeading = RR.getPoseEstimate().getHeading(); // should be y: xyz
+        motorMap.get(LF).setPower(power);
+        motorMap.get(RF).setPower(-power);
+        motorMap.get(LB).setPower(power);
+        motorMap.get(RB).setPower(-power);
+        double targetHeading = iniHeading - Math.toRadians(angleDegs);
+        Log.d("DrivingController","Target heading: " + targetHeading);
+        while(RR.getPoseEstimate().getHeading() > targetHeading)
+        {
+            Log.d("DrivingController","Current heading: " + RR.getPoseEstimate().getHeading());
+            Log.d("DrivingController","Delta heading: " + (RR.getPoseEstimate().getHeading()-targetHeading)+ " * POSITIVE");
+            motorMap.get(LF).setPower(power);
+            motorMap.get(RF).setPower(-power);
+            motorMap.get(LB).setPower(power);
+            motorMap.get(RB).setPower(-power);
+            RR.update();
+        }
+        motorMap.get(LF).setPower(0);
+        motorMap.get(RF).setPower(0);
+        motorMap.get(LB).setPower(0);
+        motorMap.get(RB).setPower(0);
+        isFollowingTraj.set(false);
     }
     public void turnRAsync(double angleDegs, double power)
     {
