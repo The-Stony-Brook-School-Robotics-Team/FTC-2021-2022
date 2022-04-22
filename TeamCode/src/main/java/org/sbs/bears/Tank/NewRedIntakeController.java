@@ -46,17 +46,22 @@ public class NewRedIntakeController {
         new Thread(() -> {
             switch (state) {
                 case DUMP:
+                    Log.d("IntakeControllerRed","Start DUMP");
                     scooper.setPosition(IntakeConstants.redScooperPosition_DUMP);
                     try {
                         Thread.sleep((long) IntakeConstants.waitForScooper);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                     intakeWheel.setPower(IntakeConstants.intakePower_DUMP);
-               /**     double timeFlag = NanoClock.system().seconds() + 1.5;
+                    Log.d("IntakeControllerRed","Lifted, preparing reverse");
+                    intakeWheel.setPower(IntakeConstants.intakePower_DUMP);
+                    Log.d("IntakeControllerRed","reverse done");
+                    //TODO: NEW STUFF
+                    double timeFlag = NanoClock.system().seconds() + 1.5;
                     while (!isInClaw()) {
                         if (NanoClock.system().seconds() > timeFlag) {
                             setState(IntakeState.PARK);
+                            Log.d("IntakeControllerRed","Park");
                             return;
                         }
                         try {
@@ -67,7 +72,7 @@ public class NewRedIntakeController {
                     }
                     claw.setPosition(SlideConstants.claw_CLOSED);
                     intakeWheel.setPower(0);
-                    state = IntakeState.PARK; **/
+                    state = IntakeState.PARK;
                     break;
                 case BASE:
                     scooper.setPosition(IntakeConstants.redScooperPosition_BASE);
@@ -94,14 +99,8 @@ public class NewRedIntakeController {
     public void tick() {
         if (isFreight() && state == IntakeState.BASE)
             setState(IntakeState.DUMP);
-
-        if (slideMotor.getCurrentPosition() > SlideConstants.slideMotorExtensionThreshold) {
+       if (slideMotor.getCurrentPosition() > SlideConstants.slideMotorExtensionThreshold) {
             intakeWheel.setPower(0);}
-        else if(state == IntakeState.DUMP && isInClaw()){
-            claw.setPosition(SlideConstants.claw_CLOSED);
-            intakeWheel.setPower(0);
-            state = IntakeState.PARK;
-        }
        else{
             switch(state){
                 case DUMP:

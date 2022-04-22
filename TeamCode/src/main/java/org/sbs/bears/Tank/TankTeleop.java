@@ -190,8 +190,6 @@ public class TankTeleop extends OpMode {
                     }
                     else {
                         newSlideController.getClaw().setPosition(SlideConstants.claw_CLOSED);
-                        newRedIntakeController.setState(IntakeState.PARK);
-                        newBlueIntakeController.setState(IntakeState.PARK);
                     }
                     isClosed = !isClosed;
                     gprt = true;
