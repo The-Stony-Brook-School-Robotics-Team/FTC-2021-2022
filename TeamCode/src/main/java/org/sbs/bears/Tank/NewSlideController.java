@@ -19,8 +19,8 @@ public class NewSlideController {
 
     public DcMotorEx liftMotor;
     private Servo claw;
-    private Servo flipperOne;
-    private Servo flipperTwo;
+    public Servo flipperOne;
+    public Servo flipperTwo;
     private DcMotorEx slideMotor;
     private DigitalChannel magswitch;
     private ModernRoboticsI2cRangeSensor clawDistanceSensor;

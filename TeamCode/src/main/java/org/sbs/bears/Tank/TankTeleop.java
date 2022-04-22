@@ -32,7 +32,9 @@ public class TankTeleop extends OpMode {
     boolean qA2 = false;
     boolean qY2 = false;
     boolean qRb1 = false;
-    private boolean gprt;
+    boolean gprt = false;
+    boolean qUp1 = false;
+    boolean qDown1 = false;
 
 
     private double tapeIncrement = .01; // 0.01
@@ -202,13 +204,24 @@ public class TankTeleop extends OpMode {
                 {
                     qX1 = false;
                 }
-                if(gamepad1.dpad_up)
+                if(gamepad1.dpad_up && !qUp1)
                 {
-                    newSlideController.liftMotor.setPower(-0.1);
+                    qUp1 = true;
+                    newSlideController.flipperOne.setPosition(newSlideController.flipperOne.getPosition() -.1);
+                    newSlideController.flipperTwo.setPosition(newSlideController.flipperOne.getPosition() - SlideConstants.flipperOffset);
+
                 }
-                else if(gamepad1.dpad_down)
+                if(!gamepad1.dpad_up && qUp1){
+                    qUp1 = false;
+                }
+                else if(gamepad1.dpad_down && !qDown1)
                 {
-                    newSlideController.liftMotor.setPower(0.1);
+                    qDown1 = true;
+                    newSlideController.flipperOne.setPosition(newSlideController.flipperOne.getPosition() + .1);
+                    newSlideController.flipperTwo.setPosition(newSlideController.flipperOne.getPosition() - SlideConstants.flipperOffset);
+                }
+                if(!gamepad1.dpad_down && qDown1){
+                    qDown1 = false;
                 }
                 else if(!gamepad1.dpad_up && !gamepad1.dpad_down)
                 {
