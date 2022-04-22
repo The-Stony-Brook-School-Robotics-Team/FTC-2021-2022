@@ -55,6 +55,7 @@ public class TankTeleop extends OpMode {
     @Override
     public void start() {
         gamepad1Thread.start();
+        telemetryThread.start();
        // gamepad2Thread.start();
         newRedIntakeController.setState(IntakeState.PARK);
         newBlueIntakeController.setState(IntakeState.PARK);
@@ -83,6 +84,15 @@ public class TankTeleop extends OpMode {
 
     private boolean qlb1;
     private boolean isClosed = false;
+    Thread telemetryThread = new Thread(()->{
+        while(telemetry != null)
+        {
+            telemetry.addData("Slide Status",isClose ? "Close" : "Far");
+            telemetry.addData("Slide Extension",newSlideController.getSlideMotor().getCurrentPosition());
+            telemetry.update();
+            Sleep.sleep(100);
+        }
+    });
     Thread gamepad1Thread = new Thread(){
 
         public void run(){
