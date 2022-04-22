@@ -34,11 +34,12 @@ public class SlideConstants {
 
     public static double liftMotorPower_MOVING = 0.1;
 
-    public static double flipper_READY = .97;//0.825;
+    public static double flipper_READY = 1;//0.825;
     public static double flipper_THREE_PRELOAD = .05;//0.37;
     public static double flipper_TWO_PRELOAD = .05;//0.2;
     public static double flipper_ONE_PRELOAD = .05;//0.085;
-    public static double flipper_THREE_CLOSE = .05;//0.21;
+    public static double flipper_THREE_CLOSE = .37;//0.21;
+    public static double flipper_SHARED = .2;
     public static double flipper_THREE_FAR = .05;//0.18;
     public static double flipper_CUSTOM = .32;//0.18;
 

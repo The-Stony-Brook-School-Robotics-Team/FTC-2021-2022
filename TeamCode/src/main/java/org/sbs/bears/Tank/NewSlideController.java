@@ -120,8 +120,8 @@ public class NewSlideController {
     public void doShared(){
         if(flipperOne.getPosition() == SlideConstants.flipper_READY){
             claw.setPosition(SlideConstants.claw_CLOSED);
-            flipperOne.setPosition(SlideConstants.flipper_THREE_CLOSE);
-            flipperTwo.setPosition(SlideConstants.flipper_THREE_CLOSE - SlideConstants.flipperOffset);
+            flipperOne.setPosition(SlideConstants.flipper_SHARED);
+            flipperTwo.setPosition(SlideConstants.flipper_SHARED - SlideConstants.flipperOffset);
         }
         else{
             claw.setPosition(SlideConstants.claw_IDLE);

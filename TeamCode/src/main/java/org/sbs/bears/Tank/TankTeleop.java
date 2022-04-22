@@ -207,7 +207,7 @@ public class TankTeleop extends OpMode {
                 if(gamepad1.dpad_up && !qUp1)
                 {
                     qUp1 = true;
-                    newSlideController.flipperOne.setPosition(newSlideController.flipperOne.getPosition() -.1);
+                    newSlideController.flipperOne.setPosition(newSlideController.flipperOne.getPosition() +.05);
                     newSlideController.flipperTwo.setPosition(newSlideController.flipperOne.getPosition() - SlideConstants.flipperOffset);
 
                 }
@@ -217,7 +217,7 @@ public class TankTeleop extends OpMode {
                 else if(gamepad1.dpad_down && !qDown1)
                 {
                     qDown1 = true;
-                    newSlideController.flipperOne.setPosition(newSlideController.flipperOne.getPosition() + .1);
+                    newSlideController.flipperOne.setPosition(newSlideController.flipperOne.getPosition() - .05);
                     newSlideController.flipperTwo.setPosition(newSlideController.flipperOne.getPosition() - SlideConstants.flipperOffset);
                 }
                 if(!gamepad1.dpad_down && qDown1){
