@@ -24,7 +24,7 @@ public class NewSlideController {
     private DcMotorEx slideMotor;
     private DigitalChannel magswitch;
     private ModernRoboticsI2cRangeSensor clawDistanceSensor;
-    private AnalogInput potentiometer;
+    public AnalogInput potentiometer;
 
     private double desiredVoltage;
 
