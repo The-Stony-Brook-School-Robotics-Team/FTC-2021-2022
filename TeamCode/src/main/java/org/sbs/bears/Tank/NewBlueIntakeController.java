@@ -57,7 +57,6 @@ public class NewBlueIntakeController {
                         e.printStackTrace();
                     }
                     intakeWheel.setPower(IntakeConstants.intakePower_DUMP);
-                    //TODO: NEW STUFF
                     double timeFlag = NanoClock.system().seconds() + 1.5;
                     while (!isInClaw()) {
                         if (NanoClock.system().seconds() > timeFlag) {
@@ -95,6 +94,7 @@ public class NewBlueIntakeController {
     public void tick() {
         if (isFreight() && state == IntakeState.BASE)
             setState(IntakeState.DUMP);
+
         if (slideMotor.getCurrentPosition() > SlideConstants.slideMotorExtensionThreshold) {
             intakeWheel.setPower(0);}
         else{
