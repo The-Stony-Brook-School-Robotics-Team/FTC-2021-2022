@@ -46,22 +46,19 @@ public class NewRedIntakeController {
         new Thread(() -> {
             switch (state) {
                 case DUMP:
-                    Log.d("IntakeControllerRed","Start DUMP");
+
                     scooper.setPosition(IntakeConstants.redScooperPosition_DUMP);
                     try {
                         Thread.sleep((long) IntakeConstants.waitForScooper);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    Log.d("IntakeControllerRed","Lifted, preparing reverse");
-                    intakeWheel.setPower(IntakeConstants.intakePower_DUMP);
-                    Log.d("IntakeControllerRed","reverse done");
+
                     //TODO: NEW STUFF
                     double timeFlag = NanoClock.system().seconds() + 1.5;
                     while (!isInClaw()) {
                         if (NanoClock.system().seconds() > timeFlag) {
                             setState(IntakeState.PARK);
-                            Log.d("IntakeControllerRed","Park");
                             return;
                         }
                         try {

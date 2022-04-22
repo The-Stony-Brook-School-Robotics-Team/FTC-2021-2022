@@ -37,11 +37,15 @@ public class AutonomousRedDepositWarehouse extends LinearOpMode {
         // STEP 1: We start in front of the hub, so deposit.
         slide.extendDropRetract(SlideConstants.slideMotorPosition_THREE_CLOSE,SlideConstants.flipper_THREE_CLOSE,SlideConstants.potentiometer_THREE_DEPOSIT);
         telemetry.addData("Status","Slide retracting...");
+        telemetry.update();
         Sleep.sleep(1000);
         telemetry.addData("Status","traj in progress...");
+        telemetry.update();
         // STEP 2: Park in Warehouse
-        driver.goBackwardGyro(55, 0.5,terminator,P,I,D);
+        driver.goBackwardGyro(48, 0.5,terminator,P,I,D);
         telemetry.addData("Status","traj done");
+        telemetry.update();
+        Thread.sleep(1000);
     }
     Pose2d startPosition = new Pose2d(-12,-65.5,0);
 

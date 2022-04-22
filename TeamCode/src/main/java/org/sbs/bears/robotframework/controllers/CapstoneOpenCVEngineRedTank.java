@@ -28,7 +28,7 @@ public class CapstoneOpenCVEngineRedTank extends DuckOpenCVEngine {
 
     public CapstoneOpenCVEngineRedTank() {
         super();
-        Log.d("RedTankOpenCVPipeline","Init req");
+        Log.d("BlueTankOpenCVPipeline","Init req");
     }
 
     /**
@@ -101,11 +101,11 @@ public class CapstoneOpenCVEngineRedTank extends DuckOpenCVEngine {
     /**
      * This variable represents the XOffset of the rectangle about barcode B.
      */
-    public static int XOffsetB = 20;
+    public static int XOffsetB = -870;
     /**
      * This variable represents the YOffset of the rectangle about barcode B.
      */
-    public static int YOffsetB = 425;
+    public static int YOffsetB = 300;
     /**
      * This variable represents the Top Left Anchor of the rectangle about barcode B.
      */
@@ -122,11 +122,11 @@ public class CapstoneOpenCVEngineRedTank extends DuckOpenCVEngine {
     /**
      * This variable represents the XOffset of the rectangle about barcode C.
      */
-    public static int XOffsetC = 550;
+    public static int XOffsetC = -400;
     /**
      * This variable represents the YOffset of the rectangle about barcode C.
      */
-    public static int YOffsetC = 425;
+    public static int YOffsetC = 300;
     /**
      * This variable represents the Top Left Anchor of the rectangle about barcode C.
      */
@@ -304,30 +304,29 @@ public class CapstoneOpenCVEngineRedTank extends DuckOpenCVEngine {
                 2); // Thickness of the rectangle lines
 
        if(doAnalysisMaster) {
-           int dAB = Math.abs(avgAY-avgBY);
-           int dAC = Math.abs(avgAY-avgCY);
            int dBC = Math.abs(avgBY-avgCY);
-
-           if (dAB <= 2) {
+           if(dBC <= 2){
                synchronized (semaphore) {
-                   position = DuckPosition.C;
+                   position = DuckPosition.A;
                }
-               System.out.println("Found the duck: C");
+               System.out.println("Found the duck: A");
            }
            else {
-               if (dAC <= 2) {
+               if(avgBY > avgCY)
+               {
                    synchronized (semaphore) {
                        position = DuckPosition.B;
                    }
                    System.out.println("Found the duck: B");
                }
-               else if (dBC <= 2) {
+               else {
                    synchronized (semaphore) {
-                       position = DuckPosition.A;
+                       position = DuckPosition.C;
                    }
-                   System.out.println("Found the duck: A");
+                   System.out.println("Found the duck: C");
                }
            }
+
        }
         Log.d("BlueFullDuckOpenCVController","End ProcessFrame");
         Log.d("BlueFullDuckOpenCVController","A: " + avgAY + " B: " + avgBY + " C: " +  avgCY);

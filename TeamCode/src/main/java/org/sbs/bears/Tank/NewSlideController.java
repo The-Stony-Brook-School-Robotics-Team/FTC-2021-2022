@@ -82,6 +82,19 @@ public class NewSlideController {
         flipperOne.setPosition(flipperPosition);
         flipperTwo.setPosition(flipperPosition - SlideConstants.flipperOffset);
     }
+    public void extendAutonLow(int targetPosition, double flipperPosition, double potentiometerPosition){
+        claw.setPosition(SlideConstants.claw_CLOSED);
+        flipperOne.setPosition(flipperPosition);
+        flipperTwo.setPosition(flipperPosition - SlideConstants.flipperOffset);
+        slideMotor.setPower(SlideConstants.slideMotorPower_EXTENDING);
+        slideMotor.setTargetPosition(targetPosition);
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
     public void retract(){
         flipperOne.setPosition(SlideConstants.flipper_READY);
         flipperTwo.setPosition(SlideConstants.flipper_READY - SlideConstants.flipperOffset);
@@ -103,6 +116,7 @@ public class NewSlideController {
     public void extendDropRetract(int targetPosition, double flipperPosition, double potentiometerPosition){
         extend(targetPosition, flipperPosition, potentiometerPosition);
         waitForDropRetract.start();
+        Sleep.sleep(1000);
     }
     private void creepBack() {
         slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

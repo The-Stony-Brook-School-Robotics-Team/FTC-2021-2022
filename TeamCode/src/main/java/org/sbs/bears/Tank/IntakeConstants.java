@@ -19,7 +19,8 @@ public class IntakeConstants {
 
     public static double freightDetectionThreshold = 30;
     public static double clawFreightDetectionThreshold = 30; //80;
-    public static double waitForScooper = 400; //ms, was 200.
+    public static double waitForScooper = 400; //ms, was 400.
+    public static double waitForReverse = 1500; //ms, was 400.
 
 
 }

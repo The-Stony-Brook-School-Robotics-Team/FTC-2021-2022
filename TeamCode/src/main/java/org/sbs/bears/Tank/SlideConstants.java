@@ -39,8 +39,8 @@ public class SlideConstants {
     public static double flipper_TWO_PRELOAD = .05;//0.2;
     public static double flipper_ONE_PRELOAD = .05;//0.085;
     public static double flipper_THREE_CLOSE = .37;//0.21;
+    public static double flipper_THREE_FAR = .32;//0.21;
     public static double flipper_SHARED = .2;
-    public static double flipper_THREE_FAR = .05;//0.18;
     public static double flipper_CUSTOM = .32;//0.18;
 
     public static int slideMotorTolerance = 8;

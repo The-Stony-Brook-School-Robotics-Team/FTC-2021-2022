@@ -169,6 +169,7 @@ public class DrivingControllerTank {
 
     public void goBackwardGyro(double distance,double power, AtomicReference<Boolean> terminator,double p, double i, double d)
     {
+        stopMotors();
         isFollowingTraj.set(true);
         Pose2d iniPos = RR.getPoseEstimate();
         double iniHeading = imu.getAngularOrientation().firstAngle;
@@ -537,6 +538,7 @@ public class DrivingControllerTank {
     public void stopMotors() {
         for(DcMotor motor : motorMap.values())
         {
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             motor.setPower(0);
         }
     }
@@ -574,6 +576,7 @@ public class DrivingControllerTank {
         int encoders = (int) DriveConstantsTank.inchesToEncoderTicks(distanceTravel);
         motorMap.get(LF).setTargetPosition(motorMap.get(LF).getCurrentPosition()-encoders);
         int targetEncodersLF = motorMap.get(LF).getTargetPosition();
+        Log.d("Driver","LF delta " + encoders + " LF target " + targetEncodersLF);
         motorMap.get(LB).setTargetPosition(motorMap.get(LB).getCurrentPosition()-encoders);
         motorMap.get(RF).setTargetPosition(motorMap.get(RF).getCurrentPosition()+encoders);
         motorMap.get(RB).setTargetPosition(motorMap.get(RB).getCurrentPosition()+encoders);
@@ -588,6 +591,37 @@ public class DrivingControllerTank {
         while(!epsilonEquals(motorMap.get(LF).getCurrentPosition(), targetEncodersLF))
         {
             Sleep.sleep(10);
+            Log.d("Driver","LF current " + motorMap.get(LF).getCurrentPosition() + " LF target " + targetEncodersLF);
+        }
+        motorMap.get(LF).setPower(0);
+        motorMap.get(RF).setPower(0);
+        motorMap.get(LB).setPower(0);
+        motorMap.get(RB).setPower(0);
+
+    }
+
+    public void turnRSpecial(double angleDegs,double power)
+    {
+        double distanceTravel = DriveConstantsTank.TRACK_WIDTH/2*Math.toRadians(angleDegs);
+        int encoders = (int) DriveConstantsTank.inchesToEncoderTicks(distanceTravel);
+        motorMap.get(LF).setTargetPosition(motorMap.get(LF).getCurrentPosition()+encoders);
+        int targetEncodersLF = motorMap.get(LF).getTargetPosition();
+        Log.d("Driver","LF delta " + encoders + " LF target " + targetEncodersLF);
+        motorMap.get(LB).setTargetPosition(motorMap.get(LB).getCurrentPosition()+encoders);
+        motorMap.get(RF).setTargetPosition(motorMap.get(RF).getCurrentPosition()-encoders);
+        motorMap.get(RB).setTargetPosition(motorMap.get(RB).getCurrentPosition()-encoders);
+        for (DcMotorEx motor : motorMap.values())
+        {
+            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+        motorMap.get(LF).setPower(power);
+        motorMap.get(RF).setPower(-power);
+        motorMap.get(LB).setPower(power);
+        motorMap.get(RB).setPower(-power);
+        while(!epsilonEquals(motorMap.get(LF).getCurrentPosition(), targetEncodersLF))
+        {
+            Sleep.sleep(10);
+            Log.d("Driver","LF current " + motorMap.get(LF).getCurrentPosition() + " LF target " + targetEncodersLF);
         }
         motorMap.get(LF).setPower(0);
         motorMap.get(RF).setPower(0);
@@ -697,4 +731,11 @@ public class DrivingControllerTank {
         tmp.start();
     }
 
+    public void fullSpeedAhead(double v) {
+        for (DcMotorEx motor : motorMap.values())
+        {
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motor.setPower(v);
+        }
+    }
 }

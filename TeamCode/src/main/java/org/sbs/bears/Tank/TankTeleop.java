@@ -97,7 +97,7 @@ public class TankTeleop extends OpMode {
                         if(isClose){
                             newSlideController.extend(SlideConstants.slideMotorPosition_THREE_CLOSE, SlideConstants.flipper_THREE_CLOSE, SlideConstants.potentiometer_THREE_DEPOSIT);
                         }
-                        else{newSlideController.extend(SlideConstants.slideMotorPosition_THREE_FAR, SlideConstants.flipper_THREE_CLOSE, SlideConstants.potentiometer_FAR);}
+                        else{newSlideController.extend(SlideConstants.slideMotorPosition_THREE_FAR, SlideConstants.flipper_THREE_FAR, SlideConstants.potentiometer_FAR);}
 
                     }
                     else{newSlideController.retract();
@@ -223,6 +223,14 @@ public class TankTeleop extends OpMode {
                 if(!gamepad1.dpad_down && qDown1){
                     qDown1 = false;
                 }
+                if(gamepad1.dpad_up && gamepad1.left_bumper)
+                {
+                    newSlideController.liftMotor.setPower(-0.5);
+                }
+                if(gamepad1.dpad_down && gamepad1.left_bumper)
+                {
+                    newSlideController.liftMotor.setPower(0.5);
+                }
                 else if(!gamepad1.dpad_up && !gamepad1.dpad_down)
                 {
                     newSlideController.liftMotor.setPower(0);
@@ -230,6 +238,7 @@ public class TankTeleop extends OpMode {
                 new Thread(()->{
                     telemetry.addData("Slide Status", isClose ? "Close" : "Far");
                     telemetry.addData("Slide Extension", newSlideController.getSlideMotor().getCurrentPosition());
+
                     telemetry.update();
                 }).start();
 
