@@ -47,13 +47,13 @@ public class AllServoTank extends LinearOpMode {
 
     public void runOpMode() throws InterruptedException {
         blueTapeRotate = hardwareMap.get(Servo.class, "btr");
-        blueTapeTilt = hardwareMap.get(Servo.class, "btt");
-        blueTapeExtend = hardwareMap.get(Servo.class, "bte");
+        //blueTapeTilt = hardwareMap.get(Servo.class, "btt");
+        // blueTapeExtend = hardwareMap.get(Servo.class, "bte");
         blueIntakeServo = hardwareMap.get(Servo.class, "bi");
 
         redTapeRotate = hardwareMap.get(Servo.class, "rtr") ;
-        redTapeTilt = hardwareMap.get(Servo.class, "rtt");
-        redTapeExtend = hardwareMap.get(Servo.class, "rte");
+        //redTapeTilt = hardwareMap.get(Servo.class, "rtt");
+        //redTapeExtend = hardwareMap.get(Servo.class, "rte");
         redIntakeServo = hardwareMap.get(Servo.class, "ri");
         claw = hardwareMap.get(Servo.class, "cl");
         flip = hardwareMap.get(Servo.class, "fl");
@@ -64,8 +64,12 @@ public class AllServoTank extends LinearOpMode {
         spool = hardwareMap.get(DcMotorEx.class, "spool");
         pot = hardwareMap.get(AnalogInput.class, "po");
 
-        Servo[] servos = {blueTapeRotate, blueTapeTilt, blueTapeExtend, blueIntakeServo, redTapeRotate, redTapeTilt, redTapeExtend, redIntakeServo, claw, flip, flip2};
-        String[] servoNames = {"blue tape rotate", "blue tape tilt ", "blue tape extend ", "blue intake", "red tape rotate", "red tape tilt", "red tape extend", "red intake", "claw", "flip", "flip2"};
+        Servo[] servos = {blueTapeRotate,
+                //blueTapeTilt, //blueTapeExtend, //redTapeTilt, //RedTapeExtend,
+                blueIntakeServo, redTapeRotate, redIntakeServo, claw, flip, flip2};
+        String[] servoNames = {"blue tape rotate",
+                //"blue tape tilt ","blue tape extend ", "red tape tilt", "red tape extend",
+                "blue intake", "red tape rotate", "red intake", "claw", "flip", "flip2"};
         place = servos[0];
         waitForStart();
 

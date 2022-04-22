@@ -5,9 +5,9 @@ import com.acmerobotics.dashboard.config.Config;
 @Config
 public class SlideConstants {
 
-    public static double claw_OPEN = 0.4;
-    public static double claw_IDLE = 0.5;
-    public static double claw_CLOSED = 1;
+    public static double claw_OPEN = 0.29; //claw was flipped around and re-mounted; new values entirely -cs
+    public static double claw_IDLE = 0.36;
+    public static double claw_CLOSED = 0.0;
 
 
     public static int slideMotorPosition_PARKED = 5;
