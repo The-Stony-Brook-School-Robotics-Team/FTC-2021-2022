@@ -55,8 +55,7 @@ public class TankTeleop extends OpMode {
     @Override
     public void start() {
         gamepad1Thread.start();
-        telemetryThread.start();
-       // gamepad2Thread.start();
+        gamepad2Thread.start();
         newRedIntakeController.setState(IntakeState.PARK);
         newBlueIntakeController.setState(IntakeState.PARK);
        // tapeController.initServos();
@@ -74,27 +73,18 @@ public class TankTeleop extends OpMode {
         newRedIntakeController.tick();
         newBlueIntakeController.tick();
 
+
     }
     @Override
     public void stop(){
         newSlideController.killThreads();
         gamepad1Thread.interrupt();
-        //gamepad2Thread.interrupt();
-        telemetryThread.interrupt();
+        gamepad2Thread.interrupt();
     }
 
     private boolean qlb1;
     private boolean isClosed = false;
-    Thread telemetryThread = new Thread() {
-        public void run() {
-            while (!telemetryThread.isInterrupted()) {
-                telemetry.addData("Slide Status", isClose ? "Close" : "Far");
-                telemetry.addData("Slide Extension", newSlideController.getSlideMotor().getCurrentPosition());
-                telemetry.update();
-                Sleep.sleep(100);
-            }
-        }
-    };
+
     Thread gamepad1Thread = new Thread(){
 
         public void run(){
@@ -224,16 +214,21 @@ public class TankTeleop extends OpMode {
                 {
                     newSlideController.liftMotor.setPower(0);
                 }
+                new Thread(()->{
+                    telemetry.addData("Slide Status", isClose ? "Close" : "Far");
+                    telemetry.addData("Slide Extension", newSlideController.getSlideMotor().getCurrentPosition());
+                    telemetry.update();
+                }).start();
 
 
             }
         }
     };
 
-    /*Thread gamepad2Thread = new Thread(){
+    Thread gamepad2Thread = new Thread(){
         public void run(){
             while(!gamepad2Thread.isInterrupted()){
-                if(gamepad2.b && !qB2){
+                /*if(gamepad2.b && !qB2){
                     qB2 = true;
                     tapeController.switchTape();
                 }
@@ -278,11 +273,11 @@ public class TankTeleop extends OpMode {
 
                 if(!gamepad2.a && !gamepad2.y){
                     tapeController.extend(0);
-                }
+                }*/
             }
         }
     };
-*/
+
 
 
 
