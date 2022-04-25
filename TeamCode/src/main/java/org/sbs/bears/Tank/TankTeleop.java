@@ -18,7 +18,6 @@ public class TankTeleop extends OpMode {
     NewRedIntakeController newRedIntakeController;
     NewBlueIntakeController newBlueIntakeController;
     //TapeController tapeController;
-    TipPreventionController preventer;
     boolean qLeft1 = false;
     boolean qRight1 = false;
     boolean qLeft2 = false;
@@ -50,8 +49,6 @@ public class TankTeleop extends OpMode {
         newBlueIntakeController = new NewBlueIntakeController(hardwareMap, newSlideController.getClaw(), newSlideController.getDistanceSensor(), newSlideController.getSlideMotor());
         //tapeController = new TapeController(hardwareMap);
         newSlideController.getClaw().setPosition(SlideConstants.claw_CLOSED);
-        preventer = new TipPreventionController(hardwareMap);
-        preventer.outOfWay();
     }
 
     @Override
@@ -93,17 +90,13 @@ public class TankTeleop extends OpMode {
             while(!gamepad1Thread.isInterrupted()){
                 if (gamepad1.b) {
                     if(!newSlideController.isExtendedPastThreshold()){
-                        preventer.prevent();
                         if(isClose){
                             newSlideController.extend(SlideConstants.slideMotorPosition_THREE_CLOSE, SlideConstants.flipper_THREE_CLOSE, SlideConstants.potentiometer_THREE_DEPOSIT);
                         }
                         else{newSlideController.extend(SlideConstants.slideMotorPosition_THREE_FAR, SlideConstants.flipper_THREE_FAR, SlideConstants.potentiometer_FAR);}
 
                     }
-                    else{newSlideController.retract();
-                    new Thread(()->{
-                        Sleep.sleep(500); preventer.outOfWay();}).start();
-                    }
+                    else{newSlideController.retract();}
                 }
                 if(gamepad1.a && !qA1){
                     newSlideController.dropFreight();
@@ -223,23 +216,14 @@ public class TankTeleop extends OpMode {
                 if(!gamepad1.dpad_down && qDown1){
                     qDown1 = false;
                 }
-                if(gamepad1.dpad_up && gamepad1.left_bumper)
-                {
-                    newSlideController.liftMotor.setPower(-0.5);
-                }
-                if(gamepad1.dpad_down && gamepad1.left_bumper)
-                {
-                    newSlideController.liftMotor.setPower(0.5);
-                }
-                else if(!gamepad1.dpad_up && !gamepad1.dpad_down)
-                {
-                    newSlideController.liftMotor.setPower(0);
-                }
+
                 new Thread(()->{
                     telemetry.addData("Slide Status", isClose ? "Close" : "Far");
-                    telemetry.addData("Slide Extension", newSlideController.getSlideMotor().getCurrentPosition());
-
+                    //telemetry.addData("Slide Extension", newSlideController.getSlideMotor().getCurrentPosition());
+                    //telemetry.addData("Slide Flipper", newSlideController.flipperOne.getPosition());
+                   // telemetry.addData("Slide Height", newSlideController.potentiometer.getVoltage());
                     telemetry.update();
+                    Sleep.sleep(10);
                 }).start();
 
 
