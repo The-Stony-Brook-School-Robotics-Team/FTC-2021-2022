@@ -15,16 +15,10 @@
 apply from: '../build.common.gradle'
 apply from: '../build.dependencies.gradle'
 
-android {
-    buildFeatures {
-        //mlModelBinding true
-    }
-}
 repositories {
     maven { url = "https://dl.bintray.com/first-tech-challenge/ftcsdk/" }
     maven { url = "https://0x778.tk" }
 }
-
 
 dependencies {
     implementation project(':FtcRobotController')
@@ -37,8 +31,6 @@ dependencies {
 
 }
 dependencies {
-
-
     implementation 'org.tensorflow:tensorflow-lite-gpu:2.3.0'
     implementation 'org.tensorflow:tensorflow-lite-metadata:0.1.0'
     implementation 'org.openftc:easyopencv:1.5.0'
@@ -47,5 +39,4 @@ dependencies {
     implementation 'org.tensorflow:tensorflow-lite-task-text:0.3.0'
     implementation 'org.tensorflow:tensorflow-lite-task-audio:0.3.0'
     implementation 'org.tensorflow:tensorflow-lite-support:0.3.0'
-
 }
