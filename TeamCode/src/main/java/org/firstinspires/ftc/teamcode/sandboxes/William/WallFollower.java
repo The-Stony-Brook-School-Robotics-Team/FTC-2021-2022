@@ -7,20 +7,22 @@ import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import org.firstinspires.ftc.teamcode.drive.DriveConstantsMain.*;
+
+import org.firstinspires.ftc.teamcode.drive.DriveConstantsMain;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp(name = "AAAAAAAAAAA")
 public class WallFollower extends OpMode {
+    double DISTANCE_TO_TRAVEL = DriveConstantsMain.inchesToEncoderTicks(4);
     static double DISTANCE_TO_WALL = 200;
     double forwardPowerOffSet = 0;
 
     double tP = 0;
     double tI = 0;
     double tD = 0;
-    double hP = 2.4;
-    double hI = 0;
-    double hD = 0;
+    double hP = 3;
+    double hI = 0.1;
+    double hD = 0.2;
     PIDController tPID = new PIDController(tP, tI, tD);
     PIDController hPID = new PIDController(hP, hI, hD);
 
@@ -35,7 +37,7 @@ public class WallFollower extends OpMode {
     DcMotor rb;
     ModernRoboticsI2cRangeSensor distanceSensor;
     BNO055IMU imu;
-
+    double average = -1;
     int currentSelection = 1;
     boolean isPressingA = false;
     boolean isPressingDpadLeft = false;
@@ -53,6 +55,12 @@ public class WallFollower extends OpMode {
         rf = hardwareMap.dcMotor.get("rf");
         lb = hardwareMap.dcMotor.get("lb");
         rb = hardwareMap.dcMotor.get("rb");
+
+        rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         distanceSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "d1");
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -167,10 +175,10 @@ public class WallFollower extends OpMode {
     }
 
     public void drive() {
-        lf.setPower(forwardPowerOffSet + leftStickY + leftStickX + rightStickX);
-        rf.setPower(-forwardPowerOffSet - leftStickY + leftStickX + rightStickX);
-        lb.setPower(forwardPowerOffSet + leftStickY - leftStickX + rightStickX);
-        rb.setPower(-forwardPowerOffSet - leftStickY - leftStickX + rightStickX);
+        lf.setPower(-forwardPowerOffSet + leftStickY + leftStickX + rightStickX);
+        rf.setPower(forwardPowerOffSet - leftStickY + leftStickX + rightStickX);
+        lb.setPower(-forwardPowerOffSet + leftStickY - leftStickX + rightStickX);
+        rb.setPower(forwardPowerOffSet - leftStickY - leftStickX + rightStickX);
     }
 
     public double getCurrentHeading() {
@@ -207,6 +215,11 @@ public class WallFollower extends OpMode {
         leftStickX = leftJoyStickValues.getX();
         leftStickY = leftJoyStickValues.getY();
         rightStickX = hPower;
+
+        average = (double)(Math.abs(lf.getCurrentPosition()) + Math.abs(rf.getCurrentPosition()) + Math.abs(lb.getCurrentPosition()) + Math.abs(rb.getCurrentPosition())) / 4.0;
+        if(average >= DISTANCE_TO_TRAVEL){
+            forwardPowerOffSet = 0;
+        }
     }
 
 
