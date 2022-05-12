@@ -66,7 +66,7 @@ public class WallFollower extends OpMode {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
-        distanceBefore = getSensorRead();
+        distanceBefore = getDistanceSensorRead();
     }
 
     @Override
@@ -181,35 +181,35 @@ public class WallFollower extends OpMode {
         rb.setPower(forwardPowerOffSet - leftStickY - leftStickX + rightStickX);
     }
 
-    public double getCurrentHeading() {
+    public double getHeadingSensorRead() {
         return imu.getAngularOrientation().firstAngle;
     }
 
-    public double getSensorRead() {
+    public double getDistanceSensorRead() {
         return (int) distanceSensor.getDistance(DistanceUnit.MM);
     }
 
     public Vector2d getLeftJoyStickValues() {
-        double heading = getCurrentHeading();
+        double heading = getHeadingSensorRead();
         return new Vector2d(-Math.sin(heading) * tPower, Math.cos(heading) * tPower);
     }
 
     double distanceBefore;
-    double distanceTolerance = 200;
+    double distanceTolerance = 400;
 
     public double getDistanceToWall() {
-        double currentHeading = getCurrentHeading();
-        if (Math.abs(distanceBefore - currentHeading) > distanceTolerance)
-            currentHeading = distanceBefore;
+        double currentDistance = getDistanceSensorRead();
+        if (Math.abs(distanceBefore - currentDistance) > distanceTolerance)
+            currentDistance = distanceBefore;
         else
-            distanceBefore = currentHeading;
+            distanceBefore = currentDistance;
 
-        return (getSensorRead()) * Math.cos(currentHeading);
+        return currentDistance * Math.cos(getHeadingSensorRead());
     }
 
     public void update() {
         tPower = tPID.calculate(getDistanceToWall());
-        hPower = hPID.calculate(getCurrentHeading());
+        hPower = hPID.calculate(getHeadingSensorRead());
 
         Vector2d leftJoyStickValues = getLeftJoyStickValues();
         leftStickX = leftJoyStickValues.getX();
